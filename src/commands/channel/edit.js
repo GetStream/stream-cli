@@ -4,6 +4,7 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
+import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
 import { authError } from '../../utils/error';
@@ -13,19 +14,19 @@ export class ChannelEdit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of the channel.'),
+            description: chalk.blue.bold('Name of channel.'),
             default: uuid(),
-            required: true,
+            required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of the channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         name: flags.string({
             char: 'n',
-            description: chalk.blue.bold('Name of the room.'),
+            description: chalk.blue.bold('Name of room.'),
             required: true,
         }),
         image: flags.string({
@@ -41,6 +42,11 @@ export class ChannelEdit extends Command {
         reason: flags.string({
             char: 'r',
             description: chalk.blue.bold('Reason for changing channel.'),
+            required: false,
+        }),
+        data: flags.string({
+            char: 'd',
+            description: chalk.blue.bold('Additional data as a JSON payload.'),
             required: false,
         }),
     };

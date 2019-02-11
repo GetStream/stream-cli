@@ -4,7 +4,7 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
+import uuid from 'uuid';
 
 import { end } from '../../utils/response';
 import { authError } from '../../utils/error';

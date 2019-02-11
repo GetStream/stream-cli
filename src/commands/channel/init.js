@@ -14,19 +14,19 @@ export class ChannelInit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of the channel.'),
+            description: chalk.blue.bold('Name of channel.'),
             default: uuid(),
-            required: true,
+            required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of the channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         name: flags.string({
             char: 'n',
-            description: chalk.blue.bold('Name of the room.'),
+            description: chalk.blue.bold('Name of room.'),
             required: true,
         }),
         image: flags.string({
@@ -37,6 +37,11 @@ export class ChannelInit extends Command {
         members: flags.string({
             char: 'm',
             description: chalk.blue.bold('Comma separated list of members.'),
+            required: false,
+        }),
+        data: flags.string({
+            char: 'd',
+            description: chalk.blue.bold('Additional data as a JSON payload.'),
             required: false,
         }),
     };
@@ -60,6 +65,7 @@ export class ChannelInit extends Command {
             };
             if (flags.image) payload.image = flags.image;
             if (flags.members) payload.members = flags.members.split(',');
+            if (flags.metadata) payload.data = JSON.parse(flags.metadata);
 
             const channel = await client.channel(
                 flags.type,

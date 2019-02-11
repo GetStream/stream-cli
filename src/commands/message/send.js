@@ -5,6 +5,7 @@ import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
+import uuid from 'uuid';
 
 import { exit } from '../../utils/response';
 import { authError } from '../../utils/error';
@@ -14,19 +15,19 @@ export class MessageSend extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of the channel.'),
+            description: chalk.blue.bold('Name of channel.'),
             default: uuid(),
             required: false,
         }),
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of the user.'),
+            description: chalk.green.bold('ID of user.'),
             default: '*',
             required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of the channel'),
+            description: chalk.blue.bold('Type of channel'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),

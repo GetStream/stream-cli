@@ -7,7 +7,7 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
+import uuid from 'uuid/v4';
 
 import { authError } from '../../utils/error';
 import { credentials } from '../../utils/config';
@@ -37,9 +37,9 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of the channel.'),
+            description: chalk.blue.bold('Name of channel.'),
             default: uuid(),
-            required: true,
+            required: false,
         }),
         type: flags.string({
             char: 't',
