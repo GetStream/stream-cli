@@ -1,0 +1,75 @@
+import { Command, flags } from '@oclif/command';
+import { StreamChat } from 'stream-chat';
+import emoji from 'node-emoji';
+import moment from 'moment';
+import chalk from 'chalk';
+import path from 'path';
+
+import { exit } from '../../utils/response';
+import { authError } from '../../utils/error';
+import { credentials } from '../../utils/config';
+
+export class ChannelInit extends Command {
+    static flags = {
+        type: flags.string({
+            char: 't',
+            description: chalk.blue.bold('Type of the channel.'),
+            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+            required: true,
+        }),
+        channel: flags.string({
+            char: 'c',
+            description: chalk.blue.bold('Name of the channel.'),
+            required: true,
+        }),
+        name: flags.string({
+            char: 'n',
+            description: chalk.blue.bold('Name of the room.'),
+            required: true,
+        }),
+        image: flags.string({
+            char: 'u',
+            description: chalk.blue.bold('URL to channel image.'),
+            required: false,
+        }),
+        members: flags.string({
+            char: 'm',
+            description: chalk.blue.bold('Comma separated list of members.'),
+            required: false,
+        }),
+    };
+
+    async run() {
+        const { flags } = this.parse(ChannelInit);
+        const config = path.join(this.config.configDir, 'config.json');
+
+        try {
+            const { apiKey, apiSecret } = await credentials(config);
+            if (!apiKey || !apiSecret) return authError();
+
+            const client = new StreamChat(apiKey, apiSecret);
+
+            const timestamp = chalk.yellow.bold(
+                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
+            );
+
+            const payload = {
+                name: flags.name,
+            };
+            if (flags.image) payload.image = flags.image;
+            if (flags.members) payload.members = flags.members.split(',');
+
+            const channel = await client.channel(
+                flags.type,
+                flags.channel,
+                payload
+            );
+
+            exit(`The channel ${flags.name} has been initialized!`, 'rocket');
+        } catch (err) {
+            this.error(err, { exit: 1 });
+        }
+    }
+}
+
+ChannelInit.description = 'Initialize a channel.';

@@ -1,0 +1,84 @@
+{
+    "name": "stream-chat-cli",
+    "description": "CLI The Stream Chat Command Line Interface (CLI) makes it easy to create and manage your Stream Chat apps directly from the terminal.",
+    "version": "0.0.1",
+    "author": "Nick Parsons <nparsons08@gmail.com>",
+    "bin": {
+        "chat": "./bin/run npx babel-node"
+    },
+    "bugs": "https://github.com/nparsons08/stream-chat/issues",
+    "dependencies": {
+        "@oclif/command": "^1",
+        "@oclif/config": "^1",
+        "@oclif/plugin-autocomplete": "^0.1.0",
+        "@oclif/plugin-commands": "^1.2.2",
+        "@oclif/plugin-help": "^2.1.6",
+        "@oclif/plugin-not-found": "^1.2.2",
+        "cardinal": "^2.1.1",
+        "chalk": "^2.4.2",
+        "enquirer": "^2.3.0",
+        "json-stringify-pretty-compact": "^2.0.0",
+        "lodash": "^4.17.11",
+        "moment": "^2.24.0",
+        "node-emoji": "^1.8.1",
+        "node-fs-extra": "^0.8.2",
+        "node-notifier": "^5.4.0",
+        "stream-chat": "^0.1.25",
+        "to-single-quotes": "^3.0.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.2.3",
+        "@babel/core": "^7.2.2",
+        "@babel/node": "^7.2.2",
+        "@babel/plugin-proposal-class-properties": "^7.3.0",
+        "@babel/preset-env": "^7.3.1",
+        "@babel/runtime": "^7.3.1",
+        "@oclif/dev-cli": "^1",
+        "@oclif/test": "^1",
+        "babel-plugin-transform-react-jsx": "^6.24.1",
+        "babel-preset-env": "^1.7.0",
+        "chai": "^4",
+        "eslint": "^5.13",
+        "eslint-config-oclif": "^3.1",
+        "globby": "^9",
+        "mocha": "^5",
+        "nodemon": "^1.18.9",
+        "nyc": "^13",
+        "prettier": "^1.16.4"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "files": [
+        "/bin",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json",
+        "/src"
+    ],
+    "homepage": "https://github.com/nparsons08/stream-chat",
+    "keywords": [
+        "Stream",
+        "Chat",
+        "CLI"
+    ],
+    "license": "MIT",
+    "main": "src/index.js",
+    "oclif": {
+        "commands": "./src/commands",
+        "bin": "chat",
+        "plugins": [
+            "@oclif/plugin-help",
+            "@oclif/plugin-autocomplete",
+            "@oclif/plugin-commands",
+            "@oclif/plugin-not-found"
+        ]
+    },
+    "repository": "nparsons08/stream-chat",
+    "scripts": {
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint .",
+        "prepack": "oclif-dev manifest && oclif-dev readme",
+        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+        "version": "oclif-dev readme && git add README.md"
+    }
+}
