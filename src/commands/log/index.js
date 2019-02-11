@@ -105,11 +105,11 @@ export class Log extends Command {
             const time = 'dddd, MMMM Do YYYY [at] h:mm:ss A';
 
             if (flags.event === 'all') {
-                let timestamp = chalk.yellow.bold(
-                    moment(event.channel.last_message_at).format(time)
-                );
-
                 channel.on(event => {
+                    let timestamp = chalk.yellow.bold(
+                        moment(event.created_at).format(time)
+                    );
+
                     let payload = `${timestamp}: ${chalk.green.bold(
                         event.user.id
                     )} (${chalk.green.bold(
@@ -118,12 +118,12 @@ export class Log extends Command {
                         event.type
                     )} in channel ${chalk.green.bold(flags.channel)}.`;
 
-                    console.log(payload);
+                    console.info(payload);
                 });
             } else {
                 channel.on(flags.event, event => {
                     let timestamp = chalk.yellow.bold(
-                        moment(event.channel.last_message_at).format(time)
+                        moment(event.created_at).format(time)
                     );
 
                     let payload = cardinal.highlight(
@@ -131,7 +131,7 @@ export class Log extends Command {
                         { linenos: true }
                     );
 
-                    console.log(`${timestamp}:`, '\n\n', payload, '\n\n');
+                    console.info(`${timestamp}:`, '\n\n', payload, '\n\n');
                 });
             }
         } catch (err) {
