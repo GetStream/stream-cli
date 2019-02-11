@@ -11,15 +11,16 @@ import { credentials } from '../../utils/config';
 
 export class ChannelGet extends Command {
     static flags = {
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: false,
+        }),
         type: flags.string({
             char: 't',
             description: chalk.blue.bold('Type of the channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: false,
-        }),
-        channel: flags.string({
-            char: 'c',
-            description: chalk.blue.bold('Name of the channel.'),
             required: false,
         }),
     };

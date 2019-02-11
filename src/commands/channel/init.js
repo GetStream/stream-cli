@@ -4,6 +4,7 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
+import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
 import { authError } from '../../utils/error';
@@ -11,15 +12,16 @@ import { credentials } from '../../utils/config';
 
 export class ChannelInit extends Command {
     static flags = {
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: true,
+        }),
         type: flags.string({
             char: 't',
             description: chalk.blue.bold('Type of the channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        channel: flags.string({
-            char: 'c',
-            description: chalk.blue.bold('Name of the channel.'),
             required: true,
         }),
         name: flags.string({

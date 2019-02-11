@@ -11,15 +11,16 @@ import { credentials } from '../../utils/config';
 
 export class ChannelEdit extends Command {
     static flags = {
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: true,
+        }),
         type: flags.string({
             char: 't',
             description: chalk.blue.bold('Type of the channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        channel: flags.string({
-            char: 'c',
-            description: chalk.blue.bold('Name of the channel.'),
             required: true,
         }),
         name: flags.string({

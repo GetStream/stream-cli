@@ -12,19 +12,20 @@ import { credentials } from '../../utils/config';
 
 export class UserBan extends Command {
     static flags = {
-        user: flags.string({
-            char: 'u',
-            description: chalk.green.bold('ID of the user.'),
-            required: true,
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: false,
         }),
         type: flags.string({
             char: 't',
             description: chalk.green.bold('Channel type.'),
             required: true,
         }),
-        channel: flags.string({
-            char: 'c',
-            description: chalk.green.bold('Channel name.'),
+        user: flags.string({
+            char: 'u',
+            description: chalk.green.bold('ID of the user.'),
             required: true,
         }),
         reason: flags.string({

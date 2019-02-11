@@ -23,7 +23,8 @@
         "node-emoji": "^1.8.1",
         "node-fs-extra": "^0.8.2",
         "node-notifier": "^5.4.0",
-        "stream-chat": "^0.1.29"
+        "stream-chat": "^0.1.29",
+        "uuid": "^3.3.2"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",

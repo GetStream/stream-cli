@@ -12,9 +12,15 @@ import { credentials } from '../../utils/config';
 
 export class MessageSend extends Command {
     static flags = {
-        uid: flags.string({
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: false,
+        }),
+        user: flags.string({
             char: 'u',
-            description: chalk.blue.bold('ID of the user sending a message.'),
+            description: chalk.green.bold('ID of the user.'),
             default: '*',
             required: true,
         }),
@@ -22,11 +28,6 @@ export class MessageSend extends Command {
             char: 't',
             description: chalk.blue.bold('Type of the channel'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        channel: flags.string({
-            char: 'c',
-            description: chalk.blue.bold('Name of the the channel'),
             required: true,
         }),
         message: flags.string({

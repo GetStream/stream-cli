@@ -35,14 +35,15 @@ const events = [
 
 export class Log extends Command {
     static flags = {
+        id: flags.string({
+            char: 'i',
+            description: chalk.blue.bold('Name of the channel.'),
+            default: uuid(),
+            required: true,
+        }),
         type: flags.string({
             char: 't',
             description: 'Channel type to tail.',
-            required: true,
-        }),
-        channel: flags.string({
-            char: 'c',
-            description: 'Channel name to tail.',
             required: true,
         }),
         event: flags.string({
