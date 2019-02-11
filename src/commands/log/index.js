@@ -54,7 +54,7 @@ export class Log extends Command {
     };
 
     async run() {
-        const { flags } = this.parse(Watch);
+        const { flags } = this.parse(Log);
         const config = path.join(this.config.configDir, 'config.json');
 
         try {

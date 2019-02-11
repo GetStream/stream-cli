@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import emoji from 'node-emoji';
+import moment from 'moment';
 
 export function exit(_message, _emoji) {
     const timestamp = chalk.yellow.bold(

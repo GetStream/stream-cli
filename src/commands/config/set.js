@@ -14,9 +14,9 @@ export class ConfigSet extends Command {
         const config = path.join(this.config.configDir, 'config.json');
 
         try {
-            const { apiKey, apiSecret } = await credentials(config);
+            const exists = await fs.pathExists(config);
 
-            if (fs.existsSync(config)) {
+            if (exists) {
                 const answer = await prompt({
                     type: 'confirm',
                     name: 'continue',
