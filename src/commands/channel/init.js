@@ -7,14 +7,14 @@ import path from 'path';
 import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ChannelInit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of channel.'),
+            description: chalk.blue.bold('ID of channel.'),
             default: uuid(),
             required: false,
         }),
@@ -75,7 +75,7 @@ export class ChannelInit extends Command {
 
             exit(`The channel ${flags.name} has been initialized!`, 'rocket');
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

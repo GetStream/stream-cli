@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs-extra';
 
 import { exit } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ConfigSet extends Command {
@@ -56,7 +56,7 @@ export class ConfigSet extends Command {
 
             exit(`Your config has been saved!`, 'rocket');
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

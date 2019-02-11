@@ -7,14 +7,14 @@ import path from 'path';
 import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ChannelEdit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of channel.'),
+            description: chalk.blue.bold('ID of channel.'),
             default: uuid(),
             required: false,
         }),
@@ -29,7 +29,7 @@ export class ChannelEdit extends Command {
             description: chalk.blue.bold('Name of room.'),
             required: true,
         }),
-        image: flags.string({
+        url: flags.string({
             char: 'u',
             description: chalk.blue.bold('URL to channel image.'),
             required: false,
@@ -77,7 +77,7 @@ export class ChannelEdit extends Command {
 
             exit(`The channel ${flags.name} has been modified!`, 'rocket');
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

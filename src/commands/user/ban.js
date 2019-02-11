@@ -7,7 +7,7 @@ import path from 'path';
 import uuid from 'uuid';
 
 import { end } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class UserBan extends Command {
@@ -65,7 +65,7 @@ export class UserBan extends Command {
                 'warning'
             );
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs-extra';
 
 import { exit } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ModerateFlag extends Command {
@@ -60,7 +60,7 @@ export class ModerateFlag extends Command {
 
             exit(message, 'crossed_flags');
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

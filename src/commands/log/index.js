@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 const events = [
@@ -37,7 +37,7 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of channel.'),
+            description: chalk.blue.bold('ID of channel.'),
             default: uuid(),
             required: false,
         }),
@@ -136,7 +136,7 @@ export class Log extends Command {
                 });
             }
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

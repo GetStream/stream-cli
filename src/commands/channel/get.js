@@ -7,14 +7,14 @@ import path from 'path';
 import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
-import { authError } from '../../utils/error';
+import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ChannelGet extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of channel.'),
+            description: chalk.blue.bold('ID of channel.'),
             default: uuid(),
             required: false,
         }),
@@ -36,11 +36,7 @@ export class ChannelGet extends Command {
 
             const client = new StreamChat(apiKey, apiSecret);
 
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
-            );
-
-            const filter = { members: { $in: ['Nick Tarsons'] } };
+            const filter = { members: { $in: ['Nick'] } };
             const sort = { last_message_at: -1 };
 
             const channels = await client.queryChannels(filter, sort, {
@@ -60,7 +56,7 @@ export class ChannelGet extends Command {
 
             this.exit(0);
         } catch (err) {
-            this.error(err, { exit: 1 });
+            apiError(err);
         }
     }
 }

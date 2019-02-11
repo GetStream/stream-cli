@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs-extra';
 
 import { exit } from '../../utils/response';
+import { apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ConfigDestroy extends Command {
@@ -16,7 +17,7 @@ export class ConfigDestroy extends Command {
 
             exit(`Config destroyed...`, 'cry');
         } catch (err) {
-            this.error(err, { exit: 1 });
+            authError(err);
         }
     }
 }
