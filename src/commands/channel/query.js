@@ -4,16 +4,18 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
+import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
 import { authError, apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
-export class ChannelGet extends Command {
+export class ChannelQuery extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
             description: chalk.blue.bold('ID of channel.'),
+            default: uuid(),
             required: false,
         }),
         type: flags.string({
@@ -22,10 +24,20 @@ export class ChannelGet extends Command {
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
+        filter: flags.string({
+            char: 'f',
+            description: chalk.blue.bold('Filters to apply.'),
+            required: false,
+        }),
+        sort: flags.string({
+            char: 's',
+            description: chalk.blue.bold('Sort to apply.'),
+            required: false,
+        }),
     };
 
     async run() {
-        const { flags } = this.parse(ChannelGet);
+        const { flags } = this.parse(ChannelQuery);
         const config = path.join(this.config.configDir, 'config.json');
 
         try {
@@ -34,23 +46,20 @@ export class ChannelGet extends Command {
 
             const client = new StreamChat(apiKey, apiSecret);
 
-            const channel = await client.queryChannels(
-                { id: flags.id, type: flags.type },
-                { last_message_at: -1 },
-                {
-                    subscribe: false,
-                }
-            );
+            const filter = flags.filters ? JSON.parse(flags.filters) : {};
+            const sort = flags.sort ? JSON.parse(flags.sort) : {};
 
-            const data = channel[0].data;
+            const channels = await client.queryChannels(filter, sort, {
+                subscribe: false,
+            });
 
-            console.log(data);
+            console.log(channels[0]);
 
-            this.exit(1);
+            process.exit(0);
         } catch (err) {
             apiError(err);
         }
     }
 }
 
-ChannelGet.description = 'Get a channel.';
+ChannelQuery.description = 'Query a channel.';
