@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import stringify from 'json-stringify-pretty-compact';
 import cardinal from 'cardinal';
 import emoji from 'node-emoji';
@@ -51,10 +50,9 @@ export class ChannelList extends Command {
 
                 process.exit(0);
             } else {
-                console.log(
-                    chalk.red(`Your application does not have any channels.`)
-                );
-                process.exit(0);
+                exit(`Your application does not have any channels.`, {
+                    emoji: 'pensive',
+                });
             }
         } catch (err) {
             apiError(err);

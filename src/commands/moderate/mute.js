@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
@@ -15,7 +14,7 @@ export class ModerateMute extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.blue.bold('ID of user.'),
+            description: chalk.green.bold('ID of user.'),
             required: true,
         }),
     };

@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
@@ -14,24 +13,24 @@ export class ChannelQuery extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.green.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of channel.'),
+            description: chalk.green.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
         filter: flags.string({
             char: 'f',
-            description: chalk.blue.bold('Filters to apply.'),
+            description: chalk.green.bold('Filters to apply.'),
             required: false,
         }),
         sort: flags.string({
             char: 's',
-            description: chalk.blue.bold('Sort to apply.'),
+            description: chalk.green.bold('Sort to apply.'),
             required: false,
         }),
     };

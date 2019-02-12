@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import stringify from 'json-stringify-pretty-compact';
 import { prompt } from 'enquirer';
 import cardinal from 'cardinal';
@@ -37,18 +36,18 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.green.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: 'Channel type.',
+            description: chalk.green.bold('Channel type.'),
             required: true,
         }),
         event: flags.string({
             char: 'e',
-            description: 'Event type.',
+            description: chalk.green.bold('Event type.'),
             options: events,
             required: false,
         }),

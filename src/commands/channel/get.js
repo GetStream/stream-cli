@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import stringify from 'json-stringify-pretty-compact';
 import cardinal from 'cardinal';
 import emoji from 'node-emoji';
@@ -15,18 +14,18 @@ export class ChannelGet extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.green.bold('Channel ID.'),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of channel.'),
+            description: chalk.green.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
         config: flags.boolean({
             char: 'c',
-            description: chalk.blue.bold('Return channel config values only.'),
+            description: chalk.green.bold('Return channel config values only.'),
             required: false,
         }),
     };

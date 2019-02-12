@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
@@ -15,18 +14,19 @@ export class UserBan extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Name of the channel.'),
+            description: chalk.green.bold('Channel ID.'),
             default: uuid(),
-            required: false,
+            required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Channel type.'),
+            description: chalk.green.bold('Type of channel.'),
+            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of the user.'),
+            description: chalk.green.bold('User ID.'),
             required: true,
         }),
         reason: flags.string({
@@ -57,9 +57,7 @@ export class UserBan extends Command {
             await client.banUser(flags.user, payload);
 
             exit(
-                `${flags.user} has been banned from ${flags.type}:${
-                    flags.channel
-                }`,
+                `${flags.user} has been banned from ${flags.type}:${flags.id}`,
                 {
                     emoji: 'warning',
                 }

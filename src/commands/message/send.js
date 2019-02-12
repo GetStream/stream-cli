@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import { StreamChat } from 'stream-chat';
 import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
@@ -15,7 +14,7 @@ export class MessageSend extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.green.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
@@ -27,18 +26,18 @@ export class MessageSend extends Command {
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of channel'),
+            description: chalk.green.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         message: flags.string({
             char: 'm',
-            description: chalk.blue.bold('Message to send.'),
+            description: chalk.green.bold('Message to send.'),
             required: true,
         }),
         attachments: flags.string({
             char: 'a',
-            description: chalk.blue.bold('JSON payload of attachments'),
+            description: chalk.green.bold('JSON payload of attachments'),
             required: false,
         }),
     };
