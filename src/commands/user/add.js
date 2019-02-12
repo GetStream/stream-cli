@@ -57,4 +57,4 @@ export class UserAdd extends Command {
     }
 }
 
-UserAdd.description = 'Ban users from indefinitely or by a per-minute period.';
+UserAdd.description = 'Remove users from a channel.';

@@ -68,4 +68,4 @@ export class UserBan extends Command {
     }
 }
 
-UserBan.description = 'Ban users from indefinitely or by a per-minute period.';
+UserBan.description = 'Ban users indefinitely or by a per-minute period.';
