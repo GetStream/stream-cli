@@ -37,18 +37,18 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('ID of channel.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: 'Channel type to tail.',
+            description: 'Channel type.',
             required: true,
         }),
         event: flags.string({
             char: 'e',
-            description: 'Event type to tail.',
+            description: 'Event type.',
             options: events,
             required: false,
         }),
@@ -69,7 +69,7 @@ export class Log extends Command {
                     type: 'autocomplete',
                     name: 'event',
                     message: 'What event would you like to filter on?',
-                    limit: 17,
+                    limit: events.length,
                     suggest(input, choices) {
                         return choices.filter(choice =>
                             choice.message.startsWith(input)

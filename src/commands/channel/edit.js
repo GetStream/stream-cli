@@ -4,7 +4,6 @@ import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
 import { authError, apiError } from '../../utils/error';
@@ -14,8 +13,7 @@ export class ChannelEdit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('ID of channel.'),
-            default: uuid(),
+            description: chalk.blue.bold('Channel ID.'),
             required: false,
         }),
         type: flags.string({
@@ -27,7 +25,7 @@ export class ChannelEdit extends Command {
         name: flags.string({
             char: 'n',
             description: chalk.blue.bold('Name of room.'),
-            required: true,
+            required: false,
         }),
         url: flags.string({
             char: 'u',
@@ -42,7 +40,7 @@ export class ChannelEdit extends Command {
         reason: flags.string({
             char: 'r',
             description: chalk.blue.bold('Reason for changing channel.'),
-            required: false,
+            required: true,
         }),
         data: flags.string({
             char: 'd',
@@ -61,21 +59,18 @@ export class ChannelEdit extends Command {
 
             const client = new StreamChat(apiKey, apiSecret);
 
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
-            );
-
-            const channel = await client.channel(flags.type, flags.channel);
+            const channel = await client.channel(flags.type, flags.id);
 
             const payload = {};
             if (flags.url) payload.url = flags.url;
             if (flags.name) payload.name = flags.name;
 
             await channel.update(payload, {
+                name: 'The Water Cooler',
                 text: flags.reason,
             });
 
-            exit(`The channel ${flags.name} has been modified!`, {
+            exit(`The channel ${flags.id} has been modified!`, {
                 emoji: 'rocket',
             });
         } catch (err) {

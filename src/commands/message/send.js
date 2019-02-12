@@ -15,7 +15,7 @@ export class MessageSend extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('ID of channel.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),

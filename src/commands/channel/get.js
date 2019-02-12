@@ -15,7 +15,7 @@ export class ChannelGet extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('ID of channel.'),
+            description: chalk.blue.bold('Channel ID.'),
             required: false,
         }),
         type: flags.string({
@@ -24,7 +24,7 @@ export class ChannelGet extends Command {
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
-        config: flags.string({
+        config: flags.boolean({
             char: 'c',
             description: chalk.blue.bold('Return channel config values only.'),
             required: false,
@@ -47,10 +47,6 @@ export class ChannelGet extends Command {
                 {
                     subscribe: false,
                 }
-            );
-
-            let timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
             );
 
             const payload = cardinal.highlight(
