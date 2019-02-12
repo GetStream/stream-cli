@@ -6,8 +6,9 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
 
-import { end } from '../../utils/response';
-import { authError, apiError } from '../../utils/error';
+import { auth } from '../../utils/auth';
+import { exit } from '../../utils/response';
+import { apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class UserBan extends Command {
@@ -43,14 +44,11 @@ export class UserBan extends Command {
 
     async run() {
         const { flags } = this.parse(UserBan);
-        const config = path.join(this.config.configDir, 'config.json');
 
         try {
-            const { apiKey, apiSecret } = await credentials(config);
-
-            if (!apiKey || !apiSecret) return authError();
-
-            const client = new StreamChat(apiKey, apiSecret);
+            const client = await auth(
+                path.join(this.config.configDir, 'config.json')
+            );
 
             const payload = {};
             if (flags.timeout) payload.timeout = flags.timeout;

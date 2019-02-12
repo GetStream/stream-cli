@@ -9,8 +9,8 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
-import { authError, apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
+import { auth } from '../../utils/auth';
+import { apiError } from '../../utils/error';
 
 const events = [
     'all',
@@ -56,13 +56,11 @@ export class Log extends Command {
 
     async run() {
         const { flags } = this.parse(Log);
-        const config = path.join(this.config.configDir, 'config.json');
 
         try {
-            const { apiKey, apiSecret } = await credentials(config);
-            if (!apiKey || !apiSecret) return authError();
-
-            const client = new StreamChat(apiKey, apiSecret);
+            const client = await auth(
+                path.join(this.config.configDir, 'config.json')
+            );
 
             if (!flags.event) {
                 const question = await prompt({

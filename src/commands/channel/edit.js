@@ -5,9 +5,9 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
+import { auth } from '../../utils/auth';
 import { exit } from '../../utils/response';
-import { authError, apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
+import { apiError } from '../../utils/error';
 
 export class ChannelEdit extends Command {
     static flags = {
@@ -51,14 +51,11 @@ export class ChannelEdit extends Command {
 
     async run() {
         const { flags } = this.parse(ChannelEdit);
-        const config = path.join(this.config.configDir, 'config.json');
 
         try {
-            const { apiKey, apiSecret } = await credentials(config);
-            if (!apiKey || !apiSecret) return authError();
-
-            const client = new StreamChat(apiKey, apiSecret);
-
+            const client = await auth(
+                path.join(this.config.configDir, 'config.json')
+            );
             const channel = await client.channel(flags.type, flags.id);
 
             let payload = {

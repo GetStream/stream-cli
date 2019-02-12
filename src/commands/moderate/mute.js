@@ -6,8 +6,9 @@ import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
 
+import { auth } from '../../utils/auth';
 import { exit } from '../../utils/response';
-import { authError, apiError } from '../../utils/error';
+import { apiError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ModerateMute extends Command {
@@ -21,13 +22,11 @@ export class ModerateMute extends Command {
 
     async run() {
         const { flags } = this.parse(ModerateMute);
-        const config = path.join(this.config.configDir, 'config.json');
 
         try {
-            const { apiKey, apiSecret } = await credentials(config);
-            if (!apiKey || !apiSecret) return authError();
-
-            const client = new StreamChat(apiKey, apiSecret);
+            const client = await auth(
+                path.join(this.config.configDir, 'config.json')
+            );
 
             const timestamp = chalk.yellow.bold(
                 moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')

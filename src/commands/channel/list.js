@@ -7,19 +7,16 @@ import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 
+import { auth } from '../../utils/auth';
 import { exit } from '../../utils/response';
-import { authError, apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
+import { apiError } from '../../utils/error';
 
 export class ChannelList extends Command {
     async run() {
-        const config = path.join(this.config.configDir, 'config.json');
-
         try {
-            const { apiKey, apiSecret } = await credentials(config);
-            if (!apiKey || !apiSecret) return authError();
-
-            const client = new StreamChat(apiKey, apiSecret);
+            const client = await auth(
+                path.join(this.config.configDir, 'config.json')
+            );
 
             const channels = await client.queryChannels(
                 {},
