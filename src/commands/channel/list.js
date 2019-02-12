@@ -36,7 +36,9 @@ export class ChannelList extends Command {
                 channels.map(channel => {
                     console.log(
                         chalk.blue(
-                            `The Channel ${channel.id} of type ${chalk.bold(
+                            `The Channel ${chalk.bold(
+                                channel.id
+                            )} of type ${chalk.bold(
                                 channel.type
                             )} with the CID of ${chalk.bold(
                                 channel.cid
