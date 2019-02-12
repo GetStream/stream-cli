@@ -16,7 +16,7 @@ export class ChannelInit extends Command {
             char: 'i',
             description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
-            required: false,
+            required: true,
         }),
         type: flags.string({
             char: 't',
@@ -56,18 +56,23 @@ export class ChannelInit extends Command {
 
             const client = new StreamChat(apiKey, apiSecret);
 
-            const payload = {
+            let payload = {
                 name: flags.name,
+                created_by: {
+                    id: uuid(),
+                    name: 'CLI',
+                },
             };
             if (flags.image) payload.image = flags.image;
             if (flags.members) payload.members = flags.members.split(',');
-            if (flags.metadata) payload.data = JSON.parse(flags.metadata);
 
-            const channel = await client.channel(
-                flags.type,
-                flags.channel,
-                payload
-            );
+            if (flags.data) {
+                const parsed = JSON.parse(flags.data);
+                payload = Object.assign({}, payload, parsed);
+            }
+
+            const channel = await client.channel(flags.type, flags.id, payload);
+            await channel.create();
 
             exit(`The channel ${flags.name} has been initialized!`, {
                 emoji: 'rocket',

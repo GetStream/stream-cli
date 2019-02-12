@@ -1,9 +1,9 @@
 import { Command, flags } from '@oclif/command';
 import { StreamChat } from 'stream-chat';
-import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
+import uuid from 'uuid/v4';
 
 import { exit } from '../../utils/response';
 import { authError, apiError } from '../../utils/error';
@@ -14,7 +14,7 @@ export class ChannelEdit extends Command {
         id: flags.string({
             char: 'i',
             description: chalk.blue.bold('Channel ID.'),
-            required: false,
+            required: true,
         }),
         type: flags.string({
             char: 't',
@@ -25,22 +25,22 @@ export class ChannelEdit extends Command {
         name: flags.string({
             char: 'n',
             description: chalk.blue.bold('Name of room.'),
-            required: false,
+            required: true,
         }),
         url: flags.string({
             char: 'u',
             description: chalk.blue.bold('URL to channel image.'),
             required: false,
         }),
-        members: flags.string({
-            char: 'm',
-            description: chalk.blue.bold('Comma separated list of members.'),
-            required: false,
-        }),
         reason: flags.string({
             char: 'r',
             description: chalk.blue.bold('Reason for changing channel.'),
             required: true,
+        }),
+        members: flags.string({
+            char: 'm',
+            description: chalk.blue.bold('Comma separated list of members.'),
+            required: false,
         }),
         data: flags.string({
             char: 'd',
@@ -61,12 +61,23 @@ export class ChannelEdit extends Command {
 
             const channel = await client.channel(flags.type, flags.id);
 
-            const payload = {};
-            if (flags.url) payload.url = flags.url;
-            if (flags.name) payload.name = flags.name;
+            let payload = {
+                name: flags.name,
+                updated_by: {
+                    id: uuid(),
+                    name: 'CLI',
+                },
+            };
+            if (flags.image) payload.image = flags.image;
+            if (flags.members) payload.members = flags.members.split(',');
+
+            if (flags.data) {
+                const parsed = JSON.parse(flags.data);
+                payload = Object.assign({}, payload, parsed);
+            }
 
             await channel.update(payload, {
-                name: 'The Water Cooler',
+                name: flags.name,
                 text: flags.reason,
             });
 

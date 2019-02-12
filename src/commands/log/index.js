@@ -91,7 +91,7 @@ export class Log extends Command {
                 status: 'invisible',
             });
 
-            const channel = client.channel(flags.type, flags.channel);
+            const channel = client.channel(flags.type, flags.id);
 
             await channel.watch();
 
@@ -117,7 +117,7 @@ export class Log extends Command {
                         event.user.role
                     )}) performed event ${chalk.green.bold(
                         event.type
-                    )} in channel ${chalk.green.bold(flags.channel)}.`;
+                    )} in channel ${chalk.green.bold(flags.id)}.`;
 
                     console.info(payload);
                 });

@@ -4,9 +4,9 @@
     "version": "0.0.1",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
-        "chat": "./bin/run npx babel-node"
+        "stream": "./bin/run npx babel-node"
     },
-    "bugs": "https://github.com/nparsons08/stream-chat/issues",
+    "bugs": "https://github.com/getstream/stream-cli/issues",
     "dependencies": {
         "@oclif/command": "^1",
         "@oclif/config": "^1",
@@ -54,25 +54,29 @@
         "/oclif.manifest.json",
         "/src"
     ],
-    "homepage": "https://github.com/nparsons08/stream-chat",
+    "homepage": "https://github.com/getstream/stream-cli",
     "keywords": [
         "Stream",
-        "Chat",
         "CLI"
     ],
     "license": "MIT",
     "main": "src/index.js",
     "oclif": {
+        "bin": "stream",
         "commands": "./src/commands",
-        "bin": "chat",
         "plugins": [
             "@oclif/plugin-help",
             "@oclif/plugin-autocomplete",
             "@oclif/plugin-commands",
             "@oclif/plugin-not-found"
-        ]
+        ],
+        "hooks": {
+            "command_not_found": [
+                "./src/hooks/command_not_found/404"
+            ]
+        }
     },
-    "repository": "nparsons08/stream-chat",
+    "repository": "getstream/stream-cli",
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
