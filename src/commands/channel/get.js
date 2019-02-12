@@ -1,5 +1,7 @@
 import { Command, flags } from '@oclif/command';
 import { StreamChat } from 'stream-chat';
+import stringify from 'json-stringify-pretty-compact';
+import cardinal from 'cardinal';
 import emoji from 'node-emoji';
 import moment from 'moment';
 import chalk from 'chalk';
@@ -22,6 +24,11 @@ export class ChannelGet extends Command {
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
+        config: flags.string({
+            char: 'c',
+            description: chalk.blue.bold('Return channel config values only.'),
+            required: false,
+        }),
     };
 
     async run() {
@@ -42,11 +49,25 @@ export class ChannelGet extends Command {
                 }
             );
 
-            const data = channel[0].data;
+            let timestamp = chalk.yellow.bold(
+                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
+            );
 
-            console.log(data);
+            const payload = cardinal.highlight(
+                stringify(
+                    flags.config ? channel[0].data.config : channel[0].data,
+                    {
+                        maxLength: 100,
+                    },
+                    {
+                        linenos: true,
+                    }
+                )
+            );
 
-            this.exit(1);
+            console.info(`${timestamp}:`, '\n\n', payload);
+
+            process.exit(0);
         } catch (err) {
             apiError(err);
         }

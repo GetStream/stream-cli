@@ -15,14 +15,7 @@ export function authError() {
 }
 
 export function apiError(err) {
-    const parts = err.message.split(': ');
-
-    let message = null;
-    if (parts[1].length) {
-        message = parts[1];
-    } else {
-        message = err.message;
-    }
+    let message = err.message || 'An unknown error has occurred.';
 
     const timestamp = chalk.yellow.bold(
         moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
