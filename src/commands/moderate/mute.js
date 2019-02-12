@@ -35,7 +35,9 @@ export class ModerateMute extends Command {
 
             await authClient.muteUser(flags.user);
 
-            exit(`The message ${flags.user} has been flagged!`, 'two_flags');
+            exit(`The message ${flags.user} has been flagged!`, {
+                emoji: 'two_flags',
+            });
         } catch (err) {
             apiError(err);
         }

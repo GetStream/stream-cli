@@ -58,7 +58,7 @@ export class ModerateFlag extends Command {
                 this.exit(0);
             }
 
-            exit(message, 'crossed_flags');
+            exit(message, { emoji: 'crossed_flags' });
         } catch (err) {
             apiError(err);
         }

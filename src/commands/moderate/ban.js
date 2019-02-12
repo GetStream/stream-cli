@@ -49,7 +49,9 @@ export class ModerateBan extends Command {
                 reason: flags.reason,
             });
 
-            exit(`The user ${flags.user} has been banned!`, 'banned');
+            exit(`The user ${flags.user} has been banned!`, {
+                emoji: 'banned',
+            });
         } catch (err) {
             apiError(err);
         }

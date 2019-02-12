@@ -75,7 +75,9 @@ export class ChannelEdit extends Command {
                 text: flags.reason,
             });
 
-            exit(`The channel ${flags.name} has been modified!`, 'rocket');
+            exit(`The channel ${flags.name} has been modified!`, {
+                emoji: 'rocket',
+            });
         } catch (err) {
             apiError(err);
         }

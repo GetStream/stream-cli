@@ -19,12 +19,10 @@ export class ConfigGet extends Command {
                 linenos: true,
             });
 
-            console.log(creds);
+            exit(creds, { newline: true });
         } else {
             return authError();
         }
-
-        this.exit(0);
     }
 }
 

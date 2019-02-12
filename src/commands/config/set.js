@@ -54,7 +54,7 @@ export class ConfigSet extends Command {
                 apiSecret: data.apiSecret,
             });
 
-            exit(`Your config has been saved!`, 'rocket');
+            exit(`Your config has been saved!`, { emoji: 'rocket' });
         } catch (err) {
             apiError(err);
         }

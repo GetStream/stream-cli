@@ -62,7 +62,9 @@ export class UserBan extends Command {
                 `${flags.user} has been banned from ${flags.type}:${
                     flags.channel
                 }`,
-                'warning'
+                {
+                    emoji: 'warning',
+                }
             );
         } catch (err) {
             apiError(err);

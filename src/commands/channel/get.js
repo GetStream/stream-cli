@@ -65,9 +65,7 @@ export class ChannelGet extends Command {
                 )
             );
 
-            console.info(`${timestamp}:`, '\n\n', payload);
-
-            process.exit(0);
+            exit(payload, { newline: true });
         } catch (err) {
             apiError(err);
         }

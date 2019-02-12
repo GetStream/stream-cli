@@ -14,8 +14,7 @@ export class ConfigDestroy extends Command {
 
         try {
             await fs.remove(config);
-
-            exit(`Config destroyed...`, 'cry');
+            exit(`Config destroyed...`, { emoji: 'cry' });
         } catch (err) {
             authError(err);
         }

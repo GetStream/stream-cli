@@ -79,7 +79,7 @@ export class MessageSend extends Command {
                 )} channel by ${chalk.bold(flags.uid)}!`
             );
 
-            exit(message, 'smile');
+            exit(message, { emoji: 'smile' });
         } catch (err) {
             apiError(err);
         }

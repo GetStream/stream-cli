@@ -56,10 +56,6 @@ export class ChannelInit extends Command {
 
             const client = new StreamChat(apiKey, apiSecret);
 
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
-            );
-
             const payload = {
                 name: flags.name,
             };
@@ -73,7 +69,9 @@ export class ChannelInit extends Command {
                 payload
             );
 
-            exit(`The channel ${flags.name} has been initialized!`, 'rocket');
+            exit(`The channel ${flags.name} has been initialized!`, {
+                emoji: 'rocket',
+            });
         } catch (err) {
             apiError(err);
         }
