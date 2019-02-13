@@ -22,9 +22,10 @@ export class ChannelList extends Command {
             );
 
             if (channels.length) {
-                channels.map(channel => this.log(
+                channels.map(channel =>
+                    this.log(
                         chalk.blue(
-                            `The Channel ${chalk.bold(
+                            `The channel ${chalk.bold(
                                 channel.id
                             )} of type ${chalk.bold(
                                 channel.type
@@ -34,7 +35,8 @@ export class ChannelList extends Command {
                                 channel.data.members.length
                             )} members.`
                         )
-                    ));
+                    )
+                );
 
                 this.exit(0);
             } else {
@@ -42,6 +44,7 @@ export class ChannelList extends Command {
                     `Your application does not have any channels.`,
                     emoji.get('pensive')
                 );
+
                 this.exit(0);
             }
         } catch (err) {

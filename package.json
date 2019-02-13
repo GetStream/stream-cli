@@ -1,7 +1,7 @@
 {
     "name": "stream-cli",
     "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
-    "version": "0.0.1",
+    "version": "0.0.1-alpha",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
         "stream": "./bin/run babel-node"

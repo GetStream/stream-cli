@@ -1,9 +1,10 @@
 import { expect, test } from '@oclif/test';
 
-describe.skip('channel', () => {
+describe('channel', () => {
     test.stdout()
         .command(['channel:list'])
-        .it('returns a table with api credentials', ctx => {
-            expect(ctx.stdout).to.have.all.keys(['apiKey', 'apiSecret']);
+        .it('runs command:list', (ctx, done) => {
+            expect(ctx.stdout).to.have.string('The channel');
+            done();
         });
 });
