@@ -5,8 +5,6 @@ import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
 
-import { apiError } from '../../utils/error';
-
 export class ConfigSet extends Command {
     async run() {
         const config = path.join(this.config.configDir, 'config.json');

@@ -4,8 +4,6 @@ import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
 
-import { authError } from '../../utils/error';
-
 export class ConfigDestroy extends Command {
     async run() {
         try {

@@ -2,7 +2,6 @@ import { Command } from '@oclif/command';
 import Table from 'cli-table';
 import path from 'path';
 
-import { authError } from '../../utils/error';
 import { credentials } from '../../utils/config';
 
 export class ConfigGet extends Command {

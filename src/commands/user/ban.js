@@ -4,8 +4,6 @@ import path from 'path';
 import uuid from 'uuid';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class UserBan extends Command {
     static flags = {
