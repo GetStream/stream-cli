@@ -10,7 +10,7 @@ export class ConfigDestroy extends Command {
             await fs.remove(path.join(this.config.configDir, 'config.json'));
 
             this.log(
-                `Config destroyed. Run the command ${chalk.green.bold(
+                `Config destroyed. Run the command ${chalk.blue.bold(
                     'config:set'
                 )} to generate a new config.`,
                 emoji.get('rocket')

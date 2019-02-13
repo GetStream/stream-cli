@@ -10,7 +10,7 @@ export class MessageRemove extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),

@@ -9,7 +9,7 @@ export class ModerateMute extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('User ID.'),
+            description: chalk.blue.bold('User ID.'),
             required: true,
         }),
     };

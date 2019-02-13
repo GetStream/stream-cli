@@ -35,18 +35,18 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Channel type.'),
+            description: chalk.blue.bold('Channel type.'),
             required: true,
         }),
         event: flags.string({
             char: 'e',
-            description: chalk.green.bold('Event type.'),
+            description: chalk.blue.bold('Event type.'),
             options: events,
             required: false,
         }),
@@ -93,7 +93,7 @@ export class Log extends Command {
             await channel.watch();
 
             this.log(
-                chalk.green.bold(
+                chalk.blue.bold(
                     `Logging real-time events for ${flags.event}... ${emoji.get(
                         'rocket'
                     )}`
@@ -108,13 +108,13 @@ export class Log extends Command {
                         moment(event.created_at).format(time)
                     );
 
-                    const payload = `${timestamp}: ${chalk.green.bold(
+                    const payload = `${timestamp}: ${chalk.blue.bold(
                         event.user.id
-                    )} (${chalk.green.bold(
+                    )} (${chalk.blue.bold(
                         event.user.role
-                    )}) performed event ${chalk.green.bold(
+                    )}) performed event ${chalk.blue.bold(
                         event.type
-                    )} in channel ${chalk.green.bold(flags.id)}.`;
+                    )} in channel ${chalk.blue.bold(flags.id)}.`;
 
                     this.log(payload);
                 });

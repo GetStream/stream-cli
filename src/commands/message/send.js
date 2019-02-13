@@ -10,30 +10,30 @@ export class MessageSend extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of user.'),
+            description: chalk.blue.bold('ID of user.'),
             default: '*',
             required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Type of channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         message: flags.string({
             char: 'm',
-            description: chalk.green.bold('Message to send.'),
+            description: chalk.blue.bold('Message to send.'),
             required: true,
         }),
         attachments: flags.string({
             char: 'a',
-            description: chalk.green.bold('JSON payload of attachments'),
+            description: chalk.blue.bold('JSON payload of attachments'),
             required: false,
         }),
     };

@@ -9,13 +9,13 @@ export class ModerateFlag extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of user.'),
+            description: chalk.blue.bold('ID of user.'),
             exclusive: ['message'],
             required: false,
         }),
         message: flags.string({
             char: 'm',
-            description: chalk.green.bold('ID of message.'),
+            description: chalk.blue.bold('ID of message.'),
             exclusive: ['user'],
             required: false,
         }),
@@ -48,7 +48,7 @@ export class ModerateFlag extends Command {
                 this.exit(0);
             } else {
                 this.warn(
-                    `Please pass a valid command. Use the command ${chalk.green.bold(
+                    `Please pass a valid command. Use the command ${chalk.blue.bold(
                         'moderate:flag --help'
                     )} for more information.`
                 );

@@ -4,9 +4,18 @@
     "version": "0.0.1-alpha",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
-        "stream": "./bin/run babel-node"
+        "stream": "./bin/run"
     },
     "bugs": "https://github.com/getstream/stream-cli/issues",
+    "repository": "getstream/stream-cli",
+    "scripts": {
+        "build": "babel src --out-dir lib && cp -R bin lib/bin",
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint .",
+        "prepack": "oclif-dev manifest && oclif-dev readme",
+        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+        "version": "oclif-dev readme && git add README.md"
+    },
     "dependencies": {
         "@oclif/command": "^1",
         "@oclif/config": "^1",
@@ -24,6 +33,7 @@
         "node-emoji": "^1.8.1",
         "node-fs-extra": "^0.8.2",
         "node-notifier": "^5.4.0",
+        "numeral": "^2.0.6",
         "stream-chat": "^0.1.29",
         "uuid": "^3.3.2"
     },
@@ -74,13 +84,9 @@
             "@oclif/plugin-not-found"
         ]
     },
-    "repository": "getstream/stream-cli",
-    "scripts": {
-        "build": "babel src --out-dir lib && cp -R bin lib/bin",
-        "postpack": "rm -f oclif.manifest.json",
-        "posttest": "eslint .",
-        "prepack": "oclif-dev manifest && oclif-dev readme",
-        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-        "version": "oclif-dev readme && git add README.md"
+    "pkg": {
+        "targets": [
+            "node10"
+        ]
     }
 }

@@ -9,18 +9,18 @@ export class ModerateBan extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of user.'),
+            description: chalk.blue.bold('ID of user.'),
             exclusive: ['message'],
             required: true,
         }),
         reason: flags.string({
             char: 'r',
-            description: chalk.green.bold('Reason for timeout.'),
+            description: chalk.blue.bold('Reason for timeout.'),
             required: true,
         }),
         timeout: flags.string({
             char: 't',
-            description: chalk.green.bold('Timeout in minutes.'),
+            description: chalk.blue.bold('Timeout in minutes.'),
             default: '60',
             required: true,
         }),

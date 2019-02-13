@@ -9,24 +9,24 @@ export class ChannelQuery extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Type of channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: false,
         }),
         filter: flags.string({
             char: 'f',
-            description: chalk.green.bold('Filters to apply.'),
+            description: chalk.blue.bold('Filters to apply.'),
             required: false,
         }),
         sort: flags.string({
             char: 's',
-            description: chalk.green.bold('Sort to apply.'),
+            description: chalk.blue.bold('Sort to apply.'),
             required: false,
         }),
     };
@@ -47,7 +47,7 @@ export class ChannelQuery extends Command {
                 subscribe: false,
             });
 
-            this.log(channels[0]);
+            this.log(channels[0].data);
 
             this.exit(0);
         } catch (err) {
@@ -56,4 +56,4 @@ export class ChannelQuery extends Command {
     }
 }
 
-ChannelQuery.description = 'Query a specific hannel.';
+ChannelQuery.description = 'Query a specific channel.';

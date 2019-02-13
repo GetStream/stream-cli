@@ -10,29 +10,29 @@ export class UserBan extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             default: uuid(),
             required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Type of channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('User ID.'),
+            description: chalk.blue.bold('User ID.'),
             required: true,
         }),
         reason: flags.string({
             char: 'r',
-            description: chalk.green.bold('Reason to place ban.'),
+            description: chalk.blue.bold('Reason to place ban.'),
             required: false,
         }),
         timeout: flags.string({
             char: 't',
-            description: chalk.green.bold('Duration in minutes.'),
+            description: chalk.blue.bold('Duration in minutes.'),
             default: '60',
             required: false,
         }),

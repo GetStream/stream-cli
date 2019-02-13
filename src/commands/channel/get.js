@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
-import stringify from 'json-stringify-pretty-compact';
-import cardinal from 'cardinal';
+import Table from 'cli-table';
+import numeral from 'numeral';
 import chalk from 'chalk';
 import path from 'path';
 
@@ -10,18 +10,13 @@ export class ChannelGet extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel ID.'),
+            description: chalk.blue.bold('Channel ID.'),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Type of channel.'),
+            description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: false,
-        }),
-        config: flags.boolean({
-            char: 'c',
-            description: chalk.green.bold('Return channel config values only.'),
             required: false,
         }),
     };
@@ -34,6 +29,7 @@ export class ChannelGet extends Command {
                 path.join(this.config.configDir, 'config.json'),
                 this
             );
+
             const channel = await client.queryChannels(
                 { id: flags.id, type: flags.type },
                 { last_message_at: -1 },
@@ -42,19 +38,88 @@ export class ChannelGet extends Command {
                 }
             );
 
-            const payload = cardinal.highlight(
-                stringify(
-                    flags.config ? channel[0].data.config : channel[0].data,
-                    {
-                        maxLength: 100,
-                    },
-                    {
-                        linenos: true,
-                    }
-                )
+            const table = new Table();
+
+            const data = channel[0].data;
+            const config = data.config;
+
+            table.push(
+                { CID: data.cid },
+                { Name: data.name },
+                { Type: data.type },
+                {
+                    Owner: `${data.created_by.name} (${data.created_by.role})`,
+                },
+                {
+                    Roles: data.channel_roles.length
+                        ? data.channel_roles.join(', ')
+                        : chalk.red('No roles defined'),
+                },
+                {
+                    Members: data.members.length
+                        ? data.members.join(', ')
+                        : chalk.red('No active members'),
+                },
+                {
+                    Automod:
+                        config.automod === 'enabled'
+                            ? chalk.green('enabled')
+                            : chalk.red('disabled'),
+                },
+                {
+                    Commands: config.commands
+                        .map(
+                            command =>
+                                `${command.name} (${chalk.green('enabled')})`
+                        )
+                        .join(', '),
+                },
+                {
+                    Mutes:
+                        config.mutes === true
+                            ? chalk.green('enabled')
+                            : chalk.red('disabled'),
+                },
+                {
+                    Reactions:
+                        config.reactions === true
+                            ? chalk.green('enabled')
+                            : chalk.red('disabled'),
+                },
+                {
+                    Replies:
+                        config.replies === true
+                            ? chalk.green('enabled')
+                            : chalk.red('disabled'),
+                },
+                {
+                    Search:
+                        config.search === true
+                            ? chalk.green('enabled')
+                            : chalk.red('disabled'),
+                },
+                {
+                    Events: [
+                        config.connect_events === true
+                            ? `connect (${chalk.green('enabled')})`
+                            : '',
+                        config.seen_events === true
+                            ? `seen (${chalk.green('enabled')})`
+                            : '',
+                        config.typing_events === true
+                            ? `typing (${chalk.green('enabled')})`
+                            : '',
+                    ].join(', '),
+                },
+                { 'Message Retention': config.message_retention },
+                {
+                    'Max Message Length': `${numeral(
+                        config.max_message_length
+                    ).format('0,0')} characters`,
+                }
             );
 
-            this.log(payload);
+            this.log(table.toString());
             this.exit(0);
         } catch (err) {
             this.error(err, { exit: 1 });

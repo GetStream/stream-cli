@@ -10,18 +10,18 @@ export class UserRemove extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.green.bold('Channel name.'),
+            description: chalk.blue.bold('Channel name.'),
             default: uuid(),
             required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.green.bold('Channel type.'),
+            description: chalk.blue.bold('Channel type.'),
             required: true,
         }),
         moderators: flags.string({
             char: 'm',
-            description: chalk.green.bold(
+            description: chalk.blue.bold(
                 'Comma separated list of moderators to remove.'
             ),
             required: true,
