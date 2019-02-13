@@ -1,13 +1,9 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ChannelQuery extends Command {
     static flags = {
@@ -40,7 +36,8 @@ export class ChannelQuery extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             const filter = flags.filters ? JSON.parse(flags.filters) : {};
@@ -50,13 +47,13 @@ export class ChannelQuery extends Command {
                 subscribe: false,
             });
 
-            console.log(channels[0]);
+            this.log(channels[0]);
 
-            process.exit(0);
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }
 
-ChannelQuery.description = 'Query a channel.';
+ChannelQuery.description = 'Query a specific hannel.';

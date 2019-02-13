@@ -1,20 +1,16 @@
-import { Command, flags } from '@oclif/command';
-import stringify from 'json-stringify-pretty-compact';
-import cardinal from 'cardinal';
-import emoji from 'node-emoji';
+import { Command } from '@oclif/command';
 import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ChannelList extends Command {
     async run() {
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             const channels = await client.queryChannels(
@@ -29,11 +25,11 @@ export class ChannelList extends Command {
                 moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
             );
 
-            console.log(`${ts}\n`);
+            this.log(`${ts}\n`);
 
             if (channels.length) {
-                channels.map(channel => {
-                    console.log(
+                return channels.map(channel => {
+                    this.log(
                         chalk.blue(
                             `The Channel ${chalk.bold(
                                 channel.id
@@ -48,16 +44,18 @@ export class ChannelList extends Command {
                     );
                 });
 
-                process.exit(0);
+                this.exit(0);
             } else {
-                exit(`Your application does not have any channels.`, {
-                    emoji: 'pensive',
-                });
+                this.warn(
+                    `Your application does not have any channels.`,
+                    emoji.get('pensive')
+                );
+                this.exit(0);
             }
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }
 
-ChannelList.description = 'Get a channel.';
+ChannelList.description = 'Lists all channels.';

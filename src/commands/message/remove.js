@@ -1,14 +1,9 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
 import uuid from 'uuid';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class MessageRemove extends Command {
     static flags = {
@@ -25,16 +20,19 @@ export class MessageRemove extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             await client.deleteMessage(flags.id);
 
-            exit(`The message ${flags.id} has been removed!`, {
-                emoji: 'wastebasket',
-            });
+            this.log(
+                `The message ${flags.id} has been removed!`,
+                emoji.get('wastebasket')
+            );
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

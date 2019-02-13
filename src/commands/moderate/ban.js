@@ -1,12 +1,8 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ModerateBan extends Command {
     static flags = {
@@ -34,11 +30,8 @@ export class ModerateBan extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
-
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             await client.banUser(flags.user, {
@@ -46,13 +39,15 @@ export class ModerateBan extends Command {
                 reason: flags.reason,
             });
 
-            exit(`The user ${flags.user} has been banned!`, {
-                emoji: 'banned',
-            });
+            this.log(
+                `The user ${flags.user} has been banned!`,
+                emoji.get('banned')
+            );
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }
 
-ModerateBan.description = 'Flag users and messages.';
+ModerateBan.description = 'Ban users indefinitely or by a per minute timeout.';

@@ -1,14 +1,8 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
 
 export class ModerateFlag extends Command {
     static flags = {
@@ -31,34 +25,36 @@ export class ModerateFlag extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
-
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             if (flags.user) {
                 await client.flagUser(flags.user);
 
-                const message = chalk.blue(
-                    `The user ${flags.user} has been flagged!`
+                this.log(
+                    `The user ${flags.user} has been flagged!`,
+                    emoji.get('bangbang')
                 );
+                this.exit(0);
             } else if (flags.message) {
                 await client.flagMessage(flags.message);
 
-                const message = chalk.blue(
-                    `The message ${flags.user} has been flagged!`
+                this.log(
+                    `The message ${flags.user} has been flagged!`,
+                    emoi.get('bangbang')
                 );
+                this.exit(0);
             } else {
-                console.log(chalk.red.bold(`Please pass a valid command.`));
-
+                this.warn(
+                    `Please pass a valid command. Use the command ${chalk.green.bold(
+                        'moderate:flag --help'
+                    )} for more information.`
+                );
                 this.exit(0);
             }
-
-            exit(message, { emoji: 'crossed_flags' });
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

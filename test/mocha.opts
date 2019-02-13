@@ -1,3 +1,5 @@
 --recursive
 --reporter spec
 --timeout 5000
+--globals process
+--globals process

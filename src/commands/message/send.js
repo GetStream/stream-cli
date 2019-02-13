@@ -1,14 +1,9 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
 import uuid from 'uuid';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class MessageSend extends Command {
     static flags = {
@@ -47,7 +42,8 @@ export class MessageSend extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             await client.updateUser({
@@ -76,9 +72,10 @@ export class MessageSend extends Command {
                 )} channel by ${chalk.bold(flags.uid)}!`
             );
 
-            exit(message, { emoji: 'smile' });
+            this.log(message, emoji.get('smile'));
+            this.exit();
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

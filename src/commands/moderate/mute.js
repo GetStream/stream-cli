@@ -1,20 +1,14 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
-import fs from 'fs-extra';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
 
 export class ModerateMute extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.green.bold('ID of user.'),
+            description: chalk.green.bold('User ID.'),
             required: true,
         }),
     };
@@ -24,22 +18,21 @@ export class ModerateMute extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
-            const timestamp = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
+            await client.muteUser(flags.user);
+
+            this.log(
+                `The message ${flags.user} has been flagged!`,
+                emoji.get('two_flags')
             );
-
-            await authClient.muteUser(flags.user);
-
-            exit(`The message ${flags.user} has been flagged!`, {
-                emoji: 'two_flags',
-            });
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }
 
-ModerateMute.description = 'Flag users and messages.';
+ModerateMute.description = 'Mute users who are annoying.';

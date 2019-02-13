@@ -1,16 +1,11 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
 
-export class UserAdd extends Command {
+export class UserRemove extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
@@ -33,30 +28,28 @@ export class UserAdd extends Command {
     };
 
     async run() {
-        const { flags } = this.parse(UserAdd);
+        const { flags } = this.parse(UserRemove);
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             const channel = await client.channel(flags.type, flags.id);
             await channel.demoteModerators(flags.moderators.split(','));
 
-            exit(
-                `${
-                    flags.moderators
-                } have been removed as moderators from channel ${flags.type}:${
-                    flags.id
-                }`,
-                {
-                    emoji: 'warning',
-                }
+            this.log(
+                `${flags.moderators} have been removed as moderators from the ${
+                    flags.type
+                } channel ${flags.id}`,
+                emoji.get('warning')
             );
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }
 
-UserAdd.description = 'Remove users from a channel.';
+UserRemove.description = 'Remove users from a channel.';

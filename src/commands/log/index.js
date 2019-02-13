@@ -9,7 +9,6 @@ import path from 'path';
 import uuid from 'uuid/v4';
 
 import { auth } from '../../utils/auth';
-import { apiError } from '../../utils/error';
 
 const events = [
     'all',
@@ -58,7 +57,8 @@ export class Log extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             if (!flags.event) {
@@ -83,7 +83,7 @@ export class Log extends Command {
                 role: 'admin',
             });
 
-            const result = await client.setUser({
+            await client.setUser({
                 id: '*',
                 status: 'invisible',
             });
@@ -92,7 +92,7 @@ export class Log extends Command {
 
             await channel.watch();
 
-            console.log(
+            this.log(
                 chalk.green.bold(
                     `Logging real-time events for ${flags.event}... ${emoji.get(
                         'rocket'
@@ -104,11 +104,11 @@ export class Log extends Command {
 
             if (flags.event === 'all') {
                 channel.on(event => {
-                    let timestamp = chalk.yellow.bold(
+                    const timestamp = chalk.yellow.bold(
                         moment(event.created_at).format(time)
                     );
 
-                    let payload = `${timestamp}: ${chalk.green.bold(
+                    const payload = `${timestamp}: ${chalk.green.bold(
                         event.user.id
                     )} (${chalk.green.bold(
                         event.user.role
@@ -116,24 +116,24 @@ export class Log extends Command {
                         event.type
                     )} in channel ${chalk.green.bold(flags.id)}.`;
 
-                    console.info(payload);
+                    this.log(payload);
                 });
             } else {
                 channel.on(flags.event, event => {
-                    let timestamp = chalk.yellow.bold(
+                    const timestamp = chalk.yellow.bold(
                         moment(event.created_at).format(time)
                     );
 
-                    let payload = cardinal.highlight(
+                    const payload = cardinal.highlight(
                         stringify(event, { maxLength: 100 }),
                         { linenos: true }
                     );
 
-                    console.info(`${timestamp}:`, '\n\n', payload, '\n\n');
+                    this.log(`${timestamp}:`, '\n\n', payload, '\n\n');
                 });
             }
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

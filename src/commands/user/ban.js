@@ -1,6 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
@@ -8,7 +6,6 @@ import uuid from 'uuid';
 import { auth } from '../../utils/auth';
 import { exit } from '../../utils/response';
 import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
 
 export class UserBan extends Command {
     static flags = {
@@ -47,7 +44,8 @@ export class UserBan extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             const payload = {};
@@ -60,10 +58,11 @@ export class UserBan extends Command {
                 `${flags.user} has been banned from ${flags.type}:${flags.id}`,
                 {
                     emoji: 'warning',
-                }
+                },
+                this
             );
         } catch (err) {
-            apiError(err);
+            apiError(err, this);
         }
     }
 }

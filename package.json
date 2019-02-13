@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
-        "stream": "./bin/run npx babel-node"
+        "stream": "./bin/run babel-node"
     },
     "bugs": "https://github.com/getstream/stream-cli/issues",
     "dependencies": {
@@ -16,6 +16,7 @@
         "@oclif/plugin-not-found": "^1.2.2",
         "cardinal": "^2.1.1",
         "chalk": "^2.4.2",
+        "cli-table": "^0.3.1",
         "enquirer": "^2.3.0",
         "json-stringify-pretty-compact": "^2.0.0",
         "lodash": "^4.17.11",
@@ -33,15 +34,17 @@
         "@babel/plugin-proposal-class-properties": "^7.3.0",
         "@babel/preset-env": "^7.3.1",
         "@babel/runtime": "^7.3.1",
+        "@istanbuljs/nyc-config-babel": "^2.0.1",
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
-        "babel-plugin-transform-react-jsx": "^6.24.1",
-        "babel-preset-env": "^1.7.0",
+        "babel-eslint": "^10.0.1",
+        "babel-plugin-istanbul": "^5.1.0",
         "chai": "^4",
         "eslint": "^5.13",
         "eslint-config-oclif": "^3.1",
+        "eslint-plugin-babel": "^5.3.0",
         "globby": "^9",
-        "mocha": "^5",
+        "mocha": "^5.2.0",
         "nyc": "^13",
         "prettier": "^1.16.4"
     },
@@ -69,15 +72,11 @@
             "@oclif/plugin-autocomplete",
             "@oclif/plugin-commands",
             "@oclif/plugin-not-found"
-        ],
-        "hooks": {
-            "command_not_found": [
-                "./src/hooks/command_not_found/404"
-            ]
-        }
+        ]
     },
     "repository": "getstream/stream-cli",
     "scripts": {
+        "build": "babel src --out-dir lib && cp -R bin lib/bin",
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
         "prepack": "oclif-dev manifest && oclif-dev readme",

@@ -1,22 +1,26 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
 
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
+import { authError } from '../../utils/error';
 
 export class ConfigDestroy extends Command {
     async run() {
-        const config = path.join(this.config.configDir, 'config.json');
-
         try {
-            await fs.remove(config);
-            exit(`Config destroyed...`, { emoji: 'cry' });
+            await fs.remove(path.join(this.config.configDir, 'config.json'));
+
+            this.log(
+                `Config destroyed. Run the command ${chalk.green.bold(
+                    'config:set'
+                )} to generate a new config.`,
+                emoji.get('rocket')
+            );
+
+            this.exit(0);
         } catch (err) {
-            authError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

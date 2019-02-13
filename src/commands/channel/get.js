@@ -1,14 +1,10 @@
 import { Command, flags } from '@oclif/command';
 import stringify from 'json-stringify-pretty-compact';
 import cardinal from 'cardinal';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ChannelGet extends Command {
     static flags = {
@@ -35,7 +31,8 @@ export class ChannelGet extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
             const channel = await client.queryChannels(
                 { id: flags.id, type: flags.type },
@@ -57,9 +54,10 @@ export class ChannelGet extends Command {
                 )
             );
 
-            exit(payload, { newline: true });
+            this.log(payload);
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

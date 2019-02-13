@@ -1,13 +1,9 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ChannelInit extends Command {
     static flags = {
@@ -50,7 +46,8 @@ export class ChannelInit extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             let payload = {
@@ -71,11 +68,12 @@ export class ChannelInit extends Command {
             const channel = await client.channel(flags.type, flags.id, payload);
             await channel.create();
 
-            exit(`The channel ${flags.name} has been initialized!`, {
+            this.log(`The channel ${flags.name} has been initialized!`, {
                 emoji: 'rocket',
             });
+            this.exit(0);
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

@@ -1,6 +1,4 @@
 import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
@@ -8,7 +6,6 @@ import uuid from 'uuid';
 import { auth } from '../../utils/auth';
 import { exit } from '../../utils/response';
 import { apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
 
 export class UserAdd extends Command {
     static flags = {
@@ -37,7 +34,8 @@ export class UserAdd extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
 
             const channel = await client.channel(flags.type, flags.id);
@@ -49,10 +47,11 @@ export class UserAdd extends Command {
                 }:${flags.id}`,
                 {
                     emoji: 'warning',
-                }
+                },
+                this
             );
         } catch (err) {
-            apiError(err);
+            apiError(err, this);
         }
     }
 }

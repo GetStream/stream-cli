@@ -1,10 +1,8 @@
-import { StreamChat } from 'stream-chat';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import path from 'path';
 
-export async function credentials(config) {
+export async function credentials(config, _this) {
     try {
         if (!(await fs.pathExists(config))) {
             await fs.outputJson(config, {
@@ -16,7 +14,7 @@ export async function credentials(config) {
         const { apiKey, apiSecret } = await fs.readJson(config);
 
         if (!apiKey.length || !apiSecret.length) {
-            console.log(
+            _this.log(
                 chalk.red(
                     `Credentials not found. Run ${chalk.bold(
                         'chat config:set'
@@ -26,12 +24,12 @@ export async function credentials(config) {
                 )
             );
 
-            process.exit(0);
+            _this.exit(0);
         }
 
         return { apiKey, apiSecret };
     } catch (err) {
-        console.log(err);
-        process.exit(1);
+        _this.error(err);
+        _this.exit(1);
     }
 }

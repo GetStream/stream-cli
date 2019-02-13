@@ -1,12 +1,9 @@
 import { Command, flags } from '@oclif/command';
-import moment from 'moment';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
 import { auth } from '../../utils/auth';
-import { exit } from '../../utils/response';
-import { apiError } from '../../utils/error';
 
 export class ChannelEdit extends Command {
     static flags = {
@@ -53,7 +50,8 @@ export class ChannelEdit extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json')
+                path.join(this.config.configDir, 'config.json'),
+                this
             );
             const channel = await client.channel(flags.type, flags.id);
 
@@ -77,11 +75,12 @@ export class ChannelEdit extends Command {
                 text: flags.reason,
             });
 
-            exit(`The channel ${flags.id} has been modified!`, {
-                emoji: 'rocket',
-            });
+            this.log(
+                `The channel ${flags.id} has been modified!`,
+                emoji.get('rocket')
+            );
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

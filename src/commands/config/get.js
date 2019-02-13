@@ -1,10 +1,6 @@
-import { Command, flags } from '@oclif/command';
-import stringify from 'json-stringify-pretty-compact';
-import cardinal from 'cardinal';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
+import { Command } from '@oclif/command';
+import Table from 'cli-table';
 import path from 'path';
-import fs from 'fs-extra';
 
 import { authError } from '../../utils/error';
 import { credentials } from '../../utils/config';
@@ -12,18 +8,31 @@ import { credentials } from '../../utils/config';
 export class ConfigGet extends Command {
     async run() {
         const config = path.join(this.config.configDir, 'config.json');
-        const { apiKey, apiSecret } = await credentials(config);
+        const { apiKey, apiSecret } = await credentials(config, this);
 
         if (apiKey && apiSecret) {
-            const creds = cardinal.highlight(stringify({ apiKey, apiSecret }), {
-                linenos: true,
+            const table = new Table({
+                head: ['API Key', 'API Secret'],
+                colWidths: [25, 75],
             });
 
-            exit(creds, { newline: true });
+            table.push([apiKey, apiSecret]);
+
+            this.log(table.toString());
+            this.exit(0);
         } else {
-            return authError();
+            this.error(
+                chalk.red(
+                    `Credentials not found. Run ${chalk.bold(
+                        'chat init'
+                    )} to generate a configuration file. ${emoji.get(
+                        'pensive'
+                    )}`
+                ),
+                { exit: 1 }
+            );
         }
     }
 }
 
-ConfigGet.description = 'Retrieves config credentials for CLI.';
+ConfigGet.description = 'Retrieves API config credentials for CLI.';

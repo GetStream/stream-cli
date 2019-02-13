@@ -1,13 +1,11 @@
-import { Command, flags } from '@oclif/command';
+import { Command } from '@oclif/command';
 import { prompt } from 'enquirer';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs-extra';
 
-import { exit } from '../../utils/response';
-import { authError, apiError } from '../../utils/error';
-import { credentials } from '../../utils/config';
+import { apiError } from '../../utils/error';
 
 export class ConfigSet extends Command {
     async run() {
@@ -54,9 +52,12 @@ export class ConfigSet extends Command {
                 apiSecret: data.apiSecret,
             });
 
-            exit(`Your config has been saved!`, { emoji: 'rocket' });
+            this.log(
+                chalk.green(`Your config has been generated!`),
+                emoji.get('rocket')
+            );
         } catch (err) {
-            apiError(err);
+            this.error(err, { exit: 1 });
         }
     }
 }

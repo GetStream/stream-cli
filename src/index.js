@@ -1,1 +1,3 @@
-module.exports = require("@oclif/command");
+import { Command } from '@oclif/command';
+
+export default Command;
