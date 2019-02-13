@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 

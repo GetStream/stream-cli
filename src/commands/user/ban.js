@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
@@ -52,15 +53,15 @@ export class UserBan extends Command {
 
             await client.banUser(flags.user, payload);
 
-            exit(
-                `${flags.user} has been banned from ${flags.type}:${flags.id}`,
-                {
-                    emoji: 'warning',
-                },
-                this
+            this.log(
+                `${flags.user} has been added banned from channel ${
+                    flags.type
+                }:${flags.id}`,
+                emoji.get('banned')
             );
+            this.exit(0);
         } catch (err) {
-            apiError(err, this);
+            this.error(err, { exit: 1 });
         }
     }
 }

@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid';
@@ -39,17 +40,15 @@ export class UserAdd extends Command {
             const channel = await client.channel(flags.type, flags.id);
             await channel.addModerators(flags.moderators.split(','));
 
-            exit(
+            this.log(
                 `${flags.moderators} have been added as moderators to channel ${
                     flags.type
                 }:${flags.id}`,
-                {
-                    emoji: 'warning',
-                },
-                this
+                emoji.get('rocket')
             );
+            this.exit(0);
         } catch (err) {
-            apiError(err, this);
+            this.error(err, { exit: 1 });
         }
     }
 }

@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
@@ -42,7 +43,7 @@ export class ModerateFlag extends Command {
 
                 this.log(
                     `The message ${flags.user} has been flagged!`,
-                    emoi.get('bangbang')
+                    emoji.get('bangbang')
                 );
                 this.exit(0);
             } else {

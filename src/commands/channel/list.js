@@ -1,5 +1,5 @@
 import { Command } from '@oclif/command';
-import moment from 'moment';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
@@ -21,15 +21,8 @@ export class ChannelList extends Command {
                 }
             );
 
-            const ts = chalk.yellow.bold(
-                moment().format('dddd, MMMM Do YYYY [at] h:mm:ss A')
-            );
-
-            this.log(`${ts}\n`);
-
             if (channels.length) {
-                return channels.map(channel => {
-                    this.log(
+                channels.map(channel => this.log(
                         chalk.blue(
                             `The Channel ${chalk.bold(
                                 channel.id
@@ -41,8 +34,7 @@ export class ChannelList extends Command {
                                 channel.data.members.length
                             )} members.`
                         )
-                    );
-                });
+                    ));
 
                 this.exit(0);
             } else {

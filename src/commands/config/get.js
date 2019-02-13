@@ -1,5 +1,7 @@
 import { Command } from '@oclif/command';
 import Table from 'cli-table';
+import emoji from 'node-emoji';
+import chalk from 'chalk';
 import path from 'path';
 
 import { credentials } from '../../utils/config';
