@@ -60,7 +60,7 @@ $ Your config has been generated! 🚀
 
 # 🔨 Commands
 
--   [stream autocomplete](#\$ stream autocomplete)
+-   [stream autocomplete](#$-stream-autocomplete)
 -   [stream commands](#)
 -   [stream help](#)
 -   [stream config](#)
