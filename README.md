@@ -34,13 +34,11 @@ The Stream CLI is easy to install. You have the option to download a single bina
 
 `npm install -g getstream-cli`
 
-## Contributors
+# 🤓 Contributors
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- prettier-ignore -->
-<table><tr><td align="center"><a href="https://nickparsons.io"><img src="https://avatars2.githubusercontent.com/u/1328388?v=4" width="50px;" alt="Nick Parsons"/><br /><sub><b>Nick Parsons</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=nparsons08" title="Documentation">📖</a></td></tr></table>
+<table><tr><td align="center"><a href="https://nickparsons.io"><img src="https://avatars2.githubusercontent.com/u/1328388?v=4" width="50px;" alt="Nick Parsons"/><br /><sub><b>Nick Parsons</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=nparsons08" title="Documentation">📖</a></td><td align="center"><a href="http://www.mellowmorning.com"><img src="https://avatars2.githubusercontent.com/u/265409?v=4" width="50px;" alt="Thierry Schellenbach"/><br /><sub><b>Thierry Schellenbach</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=tschellenbach" title="Documentation">📖</a></td></tr></table>
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+A full list of contributors can be found [here](https://github.com/heroku/cli/graphs/contributors).
