@@ -36,4 +36,4 @@ export class ConfigGet extends Command {
     }
 }
 
-ConfigGet.description = 'Retrieves API config credentials for CLI.';
+ConfigGet.description = 'Get config';

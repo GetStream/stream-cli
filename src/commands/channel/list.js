@@ -53,4 +53,4 @@ export class ChannelList extends Command {
     }
 }
 
-ChannelList.description = 'List all channels.';
+ChannelList.description = 'List all channels';

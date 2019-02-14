@@ -78,4 +78,4 @@ export class ChannelInit extends Command {
     }
 }
 
-ChannelInit.description = 'Initialize a channel.';
+ChannelInit.description = 'Initialize a channel';

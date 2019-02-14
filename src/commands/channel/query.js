@@ -56,4 +56,4 @@ export class ChannelQuery extends Command {
     }
 }
 
-ChannelQuery.description = 'Query a specific channel.';
+ChannelQuery.description = 'Query a channel';

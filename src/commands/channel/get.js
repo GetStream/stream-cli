@@ -127,4 +127,4 @@ export class ChannelGet extends Command {
     }
 }
 
-ChannelGet.description = 'Get a channel.';
+ChannelGet.description = 'Get a channel';

@@ -2,7 +2,6 @@ import { Command, flags } from '@oclif/command';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
-import uuid from 'uuid';
 
 import { auth } from '../../utils/auth';
 
@@ -11,7 +10,6 @@ export class UserRemove extends Command {
         id: flags.string({
             char: 'i',
             description: chalk.blue.bold('Channel name.'),
-            default: uuid(),
             required: true,
         }),
         type: flags.string({

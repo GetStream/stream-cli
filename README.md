@@ -19,9 +19,19 @@ If you're experiencing problems directly related to the CLI, please add an [issu
 
 For other issues, submit a [support ticket](https://getstream.io/support).
 
+# 📚 Changelog
+
+As with any project, things are always changing. If you're interested in seeing what's changed in the Stream CLI, the changelog for this project can be found [here](https://github.com/getstream/stream/blob/master/CHANGELOG.md).
+
 # 🏗 Installation
 
-The Stream CLI is easy to install. You have the option to download a single binary (preferred) with zero run-time dependencies for your OS of choice, or install it using [NPM](https://www.npmjs.com/package/getstream-cli).
+The Stream CLI is easy to install. You have the option to use `homebrew` (preferred) if you're on macOS, download a single binary with zero run-time dependencies for your OS of choice, or install the CLI using [NPM](https://www.npmjs.com/package/getstream-cli).
+
+### homebrew
+
+```sh-session
+$ brew install stream-cli
+```
 
 ### Binaries
 
@@ -60,8 +70,8 @@ $ Your config has been generated! 🚀
 
 # 🔨 Commands
 
--   [stream autocomplete](#$-stream-autocomplete)
--   [stream commands](#)
+-   [stream autocomplete](#stream-autocomplete)
+-   [stream commands](#stream-commands)
 -   [stream help](#)
 -   [stream config](#)
     -   [set](#)
@@ -82,65 +92,244 @@ $ Your config has been generated! 🚀
     -   [mute](#)
 -   [stream user](#)
     -   [add](#)
-    -   [ban](#)
     -   [remove](#)
 
 ## `$ stream autocomplete`
 
-### Input
+Initialize autocomplete for the CLI. **(recommended)**
 
 ```sh-session
 $ stream autocomplete
 ```
 
-### Output
-
-```sh-session
-Building the autocomplete cache... done
-
-Setup Instructions for STREAM CLI Autocomplete ---
-
-1) Add the autocomplete env var to your zsh profile and source it
-$ printf "$(stream autocomplete:script zsh)" >> ~/.zshrc; source ~/.zshrc
-
-NOTE: After sourcing, you can run `$ compaudit -D` to ensure no permissions conflicts are present
-
-2) Test it out, e.g.:
-$ stream <TAB>                 # Command completion
-$ stream command --<TAB>       # Flag completion
-
-Enjoy!
-```
-
 ## `$ stream commands`
 
-### Input
+Display all commands.
 
 ```sh-session
 $ stream commands
 ```
 
-### Output
+## `$ stream help`
+
+Get help with the CLI.
 
 ```sh-session
-autocomplete
-channel:edit
-channel:get
-channel:init
-channel:list
-channel:query
-commands
-config:destroy
-config:get
-config:set
-help
-log
-message:remove
-message:send
-moderate:ban
-moderate:flag
-moderate:mute
-user:add
-user:ban
-user:remove
+$ stream help
 ```
+
+## `$ stream config`
+
+Initialize, retrieve, and destroy configuration settings (for the CLI)
+
+```sh-session
+Manages the configuration file for Stream CLI
+
+USAGE
+  $ stream config:COMMAND
+
+COMMANDS
+  config:destroy  Destroy config
+  config:get      Get config
+  config:set      Initialize the config with your Stream API key and secret
+```
+
+## `$ stream config:set`
+
+Initialize a new configuration file.
+
+```sh-session
+USAGE
+  $ stream config:set
+```
+
+## `$ stream config:get`
+
+Retrieve your configuration settings.
+
+```sh-session
+USAGE
+  $ stream config:get
+```
+
+## `$ stream config:destroy`
+
+Destroy your configuration file
+
+```sh-session
+USAGE
+  $ stream config:destroy
+```
+
+> Note: The command `stream config:set` must be called to re-initialize the configuration.
+
+## `$ stream channel:edit`
+
+Edit a specified channel
+
+```sh-session
+USAGE
+  $ stream channel:edit
+
+OPTIONS
+  -d, --data=data                                       Additional data as a JSON payload.
+  -i, --id=id                                           (required) Channel ID.
+  -m, --members=members                                 Comma separated list of members.
+  -n, --name=name                                       (required) Name of room.
+  -r, --reason=reason                                   (required) Reason for changing channel.
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+  -u, --url=url                                         URL to channel image.
+```
+
+## `$ stream channel:get`
+
+Get a specified channel
+
+```sh-session
+USAGE
+  $ stream channel:get
+
+OPTIONS
+  -i, --id=id                                           (required) Channel ID.
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+```
+
+## `$ stream channel:init`
+
+Initialize a new channel
+
+```sh-session
+USAGE
+  $ stream channel:init
+
+OPTIONS
+  -d, --data=data                                       Additional data as a JSON payload.
+  -i, --id=id                                           (required) [default: <UUID>] Channel ID.
+  -m, --members=members                                 Comma separated list of members.
+  -n, --name=name                                       (required) Name of room.
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+  -u, --image=image                                     URL to channel image.
+```
+
+## `$ stream channel:list`
+
+List all channels associated with your account
+
+```sh-session
+USAGE
+  $ stream channel:list
+```
+
+## `$ stream channel:query`
+
+Query for channels
+
+```sh-session
+USAGE
+  $ stream channel:query
+
+OPTIONS
+  -f, --filter=filter                                   Filters to apply.
+  -i, --id=id                                           [default: <UUID>] Channel ID.
+  -s, --sort=sort                                       Sort to apply.
+  -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
+```
+
+## `$ stream message:send`
+
+Send a message to a specific channel
+
+```sh-session
+USAGE
+  $ stream message:send
+
+OPTIONS
+  -a, --attachments=attachments                         JSON payload of attachments
+  -i, --id=id                                           [default: <UUID>] Channel ID.
+  -m, --message=message                                 (required) Message to send.
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+  -u, --user=user                                       (required) [default: *] ID of user.
+```
+
+## `$ stream message:remove`
+
+Remove a message from a channel
+
+```sh-session
+USAGE
+  $ stream message:remove
+
+OPTIONS
+  -i, --id=id  (required) Channel ID.
+```
+
+## `$ stream moderate:ban`
+
+Ban a user from a channel forever or based on a per minute timeout
+
+```sh-session
+USAGE
+  $ stream moderate:ban
+
+OPTIONS
+  -r, --reason=reason    (required) Reason for timeout.
+  -t, --timeout=timeout  (required) [default: 60] Timeout in minutes.
+  -u, --user=user        (required) ID of user.
+```
+
+## `$ stream moderate:flag`
+
+Flag users and messages for inappropriate behavior or explicit content
+
+```sh-session
+USAGE
+  $ stream moderate:flag
+
+OPTIONS
+  -m, --message=message  ID of message.
+  -u, --user=user        ID of user.
+```
+
+## `$ stream moderate:mute`
+
+Mute a user in a channel
+
+```sh-session
+USAGE
+  $ stream moderate:mute
+
+OPTIONS
+  -u, --user=user  (required) User ID.
+```
+
+## `$ stream user:add`
+
+Add a user to a channel and specify permissions
+
+```sh-session
+USAGE
+  $ stream user:add
+
+OPTIONS
+  -i, --id=id                  (required) Channel name.
+  -m, --moderators=moderators  (required) Comma separated list of moderators to add.
+  -t, --type=type              (required) Channel type.
+```
+
+## `$ stream user:remove`
+
+Remove a user from a channel
+
+```sh-session
+USAGE
+  $ stream user:remove
+
+OPTIONS
+  -i, --id=id                  (required) Channel name.
+  -m, --moderators=moderators  (required) Comma separated list of moderators to remove.
+  -t, --type=type              (required) Channel type.
+```
+
+# 📣 Feedback
+
+If you have any suggestions or just want to let us know what you think of the Stream CLI, please send us a message at support@getstream.io or create a [GitHub Issue](https://github.com/getstream/stream-cli/issues).

@@ -23,4 +23,4 @@ export class ConfigDestroy extends Command {
     }
 }
 
-ConfigDestroy.description = 'Destroys CLI config settings.';
+ConfigDestroy.description = 'Destroy config';
