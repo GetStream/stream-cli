@@ -69,10 +69,13 @@
     ],
     "homepage": "https://github.com/getstream/stream-cli",
     "keywords": [
+        "GetStream",
         "Stream",
-        "CLI"
+        "CLI",
+        "Feed",
+        "Chat"
     ],
-    "license": "MIT",
+    "license": "BSD-3-Clause",
     "main": "src/index.js",
     "oclif": {
         "bin": "stream",

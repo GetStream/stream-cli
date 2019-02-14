@@ -7,7 +7,7 @@ Stream's Command Line Interface (CLI) makes it easy to create and manage your [S
 [![Version](https://img.shields.io/npm/v/getstream-cli.svg)](https://npmjs.org/package/getstream-cli)
 [![Dependency Status](https://david-dm.org/getstream/stream-cli/status.svg)](https://david-dm.org/getstream/stream-cli)
 [![devDependency Status](https://david-dm.org/getstream/stream-cli/dev-status.svg)](https://david-dm.org/getstream/stream-cli?type=dev)
-[![License](https://img.shields.io/npm/l/stream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/getstream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
 
 # 🗒 Issues
 
