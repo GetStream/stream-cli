@@ -1,5 +1,5 @@
 {
-    "name": "stream-cli",
+    "name": "getstream-cli",
     "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
     "version": "0.0.1-alpha",
     "author": "Nick Parsons <nparsons08@gmail.com>",
@@ -12,7 +12,7 @@
         "build": "babel src --out-dir lib && cp -R bin lib/bin",
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
-        "prepack": "oclif-dev manifest && oclif-dev readme",
+        "prepack": "yarn build",
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
         "version": "oclif-dev readme && git add README.md"
     },
