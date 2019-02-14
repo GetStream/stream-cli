@@ -9,27 +9,27 @@ Stream's Command Line Interface (CLI) makes it easy to create and manage your [S
 [![devDependency Status](https://david-dm.org/getstream/stream-cli/dev-status.svg)](https://david-dm.org/getstream/stream-cli?type=dev)
 [![License](https://img.shields.io/npm/l/getstream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
 
-# 🗒 Issues
+## 🗒 Issues
 
 If you're experiencing problems directly related to the CLI, please add an [issue on GitHub](https://github.com/getstream/stream-cli/issues).
 
 For other issues, submit a [support ticket](https://getstream.io/support).
 
-# 📚 Changelog
+## 📚 Changelog
 
 As with any project, things are always changing. If you're interested in seeing what's changed in the Stream CLI, the changelog for this project can be found [here](https://github.com/getstream/stream/blob/master/CHANGELOG.md).
 
-# 🏗 Installation
+## 🏗 Installation
 
 The Stream CLI is easy to install. You have the option to use [homebrew](https://brew.sh) (preferred) if you're on macOS, download a single binary with zero run-time dependencies for your OS of choice, or install the CLI using [NPM](https://www.npmjs.com/package/getstream-cli).
 
-### Homebrew
+#### Homebrew
 
 ```sh-session
 $ brew install stream
 ```
 
-### Binaries
+#### Binaries
 
 -   [Mac OS X](https://github.com/GetStream/stream-cli/releases)
 -   [Linux](https://github.com/GetStream/stream-cli/releases)
@@ -37,13 +37,13 @@ $ brew install stream
 
 > Note: Binaries are generally updated less frequently than Homebrew and NPM.
 
-### NPM
+#### NPM
 
 ```sh-session
 $ npm install -g getstream-cli
 ```
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
 In order to initialize the CLI, please have your Stream API key and secret ready. Run the following command:
 
@@ -66,33 +66,33 @@ $ Your config has been generated! 🚀
 
 > Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your application.
 
-# 🔨 Commands
+## 🔨 Commands
 
 -   [stream autocomplete](#-stream-autocomplete)
 -   [stream commands](#-stream-commands)
 -   [stream help](#-stream-help)
--   [stream config](#-stream-config)
+-   stream config
     -   [set](#-stream-configset)
     -   [get](#-stream-configget)
     -   [destroy](#-stream-configdestroy)
--   [stream channel](#-stream-channel)
+-   stream channel
     -   [edit](#-stream-channeledit)
     -   [get](#-stream-channelget)
     -   [init](#-stream-channelinit)
     -   [list](#-stream-channellist)
     -   [query](#-stream-channelquery)
--   [stream message](#-stream-message)
+-   stream message
     -   [send](#-stream-messagesend)
     -   [remove](#-stream-messageremove)
--   [stream moderate](#-stream-moderate)
+-   stream moderate
     -   [ban](#-stream-moderateban)
     -   [flag](#-stream-moderateflag)
     -   [mute](#-stream-moderatemute)
--   [stream user](#-stream-user)
+-   stream user
     -   [add](#-stream-useradd)
     -   [remove](#-stream-userremove)
 
-## `$ stream autocomplete`
+### `$ stream autocomplete`
 
 Initialize autocomplete for the CLI **(recommended)**
 
@@ -100,7 +100,7 @@ Initialize autocomplete for the CLI **(recommended)**
 $ stream autocomplete
 ```
 
-## `$ stream commands`
+### `$ stream commands`
 
 Display all commands
 
@@ -108,7 +108,7 @@ Display all commands
 $ stream commands
 ```
 
-## `$ stream help`
+### `$ stream help`
 
 Get help with the CLI
 
@@ -116,23 +116,7 @@ Get help with the CLI
 $ stream help
 ```
 
-## `$ stream config`
-
-Initialize, retrieve, and destroy configuration settings (for the CLI)
-
-```sh-session
-Manages the configuration file for Stream CLI
-
-USAGE
-  $ stream config:COMMAND
-
-COMMANDS
-  config:destroy  Destroy config
-  config:get      Get config
-  config:set      Initialize the config with your Stream API key and secret
-```
-
-## `$ stream config:set`
+### `$ stream config:set`
 
 Initialize a new configuration file.
 
@@ -141,7 +125,7 @@ USAGE
   $ stream config:set
 ```
 
-## `$ stream config:get`
+### `$ stream config:get`
 
 Retrieve your configuration settings.
 
@@ -150,7 +134,7 @@ USAGE
   $ stream config:get
 ```
 
-## `$ stream config:destroy`
+### `$ stream config:destroy`
 
 Destroy your configuration file
 
@@ -161,7 +145,7 @@ USAGE
 
 > Note: The command `stream config:set` must be called to re-initialize the configuration.
 
-## `$ stream channel:edit`
+### `$ stream channel:edit`
 
 Edit a specified channel
 
@@ -179,7 +163,7 @@ OPTIONS
   -u, --url=url                                         URL to channel image.
 ```
 
-## `$ stream channel:get`
+### `$ stream channel:get`
 
 Get a specified channel
 
@@ -192,7 +176,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
 ```
 
-## `$ stream channel:init`
+### `$ stream channel:init`
 
 Initialize a new channel
 
@@ -209,7 +193,7 @@ OPTIONS
   -u, --image=image                                     URL to channel image.
 ```
 
-## `$ stream channel:list`
+### `$ stream channel:list`
 
 List all channels associated with your account
 
@@ -218,7 +202,7 @@ USAGE
   $ stream channel:list
 ```
 
-## `$ stream channel:query`
+### `$ stream channel:query`
 
 Query for channels
 
@@ -233,7 +217,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-## `$ stream message:send`
+### `$ stream message:send`
 
 Send a message to a specific channel
 
@@ -249,7 +233,7 @@ OPTIONS
   -u, --user=user                                       (required) [default: *] ID of user.
 ```
 
-## `$ stream message:remove`
+### `$ stream message:remove`
 
 Remove a message from a channel
 
@@ -261,7 +245,7 @@ OPTIONS
   -i, --id=id  (required) Channel ID.
 ```
 
-## `$ stream moderate:ban`
+### `$ stream moderate:ban`
 
 Ban a user from a channel forever or based on a per minute timeout
 
@@ -275,7 +259,7 @@ OPTIONS
   -u, --user=user        (required) ID of user.
 ```
 
-## `$ stream moderate:flag`
+### `$ stream moderate:flag`
 
 Flag users and messages for inappropriate behavior or explicit content
 
@@ -288,7 +272,7 @@ OPTIONS
   -u, --user=user        ID of user.
 ```
 
-## `$ stream moderate:mute`
+### `$ stream moderate:mute`
 
 Mute a user in a channel
 
@@ -300,7 +284,7 @@ OPTIONS
   -u, --user=user  (required) User ID.
 ```
 
-## `$ stream user:add`
+### `$ stream user:add`
 
 Add a user to a channel and specify permissions
 
@@ -314,7 +298,7 @@ OPTIONS
   -t, --type=type              (required) Channel type.
 ```
 
-## `$ stream user:remove`
+### `$ stream user:remove`
 
 Remove a user from a channel
 
@@ -328,6 +312,6 @@ OPTIONS
   -t, --type=type              (required) Channel type.
 ```
 
-# 📣 Feedback
+## 📣 Feedback
 
 If you have any suggestions or just want to let us know what you think of the Stream CLI, please send us a message at support@getstream.io or create a [GitHub Issue](https://github.com/getstream/stream-cli/issues).
