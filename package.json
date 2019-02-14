@@ -19,7 +19,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-push": "bump --prompt"
+            "pre-commit": "bump --patch"
         }
     },
     "dependencies": {
