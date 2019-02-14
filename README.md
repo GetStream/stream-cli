@@ -30,7 +30,7 @@ The Stream CLI is easy to install. You have the option to use [homebrew](https:/
 ### Homebrew (macOS only)
 
 ```sh-session
-$ brew install stream-cli
+$ brew install stream
 ```
 
 ### Binaries
@@ -74,27 +74,27 @@ $ Your config has been generated! 🚀
 
 -   [stream autocomplete](#stream-autocomplete)
 -   [stream commands](#stream-commands)
--   [stream help](#)
--   [stream config](#)
-    -   [set](#)
-    -   [get](#)
-    -   [destroy](#)
--   [stream channel](#)
-    -   [edit](#)
-    -   [get](#)
-    -   [init](#)
-    -   [list](#)
-    -   [query](#)
--   [stream message](#)
-    -   [send](#)
-    -   [remove](#)
--   [stream moderate](#)
-    -   [ban](#)
-    -   [flag](#)
-    -   [mute](#)
--   [stream user](#)
-    -   [add](#)
-    -   [remove](#)
+-   [stream help](#stream-help)
+-   [stream config](#stream-config)
+    -   [set](#stream-config:set)
+    -   [get](#stream-config:get)
+    -   [destroy](#stream-config:destroy)
+-   [stream channel](#stream-channel)
+    -   [edit](#stream-channel:edit)
+    -   [get](#stream-channel:get)
+    -   [init](#stream-channel:init)
+    -   [list](#stream-channel:list)
+    -   [query](#stream-channel:query)
+-   [stream message](#stream-message)
+    -   [send](#stream-message:send)
+    -   [remove](#stream-message:remove)
+-   [stream moderate](#stream-moderate)
+    -   [ban](#stream-moderate:ban)
+    -   [flag](#stream-moderate:flag)
+    -   [mute](#stream-moderate:mute)
+-   [stream user](#stream-user)
+    -   [add](#stream-user:add)
+    -   [remove](#stream-user:remove)
 
 ## `$ stream autocomplete`
 

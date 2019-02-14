@@ -13,7 +13,8 @@
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
         "prepack": "yarn build",
-        "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
+        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+        "pkg": "pkg . --targets macos,win,linux --out-path dist"
     },
     "dependencies": {
         "@oclif/command": "^1",
