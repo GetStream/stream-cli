@@ -68,29 +68,29 @@ $ Your config has been generated! 🚀
 
 ## 🔨 Commands
 
--   [stream autocomplete](#-stream-autocomplete)
--   [stream commands](#-stream-commands)
--   [stream help](#-stream-help)
+-   [`$ stream autocomplete`](#-stream-autocomplete)
+-   [`$ stream commands`](#-stream-commands)
+-   [`$ stream help`](#-stream-help)
 -   stream config
-    -   [set](#-stream-configset)
-    -   [get](#-stream-configget)
-    -   [destroy](#-stream-configdestroy)
+    -   [`$ set`](#-stream-configset)
+    -   [`$ get`](#-stream-configget)
+    -   [`$ destroy`](#-stream-configdestroy)
 -   stream channel
-    -   [edit](#-stream-channeledit)
-    -   [get](#-stream-channelget)
-    -   [init](#-stream-channelinit)
-    -   [list](#-stream-channellist)
-    -   [query](#-stream-channelquery)
+    -   [`$ edit`](#-stream-channeledit)
+    -   [`$ get`](#-stream-channelget)
+    -   [`$ init`](#-stream-channelinit)
+    -   [`$ list`](#-stream-channellist)
+    -   [`$ query`](#-stream-channelquery)
 -   stream message
-    -   [send](#-stream-messagesend)
-    -   [remove](#-stream-messageremove)
+    -   [`$ send`](#-stream-messagesend)
+    -   [`$ remove`](#-stream-messageremove)
 -   stream moderate
-    -   [ban](#-stream-moderateban)
-    -   [flag](#-stream-moderateflag)
-    -   [mute](#-stream-moderatemute)
+    -   [`$ ban`](#-stream-moderateban)
+    -   [`$ flag`](#-stream-moderateflag)
+    -   [`$ mute`](#-stream-moderatemute)
 -   stream user
-    -   [add](#-stream-useradd)
-    -   [remove](#-stream-userremove)
+    -   [`$ add`](#-stream-useradd)
+    -   [`$ remove`](#-stream-userremove)
 
 ### `$ stream autocomplete`
 
