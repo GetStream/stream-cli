@@ -94,7 +94,7 @@ $ Your config has been generated! 🚀
 
 ## `$ stream autocomplete`
 
-Initialize autocomplete for the CLI. **(recommended)**
+Initialize autocomplete for the CLI **(recommended)**
 
 ```sh-session
 $ stream autocomplete
@@ -102,7 +102,7 @@ $ stream autocomplete
 
 ## `$ stream commands`
 
-Display all commands.
+Display all commands
 
 ```sh-session
 $ stream commands
@@ -110,7 +110,7 @@ $ stream commands
 
 ## `$ stream help`
 
-Get help with the CLI.
+Get help with the CLI
 
 ```sh-session
 $ stream help
