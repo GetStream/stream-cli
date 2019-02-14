@@ -9,12 +9,11 @@
     "bugs": "https://github.com/getstream/stream-cli/issues",
     "repository": "getstream/stream-cli",
     "scripts": {
-        "build": "babel src --out-dir lib && cp -R bin lib/bin",
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
         "prepack": "yarn build",
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-        "pkg": "pkg . --targets macos,win,linux --out-path dist"
+        "version": "oclif-dev readme && git add README.md"
     },
     "dependencies": {
         "@oclif/command": "^1",
@@ -85,11 +84,6 @@
             "@oclif/plugin-autocomplete",
             "@oclif/plugin-commands",
             "@oclif/plugin-not-found"
-        ]
-    },
-    "pkg": {
-        "targets": [
-            "node10"
         ]
     }
 }
