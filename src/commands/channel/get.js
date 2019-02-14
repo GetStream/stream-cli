@@ -11,13 +11,13 @@ export class ChannelGet extends Command {
         id: flags.string({
             char: 'i',
             description: chalk.blue.bold('Channel ID.'),
-            required: false,
+            required: true,
         }),
         type: flags.string({
             char: 't',
             description: chalk.blue.bold('Type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: false,
+            required: true,
         }),
     };
 

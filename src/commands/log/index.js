@@ -89,7 +89,6 @@ export class Log extends Command {
             });
 
             const channel = client.channel(flags.type, flags.id);
-
             await channel.watch();
 
             this.log(
@@ -109,7 +108,7 @@ export class Log extends Command {
                     );
 
                     const payload = `${timestamp}: ${chalk.blue.bold(
-                        event.user.id
+                        event.user.name || event.user.id
                     )} (${chalk.blue.bold(
                         event.user.role
                     )}) performed event ${chalk.blue.bold(
