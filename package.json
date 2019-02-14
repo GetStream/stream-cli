@@ -1,7 +1,7 @@
 {
     "name": "getstream-cli",
     "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
-    "version": "0.0.1-beta.0",
+    "version": "0.0.1-beta.1",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
         "stream": "./bin/run"
@@ -13,9 +13,7 @@
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint .",
         "prepack": "yarn build",
-        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-        "contributors:add": "all-contributors add",
-        "contributors:generate": "all-contributors generate"
+        "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
     },
     "husky": {
         "hooks": {
@@ -53,7 +51,6 @@
         "@istanbuljs/nyc-config-babel": "^2.0.1",
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
-        "all-contributors-cli": "^6.1.1",
         "babel-eslint": "^10.0.1",
         "babel-plugin-istanbul": "^5.1.0",
         "chai": "^4",

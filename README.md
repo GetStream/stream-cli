@@ -7,7 +7,6 @@ Stream's Command Line Interface (CLI) makes it easy to create and manage your St
 [![Version](https://img.shields.io/npm/v/stream-cli.svg)](https://npmjs.org/package/getstream-cli)
 [![Dependency Status](https://david-dm.org/getstream/stream-cli/status.svg)](https://david-dm.org/getstream/stream-cli)
 [![devDependency Status](https://david-dm.org/getstream/stream-cli/dev-status.svg)](https://david-dm.org/getstream/stream-cli?type=dev)
-[![Downloads/week](https://img.shields.io/npm/dw/getstream-cli.svg)](https://npmjs.org/package/getstream-cli)
 [![License](https://img.shields.io/npm/l/stream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
 
 # 📌 Requirements
@@ -61,34 +60,87 @@ $ Your config has been generated! 🚀
 
 # 🔨 Commands
 
--   stream autocomplete
--   stream commands
--   stream help
--   stream config
-    -   set
-    -   get
-    -   destroy
--   stream channel
-    -   edit
-    -   get
-    -   init
-    -   list
-    -   query
--   stream message
-    -   send
-    -   remove
--   stream moderate
-    -   ban
-    -   flag
-    -   mute
--   stream user
-    -   add
-    -   ban
-    -   remove
+-   [stream autocomplete](#\$ stream autocomplete)
+-   [stream commands](#)
+-   [stream help](#)
+-   [stream config](#)
+    -   [set](#)
+    -   [get](#)
+    -   [destroy](#)
+-   [stream channel](#)
+    -   [edit](#)
+    -   [get](#)
+    -   [init](#)
+    -   [list](#)
+    -   [query](#)
+-   [stream message](#)
+    -   [send](#)
+    -   [remove](#)
+-   [stream moderate](#)
+    -   [ban](#)
+    -   [flag](#)
+    -   [mute](#)
+-   [stream user](#)
+    -   [add](#)
+    -   [ban](#)
+    -   [remove](#)
 
-# 🤓 Contributors
+## `$ stream autocomplete`
 
-<!-- ALL-CONTRIBUTORS-LIST:START -->
-<!-- prettier-ignore -->
-<table><tr><td align="center"><a href="https://nickparsons.io"><img src="https://avatars2.githubusercontent.com/u/1328388?v=4" width="50px;" alt="Nick Parsons"/><br /><sub><b>Nick Parsons</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=nparsons08" title="Documentation">📖</a></td><td align="center"><a href="http://www.mellowmorning.com"><img src="https://avatars2.githubusercontent.com/u/265409?v=4" width="50px;" alt="Thierry Schellenbach"/><br /><sub><b>Thierry Schellenbach</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=tschellenbach" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/tbarbugli"><img src="https://avatars3.githubusercontent.com/u/88735?v=4" width="50px;" alt="Tommaso Barbugli"/><br /><sub><b>Tommaso Barbugli</b></sub></a><br /><a href="https://github.com/GetStream/stream-cli/commits?author=tbarbugli" title="Documentation">📖</a></td></tr></table>
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+### Input
+
+```sh-session
+$ stream autocomplete
+```
+
+### Output
+
+```sh-session
+Building the autocomplete cache... done
+
+Setup Instructions for STREAM CLI Autocomplete ---
+
+1) Add the autocomplete env var to your zsh profile and source it
+$ printf "$(stream autocomplete:script zsh)" >> ~/.zshrc; source ~/.zshrc
+
+NOTE: After sourcing, you can run `$ compaudit -D` to ensure no permissions conflicts are present
+
+2) Test it out, e.g.:
+$ stream <TAB>                 # Command completion
+$ stream command --<TAB>       # Flag completion
+
+Enjoy!
+```
+
+## `$ stream commands`
+
+### Input
+
+```sh-session
+$ stream commands
+```
+
+### Output
+
+```sh-session
+autocomplete
+channel:edit
+channel:get
+channel:init
+channel:list
+channel:query
+commands
+config:destroy
+config:get
+config:set
+help
+log
+message:remove
+message:send
+moderate:ban
+moderate:flag
+moderate:mute
+user:add
+user:ban
+user:remove
+```
