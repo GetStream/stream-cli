@@ -1,0 +1,23 @@
+{
+  "projectName": "stream-cli",
+  "projectOwner": "GetStream",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 50,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "nparsons08",
+      "name": "Nick Parsons",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1328388?v=4",
+      "profile": "https://nickparsons.io",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
