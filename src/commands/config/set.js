@@ -40,6 +40,7 @@ export class ConfigSet extends Command {
 
                 if (!answer.continue) {
                     opn('https://getstream.io');
+
                     this.log(
                         chalk.yellow(`Redirecting you to https://getstream.io`),
                         emoji.get('earth_americas')
