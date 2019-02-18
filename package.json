@@ -15,7 +15,7 @@
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
         "version": "oclif-dev readme && git add README.md",
         "release:manifest": "oclif-dev manifest",
-        "release:pack:macos": "oclif-dev pack:macos",
+        "release:macos": "oclif-dev pack:macos && oclif-dev publish:macos",
         "release:pack": "oclif-dev pack",
         "release:publish": "oclif-dev publish",
         "release:npm": "npm version patch && npm publish",
@@ -98,6 +98,9 @@
         ],
         "warn-if-update-available": {
             "timeoutInDays": 7
+        },
+        "macos": {
+            "identifier": "io.getsream.cli"
         },
         "update": {
             "s3": {
