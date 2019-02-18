@@ -36,4 +36,4 @@ export class MessageRemove extends Command {
     }
 }
 
-MessageRemove.description = 'Send messages to a channel.';
+MessageRemove.description = 'Send messages to a channel';

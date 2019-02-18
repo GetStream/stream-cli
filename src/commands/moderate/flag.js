@@ -60,4 +60,4 @@ export class ModerateFlag extends Command {
     }
 }
 
-ModerateFlag.description = 'Flag users and messages.';
+ModerateFlag.description = 'Flag users and messages';

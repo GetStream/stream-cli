@@ -36,4 +36,4 @@ export class ModerateMute extends Command {
     }
 }
 
-ModerateMute.description = 'Mute users who are annoying.';
+ModerateMute.description = 'Mute users who are annoying';

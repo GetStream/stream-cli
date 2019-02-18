@@ -51,4 +51,4 @@ export class UserRemove extends Command {
     }
 }
 
-UserRemove.description = 'Remove users from a channel.';
+UserRemove.description = 'Remove users from a channel';

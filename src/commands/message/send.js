@@ -81,4 +81,4 @@ export class MessageSend extends Command {
     }
 }
 
-MessageSend.description = 'Send messages to a channel.';
+MessageSend.description = 'Send messages to a channel';
