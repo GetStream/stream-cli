@@ -4,8 +4,7 @@
     "version": "0.0.1-beta.4",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
-        "stream": "./lib/bin/prod",
-        "dev": "./lib/bin/dev"
+        "stream": "./lib/bin/prod"
     },
     "bugs": "https://github.com/getstream/stream-cli/issues",
     "repository": "getstream/stream-cli",
