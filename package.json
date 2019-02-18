@@ -47,6 +47,7 @@
         "node-fs-extra": "^0.8.2",
         "node-notifier": "^5.4.0",
         "numeral": "^2.0.6",
+        "opn": "^5.4.0",
         "stream-chat": "^0.2.0",
         "uuid": "^3.3.2"
     },

@@ -2,6 +2,7 @@ import { Command } from '@oclif/command';
 import { prompt } from 'enquirer';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
+import opn from 'opn';
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -17,13 +18,32 @@ export class ConfigSet extends Command {
                     type: 'confirm',
                     name: 'continue',
                     message: chalk.yellow.bold(
-                        `This command will delete your current configuration. Do you want to continue? ${emoji.get(
+                        `This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
                             'warning'
                         )} `
                     ),
                 });
 
                 if (!answer.continue) {
+                    this.exit(0);
+                }
+            } else {
+                const answer = await prompt({
+                    type: 'confirm',
+                    name: 'continue',
+                    message: chalk.green(
+                        `Do you have an existing account with Stream? If not, please enter "N". ${emoji.get(
+                            'rocket'
+                        )} `
+                    ),
+                });
+
+                if (!answer.continue) {
+                    opn('https://getstream.io');
+                    this.log(
+                        chalk.yellow(`Redirecting you to https://getstream.io`),
+                        emoji.get('earth_americas')
+                    );
                     this.exit(0);
                 }
             }
