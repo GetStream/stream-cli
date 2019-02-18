@@ -1,7 +1,7 @@
 {
     "name": "getstream-cli",
     "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
         "stream": "./lib/bin/prod"
@@ -18,7 +18,7 @@
         "release:pack": "oclif-dev pack",
         "release:publish": "oclif-dev publish",
         "release:npm": "npm version patch && npm publish",
-        "release": "yarn release:pack && yarn release:publish && yarn release:npm"
+        "release": "yarn release:pack && yarn release:publish"
     },
     "dependencies": {
         "@babel/cli": "^7.2.3",
