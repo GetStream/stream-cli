@@ -2,6 +2,8 @@
 
 # Stream CLI
 
+> Note: The Stream CLI is currently in beta and may contain bugs. This _should not_ be used against a production environment at this time. To report bugs, please follow the instructions below. Thank you for your support!
+
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
 [![Version](https://img.shields.io/npm/v/getstream-cli.svg)](https://npmjs.org/package/getstream-cli)
