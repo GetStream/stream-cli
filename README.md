@@ -21,7 +21,7 @@ As with any project, things are always changing. If you're interested in seeing 
 
 ## 🏗 Installation
 
-The Stream CLI is easy to install. You have the option to use [homebrew](https://brew.sh) (preferred) if you're on macOS, download a single binary with zero run-time dependencies for your OS of choice, or install the CLI using [NPM](https://www.npmjs.com/package/getstream-cli).
+The Stream CLI is easy to install. You have the option to use [homebrew](https://brew.sh) (preferred) if you're on macOS or download a single binary with zero run-time dependencies for your OS of choice.
 
 #### Homebrew
 
@@ -35,13 +35,7 @@ $ brew install stream
 -   [Linux](https://github.com/GetStream/stream-cli/releases)
 -   [Windows](https://github.com/GetStream/stream-cli/releases)
 
-> Note: Binaries are generally updated less frequently than Homebrew and NPM.
-
-#### NPM
-
-```sh-session
-$ npm install -g getstream-cli
-```
+> Note: Binaries are generally updated less frequently than Homebrew.
 
 ## 🚀 Getting Started
 
