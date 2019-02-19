@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import chalk from 'chalk';
 import path from 'path';
-import uuid from 'uuid/v4';
 
 import { auth } from '../../../utils/auth';
 
@@ -10,8 +9,7 @@ export class ChannelQuery extends Command {
         id: flags.string({
             char: 'i',
             description: chalk.blue.bold('The channel ID you wish to query.'),
-            default: uuid(),
-            required: false,
+            required: true,
         }),
         type: flags.string({
             char: 't',

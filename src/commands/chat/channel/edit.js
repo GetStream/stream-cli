@@ -88,4 +88,4 @@ export class ChannelEdit extends Command {
     }
 }
 
-ChannelEdit.description = 'Edit a channel';
+ChannelEdit.description = 'Edit a specific channel.';

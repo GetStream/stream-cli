@@ -70,29 +70,49 @@ $ Your config has been generated! 🚀
 
 ## 🔨 Commands
 
+Basic commands use the following syntax:
+
+```sh-session
+$ stream command:COMMAND --arg1 "foo" --arg2 "bar"
+```
+
+Whereas commands for specific products use subcommands:
+
+```sh-session
+$ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
+```
+
+### Root Commands
+
 -   [`$ stream autocomplete`](#-stream-autocomplete)
 -   [`$ stream commands`](#-stream-commands)
 -   [`$ stream help`](#-stream-help)
--   stream config
+
+### Config Commands
+
+-   `$ stream config`
     -   [`$ set`](#-stream-configset)
     -   [`$ get`](#-stream-configget)
     -   [`$ destroy`](#-stream-configdestroy)
--   stream channel
-    -   [`$ edit`](#-stream-channeledit)
-    -   [`$ get`](#-stream-channelget)
-    -   [`$ init`](#-stream-channelinit)
-    -   [`$ list`](#-stream-channellist)
-    -   [`$ query`](#-stream-channelquery)
--   stream message
-    -   [`$ send`](#-stream-messagesend)
-    -   [`$ remove`](#-stream-messageremove)
--   stream moderate
-    -   [`$ ban`](#-stream-moderateban)
-    -   [`$ flag`](#-stream-moderateflag)
-    -   [`$ mute`](#-stream-moderatemute)
--   stream user
-    -   [`$ add`](#-stream-useradd)
-    -   [`$ remove`](#-stream-userremove)
+
+### Chat Commands
+
+-   `$ stream chat:channel`
+    -   [`$ edit`](#-stream-chatchanneledit)
+    -   [`$ get`](#-stream-chatchannelget)
+    -   [`$ init`](#-stream-chatchannelinit)
+    -   [`$ list`](#-stream-chatchannellist)
+    -   [`$ query`](#-stream-chatchannelquery)
+-   `$ stream chat:message`
+    -   [`$ send`](#-stream-chatmessagesend)
+    -   [`$ remove`](#-stream-chatmessageremove)
+-   `$ stream chat:moderate`
+    -   [`$ ban`](#-stream-chatmoderateban)
+    -   [`$ flag`](#-stream-chatmoderateflag)
+    -   [`$ mute`](#-stream-chatmoderatemute)
+-   `$ stream chat:user`
+    -   [`$ add`](#-stream-chatuseradd)
+    -   [`$ remove`](#-stream-chatuserremove)
 
 ### `$ stream autocomplete`
 
@@ -147,152 +167,152 @@ USAGE
 
 > Note: The command `stream config:set` must be called to re-initialize the configuration.
 
-### `$ stream channel:edit`
-
-Edit a specified channel
+### `$ stream chat:channel:edit`
 
 ```sh-session
+Edit a specific channel.
+
 USAGE
-  $ stream channel:edit
+  $ stream chat:channel:edit
 
 OPTIONS
-  -d, --data=data                                       Additional data as a JSON payload.
-  -i, --id=id                                           (required) Channel ID.
+  -d, --data=data                                       Additional data as JSON.
+  -i, --id=id                                           (required) The ID of the channel you wish to edit.
   -m, --members=members                                 Comma separated list of members.
-  -n, --name=name                                       (required) Name of room.
+  -n, --name=name                                       (required) Name of the channel room.
   -r, --reason=reason                                   (required) Reason for changing channel.
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
-  -u, --url=url                                         URL to channel image.
+  -u, --url=url                                         URL to the channel image.                                       URL to channel image.
 ```
 
-### `$ stream channel:get`
-
-Get a specified channel
+### `$ stream chat:channel:get`
 
 ```sh-session
+Get a specific channel by ID.
+
 USAGE
-  $ stream channel:get
+  $ stream chat:channel:get
 
 OPTIONS
-  -i, --id=id                                           (required) Channel ID.
+  -i, --id=id                                           (required) The channel ID you wish to get.
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
 ```
 
-### `$ stream channel:init`
-
-Initialize a new channel
+### `$ stream chat:channel:init`
 
 ```sh-session
+Create a new channel.
+
 USAGE
-  $ stream channel:init
+  $ stream chat:channel:init
 
 OPTIONS
-  -d, --data=data                                       Additional data as a JSON payload.
-  -i, --id=id                                           (required) [default: <UUID>] Channel ID.
-  -m, --members=members                                 Comma separated list of members.
-  -n, --name=name                                       (required) Name of room.
+  -d, --data=data                                       Additional data as a JSON.
+  -i, --id=id                                           (required) [default: 1d4b7547-17ae-4956-b60e-d674a72173e0] A unique ID for the channel you wish to create.
+  -m, --members=members                                 Comma separated list of members to add to the channel.
+  -n, --name=name                                       (required) Name of the channel room.
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
   -u, --image=image                                     URL to channel image.
 ```
 
-### `$ stream channel:list`
-
-List all channels associated with your account
+### `$ stream chat:channel:list`
 
 ```sh-session
+List all channels associated with your config credentials.
+
 USAGE
-  $ stream channel:list
+  $ stream chat:channel:list
 ```
 
-### `$ stream channel:query`
-
-Query for channels
+### `$ stream chat:channel:query`
 
 ```sh-session
+Query a channel.
+
 USAGE
-  $ stream channel:query
+  $ stream chat:channel:query
 
 OPTIONS
-  -f, --filter=filter                                   Filters to apply.
-  -i, --id=id                                           [default: <UUID>] Channel ID.
-  -s, --sort=sort                                       Sort to apply.
+  -f, --filter=filter                                   Filters to apply to the query.
+  -i, --id=id                                           (required) The channel ID you wish to query.
+  -s, --sort=sort                                       Sort to apply to the query.
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-### `$ stream message:send`
-
-Send a message to a specific channel
+### `$ stream chat:message:send`
 
 ```sh-session
+Send messages to a channel.
+
 USAGE
-  $ stream message:send
+  $ stream chat:message:send
 
 OPTIONS
-  -a, --attachments=attachments                         JSON payload of attachments
-  -i, --id=id                                           [default: <UUID>] Channel ID.
-  -m, --message=message                                 (required) Message to send.
-  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
-  -u, --user=user                                       (required) [default: *] ID of user.
+  -a, --attachments=attachments                         A JSON payload of attachments to send with the message.
+  -i, --id=id                                           The channel ID that you would like to send a message to.
+  -m, --message=message                                 (required) The message you would like to send as plaintext.
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) The type of channel.
+  -u, --user=user                                       (required) [default: *] The ID of the acting user sending the message.
 ```
 
-### `$ stream message:remove`
-
-Remove a message from a channel
+### `$ stream chat:message:remove`
 
 ```sh-session
+Remove messages from a channel.
+
 USAGE
-  $ stream message:remove
+  $ stream chat:message:remove
 
 OPTIONS
-  -i, --id=id  (required) Channel ID.
+  -i, --id=id  (required) The channel ID that you would like to remove.
 ```
 
-### `$ stream moderate:ban`
-
-Ban a user from a channel forever or based on a per minute timeout
+### `$ stream chat:moderate:ban`
 
 ```sh-session
+Ban users from a channel indefinitely or based on a per minute timeout.
+
 USAGE
-  $ stream moderate:ban
+  $ stream chat:moderate:ban
 
 OPTIONS
-  -r, --reason=reason    (required) Reason for timeout.
-  -t, --timeout=timeout  (required) [default: 60] Timeout in minutes.
-  -u, --user=user        (required) ID of user.
+  -r, --reason=reason    (required) A reason for adding a timeout.
+  -t, --timeout=timeout  (required) [default: 60] Duration of timeout in minutes.
+  -u, --user=user        (required) The ID of the offending user.
 ```
 
-### `$ stream moderate:flag`
-
-Flag users and messages for inappropriate behavior or explicit content
+### `$ stream chat:moderate:flag`
 
 ```sh-session
+Flag users and messages within a channel.
+
 USAGE
-  $ stream moderate:flag
+  $ stream chat:moderate:flag
 
 OPTIONS
-  -m, --message=message  ID of message.
-  -u, --user=user        ID of user.
+  -m, --message=message  The ID of the message you want to flag.
+  -u, --user=user        The ID of the offending user.
 ```
 
-### `$ stream moderate:mute`
-
-Mute a user in a channel
+### `$ stream chat:moderate:mute`
 
 ```sh-session
+Mute users within a channel.
+
 USAGE
-  $ stream moderate:mute
+  $ stream chat:moderate:mute
 
 OPTIONS
-  -u, --user=user  (required) User ID.
+  -u, --user=user  (required) The ID of the offending user.
 ```
 
-### `$ stream user:add`
-
-Add a user to a channel and specify permissions
+### `$ stream chat:user:add`
 
 ```sh-session
+Add a user to a channel.
+
 USAGE
-  $ stream user:add
+  $ stream chat:user:add
 
 OPTIONS
   -i, --id=id                  (required) Channel name.
@@ -300,13 +320,13 @@ OPTIONS
   -t, --type=type              (required) Channel type.
 ```
 
-### `$ stream user:remove`
-
-Remove a user from a channel
+### `$ stream chat:user:remove`
 
 ```sh-session
+Remove a user from a channel.
+
 USAGE
-  $ stream user:remove
+  $ stream chat:user:remove
 
 OPTIONS
   -i, --id=id                  (required) Channel name.

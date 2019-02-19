@@ -52,4 +52,4 @@ export class ModerateBan extends Command {
 }
 
 ModerateBan.description =
-    'Ban users from a channel indefinitely or based on a per minute timeout';
+    'Ban users from a channel indefinitely or based on a per minute timeout.';

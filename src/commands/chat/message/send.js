@@ -17,7 +17,7 @@ export class MessageSend extends Command {
         user: flags.string({
             char: 'u',
             description: chalk.blue.bold(
-                'The ID of the acting user sending the message'
+                'The ID of the acting user sending the message.'
             ),
             default: '*',
             required: true,
