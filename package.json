@@ -8,6 +8,16 @@
     },
     "bugs": "https://github.com/getstream/stream-cli/issues",
     "repository": "getstream/stream-cli",
+    "homepage": "https://github.com/getstream/stream-cli",
+    "keywords": [
+        "GetStream",
+        "Stream",
+        "CLI",
+        "Feed",
+        "Chat"
+    ],
+    "license": "BSD-3-Clause",
+    "main": "src/index.js",
     "scripts": {
         "build": "babel src --out-dir lib && mkdir lib/bin && cp bin/prod lib/bin",
         "postpack": "rm -f oclif.manifest.json",
@@ -38,7 +48,6 @@
         "@oclif/plugin-not-found": "^1.2.2",
         "@oclif/plugin-update": "^1.3.9",
         "@oclif/plugin-warn-if-update-available": "^1.5.4",
-        "babel-plugin-transform-class-properties": "^6.24.1",
         "cardinal": "^2.1.1",
         "chalk": "^2.4.2",
         "cli-table": "^0.3.1",
@@ -71,23 +80,14 @@
         "prettier": "^1.16.4"
     },
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=10.0.0"
     },
     "files": [
         "/bin",
+        "/npm-shrinkwrap.json",
         "/oclif.manifest.json",
         "/src"
     ],
-    "homepage": "https://github.com/getstream/stream-cli",
-    "keywords": [
-        "GetStream",
-        "Stream",
-        "CLI",
-        "Feed",
-        "Chat"
-    ],
-    "license": "BSD-3-Clause",
-    "main": "src/index.js",
     "oclif": {
         "bin": "stream",
         "commands": "./src/commands",
