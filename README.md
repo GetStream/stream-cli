@@ -34,7 +34,7 @@ $ brew install stream
 #### NPM
 
 ```sh-session
-$ npm install getstream-cli
+$ npm install -g getstream-cli
 ```
 
 #### Binaries
