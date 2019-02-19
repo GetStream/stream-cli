@@ -36,4 +36,4 @@ export class ConfigGet extends Command {
     }
 }
 
-ConfigGet.description = 'Get config';
+ConfigGet.description = 'Get credentials stored in your Stream config.';

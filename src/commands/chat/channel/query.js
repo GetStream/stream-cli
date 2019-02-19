@@ -3,13 +3,13 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class ChannelQuery extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.blue.bold('The channel ID you wish to query.'),
             default: uuid(),
             required: false,
         }),
@@ -21,12 +21,12 @@ export class ChannelQuery extends Command {
         }),
         filter: flags.string({
             char: 'f',
-            description: chalk.blue.bold('Filters to apply.'),
+            description: chalk.blue.bold('Filters to apply to the query.'),
             required: false,
         }),
         sort: flags.string({
             char: 's',
-            description: chalk.blue.bold('Sort to apply.'),
+            description: chalk.blue.bold('Sort to apply to the query.'),
             required: false,
         }),
     };
@@ -56,4 +56,4 @@ export class ChannelQuery extends Command {
     }
 }
 
-ChannelQuery.description = 'Query a channel';
+ChannelQuery.description = 'Query a channel.';

@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 const events = [
     'all',
@@ -35,18 +35,21 @@ export class Log extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.blue.bold('The channel ID you wish to log.'),
             default: uuid(),
             required: false,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Channel type.'),
+            description: chalk.blue.bold('The type of channel.'),
+            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         event: flags.string({
             char: 'e',
-            description: chalk.blue.bold('Event type.'),
+            description: chalk.blue.bold(
+                'The type of event you want to listen on.'
+            ),
             options: events,
             required: false,
         }),
@@ -137,4 +140,4 @@ export class Log extends Command {
     }
 }
 
-Log.description = 'watch events in real-time coming from a team channel';
+Log.description = 'Log events in real-time coming from a channel.';

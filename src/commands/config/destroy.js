@@ -23,4 +23,4 @@ export class ConfigDestroy extends Command {
     }
 }
 
-ConfigDestroy.description = 'Destroy config';
+ConfigDestroy.description = 'Destroy Stream configuration entirely.';

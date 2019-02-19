@@ -3,24 +3,24 @@ import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class ModerateBan extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.blue.bold('ID of user.'),
+            description: chalk.blue.bold('The ID of the offending user.'),
             exclusive: ['message'],
             required: true,
         }),
         reason: flags.string({
             char: 'r',
-            description: chalk.blue.bold('Reason for timeout.'),
+            description: chalk.blue.bold('A reason for adding a timeout.'),
             required: true,
         }),
         timeout: flags.string({
             char: 't',
-            description: chalk.blue.bold('Timeout in minutes.'),
+            description: chalk.blue.bold('Duration of timeout in minutes.'),
             default: '60',
             required: true,
         }),
@@ -51,4 +51,5 @@ export class ModerateBan extends Command {
     }
 }
 
-ModerateBan.description = 'Ban users indefinitely or by a per minute timeout';
+ModerateBan.description =
+    'Ban users from a channel indefinitely or based on a per minute timeout';

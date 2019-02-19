@@ -4,13 +4,13 @@ import numeral from 'numeral';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class ChannelGet extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+            description: chalk.blue.bold('The channel ID you wish to get.'),
             required: true,
         }),
         type: flags.string({
@@ -127,4 +127,4 @@ export class ChannelGet extends Command {
     }
 }
 
-ChannelGet.description = 'Get a channel';
+ChannelGet.description = 'Get a specific channel by ID.';

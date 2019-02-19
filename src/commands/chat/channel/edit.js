@@ -1,16 +1,18 @@
 import { Command, flags } from '@oclif/command';
+import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 import uuid from 'uuid/v4';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
-export class ChannelInit extends Command {
+export class ChannelEdit extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
-            default: uuid(),
+            description: chalk.blue.bold(
+                'The ID of the channel you wish to edit.'
+            ),
             required: true,
         }),
         type: flags.string({
@@ -21,13 +23,18 @@ export class ChannelInit extends Command {
         }),
         name: flags.string({
             char: 'n',
-            description: chalk.blue.bold('Name of room.'),
+            description: chalk.blue.bold('Name of the channel room.'),
             required: true,
         }),
-        image: flags.string({
+        url: flags.string({
             char: 'u',
-            description: chalk.blue.bold('URL to channel image.'),
+            description: chalk.blue.bold('URL to the channel image.'),
             required: false,
+        }),
+        reason: flags.string({
+            char: 'r',
+            description: chalk.blue.bold('Reason for changing channel.'),
+            required: true,
         }),
         members: flags.string({
             char: 'm',
@@ -36,23 +43,24 @@ export class ChannelInit extends Command {
         }),
         data: flags.string({
             char: 'd',
-            description: chalk.blue.bold('Additional data as a JSON payload.'),
+            description: chalk.blue.bold('Additional data as JSON.'),
             required: false,
         }),
     };
 
     async run() {
-        const { flags } = this.parse(ChannelInit);
+        const { flags } = this.parse(ChannelEdit);
 
         try {
             const client = await auth(
                 path.join(this.config.configDir, 'config.json'),
                 this
             );
+            const channel = await client.channel(flags.type, flags.id);
 
             let payload = {
                 name: flags.name,
-                created_by: {
+                updated_by: {
                     id: uuid(),
                     name: 'CLI',
                 },
@@ -65,17 +73,19 @@ export class ChannelInit extends Command {
                 payload = Object.assign({}, payload, parsed);
             }
 
-            const channel = await client.channel(flags.type, flags.id, payload);
-            await channel.create();
-
-            this.log(`The channel ${flags.name} has been initialized!`, {
-                emoji: 'rocket',
+            await channel.update(payload, {
+                name: flags.name,
+                text: flags.reason,
             });
-            this.exit(0);
+
+            this.log(
+                `The channel ${flags.id} has been modified!`,
+                emoji.get('rocket')
+            );
         } catch (err) {
             this.error(err, { exit: 1 });
         }
     }
 }
 
-ChannelInit.description = 'Initialize a channel';
+ChannelEdit.description = 'Edit a channel';

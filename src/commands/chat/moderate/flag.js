@@ -3,19 +3,21 @@ import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class ModerateFlag extends Command {
     static flags = {
         user: flags.string({
             char: 'u',
-            description: chalk.blue.bold('ID of user.'),
+            description: chalk.blue.bold('The ID of the offending user.'),
             exclusive: ['message'],
             required: false,
         }),
         message: flags.string({
             char: 'm',
-            description: chalk.blue.bold('ID of message.'),
+            description: chalk.blue.bold(
+                'The ID of the message you want to flag.'
+            ),
             exclusive: ['user'],
             required: false,
         }),
@@ -60,4 +62,4 @@ export class ModerateFlag extends Command {
     }
 }
 
-ModerateFlag.description = 'Flag users and messages';
+ModerateFlag.description = 'Flag users and messages within a channel.';

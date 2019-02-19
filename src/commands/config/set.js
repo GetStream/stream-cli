@@ -81,5 +81,4 @@ export class ConfigSet extends Command {
     }
 }
 
-ConfigSet.description =
-    'Initialize the config with your Stream API key and secret';
+ConfigSet.description = 'Initialize the config with your Stream credentials.';

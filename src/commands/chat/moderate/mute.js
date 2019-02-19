@@ -3,19 +3,19 @@ import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
-export class MessageRemove extends Command {
+export class ModerateMute extends Command {
     static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
+        user: flags.string({
+            char: 'u',
+            description: chalk.blue.bold('The ID of the offending user.'),
             required: true,
         }),
     };
 
     async run() {
-        const { flags } = this.parse(MessageRemove);
+        const { flags } = this.parse(ModerateMute);
 
         try {
             const client = await auth(
@@ -23,11 +23,11 @@ export class MessageRemove extends Command {
                 this
             );
 
-            await client.deleteMessage(flags.id);
+            await client.muteUser(flags.user);
 
             this.log(
-                `The message ${flags.id} has been removed!`,
-                emoji.get('wastebasket')
+                `The message ${flags.user} has been flagged!`,
+                emoji.get('two_flags')
             );
             this.exit(0);
         } catch (err) {
@@ -36,4 +36,4 @@ export class MessageRemove extends Command {
     }
 }
 
-MessageRemove.description = 'Send messages to a channel';
+ModerateMute.description = 'Mute users within a channel.';

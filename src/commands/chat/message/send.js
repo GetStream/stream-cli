@@ -2,38 +2,44 @@ import { Command, flags } from '@oclif/command';
 import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
-import uuid from 'uuid';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class MessageSend extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
-            description: chalk.blue.bold('Channel ID.'),
-            default: uuid(),
+            description: chalk.blue.bold(
+                'The channel ID that you would like to send a message to.'
+            ),
             required: false,
         }),
         user: flags.string({
             char: 'u',
-            description: chalk.blue.bold('ID of user.'),
+            description: chalk.blue.bold(
+                'The ID of the acting user sending the message'
+            ),
             default: '*',
             required: true,
         }),
         type: flags.string({
             char: 't',
-            description: chalk.blue.bold('Type of channel.'),
+            description: chalk.blue.bold('The type of channel.'),
             options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
             required: true,
         }),
         message: flags.string({
             char: 'm',
-            description: chalk.blue.bold('Message to send.'),
+            description: chalk.blue.bold(
+                'The message you would like to send as plaintext.'
+            ),
             required: true,
         }),
         attachments: flags.string({
             char: 'a',
-            description: chalk.blue.bold('JSON payload of attachments'),
+            description: chalk.blue.bold(
+                'A JSON payload of attachments to send with the message.'
+            ),
             required: false,
         }),
     };
@@ -81,4 +87,4 @@ export class MessageSend extends Command {
     }
 }
 
-MessageSend.description = 'Send messages to a channel';
+MessageSend.description = 'Send messages to a channel.';

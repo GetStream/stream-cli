@@ -3,7 +3,7 @@ import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
 export class ChannelList extends Command {
     async run() {
@@ -53,4 +53,5 @@ export class ChannelList extends Command {
     }
 }
 
-ChannelList.description = 'List all channels';
+ChannelList.description =
+    'List all channels associated with your config credentials.';

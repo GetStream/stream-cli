@@ -26,6 +26,7 @@
         "@babel/core": "^7.3.3",
         "@babel/node": "^7.2.2",
         "@babel/plugin-proposal-class-properties": "^7.3.3",
+        "@babel/polyfill": "^7.2.5",
         "@babel/preset-env": "^7.3.1",
         "@babel/runtime": "^7.3.1",
         "@oclif/command": "^1",
@@ -36,6 +37,7 @@
         "@oclif/plugin-not-found": "^1.2.2",
         "@oclif/plugin-update": "^1.3.9",
         "@oclif/plugin-warn-if-update-available": "^1.5.4",
+        "babel-plugin-transform-class-properties": "^6.24.1",
         "cardinal": "^2.1.1",
         "chalk": "^2.4.2",
         "cli-table": "^0.3.1",
@@ -55,7 +57,7 @@
         "@istanbuljs/nyc-config-babel": "^2.0.1",
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
-        "aws-sdk": "^2.404.0",
+        "aws-sdk": "^2.405.0",
         "babel-eslint": "^10.0.1",
         "babel-plugin-istanbul": "^5.1.1",
         "chai": "^4",
@@ -63,7 +65,7 @@
         "eslint-config-oclif": "^3.1",
         "eslint-plugin-babel": "^5.3.0",
         "globby": "^9",
-        "mocha": "^5.2.0",
+        "mocha": "^6.0.0",
         "nyc": "^13",
         "prettier": "^1.16.4"
     },
@@ -105,6 +107,29 @@
         "update": {
             "s3": {
                 "bucket": "stream-cli"
+            }
+        },
+        "topics": {
+            "config": {
+                "description": "Manage Stream config variables."
+            },
+            "chat": {
+                "description": "Configure and manage all things related to Stream Chat."
+            },
+            "chat:channel": {
+                "description": "Create, get, query, and edit a channel."
+            },
+            "chat:log": {
+                "description": "Log events from a channel based on an event type."
+            },
+            "chat:message": {
+                "description": "Send and remove messages from a channel."
+            },
+            "chat:moderate": {
+                "description": "Moderate a channel."
+            },
+            "chat:user": {
+                "description": "Manage users within channels."
             }
         }
     }

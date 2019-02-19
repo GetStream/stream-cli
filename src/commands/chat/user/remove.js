@@ -3,9 +3,9 @@ import emoji from 'node-emoji';
 import chalk from 'chalk';
 import path from 'path';
 
-import { auth } from '../../utils/auth';
+import { auth } from '../../../utils/auth';
 
-export class UserAdd extends Command {
+export class UserRemove extends Command {
     static flags = {
         id: flags.string({
             char: 'i',
@@ -20,14 +20,14 @@ export class UserAdd extends Command {
         moderators: flags.string({
             char: 'm',
             description: chalk.blue.bold(
-                'Comma separated list of moderators to add.'
+                'Comma separated list of moderators to remove.'
             ),
             required: true,
         }),
     };
 
     async run() {
-        const { flags } = this.parse(UserAdd);
+        const { flags } = this.parse(UserRemove);
 
         try {
             const client = await auth(
@@ -36,13 +36,13 @@ export class UserAdd extends Command {
             );
 
             const channel = await client.channel(flags.type, flags.id);
-            await channel.addModerators(flags.moderators.split(','));
+            await channel.demoteModerators(flags.moderators.split(','));
 
             this.log(
-                `${flags.moderators} have been added as moderators to channel ${
+                `${flags.moderators} have been removed as moderators from the ${
                     flags.type
-                }:${flags.id}`,
-                emoji.get('rocket')
+                } channel ${flags.id}`,
+                emoji.get('warning')
             );
             this.exit(0);
         } catch (err) {
@@ -51,4 +51,4 @@ export class UserAdd extends Command {
     }
 }
 
-UserAdd.description = 'Remove users from a channel';
+UserRemove.description = 'Remove a user from a channel.';
