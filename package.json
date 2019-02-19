@@ -42,6 +42,7 @@
         "chalk": "^2.4.2",
         "cli-table": "^0.3.1",
         "enquirer": "^2.3.0",
+        "globby": "^9.0.0",
         "json-stringify-pretty-compact": "^2.0.0",
         "lodash": "^4.17.11",
         "moment": "^2.24.0",
@@ -64,7 +65,6 @@
         "eslint": "^5.14",
         "eslint-config-oclif": "^3.1",
         "eslint-plugin-babel": "^5.3.0",
-        "globby": "^9",
         "mocha": "^6.0.0",
         "nyc": "^13",
         "prettier": "^1.16.4"
