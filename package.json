@@ -111,25 +111,25 @@
         },
         "topics": {
             "config": {
-                "description": "Manage Stream config variables."
+                "description": "manage config variables"
             },
             "chat": {
-                "description": "Configure and manage all things related to Stream Chat."
+                "description": "configure and manage all things related to chat"
             },
             "chat:channel": {
-                "description": "Create, get, query, and edit a channel."
+                "description": "create, get, query, and edit a channel"
             },
             "chat:log": {
-                "description": "Log events from a channel based on an event type."
+                "description": "log events from a channel based on an event type"
             },
             "chat:message": {
-                "description": "Send and remove messages from a channel."
+                "description": "send and remove messages from a channel"
             },
             "chat:moderate": {
-                "description": "Moderate a channel."
+                "description": "moderate a channel"
             },
             "chat:user": {
-                "description": "Manage users within channels."
+                "description": "manage users within channels"
             }
         }
     }
