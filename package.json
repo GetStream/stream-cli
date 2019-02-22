@@ -83,7 +83,7 @@
         ],
         "warn-if-update-available": {
             "timeoutInDays": 7,
-            "message": "An update is available for the Stream Chat CLI!"
+            "message": "NOTICE: <%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>!"
         },
         "topics": {
             "config": {
