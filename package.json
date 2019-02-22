@@ -33,7 +33,6 @@
         "@oclif/plugin-commands": "^1.2.2",
         "@oclif/plugin-help": "^2.1.6",
         "@oclif/plugin-not-found": "^1.2.2",
-        "@oclif/plugin-update": "^1.3.9",
         "@oclif/plugin-warn-if-update-available": "^1.7.0",
         "cardinal": "^2.1.1",
         "chalk": "^2.4.2",
@@ -80,19 +79,11 @@
             "@oclif/plugin-autocomplete",
             "@oclif/plugin-commands",
             "@oclif/plugin-not-found",
-            "@oclif/plugin-update",
             "@oclif/plugin-warn-if-update-available"
         ],
         "warn-if-update-available": {
-            "timeoutInDays": 7
-        },
-        "macos": {
-            "identifier": "io.getsream.cli"
-        },
-        "update": {
-            "s3": {
-                "bucket": "stream-cli"
-            }
+            "timeoutInDays": 7,
+            "message": "An update is available for the Stream Chat CLI!"
         },
         "topics": {
             "config": {
