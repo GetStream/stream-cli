@@ -1,7 +1,7 @@
 {
     "name": "getstream-cli",
     "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
-    "version": "0.0.1-beta.11",
+    "version": "0.0.1-beta.10",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
         "stream": "./bin/run"
