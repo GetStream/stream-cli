@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const path = require('path');
 const uuid = require('uuid/v4');
 
-const auth = require('../../../utils/auth');
+const { auth } = require('../../../utils/auth');
 
 export class ChannelInit extends Command {
     static flags = {

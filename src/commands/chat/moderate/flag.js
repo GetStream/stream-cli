@@ -3,7 +3,7 @@ const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
-const auth = require('../../../utils/auth');
+const { auth } = require('../../../utils/auth');
 
 export class ModerateFlag extends Command {
     static flags = {

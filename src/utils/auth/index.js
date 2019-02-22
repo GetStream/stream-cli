@@ -1,6 +1,6 @@
 const StreamChat = require('stream-chat');
 
-const credentials = require('../../utils/config');
+const { credentials } = require('../../utils/config');
 
 export async function auth(config, _this) {
     try {

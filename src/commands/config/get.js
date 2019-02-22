@@ -1,10 +1,10 @@
-const Command = require('@oclif/command');
+const { Command } = require('@oclif/command');
 const Table = require('cli-table');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
-const credentials = require('../../utils/config');
+const { credentials } = require('../../utils/config');
 
 export class ConfigGet extends Command {
     async run() {

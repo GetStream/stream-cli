@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const chalk = require('chalk');
 const path = require('path');
 
-const auth = require('../../../utils/auth');
+const { auth } = require('../../../utils/auth');
 
 export class ChannelQuery extends Command {
     static flags = {

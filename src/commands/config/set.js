@@ -1,4 +1,4 @@
-const Command = require('@oclif/command');
+const { Command } = require('@oclif/command');
 const prompt = require('enquirer');
 const emoji = require('node-emoji');
 const chalk = require('chalk');

@@ -4,7 +4,7 @@ const numeral = require('numeral');
 const chalk = require('chalk');
 const path = require('path');
 
-const auth = require('../../../utils/auth');
+const { auth } = require('../../../utils/auth');
 
 export class ChannelGet extends Command {
     static flags = {
