@@ -20,15 +20,10 @@
     "main": "src/index.js",
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
+        "prepack": "oclif-dev manifest",
+        "pack": "yarn prepack && yarn postpack",
         "posttest": "eslint .",
-        "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-        "version": "oclif-dev readme && git add README.md",
-        "release:manifest": "oclif-dev manifest",
-        "release:macos": "oclif-dev pack:macos && oclif-dev publish:macos",
-        "release:pack": "oclif-dev pack",
-        "release:publish": "oclif-dev publish",
-        "release:npm": "npm version patch && npm publish",
-        "release": "yarn release:pack && yarn release:publish"
+        "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
     },
     "dependencies": {
         "@oclif/command": "^1",
@@ -56,6 +51,7 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
+        "@babel/runtime": "^7.3.1",
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
         "aws-sdk": "^2.408.0",
