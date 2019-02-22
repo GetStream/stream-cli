@@ -1,10 +1,10 @@
-import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
-import path from 'path';
-import uuid from 'uuid/v4';
+const { Command, flags } = require('@oclif/command');
+const emoji = require('node-emoji');
+const chalk = require('chalk');
+const path = require('path');
+const uuid = require('uuid/v4');
 
-import { auth } from '../../../utils/auth';
+const auth = require('../../../utils/auth');
 
 export class ChannelEdit extends Command {
     static flags = {

@@ -1,10 +1,10 @@
-import { Command } from '@oclif/command';
-import { prompt } from 'enquirer';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
-import opn from 'opn';
-import path from 'path';
-import fs from 'fs-extra';
+const Command = require('@oclif/command');
+const prompt = require('enquirer');
+const emoji = require('node-emoji');
+const chalk = require('chalk');
+const opn = require('opn');
+const path = require('path');
+const fs = require('fs-extra');
 
 export class ConfigSet extends Command {
     async run() {

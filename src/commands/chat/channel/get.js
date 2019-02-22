@@ -1,10 +1,10 @@
-import { Command, flags } from '@oclif/command';
-import Table from 'cli-table';
-import numeral from 'numeral';
-import chalk from 'chalk';
-import path from 'path';
+const { Command, flags } = require('@oclif/command');
+const Table = require('cli-table');
+const numeral = require('numeral');
+const chalk = require('chalk');
+const path = require('path');
 
-import { auth } from '../../../utils/auth';
+const auth = require('../../../utils/auth');
 
 export class ChannelGet extends Command {
     static flags = {

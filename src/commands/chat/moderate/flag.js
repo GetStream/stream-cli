@@ -1,9 +1,9 @@
-import { Command, flags } from '@oclif/command';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
-import path from 'path';
+const { Command, flags } = require('@oclif/command');
+const emoji = require('node-emoji');
+const chalk = require('chalk');
+const path = require('path');
 
-import { auth } from '../../../utils/auth';
+const auth = require('../../../utils/auth');
 
 export class ModerateFlag extends Command {
     static flags = {

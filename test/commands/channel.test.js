@@ -1,4 +1,4 @@
-import { expect, test } from '@oclif/test';
+const { expect, test } = require('@oclif/test');
 
 describe('channel', () => {
     test.stdout()

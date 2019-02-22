@@ -1,10 +1,10 @@
-import { Command } from '@oclif/command';
-import Table from 'cli-table';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
-import path from 'path';
+const Command = require('@oclif/command');
+const Table = require('cli-table');
+const emoji = require('node-emoji');
+const chalk = require('chalk');
+const path = require('path');
 
-import { credentials } from '../../utils/config';
+const credentials = require('../../utils/config');
 
 export class ConfigGet extends Command {
     async run() {

@@ -1,14 +1,14 @@
-import { Command, flags } from '@oclif/command';
-import stringify from 'json-stringify-pretty-compact';
-import { prompt } from 'enquirer';
-import cardinal from 'cardinal';
-import emoji from 'node-emoji';
-import moment from 'moment';
-import chalk from 'chalk';
-import path from 'path';
-import uuid from 'uuid/v4';
+const { Command, flags } = require('@oclif/command');
+const stringify = require('json-stringify-pretty-compact');
+const prompt = require('enquirer');
+const cardinal = require('cardinal');
+const emoji = require('node-emoji');
+const moment = require('moment');
+const chalk = require('chalk');
+const path = require('path');
+const uuid = require('uuid/v4');
 
-import { auth } from '../../../utils/auth';
+const auth = require('../../../utils/auth');
 
 const events = [
     'all',

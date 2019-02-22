@@ -1,8 +1,8 @@
-import { Command, flags } from '@oclif/command';
-import chalk from 'chalk';
-import path from 'path';
+const { Command, flags } = require('@oclif/command');
+const chalk = require('chalk');
+const path = require('path');
 
-import { auth } from '../../../utils/auth';
+const auth = require('../../../utils/auth');
 
 export class ChannelQuery extends Command {
     static flags = {

@@ -1,8 +1,8 @@
-import { Command } from '@oclif/command';
-import emoji from 'node-emoji';
-import chalk from 'chalk';
-import path from 'path';
-import fs from 'fs-extra';
+const Command = require('@oclif/command');
+const emoji = require('node-emoji');
+const chalk = require('chalk');
+const path = require('path');
+const fs = require('fs');
 
 export class ConfigDestroy extends Command {
     async run() {
