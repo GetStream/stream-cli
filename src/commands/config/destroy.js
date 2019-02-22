@@ -1,27 +1,31 @@
-const { Command } = require('@oclif/command');
+const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs-extra');
 
-export class ConfigDestroy extends Command {
+class ConfigDestroy extends Command {
     async run() {
+        const { flags } = this.parse(ConfigDestroy);
+
         try {
             await fs.remove(path.join(this.config.configDir, 'config.json'));
 
-            const answer = await prompt({
-                type: 'confirm',
-                name: 'continue',
-                message: chalk.red.bold(
-                    `This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
-                        'warning'
-                    )} `
-                ),
-            });
+            if (!flags.force) {
+                const answer = await prompt({
+                    type: 'confirm',
+                    name: 'continue',
+                    message: chalk.red.bold(
+                        `This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
+                            'warning'
+                        )} `
+                    ),
+                });
 
-            if (!answer.continue) {
-                this.exit(0);
+                if (!answer.continue) {
+                    this.exit(0);
+                }
             }
 
             this.log(
@@ -38,4 +42,11 @@ export class ConfigDestroy extends Command {
     }
 }
 
-ConfigDestroy.description = 'Destroy Stream configuration entirely.';
+ConfigDestroy.flags = {
+    force: flags.string({
+        char: 'f',
+        description: chalk.blue.bold('Force remove config.'),
+    }),
+};
+
+module.exports.ConfigDestroy = ConfigDestroy;

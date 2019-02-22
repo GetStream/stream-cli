@@ -6,48 +6,7 @@ const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
 
-export class ChannelEdit extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold(
-                'The ID of the channel you wish to edit.'
-            ),
-            required: true,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Type of channel.'),
-            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        name: flags.string({
-            char: 'n',
-            description: chalk.blue.bold('Name of the channel room.'),
-            required: true,
-        }),
-        url: flags.string({
-            char: 'u',
-            description: chalk.blue.bold('URL to the channel image.'),
-            required: false,
-        }),
-        reason: flags.string({
-            char: 'r',
-            description: chalk.blue.bold('Reason for changing channel.'),
-            required: true,
-        }),
-        members: flags.string({
-            char: 'm',
-            description: chalk.blue.bold('Comma separated list of members.'),
-            required: false,
-        }),
-        data: flags.string({
-            char: 'd',
-            description: chalk.blue.bold('Additional data as JSON.'),
-            required: false,
-        }),
-    };
-
+class ChannelEdit extends Command {
     async run() {
         const { flags } = this.parse(ChannelEdit);
 
@@ -88,4 +47,43 @@ export class ChannelEdit extends Command {
     }
 }
 
-ChannelEdit.description = 'Edit a specific channel.';
+ChannelEdit.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold('The ID of the channel you wish to edit.'),
+        required: true,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: true,
+    }),
+    name: flags.string({
+        char: 'n',
+        description: chalk.blue.bold('Name of the channel room.'),
+        required: true,
+    }),
+    url: flags.string({
+        char: 'u',
+        description: chalk.blue.bold('URL to the channel image.'),
+        required: false,
+    }),
+    reason: flags.string({
+        char: 'r',
+        description: chalk.blue.bold('Reason for changing channel.'),
+        required: true,
+    }),
+    members: flags.string({
+        char: 'm',
+        description: chalk.blue.bold('Comma separated list of members.'),
+        required: false,
+    }),
+    data: flags.string({
+        char: 'd',
+        description: chalk.blue.bold('Additional data as JSON.'),
+        required: false,
+    }),
+};
+
+module.exports.ChannelEdit = ChannelEdit;

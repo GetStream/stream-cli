@@ -4,31 +4,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class ChannelQuery extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold('The channel ID you wish to query.'),
-            required: true,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Type of channel.'),
-            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: false,
-        }),
-        filter: flags.string({
-            char: 'f',
-            description: chalk.blue.bold('Filters to apply to the query.'),
-            required: false,
-        }),
-        sort: flags.string({
-            char: 's',
-            description: chalk.blue.bold('Sort to apply to the query.'),
-            required: false,
-        }),
-    };
-
+class ChannelQuery extends Command {
     async run() {
         const { flags } = this.parse(ChannelQuery);
 
@@ -54,4 +30,28 @@ export class ChannelQuery extends Command {
     }
 }
 
-ChannelQuery.description = 'Query a channel.';
+ChannelQuery.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold('The channel ID you wish to query.'),
+        required: true,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: false,
+    }),
+    filter: flags.string({
+        char: 'f',
+        description: chalk.blue.bold('Filters to apply to the query.'),
+        required: false,
+    }),
+    sort: flags.string({
+        char: 's',
+        description: chalk.blue.bold('Sort to apply to the query.'),
+        required: false,
+    }),
+};
+
+module.exports.ChannelQuery = ChannelQuery;

@@ -5,46 +5,7 @@ const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
 
-export class ChannelInit extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold(
-                'A unique ID for the channel you wish to create.'
-            ),
-            default: uuid(),
-            required: true,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Type of channel.'),
-            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        name: flags.string({
-            char: 'n',
-            description: chalk.blue.bold('Name of the channel room.'),
-            required: true,
-        }),
-        image: flags.string({
-            char: 'u',
-            description: chalk.blue.bold('URL to channel image.'),
-            required: false,
-        }),
-        members: flags.string({
-            char: 'm',
-            description: chalk.blue.bold(
-                'Comma separated list of members to add to the channel.'
-            ),
-            required: false,
-        }),
-        data: flags.string({
-            char: 'd',
-            description: chalk.blue.bold('Additional data as a JSON.'),
-            required: false,
-        }),
-    };
-
+class ChannelInit extends Command {
     async run() {
         const { flags } = this.parse(ChannelInit);
 
@@ -82,4 +43,43 @@ export class ChannelInit extends Command {
     }
 }
 
-ChannelInit.description = 'Create a new channel.';
+ChannelInit.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold(
+            'A unique ID for the channel you wish to create.'
+        ),
+        default: uuid(),
+        required: true,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: true,
+    }),
+    name: flags.string({
+        char: 'n',
+        description: chalk.blue.bold('Name of the channel room.'),
+        required: true,
+    }),
+    image: flags.string({
+        char: 'u',
+        description: chalk.blue.bold('URL to channel image.'),
+        required: false,
+    }),
+    members: flags.string({
+        char: 'm',
+        description: chalk.blue.bold(
+            'Comma separated list of members to add to the channel.'
+        ),
+        required: false,
+    }),
+    data: flags.string({
+        char: 'd',
+        description: chalk.blue.bold('Additional data as a JSON.'),
+        required: false,
+    }),
+};
+
+module.exports.ChannelInit = ChannelInit;

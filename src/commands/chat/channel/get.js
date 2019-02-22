@@ -6,21 +6,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class ChannelGet extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold('The channel ID you wish to get.'),
-            required: true,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Type of channel.'),
-            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-    };
-
+class ChannelGet extends Command {
     async run() {
         const { flags } = this.parse(ChannelGet);
 
@@ -127,4 +113,18 @@ export class ChannelGet extends Command {
     }
 }
 
-ChannelGet.description = 'Get a specific channel by ID.';
+ChannelGet.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold('The channel ID you wish to get.'),
+        required: true,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: true,
+    }),
+};
+
+module.exports.ChannelGet = ChannelGet;

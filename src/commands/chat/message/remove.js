@@ -5,17 +5,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class MessageRemove extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold(
-                'The channel ID that you would like to remove.'
-            ),
-            required: true,
-        }),
-    };
-
+class MessageRemove extends Command {
     async run() {
         const { flags } = this.parse(MessageRemove);
 
@@ -38,4 +28,14 @@ export class MessageRemove extends Command {
     }
 }
 
-MessageRemove.description = 'Remove messages from a channel.';
+MessageRemove.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold(
+            'The channel ID that you would like to remove.'
+        ),
+        required: true,
+    }),
+};
+
+module.exports.MessageRemove = MessageRemove;

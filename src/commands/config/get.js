@@ -6,7 +6,7 @@ const path = require('path');
 
 const { credentials } = require('../../utils/config');
 
-export class ConfigGet extends Command {
+class ConfigGet extends Command {
     async run() {
         const config = path.join(this.config.configDir, 'config.json');
         const { apiKey, apiSecret } = await credentials(config, this);
@@ -35,4 +35,4 @@ export class ConfigGet extends Command {
     }
 }
 
-ConfigGet.description = 'Get credentials stored in your Stream config.';
+module.exports.ConfigGet = ConfigGet;

@@ -5,27 +5,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class UserRemove extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold('Channel name.'),
-            required: true,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Channel type.'),
-            required: true,
-        }),
-        moderators: flags.string({
-            char: 'm',
-            description: chalk.blue.bold(
-                'Comma separated list of moderators to remove.'
-            ),
-            required: true,
-        }),
-    };
-
+class UserRemove extends Command {
     async run() {
         const { flags } = this.parse(UserRemove);
 
@@ -51,4 +31,24 @@ export class UserRemove extends Command {
     }
 }
 
-UserRemove.description = 'Remove a user from a channel.';
+UserRemove.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold('Channel name.'),
+        required: true,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Channel type.'),
+        required: true,
+    }),
+    moderators: flags.string({
+        char: 'm',
+        description: chalk.blue.bold(
+            'Comma separated list of moderators to remove.'
+        ),
+        required: true,
+    }),
+};
+
+module.exports.UserRemove = UserRemove;

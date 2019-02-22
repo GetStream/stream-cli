@@ -31,30 +31,7 @@ const events = [
     'connection.recovered',
 ];
 
-export class Log extends Command {
-    static flags = {
-        id: flags.string({
-            char: 'i',
-            description: chalk.blue.bold('The channel ID you wish to log.'),
-            default: uuid(),
-            required: false,
-        }),
-        type: flags.string({
-            char: 't',
-            description: chalk.blue.bold('The type of channel.'),
-            options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-            required: true,
-        }),
-        event: flags.string({
-            char: 'e',
-            description: chalk.blue.bold(
-                'The type of event you want to listen on.'
-            ),
-            options: events,
-            required: false,
-        }),
-    };
-
+class Log extends Command {
     async run() {
         const { flags } = this.parse(Log);
 
@@ -140,4 +117,27 @@ export class Log extends Command {
     }
 }
 
-Log.description = 'Log events in real-time coming from a channel.';
+Log.flags = {
+    id: flags.string({
+        char: 'i',
+        description: chalk.blue.bold('The channel ID you wish to log.'),
+        default: uuid(),
+        required: false,
+    }),
+    type: flags.string({
+        char: 't',
+        description: chalk.blue.bold('The type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: true,
+    }),
+    event: flags.string({
+        char: 'e',
+        description: chalk.blue.bold(
+            'The type of event you want to listen on.'
+        ),
+        options: events,
+        required: false,
+    }),
+};
+
+module.exports.Log = Log;

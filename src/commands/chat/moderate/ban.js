@@ -5,27 +5,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class ModerateBan extends Command {
-    static flags = {
-        user: flags.string({
-            char: 'u',
-            description: chalk.blue.bold('The ID of the offending user.'),
-            exclusive: ['message'],
-            required: true,
-        }),
-        reason: flags.string({
-            char: 'r',
-            description: chalk.blue.bold('A reason for adding a timeout.'),
-            required: true,
-        }),
-        timeout: flags.string({
-            char: 't',
-            description: chalk.blue.bold('Duration of timeout in minutes.'),
-            default: '60',
-            required: true,
-        }),
-    };
-
+class ModerateBan extends Command {
     async run() {
         const { flags } = this.parse(ModerateBan);
 
@@ -51,5 +31,24 @@ export class ModerateBan extends Command {
     }
 }
 
-ModerateBan.description =
-    'Ban users from a channel indefinitely or based on a per minute timeout.';
+ModerateBan.flags = {
+    user: flags.string({
+        char: 'u',
+        description: chalk.blue.bold('The ID of the offending user.'),
+        exclusive: ['message'],
+        required: true,
+    }),
+    reason: flags.string({
+        char: 'r',
+        description: chalk.blue.bold('A reason for adding a timeout.'),
+        required: true,
+    }),
+    timeout: flags.string({
+        char: 't',
+        description: chalk.blue.bold('Duration of timeout in minutes.'),
+        default: '60',
+        required: true,
+    }),
+};
+
+module.exports.ModerateBan = ModerateBan;

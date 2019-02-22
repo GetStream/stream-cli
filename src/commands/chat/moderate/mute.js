@@ -5,15 +5,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class ModerateMute extends Command {
-    static flags = {
-        user: flags.string({
-            char: 'u',
-            description: chalk.blue.bold('The ID of the offending user.'),
-            required: true,
-        }),
-    };
-
+class ModerateMute extends Command {
     async run() {
         const { flags } = this.parse(ModerateMute);
 
@@ -36,4 +28,12 @@ export class ModerateMute extends Command {
     }
 }
 
-ModerateMute.description = 'Mute users within a channel.';
+ModerateMute.flags = {
+    user: flags.string({
+        char: 'u',
+        description: chalk.blue.bold('The ID of the offending user.'),
+        required: true,
+    }),
+};
+
+module.exports.ModerateMute = ModerateMute;

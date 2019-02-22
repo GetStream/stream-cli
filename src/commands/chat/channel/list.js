@@ -5,7 +5,7 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-export class ChannelList extends Command {
+class ChannelList extends Command {
     async run() {
         try {
             const client = await auth(
@@ -53,5 +53,4 @@ export class ChannelList extends Command {
     }
 }
 
-ChannelList.description =
-    'List all channels associated with your config credentials.';
+module.exports.ChannelList = ChannelList;
