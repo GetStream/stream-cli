@@ -2,7 +2,7 @@ const StreamChat = require('stream-chat');
 
 const { credentials } = require('../../utils/config');
 
-export async function auth(config, _this) {
+async function auth(config, _this) {
     try {
         const { apiKey, apiSecret } = await credentials(config);
         if (!apiKey || !apiSecret) {
@@ -16,3 +16,5 @@ export async function auth(config, _this) {
         _this.error(err, { exit: 1 });
     }
 }
+
+module.exports.auth = auth;

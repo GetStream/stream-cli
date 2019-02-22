@@ -2,7 +2,7 @@ const emoji = require('node-emoji');
 const chalk = require('chalk');
 const fs = require('fs-extra');
 
-export async function credentials(config, _this) {
+async function credentials(config, _this) {
     try {
         if (!(await fs.pathExists(config))) {
             await fs.outputJson(config, {
@@ -33,3 +33,5 @@ export async function credentials(config, _this) {
         _this.exit(1);
     }
 }
+
+module.exports.credentials = credentials;
