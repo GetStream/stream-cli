@@ -19,7 +19,6 @@
     "license": "BSD-3-Clause",
     "main": "src/index.js",
     "scripts": {
-        "pack": "pkg . --debug --out-path dist",
         "postpack": "rm -f oclif.manifest.json",
         "prepack": "oclif-dev manifest",
         "posttest": "eslint .",
