@@ -19,9 +19,10 @@
     "license": "BSD-3-Clause",
     "main": "src/index.js",
     "scripts": {
+        "pack": "pkg . --debug --out-path dist",
         "postpack": "rm -f oclif.manifest.json",
         "prepack": "oclif-dev manifest",
-        "pack": "yarn prepack && yarn postpack",
+        "release": "oclif-dev release",
         "posttest": "eslint .",
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
     },

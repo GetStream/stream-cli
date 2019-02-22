@@ -145,6 +145,10 @@ Initialize a new configuration file.
 ```sh-session
 USAGE
   $ stream config:set
+
+OPTIONS
+  -k, --key=key        API key for config.
+  -s, --secret=secret  API secret for config.
 ```
 
 ### `$ stream config:get`
@@ -158,11 +162,14 @@ USAGE
 
 ### `$ stream config:destroy`
 
-Destroy your configuration file
+Destroy your configuration file.
 
 ```sh-session
 USAGE
   $ stream config:destroy
+
+OPTIONS
+  -f, --force=force  Force remove config.
 ```
 
 > Note: The command `stream config:set` must be called to re-initialize the configuration.
@@ -208,7 +215,7 @@ USAGE
 
 OPTIONS
   -d, --data=data                                       Additional data as a JSON.
-  -i, --id=id                                           (required) [default: 1d4b7547-17ae-4956-b60e-d674a72173e0] A unique ID for the channel you wish to create.
+  -i, --id=id                                           (required) [default: <UUID>] A unique ID for the channel you wish to create.
   -m, --members=members                                 Comma separated list of members to add to the channel.
   -n, --name=name                                       (required) Name of the channel room.
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
