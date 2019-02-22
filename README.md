@@ -82,7 +82,7 @@ Whereas commands for specific products use subcommands:
 $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 ```
 
-# 🤦‍ Usage
+# 🥳‍ Usage
 
 <!-- usage -->
 
