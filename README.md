@@ -11,33 +11,33 @@ Stream's Command Line Interface (CLI) makes it easy to create and manage your [S
 [![devDependency Status](https://david-dm.org/getstream/stream-cli/dev-status.svg)](https://david-dm.org/getstream/stream-cli?type=dev)
 [![License](https://img.shields.io/npm/l/getstream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
 
-## 🗒 Issues
+# 🗒 Issues
 
 If you're experiencing problems directly related to the CLI, please add an [issue on GitHub](https://github.com/getstream/stream-cli/issues).
 
 For other issues, submit a [support ticket](https://getstream.io/support).
 
-## 📚 Changelog
+# 📚 Changelog
 
 As with any project, things are always changing. If you're interested in seeing what's changed in the Stream CLI, the changelog for this project can be found [here](https://github.com/getstream/stream/blob/master/CHANGELOG.md).
 
-## 🏗 Installation
+# 🏗 Installation
 
 The Stream CLI is easy to install. You have the option to use [homebrew](https://brew.sh) (preferred) if you're on macOS, download a single binary for your OS of choice, or download via npm.
 
-#### Homebrew
+### Homebrew
 
 ```sh-session
 $ brew install stream
 ```
 
-#### NPM
+### NPM
 
 ```sh-session
 $ npm install -g getstream-cli
 ```
 
-#### Binaries
+### Binaries
 
 -   [Mac OS X](https://github.com/GetStream/stream-cli/releases)
 -   [Linux](https://github.com/GetStream/stream-cli/releases)
@@ -45,7 +45,7 @@ $ npm install -g getstream-cli
 
 > Note: Binaries are generally updated less frequently than Homebrew.
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
 In order to initialize the CLI, please have your Stream API key and secret ready. Run the following command:
 
@@ -68,7 +68,7 @@ $ Your config has been generated! 🚀
 
 > Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your application.
 
-## 🔨 Syntax
+# 🔨 Syntax
 
 Basic commands use the following syntax:
 
@@ -82,9 +82,9 @@ Whereas commands for specific products use subcommands:
 $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 ```
 
-## Usage
+# 🤦‍ Usage
 
-  <!-- usage -->
+<!-- usage -->
 
 ```sh-session
 $ npm install -g getstream-cli
@@ -100,20 +100,17 @@ USAGE
 
 <!-- usagestop -->
 
-## Commands
+# 💻 Commands
 
-  <!-- commands -->
-
-## Command Topics
+<!-- commands -->
 
 -   [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 -   [`stream chat`](docs/chat.md) - configure and manage all things related to chat
 -   [`stream commands`](docs/commands.md) - list all the commands
 -   [`stream config`](docs/config.md) - manage config variables
 -   [`stream help`](docs/help.md) - display help for stream
+    <!-- commandsstop -->
 
-<!-- commandsstop -->
-
-## 📣 Feedback
+# 📣 Feedback
 
 If you have any suggestions or just want to let us know what you think of the Stream CLI, please send us a message at support@getstream.io or create a [GitHub Issue](https://github.com/getstream/stream-cli/issues).
