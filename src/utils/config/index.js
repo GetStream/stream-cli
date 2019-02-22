@@ -17,9 +17,9 @@ export async function credentials(config, _this) {
             _this.log(
                 chalk.red(
                     `Credentials not found. Run ${chalk.bold(
-                        'chat config:set'
+                        'stream config:set'
                     )} to generate a configuration file. ${emoji.get(
-                        'pensive'
+                        'warning'
                     )}`
                 )
             );

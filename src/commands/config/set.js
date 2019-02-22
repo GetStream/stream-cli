@@ -1,5 +1,5 @@
 const { Command } = require('@oclif/command');
-const prompt = require('enquirer');
+const { prompt } = require('enquirer');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const opn = require('opn');
@@ -17,7 +17,7 @@ export class ConfigSet extends Command {
                 const answer = await prompt({
                     type: 'confirm',
                     name: 'continue',
-                    message: chalk.yellow.bold(
+                    message: chalk.red.bold(
                         `This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
                             'warning'
                         )} `
@@ -31,11 +31,7 @@ export class ConfigSet extends Command {
                 const answer = await prompt({
                     type: 'confirm',
                     name: 'continue',
-                    message: chalk.green(
-                        `Do you have an existing account with Stream? If not, please enter "N". ${emoji.get(
-                            'rocket'
-                        )} `
-                    ),
+                    message: `Do you have an existing account with Stream? If not, please enter "N".`,
                 });
 
                 if (!answer.continue) {
@@ -53,16 +49,12 @@ export class ConfigSet extends Command {
                 {
                     type: 'input',
                     name: 'apiKey',
-                    message: chalk.green(
-                        `What's your API key? ${emoji.get('lock')}`
-                    ),
+                    message: `What's your API key? ${emoji.get('lock')}`,
                 },
                 {
                     type: 'input',
                     name: 'apiSecret',
-                    message: chalk.green(
-                        `What's your API secret? ${emoji.get('lock')}`
-                    ),
+                    message: `What's your API secret? ${emoji.get('lock')}`,
                 },
             ]);
 
@@ -72,7 +64,7 @@ export class ConfigSet extends Command {
             });
 
             this.log(
-                chalk.green(`Your config has been generated!`),
+                chalk.bold(`Your config has been generated!`),
                 emoji.get('rocket')
             );
         } catch (err) {

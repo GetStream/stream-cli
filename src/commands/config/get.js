@@ -13,8 +13,11 @@ export class ConfigGet extends Command {
 
         if (apiKey && apiSecret) {
             const table = new Table({
-                head: ['API Key', 'API Secret'],
-                colWidths: [25, 75],
+                head: [
+                    chalk.green.bold('API Key'),
+                    chalk.green.bold('API Secret'),
+                ],
+                colWidths: [25, 70],
             });
 
             table.push([apiKey, apiSecret]);
@@ -23,13 +26,9 @@ export class ConfigGet extends Command {
             this.exit(0);
         } else {
             this.error(
-                chalk.red(
-                    `Credentials not found. Run ${chalk.bold(
-                        'chat init'
-                    )} to generate a configuration file. ${emoji.get(
-                        'pensive'
-                    )}`
-                ),
+                `Credentials not found. Run ${chalk.bold(
+                    'stream config:set'
+                )} to generate a configuration file. ${emoji.get('caution')}`,
                 { exit: 1 }
             );
         }
