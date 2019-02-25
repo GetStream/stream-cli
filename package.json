@@ -87,7 +87,7 @@
         },
         "topics": {
             "config": {
-                "description": "manage config variables"
+                "description": "manage configuration variables"
             },
             "debug:token": {
                 "description": "debug stream jwt tokens on the fly"
@@ -96,19 +96,55 @@
                 "description": "configure and manage all things related to chat"
             },
             "chat:channel": {
-                "description": "create, get, query, and edit a channel"
+                "description": "get and manage configurations for a channel"
+            },
+            "chat:channel:get": {
+                "description": "get details from a specific channel"
+            },
+            "chat:channel:edit": {
+                "description": "edit configuration for a channel"
+            },
+            "chat:channel:init": {
+                "description": "create a new channel"
+            },
+            "chat:channel:list": {
+                "description": "get all channels"
+            },
+            "chat:channel:query": {
+                "description": "query all channels"
             },
             "chat:log": {
-                "description": "log events from a channel based on an event type"
+                "description": "log events from a channel"
             },
             "chat:message": {
                 "description": "send and remove messages from a channel"
             },
+            "chat:message:remove": {
+                "description": "remove a message from a channel"
+            },
+            "chat:message:send": {
+                "description": "send a new message with our without attachments"
+            },
             "chat:moderate": {
-                "description": "moderate a channel"
+                "description": "moderatation tools for a channel"
+            },
+            "chat:moderate:ban": {
+                "description": "ban a user temporarily or based on a per minute timeout"
+            },
+            "chat:moderate:flag": {
+                "description": "flag a user for innapropriate comments or content"
+            },
+            "chat:moderate:mute": {
+                "description": "silence a user within a channel"
             },
             "chat:user": {
                 "description": "manage users within channels"
+            },
+            "chat:user:add": {
+                "description": "add a user to a channel"
+            },
+            "chat:user:remove": {
+                "description": "remove a user from a channel"
             }
         }
     }
