@@ -1,4 +1,5 @@
 const { Command, flags } = require('@oclif/command');
+const { prompt } = require('enquirer');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
@@ -14,7 +15,45 @@ class UserAdd extends Command {
                 path.join(this.config.configDir, 'config.json')
             );
 
-            const channel = await client.channel(flags.type, flags.id);
+            if (!flags.type || !flags.moderators || !flags.channel) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        hint: 'The name of the channel',
+                        message: `What is the unique identifier for the channel?`,
+                        required: true,
+                    },
+                    {
+                        type: 'select',
+                        name: 'type',
+                        message: 'What type of channel is this?',
+                        required: true,
+                        choices: [
+                            { message: 'Livestream', value: 'livestream' },
+                            { message: 'Messaging', value: 'messaging' },
+                            { message: 'Gaming', value: 'gaming' },
+                            { message: 'Commerce', value: 'commerce' },
+                            { message: 'Team', value: 'team' },
+                        ],
+                    },
+                    {
+                        type: 'input',
+                        name: 'moderators',
+                        message: 'Who would you like to add as a moderator?',
+                        hint: 'e.g. Thierry, Tommaso, Nick (Comma Separated)',
+                        required: true,
+                    },
+                ]);
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
+            }
+
+            const channel = await client.channel(flags.type, flags.channel);
             await channel.addModerators(flags.moderators.split(','));
 
             this.log(
@@ -25,28 +64,27 @@ class UserAdd extends Command {
             );
             this.exit(0);
         } catch (err) {
-            this.error(err, { exit: 1 });
+            this.error(err || 'A CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 UserAdd.flags = {
-    id: flags.string({
-        char: 'i',
-        description: chalk.blue.bold('Channel name.'),
-        required: true,
+    channel: flags.string({
+        char: 'c',
+        description: chalk.blue.bold('Channel identifier.'),
+        required: false,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('Channel type.'),
-        required: true,
+        description: chalk.blue.bold('The type of channel.'),
+        options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: false,
     }),
     moderators: flags.string({
         char: 'm',
-        description: chalk.blue.bold(
-            'Comma separated list of moderators to add.'
-        ),
-        required: true,
+        description: chalk.blue.bold('Comma separated list of moderators.'),
+        required: false,
     }),
 };
 

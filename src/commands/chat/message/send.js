@@ -31,6 +31,7 @@ class MessageSend extends Command {
                     {
                         type: 'input',
                         name: 'channel',
+                        hint: 'The name of the channel',
                         message: `What is the unique identifier for the channel?`,
                         required: true,
                     },
@@ -50,8 +51,9 @@ class MessageSend extends Command {
                     {
                         type: 'input',
                         name: 'message',
-                        required: true,
+                        hint: 'Hello World!',
                         message: 'What is the message you would like to send?',
+                        required: true,
                     },
                 ]);
 

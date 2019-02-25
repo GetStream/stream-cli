@@ -111,7 +111,7 @@ class Log extends Command {
                 });
             }
         } catch (err) {
-            this.error(err, { exit: 1 });
+            this.error(err || 'A CLI error has occurred.', { exit: 1 });
         }
     }
 }
