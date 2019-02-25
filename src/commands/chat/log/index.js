@@ -41,7 +41,7 @@ class Log extends Command {
             );
 
             if (!flags.event) {
-                const question = await prompt({
+                const res = await prompt({
                     type: 'autocomplete',
                     name: 'event',
                     message: 'What event would you like to filter on?',
@@ -54,7 +54,7 @@ class Log extends Command {
                     choices: events,
                 });
 
-                flags.event = question.event;
+                flags.event = res.event;
             }
 
             await client.updateUser({

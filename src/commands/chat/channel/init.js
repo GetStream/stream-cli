@@ -4,9 +4,13 @@ const path = require('path');
 const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
+const { credentials } = require('../../../utils/config');
 
 class ChannelInit extends Command {
     async run() {
+        const config = path.join(this.config.configDir, 'config.json');
+        const { name, email } = await credentials(config);
+
         const { flags } = this.parse(ChannelInit);
 
         try {
@@ -17,8 +21,8 @@ class ChannelInit extends Command {
             let payload = {
                 name: flags.name,
                 created_by: {
-                    id: uuid(),
-                    name: 'CLI',
+                    id: email,
+                    name,
                 },
             };
             if (flags.image) payload.image = flags.image;
@@ -29,7 +33,11 @@ class ChannelInit extends Command {
                 payload = Object.assign({}, payload, parsed);
             }
 
-            const channel = await client.channel(flags.type, flags.id, payload);
+            const channel = await client.channel(
+                flags.type,
+                flags.channel,
+                payload
+            );
             await channel.create();
 
             this.log(`The channel ${flags.name} has been initialized!`, {
@@ -43,8 +51,8 @@ class ChannelInit extends Command {
 }
 
 ChannelInit.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: chalk.blue.bold(
             'A unique ID for the channel you wish to create.'
         ),

@@ -59,7 +59,7 @@ class UserAdd extends Command {
             this.log(
                 `${flags.moderators} have been added as moderators to channel ${
                     flags.type
-                }:${flags.id}`,
+                }:${flags.channel}`,
                 emoji.get('rocket')
             );
             this.exit(0);

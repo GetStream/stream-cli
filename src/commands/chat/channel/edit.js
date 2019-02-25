@@ -2,25 +2,29 @@ const { Command, flags } = require('@oclif/command');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
-const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
+const { credentials } = require('../../../utils/config');
 
 class ChannelEdit extends Command {
     async run() {
+        const config = path.join(this.config.configDir, 'config.json');
+        const { name, email } = await credentials(config);
+
         const { flags } = this.parse(ChannelEdit);
 
         try {
             const client = await auth(
                 path.join(this.config.configDir, 'config.json')
             );
+
             const channel = await client.channel(flags.type, flags.id);
 
             let payload = {
                 name: flags.name,
                 updated_by: {
-                    id: uuid(),
-                    name: 'CLI',
+                    id: email,
+                    name,
                 },
             };
             if (flags.image) payload.image = flags.image;
