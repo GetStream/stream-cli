@@ -1,19 +1,19 @@
-const StreamChat = require('stream-chat');
+const { StreamChat } = require('stream-chat');
 
 const { credentials } = require('../../utils/config');
 
-async function auth(config, _this) {
+async function auth(config) {
     try {
         const { apiKey, apiSecret } = await credentials(config);
         if (!apiKey || !apiSecret) {
-            return _this.error(`Missing config...`, { exit: 1 });
+            throw new Error('Missing configuration file...');
         }
 
         const client = new StreamChat(apiKey, apiSecret);
 
         return client;
     } catch (err) {
-        _this.error(err, { exit: 1 });
+        throw new Error(err);
     }
 }
 

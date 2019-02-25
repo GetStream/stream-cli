@@ -11,8 +11,7 @@ class MessageRemove extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
             await client.deleteMessage(flags.id);
@@ -29,8 +28,8 @@ class MessageRemove extends Command {
 }
 
 MessageRemove.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: chalk.blue.bold(
             'The channel ID that you would like to remove.'
         ),

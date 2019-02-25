@@ -9,7 +9,7 @@ const { credentials } = require('../../utils/config');
 class DebugToken extends Command {
     async run() {
         const config = path.join(this.config.configDir, 'config.json');
-        const { apiKey, apiSecret } = await credentials(config, this);
+        const { apiKey, apiSecret } = await credentials(config);
         const { flags } = this.parse(DebugToken);
 
         try {

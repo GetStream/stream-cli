@@ -11,8 +11,7 @@ class ModerateBan extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
             await client.banUser(flags.user, {

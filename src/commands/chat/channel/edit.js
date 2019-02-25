@@ -12,8 +12,7 @@ class ChannelEdit extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
             const channel = await client.channel(flags.type, flags.id);
 

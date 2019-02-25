@@ -1,6 +1,7 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
+const { prompt } = require('enquirer');
 const chalk = require('chalk');
+const uuid = require('uuid/v4');
 const path = require('path');
 
 const { auth } = require('../../../utils/auth');
@@ -11,16 +12,58 @@ class MessageSend extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
+            if (!flags.user || !flags.channel || !flags.message || flags.type) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'user',
+                        message: `What is the unique identifier for the user sending this message?`,
+                        default: uuid(),
+                        required: true,
+                    },
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        message: `What is the unique identifier for the channel?`,
+                        required: true,
+                    },
+                    {
+                        type: 'select',
+                        name: 'type',
+                        message: 'What type of channel is this?',
+                        required: true,
+                        choices: [
+                            { message: 'Livestream', value: 'livestream' },
+                            { message: 'Messaging', value: 'messaging' },
+                            { message: 'Gaming', value: 'gaming' },
+                            { message: 'Commerce', value: 'commerce' },
+                            { message: 'Team', value: 'team' },
+                        ],
+                    },
+                    {
+                        type: 'input',
+                        name: 'message',
+                        required: true,
+                        message: 'What is the message you would like to send?',
+                    },
+                ]);
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
+            }
+
             await client.updateUser({
-                id: flags.uid,
+                id: flags.user,
                 role: 'admin',
             });
 
-            await client.setUser({ id: flags.uid, status: 'invisible' });
+            await client.setUser({ id: flags.user, status: 'invisible' });
             const channel = client.channel(flags.type, flags.channel);
 
             const payload = {
@@ -33,55 +76,50 @@ class MessageSend extends Command {
 
             await channel.sendMessage(payload);
 
-            const message = chalk.blue(
-                `Message ${chalk.bold(
-                    flags.message
-                )} has been sent to the ${chalk.bold(
-                    flags.channel
-                )} channel by ${chalk.bold(flags.uid)}!`
-            );
+            const message = `Message ${chalk.bold(
+                flags.message
+            )} has been sent to the ${chalk.bold(
+                flags.channel
+            )} channel by user ${chalk.bold(flags.user)}!`;
 
-            this.log(message, emoji.get('smile'));
+            this.log(message);
             this.exit();
         } catch (err) {
-            this.error(err, { exit: 1 });
+            this.error(err || 'A CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 MessageSend.flags = {
-    id: flags.string({
-        char: 'i',
-        description: chalk.blue.bold(
-            'The channel ID that you would like to send a message to.'
-        ),
-        required: false,
-    }),
     user: flags.string({
         char: 'u',
-        description: chalk.blue.bold(
-            'The ID of the acting user sending the message.'
-        ),
-        default: '*',
-        required: true,
+        description: chalk.blue.bold('The ID of the user sending the message.'),
+        required: false,
     }),
     type: flags.string({
         char: 't',
         description: chalk.blue.bold('The type of channel.'),
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: true,
+        required: false,
+    }),
+    channel: flags.string({
+        char: 'c',
+        description: chalk.blue.bold(
+            'The ID of the channel that you would like to send a message to.'
+        ),
+        required: false,
     }),
     message: flags.string({
         char: 'm',
         description: chalk.blue.bold(
             'The message you would like to send as plaintext.'
         ),
-        required: true,
+        required: false,
     }),
     attachments: flags.string({
         char: 'a',
         description: chalk.blue.bold(
-            'A JSON payload of attachments to send with the message.'
+            'A JSON payload of attachments to send along with a message.'
         ),
         required: false,
     }),

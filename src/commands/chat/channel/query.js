@@ -10,8 +10,7 @@ class ChannelQuery extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
             const filter = flags.filters ? JSON.parse(flags.filters) : {};

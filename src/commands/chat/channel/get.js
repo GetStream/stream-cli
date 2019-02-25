@@ -12,8 +12,7 @@ class ChannelGet extends Command {
 
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
             const channel = await client.queryChannels(
@@ -30,30 +29,32 @@ class ChannelGet extends Command {
             const config = data.config;
 
             table.push(
-                { CID: data.cid },
-                { Name: data.name },
-                { Type: data.type },
+                { [`${chalk.green.bold('CID')}`]: data.cid },
+                { [`${chalk.green.bold('Name')}`]: data.name },
+                { [`${chalk.green.bold('Type')}`]: data.type },
                 {
-                    Owner: `${data.created_by.name} (${data.created_by.role})`,
+                    [`${chalk.green.bold('Owner')}`]: `${
+                        data.created_by.name
+                    } (${data.created_by.role})`,
                 },
                 {
-                    Roles: data.channel_roles.length
+                    [`${chalk.green.bold('Roles')}`]: data.channel_roles.length
                         ? data.channel_roles.join(', ')
                         : chalk.red('No roles defined'),
                 },
                 {
-                    Members: data.members.length
+                    [`${chalk.green.bold('Members')}`]: data.members.length
                         ? data.members.join(', ')
                         : chalk.red('No active members'),
                 },
                 {
-                    Automod:
+                    [`${chalk.green.bold('Automod')}`]:
                         config.automod === 'enabled'
                             ? chalk.green('enabled')
                             : chalk.red('disabled'),
                 },
                 {
-                    Commands: config.commands
+                    [`${chalk.green.bold('Commands')}`]: config.commands
                         .map(
                             command =>
                                 `${command.name} (${chalk.green('enabled')})`
@@ -61,31 +62,31 @@ class ChannelGet extends Command {
                         .join(', '),
                 },
                 {
-                    Mutes:
+                    [`${chalk.green.bold('Mutes')}`]:
                         config.mutes === true
                             ? chalk.green('enabled')
                             : chalk.red('disabled'),
                 },
                 {
-                    Reactions:
+                    [`${chalk.green.bold('Reactions')}`]:
                         config.reactions === true
                             ? chalk.green('enabled')
                             : chalk.red('disabled'),
                 },
                 {
-                    Replies:
+                    [`${chalk.green.bold('Replies')}`]:
                         config.replies === true
                             ? chalk.green('enabled')
                             : chalk.red('disabled'),
                 },
                 {
-                    Search:
+                    [`${chalk.green.bold('Search')}`]:
                         config.search === true
                             ? chalk.green('enabled')
                             : chalk.red('disabled'),
                 },
                 {
-                    Events: [
+                    [`${chalk.green.bold('Events')}`]: [
                         config.connect_events === true
                             ? `connect (${chalk.green('enabled')})`
                             : '',
@@ -97,9 +98,13 @@ class ChannelGet extends Command {
                             : '',
                     ].join(', '),
                 },
-                { 'Message Retention': config.message_retention },
                 {
-                    'Max Message Length': `${numeral(
+                    [`${chalk.green.bold(
+                        'Message Retention'
+                    )}`]: config.message_retention,
+                },
+                {
+                    [`${chalk.green.bold('Max Message Length')}`]: `${numeral(
                         config.max_message_length
                     ).format('0,0')} characters`,
                 }

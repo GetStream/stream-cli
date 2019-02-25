@@ -9,8 +9,7 @@ class ChannelList extends Command {
     async run() {
         try {
             const client = await auth(
-                path.join(this.config.configDir, 'config.json'),
-                this
+                path.join(this.config.configDir, 'config.json')
             );
 
             const channels = await client.queryChannels(
