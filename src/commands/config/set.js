@@ -8,13 +8,15 @@ const fs = require('fs-extra');
 
 class ConfigSet extends Command {
     async run() {
-        const { flags } = this.parse(ConfigDestroy);
+        const { flags } = this.parse(ConfigSet);
         const config = path.join(this.config.configDir, 'config.json');
 
         try {
             const exists = await fs.pathExists(config);
 
-            if (flags.key && flags.secret) {
+            let data = {};
+
+            if (!flags.key && !flags.secret) {
                 if (exists) {
                     const answer = await prompt({
                         type: 'confirm',
@@ -49,7 +51,7 @@ class ConfigSet extends Command {
                     }
                 }
 
-                const data = await prompt([
+                data = await prompt([
                     {
                         type: 'input',
                         name: 'apiKey',
@@ -61,11 +63,14 @@ class ConfigSet extends Command {
                         message: `What's your API secret? ${emoji.get('lock')}`,
                     },
                 ]);
+            } else {
+                data.apiKey = flags.key;
+                data.apiSecrety = flags.secret;
             }
 
             await fs.writeJson(config, {
-                apiKey: data.apiKey || flags.key,
-                apiSecret: data.apiSecret || flags.secret,
+                apiKey: flags.key ? flags.key : data.apiKey,
+                apiSecret: flags.secret ? flags.secret : data.apiSecret,
             });
 
             this.log(
