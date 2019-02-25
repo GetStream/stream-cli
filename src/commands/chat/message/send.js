@@ -5,9 +5,13 @@ const uuid = require('uuid/v4');
 const path = require('path');
 
 const { auth } = require('../../../utils/auth');
+const { credentials } = require('../../../utils/config');
 
 class MessageSend extends Command {
     async run() {
+        const config = path.join(this.config.configDir, 'config.json');
+        const { name } = await credentials(config);
+
         const { flags } = this.parse(MessageSend);
 
         try {
@@ -21,7 +25,7 @@ class MessageSend extends Command {
                         type: 'input',
                         name: 'user',
                         message: `What is the unique identifier for the user sending this message?`,
-                        default: uuid(),
+                        default: name || uuid(),
                         required: true,
                     },
                     {

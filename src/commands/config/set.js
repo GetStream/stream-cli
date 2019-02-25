@@ -14,11 +14,9 @@ class ConfigSet extends Command {
         try {
             const exists = await fs.pathExists(config);
 
-            let data = {};
-
-            if (!flags.key && !flags.secret) {
+            if (!flags.name || !flags.email || !flags.key || !flags.secret) {
                 if (exists) {
-                    const answer = await prompt({
+                    const confirm = await prompt({
                         type: 'confirm',
                         name: 'continue',
                         message: chalk.red.bold(
@@ -28,69 +26,83 @@ class ConfigSet extends Command {
                         ),
                     });
 
-                    if (!answer.continue) {
-                        this.exit(0);
-                    }
-                } else {
-                    const answer = await prompt({
-                        type: 'confirm',
-                        name: 'continue',
-                        message: `Do you have an existing account with Stream? If not, please enter "N".`,
-                    });
-
-                    if (!answer.continue) {
-                        opn('https://getstream.io');
-
-                        this.log(
-                            chalk.yellow(
-                                `Redirecting you to https://getstream.io`
-                            ),
-                            emoji.get('earth_americas')
-                        );
+                    if (!confirm.continue) {
                         this.exit(0);
                     }
                 }
 
-                data = await prompt([
+                const res = await prompt([
                     {
                         type: 'input',
-                        name: 'apiKey',
-                        message: `What's your API key? ${emoji.get('lock')}`,
+                        name: 'name',
+                        message: `What is your full name?`,
+                        required: true,
                     },
                     {
                         type: 'input',
-                        name: 'apiSecret',
-                        message: `What's your API secret? ${emoji.get('lock')}`,
+                        name: 'email',
+                        message: `What is your email address associated with Stream?`,
+                        required: true,
+                    },
+                    {
+                        type: 'input',
+                        name: 'key',
+                        message: `What is your Stream API key?`,
+                        required: true,
+                    },
+                    {
+                        type: 'password',
+                        name: 'secret',
+                        message: `What is your Stream API secret?`,
+                        required: true,
                     },
                 ]);
-            } else {
-                data.apiKey = flags.key;
-                data.apiSecrety = flags.secret;
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
             }
 
             await fs.writeJson(config, {
-                apiKey: flags.key ? flags.key : data.apiKey,
-                apiSecret: flags.secret ? flags.secret : data.apiSecret,
+                name: flags.name,
+                email: flags.email,
+                apiKey: flags.key,
+                apiSecret: flags.secret,
             });
 
             this.log(
-                chalk.bold(`Your config has been generated!`),
+                chalk.bold(`Your Stream CLI configuration has been generated!`),
                 emoji.get('rocket')
             );
+            this.exit(0);
         } catch (err) {
-            this.error(err, { exit: 1 });
+            this.error(err || 'A CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 ConfigSet.flags = {
+    name: flags.string({
+        char: 'n',
+        description: chalk.blue.bold('Full name for configuration.'),
+        required: false,
+    }),
+    email: flags.string({
+        char: 'e',
+        description: chalk.blue.bold('Email for configuration.'),
+        required: false,
+    }),
     key: flags.string({
         char: 'k',
-        description: chalk.blue.bold('API key for config.'),
+        description: chalk.blue.bold('API key for configuration.'),
+        required: false,
     }),
     secret: flags.string({
         char: 's',
-        description: chalk.blue.bold('API secret for config.'),
+        description: chalk.blue.bold('API secret for configuration.'),
+        required: false,
     }),
 };
 

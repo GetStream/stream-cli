@@ -9,18 +9,25 @@ const { credentials } = require('../../utils/config');
 class ConfigGet extends Command {
     async run() {
         const config = path.join(this.config.configDir, 'config.json');
-        const { apiKey, apiSecret } = await credentials(config);
+        const { name, email, apiKey, apiSecret } = await credentials(config);
 
-        if (apiKey && apiSecret) {
-            const table = new Table({
-                head: [
-                    chalk.green.bold('API Key'),
-                    chalk.green.bold('API Secret'),
-                ],
-                colWidths: [25, 70],
-            });
+        if (name && email && apiKey && apiSecret) {
+            const table = new Table();
 
-            table.push([apiKey, apiSecret]);
+            table.push(
+                {
+                    [`${chalk.green.bold('Name')}`]: name,
+                },
+                {
+                    [`${chalk.green.bold('Email')}`]: email,
+                },
+                {
+                    [`${chalk.green.bold('API Key')}`]: apiKey,
+                },
+                {
+                    [`${chalk.green.bold('API Secret')}`]: apiSecret,
+                }
+            );
 
             this.log(table.toString());
             this.exit(0);
@@ -28,7 +35,8 @@ class ConfigGet extends Command {
             this.error(
                 `Credentials not found. Run ${chalk.bold(
                     'stream config:set'
-                )} to generate a configuration file. ${emoji.get('caution')}`,
+                )} to generate a Stream configuration file.`,
+                emoji.get('caution'),
                 { exit: 1 }
             );
         }

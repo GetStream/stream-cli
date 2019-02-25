@@ -23,17 +23,15 @@ class ChannelList extends Command {
             if (channels.length) {
                 channels.map(channel =>
                     this.log(
-                        chalk.blue(
-                            `The channel ${chalk.bold(
-                                channel.id
-                            )} of type ${chalk.bold(
-                                channel.type
-                            )} with the CID of ${chalk.bold(
-                                channel.cid
-                            )} has ${chalk.bold(
-                                channel.data.members.length
-                            )} members.`
-                        )
+                        `The channel ${chalk.bold(
+                            channel.id
+                        )} of type ${chalk.bold(
+                            channel.type
+                        )} with the CID of ${chalk.bold(
+                            channel.cid
+                        )} has ${chalk.bold(
+                            channel.data.members.length
+                        )} members.`
                     )
                 );
 

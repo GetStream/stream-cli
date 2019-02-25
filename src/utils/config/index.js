@@ -6,12 +6,14 @@ async function credentials(config) {
     try {
         if (!(await fs.pathExists(config))) {
             await fs.outputJson(config, {
+                name: '',
+                email: '',
                 apiKey: '',
                 apiSecret: '',
             });
         }
 
-        const { apiKey, apiSecret } = await fs.readJson(config);
+        const { name, email, apiKey, apiSecret } = await fs.readJson(config);
 
         if (!apiKey.length || !apiSecret.length) {
             console.warn(
@@ -24,7 +26,7 @@ async function credentials(config) {
             process.exit(0);
         }
 
-        return { apiKey, apiSecret };
+        return { name, email, apiKey, apiSecret };
     } catch (err) {
         console.warn(err);
         process.exit(1);
