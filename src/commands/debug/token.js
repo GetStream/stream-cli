@@ -8,14 +8,23 @@ const { credentials } = require('../../utils/config');
 
 class DebugToken extends Command {
     async run() {
-        const config = path.join(this.config.configDir, 'config.json');
-        const { apiKey, apiSecret } = await credentials(config);
+        const { apiKey, apiSecret } = await credentials(this);
         const { flags } = this.parse(DebugToken);
 
         try {
-            const decoded = await jwt.verify(flags.token, apiSecret, {
+            const decoded = await jwt.verify(flags.jwt, apiSecret, {
                 complete: true,
             });
+
+            if (!decoded) {
+                this.warn('Invalid JWT token or Stream API secret.');
+                this.exit(0);
+            }
+
+            if (flags.raw) {
+                this.log(decoded);
+                this.exit();
+            }
 
             const table = new Table();
 
@@ -38,16 +47,23 @@ class DebugToken extends Command {
             this.log(table.toString());
             this.exit(0);
         } catch (err) {
-            this.error(err, { exit: 1 });
+            this.error(err || 'A CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 DebugToken.flags = {
-    token: flags.string({
-        char: 't',
+    jwt: flags.string({
+        char: 'j',
         description: chalk.blue.bold('The JWT token you are trying to debug.'),
         required: true,
+    }),
+    raw: flags.string({
+        char: 'r',
+        description: chalk.blue.bold(
+            'A raw object containing the header, signature, and payload of your JWT.'
+        ),
+        required: false,
     }),
 };
 
