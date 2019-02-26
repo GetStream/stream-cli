@@ -11,9 +11,7 @@ class UserAdd extends Command {
         const { flags } = this.parse(UserAdd);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             if (!flags.type || !flags.moderators || !flags.channel) {
                 const res = await prompt([

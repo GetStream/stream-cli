@@ -31,7 +31,7 @@ class ConfigDestroy extends Command {
             this.log(
                 `Config destroyed. Run the command ${chalk.bold(
                     'stream config:set'
-                )} to generate a new config.`,
+                )} to generate a new stream configuration file.`,
                 emoji.get('rocket')
             );
 

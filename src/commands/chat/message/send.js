@@ -9,15 +9,12 @@ const { credentials } = require('../../../utils/config');
 
 class MessageSend extends Command {
     async run() {
-        const config = path.join(this.config.configDir, 'config.json');
-        const { name } = await credentials(config);
+        const { name } = await credentials(this);
 
         const { flags } = this.parse(MessageSend);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             if (!flags.user || !flags.channel || !flags.message || flags.type) {
                 const res = await prompt([

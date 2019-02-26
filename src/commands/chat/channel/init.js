@@ -8,15 +8,12 @@ const { credentials } = require('../../../utils/config');
 
 class ChannelInit extends Command {
     async run() {
-        const config = path.join(this.config.configDir, 'config.json');
-        const { name, email } = await credentials(config);
+        const { name, email } = await credentials(this);
 
         const { flags } = this.parse(ChannelInit);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             let payload = {
                 name: flags.name,

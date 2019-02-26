@@ -20,7 +20,7 @@ class ConfigSet extends Command {
                         type: 'confirm',
                         name: 'continue',
                         message: chalk.red.bold(
-                            `This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
+                            `This command will delete your current Stream configuration. Are you sure you want to continue? ${emoji.get(
                                 'warning'
                             )} `
                         ),

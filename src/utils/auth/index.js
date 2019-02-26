@@ -2,18 +2,17 @@ const { StreamChat } = require('stream-chat');
 
 const { credentials } = require('../../utils/config');
 
-async function auth(config) {
+async function auth(ctx) {
     try {
-        const { apiKey, apiSecret } = await credentials(config);
-        if (!apiKey || !apiSecret) {
-            throw new Error('Missing configuration file...');
-        }
+        const { apiKey, apiSecret } = await credentials(ctx);
 
         const client = new StreamChat(apiKey, apiSecret);
 
         return client;
     } catch (err) {
-        throw new Error(err);
+        ctx.error(err || 'A Stream authentication error has occurred.', {
+            exit: 1,
+        });
     }
 }
 

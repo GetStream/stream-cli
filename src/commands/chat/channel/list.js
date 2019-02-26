@@ -8,9 +8,7 @@ const { auth } = require('../../../utils/auth');
 class ChannelList extends Command {
     async run() {
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             const channels = await client.queryChannels(
                 {},

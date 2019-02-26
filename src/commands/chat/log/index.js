@@ -36,9 +36,7 @@ class Log extends Command {
         const { flags } = this.parse(Log);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             if (!flags.event) {
                 const res = await prompt({

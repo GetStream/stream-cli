@@ -9,9 +9,7 @@ class ChannelQuery extends Command {
         const { flags } = this.parse(ChannelQuery);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             const filter = flags.filters ? JSON.parse(flags.filters) : {};
             const sort = flags.sort ? JSON.parse(flags.sort) : {};
@@ -21,7 +19,6 @@ class ChannelQuery extends Command {
             });
 
             this.log(channels[0].data);
-
             this.exit(0);
         } catch (err) {
             this.error(err || 'A CLI error has occurred.', { exit: 1 });

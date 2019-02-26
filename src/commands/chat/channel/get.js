@@ -11,9 +11,7 @@ class ChannelGet extends Command {
         const { flags } = this.parse(ChannelGet);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             const channel = await client.queryChannels(
                 { id: flags.id, type: flags.type },

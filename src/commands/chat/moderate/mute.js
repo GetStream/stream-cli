@@ -10,9 +10,7 @@ class ModerateMute extends Command {
         const { flags } = this.parse(ModerateMute);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             await client.muteUser(flags.user);
 

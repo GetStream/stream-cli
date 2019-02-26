@@ -10,9 +10,7 @@ class ModerateFlag extends Command {
         const { flags } = this.parse(ModerateFlag);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             if (flags.user) {
                 await client.flagUser(flags.user);

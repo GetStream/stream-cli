@@ -10,9 +10,7 @@ class ModerateBan extends Command {
         const { flags } = this.parse(ModerateBan);
 
         try {
-            const client = await auth(
-                path.join(this.config.configDir, 'config.json')
-            );
+            const client = await auth(this);
 
             await client.banUser(flags.user, {
                 timeout: Number(flags.timeout),
