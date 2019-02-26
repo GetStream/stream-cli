@@ -14,7 +14,7 @@ USAGE
   $ stream config:destroy
 
 OPTIONS
-  -f, --force=force  Force remove config.
+  -f, --force  Force remove Stream configuration.
 ```
 
 _See code: [src/commands/config/destroy.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/config/destroy.js)_

@@ -42,8 +42,8 @@ USAGE
   $ stream chat:channel:get
 
 OPTIONS
-  -c, --channel=channel                                 The channel ID you wish to get.
-  -r, --raw=raw                                         A raw object containing all channel data.
+  -c, --channel=channel                                 The channel ID you wish to retrieve.
+  -r, --raw                                             A raw object containing all channel data.
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
@@ -56,18 +56,18 @@ USAGE
   $ stream chat:channel:init
 
 OPTIONS
-  -c, --channel=channel                                 (required) [default: 98426852-25d1-4935-b3a5-e737e5e0cce5] A
+  -c, --channel=channel                                 (required) [default: e17c0397-279c-4e38-bdbc-1f58eba8595d] A
                                                         unique ID for the channel you wish to create.
 
   -d, --data=data                                       Additional data as a JSON.
+
+  -i, --image=image                                     URL to channel image.
 
   -m, --members=members                                 Comma separated list of members to add to the channel.
 
   -n, --name=name                                       (required) Name of the channel room.
 
   -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
-
-  -u, --image=image                                     URL to channel image.
 ```
 
 _See code: [src/commands/chat/channel/init.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/init.js)_
@@ -79,7 +79,7 @@ USAGE
   $ stream chat:channel:list
 
 OPTIONS
-  -r, --raw=raw  A raw object containing all channel data.
+  -r, --raw  A raw object containing all channel data.
 ```
 
 _See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/list.js)_
@@ -106,14 +106,14 @@ USAGE
   $ stream chat:log
 
 OPTIONS
+  -c, --channel=channel
+      The channel ID you wish to log.
+
   -e, 
   --event=all|user.status.changed|user.watching.start|user.watching.stop|user.updated|typing.start|typing.stop|message.n
   ew|message.updated|message.deleted|message.seen|message.reaction|member.added|member.removed|channel.updated|health.ch
   eck|connection.changed|connection.recovered
       The type of event you want to listen on.
-
-  -i, --id=id
-      [default: e4ea0f3d-1add-4b82-baaf-e70382ef5c17] The channel ID you wish to log.
 
   -t, --type=livestream|messaging|gaming|commerce|team
       (required) The type of channel.
@@ -129,7 +129,7 @@ USAGE
 
 OPTIONS
   -c, --channel=channel  (required) The channel ID you are targeting.
-  -m, --message=message  The ID of the message you would like to remove.
+  -m, --message=message  (required) The ID of the message you would like to remove.
 ```
 
 _See code: [src/commands/chat/message/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/message/remove.js)_
@@ -184,7 +184,7 @@ USAGE
   $ stream chat:moderate:mute
 
 OPTIONS
-  -u, --user=user  (required) The ID of the offending user.
+  -u, --user=user  (required) The ID of the user to mute.
 ```
 
 _See code: [src/commands/chat/moderate/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/moderate/mute.js)_

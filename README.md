@@ -72,7 +72,7 @@ Whereas commands for specific products use subcommands:
 $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 ```
 
-# 🤔 Fun Facts
+# 🎩 Fun Facts
 
 Interested in using the calling the CLI from a script? You can do that! Many of the commands accept a `raw` argument as a `boolean`. Just pass the following along to the CLI and you'll be able to get a full representation of the response data behind call:
 
