@@ -1,7 +1,7 @@
 `stream config`
 ===============
 
-manage config variables
+manage configuration variables
 
 * [`stream config:destroy`](#stream-configdestroy)
 * [`stream config:get`](#stream-configget)
@@ -17,7 +17,7 @@ OPTIONS
   -f, --force=force  Force remove config.
 ```
 
-_See code: [src/commands/config/destroy.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.17/src/commands/config/destroy.js)_
+_See code: [src/commands/config/destroy.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/config/destroy.js)_
 
 ## `stream config:get`
 
@@ -26,7 +26,7 @@ USAGE
   $ stream config:get
 ```
 
-_See code: [src/commands/config/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.17/src/commands/config/get.js)_
+_See code: [src/commands/config/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/config/get.js)_
 
 ## `stream config:set`
 
@@ -39,4 +39,4 @@ OPTIONS
   -s, --secret=secret  API secret for config.
 ```
 
-_See code: [src/commands/config/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.17/src/commands/config/set.js)_
+_See code: [src/commands/config/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/config/set.js)_

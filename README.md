@@ -72,6 +72,20 @@ Whereas commands for specific products use subcommands:
 $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 ```
 
+# 🤔 Fun Facts
+
+Interested in using the calling the CLI from a script? You can do that! Many of the commands accept a `raw` argument as a `boolean`. Just pass the following along to the CLI and you'll be able to get a full representation of the response data behind call:
+
+```sh-session
+$ stream command:COMMAND --arg1 "foo" --arg2 "bar" --raw "true"
+```
+
+Need to copy the output to your clipboard? Not a problem. Just pipe the information to `pbcopy` (on macOS) along with the `--raw` argument set to `true`:
+
+```sh-session
+$ stream debug:token --jwt "foo.bar.baz" --raw "true" | pbcopy
+```
+
 # 🥳‍ Usage
 
 <!-- usage -->
@@ -81,7 +95,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.17 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.20 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
@@ -97,9 +111,11 @@ USAGE
 -   [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 -   [`stream chat`](docs/chat.md) - configure and manage all things related to chat
 -   [`stream commands`](docs/commands.md) - list all the commands
--   [`stream config`](docs/config.md) - manage config variables
+-   [`stream config`](docs/config.md) - manage configuration variables
+-   [`stream debug`](docs/debug.md)
 -   [`stream help`](docs/help.md) - display help for stream
-    <!-- commandsstop -->
+
+<!-- commandsstop -->
 
 # 📣 Feedback
 
