@@ -74,20 +74,18 @@ class ChannelGet extends Command {
 ChannelGet.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold('The channel ID you wish to get.'),
+        description: 'The channel ID you wish to retrieve.',
         required: false,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('Type of channel.'),
+        description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
-    raw: flags.string({
+    raw: flags.boolean({
         char: 'r',
-        description: chalk.blue.bold(
-            'A raw object containing all channel data.'
-        ),
+        description: 'A raw object containing all channel data.',
         required: false,
     }),
 };

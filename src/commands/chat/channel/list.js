@@ -49,11 +49,9 @@ class ChannelList extends Command {
 }
 
 ChannelList.flags = {
-    raw: flags.string({
+    raw: flags.boolean({
         char: 'r',
-        description: chalk.blue.bold(
-            'A raw object containing all channel data.'
-        ),
+        description: 'A raw object containing all channel data.',
         required: false,
     }),
 };

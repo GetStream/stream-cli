@@ -2,11 +2,9 @@ const { Command, flags } = require('@oclif/command');
 const stringify = require('json-stringify-pretty-compact');
 const prompt = require('enquirer');
 const cardinal = require('cardinal');
-const emoji = require('node-emoji');
 const moment = require('moment');
 const chalk = require('chalk');
 const path = require('path');
-const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
 
@@ -65,16 +63,10 @@ class Log extends Command {
                 status: 'invisible',
             });
 
-            const channel = client.channel(flags.type, flags.id);
+            const channel = client.channel(flags.type, flags.channel);
             await channel.watch();
 
-            this.log(
-                chalk.blue.bold(
-                    `Logging real-time events for ${flags.event}... ${emoji.get(
-                        'rocket'
-                    )}`
-                )
-            );
+            this.log(`Logging real-time events for ${flags.event}...}`);
 
             const time = 'dddd, MMMM Do YYYY [at] h:mm:ss A';
 
@@ -84,13 +76,13 @@ class Log extends Command {
                         moment(event.created_at).format(time)
                     );
 
-                    const payload = `${timestamp}: ${chalk.blue.bold(
+                    const payload = `${timestamp}: ${chalk.bold(
                         event.user.name || event.user.id
-                    )} (${chalk.blue.bold(
+                    )} (${chalk.bold(
                         event.user.role
-                    )}) performed event ${chalk.blue.bold(
+                    )}) performed event ${chalk.bold(
                         event.type
-                    )} in channel ${chalk.blue.bold(flags.id)}.`;
+                    )} in channel ${chalk.bold(flags.channel)}.`;
 
                     this.log(payload);
                 });
@@ -115,23 +107,20 @@ class Log extends Command {
 }
 
 Log.flags = {
-    id: flags.string({
-        char: 'i',
-        description: chalk.blue.bold('The channel ID you wish to log.'),
-        default: uuid(),
+    channel: flags.string({
+        char: 'c',
+        description: 'The channel ID you wish to log.',
         required: false,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('The type of channel.'),
+        description: 'The type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: true,
     }),
     event: flags.string({
         char: 'e',
-        description: chalk.blue.bold(
-            'The type of event you want to listen on.'
-        ),
+        description: 'The type of event you want to listen on.',
         options: events,
         required: false,
     }),

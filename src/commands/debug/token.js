@@ -55,14 +55,12 @@ class DebugToken extends Command {
 DebugToken.flags = {
     jwt: flags.string({
         char: 'j',
-        description: chalk.blue.bold('The JWT token you are trying to debug.'),
+        description: 'The JWT token you are trying to debug.',
         required: true,
     }),
-    raw: flags.string({
+    raw: flags.boolean({
         char: 'r',
-        description: chalk.blue.bold(
-            'A raw object containing the header, signature, and payload of your JWT.'
-        ),
+        description: 'A raw object containing the data from your JWT.',
         required: false,
     }),
 };

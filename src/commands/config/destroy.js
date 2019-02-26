@@ -31,8 +31,7 @@ class ConfigDestroy extends Command {
             this.log(
                 `Config destroyed. Run the command ${chalk.bold(
                     'stream config:set'
-                )} to generate a new stream configuration file.`,
-                emoji.get('rocket')
+                )} to generate a new stream configuration file.`
             );
 
             this.exit(0);
@@ -43,9 +42,9 @@ class ConfigDestroy extends Command {
 }
 
 ConfigDestroy.flags = {
-    force: flags.string({
+    force: flags.boolean({
         char: 'f',
-        description: chalk.blue.bold('Force remove config.'),
+        description: 'Force remove Stream configuration.',
     }),
 };
 

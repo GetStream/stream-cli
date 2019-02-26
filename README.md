@@ -77,13 +77,13 @@ $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 Interested in using the calling the CLI from a script? You can do that! Many of the commands accept a `raw` argument as a `boolean`. Just pass the following along to the CLI and you'll be able to get a full representation of the response data behind call:
 
 ```sh-session
-$ stream command:COMMAND --arg1 "foo" --arg2 "bar" --raw "true"
+$ stream command:COMMAND --arg1 "foo" --arg2 "bar" --raw
 ```
 
-Need to copy the output to your clipboard? Not a problem. Just pipe the information to `pbcopy` (on macOS) along with the `--raw` argument set to `true`:
+Need to copy the output to your clipboard? Not a problem. Just pipe the information to `pbcopy` (on macOS) along with the `--raw` flag:
 
 ```sh-session
-$ stream debug:token --jwt "foo.bar.baz" --raw "true" | pbcopy
+$ stream debug:token --jwt "foo.bar.baz" --raw | pbcopy
 ```
 
 # 🥳‍ Usage

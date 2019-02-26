@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -55,10 +54,11 @@ class UserAdd extends Command {
             await channel.addModerators(flags.moderators.split(','));
 
             this.log(
-                `${flags.moderators} have been added as moderators to channel ${
+                `${chalk.bold(
+                    flags.moderators
+                )} have been added as moderators to channel ${chalk.bold(
                     flags.type
-                }:${flags.channel}`,
-                emoji.get('rocket')
+                )}:${chalk.bold(flags.channel)}`
             );
             this.exit(0);
         } catch (err) {
@@ -70,18 +70,18 @@ class UserAdd extends Command {
 UserAdd.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold('Channel identifier.'),
+        description: 'Channel identifier.',
         required: false,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('The type of channel.'),
+        description: 'The type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
     moderators: flags.string({
         char: 'm',
-        description: chalk.blue.bold('Comma separated list of moderators.'),
+        description: 'Comma separated list of moderators.',
         required: false,
     }),
 };

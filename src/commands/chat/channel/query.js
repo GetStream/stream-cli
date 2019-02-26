@@ -29,23 +29,23 @@ class ChannelQuery extends Command {
 ChannelQuery.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold('The channel ID you wish to query.'),
+        description: 'The channel ID you wish to query.',
         required: true,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('Type of channel.'),
+        description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
     filter: flags.string({
         char: 'f',
-        description: chalk.blue.bold('Filters to apply to the query.'),
+        description: 'Filters to apply to the query.',
         required: false,
     }),
     sort: flags.string({
         char: 's',
-        description: chalk.blue.bold('Sort to apply to the query.'),
+        description: 'Sort to apply to the query.',
         required: false,
     }),
 };

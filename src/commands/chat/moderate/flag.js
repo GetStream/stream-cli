@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -16,16 +15,14 @@ class ModerateFlag extends Command {
                 await client.flagUser(flags.user);
 
                 this.log(
-                    `The user ${flags.user} has been flagged!`,
-                    emoji.get('bangbang')
+                    `The user ${fchalk.bold(lags.user)} has been flagged!`
                 );
                 this.exit(0);
             } else if (flags.message) {
                 await client.flagMessage(flags.message);
 
                 this.log(
-                    `The message ${flags.user} has been flagged!`,
-                    emoji.get('bangbang')
+                    `The message ${chalk.bold(flags.user)} has been flagged!`
                 );
                 this.exit(0);
             } else {
@@ -45,13 +42,13 @@ class ModerateFlag extends Command {
 ModerateFlag.flags = {
     user: flags.string({
         char: 'u',
-        description: chalk.blue.bold('The ID of the offending user.'),
+        description: 'The ID of the offending user.',
         exclusive: ['message'],
         required: false,
     }),
     message: flags.string({
         char: 'm',
-        description: chalk.blue.bold('The ID of the message you want to flag.'),
+        description: 'The ID of the message you want to flag.',
         exclusive: ['user'],
         required: false,
     }),

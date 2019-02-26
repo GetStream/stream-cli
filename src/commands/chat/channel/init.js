@@ -38,7 +38,7 @@ class ChannelInit extends Command {
             await channel.create();
 
             this.log(
-                `The channel ${chalk.bold(flags.name)} has been initialized!`
+                `The channel ${chalk.bold(flags.name)} has been initialized.`
             );
             this.exit(0);
         } catch (err) {
@@ -50,38 +50,34 @@ class ChannelInit extends Command {
 ChannelInit.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold(
-            'A unique ID for the channel you wish to create.'
-        ),
+        description: 'A unique ID for the channel you wish to create.',
         default: uuid(),
         required: true,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('Type of channel.'),
+        description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: true,
     }),
     name: flags.string({
         char: 'n',
-        description: chalk.blue.bold('Name of the channel room.'),
+        description: 'Name of the channel room.',
         required: true,
     }),
     image: flags.string({
-        char: 'u',
-        description: chalk.blue.bold('URL to channel image.'),
+        char: 'i',
+        description: 'URL to channel image.',
         required: false,
     }),
     members: flags.string({
         char: 'm',
-        description: chalk.blue.bold(
-            'Comma separated list of members to add to the channel.'
-        ),
+        description: 'Comma separated list of members to add to the channel.',
         required: false,
     }),
     data: flags.string({
         char: 'd',
-        description: chalk.blue.bold('Additional data as a JSON.'),
+        description: 'Additional data as a JSON.',
         required: false,
     }),
 };

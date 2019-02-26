@@ -72,7 +72,7 @@ class ConfigSet extends Command {
             });
 
             this.log(
-                chalk.bold(`Your Stream CLI configuration has been generated!`),
+                'Your Stream CLI configuration has been generated!',
                 emoji.get('rocket')
             );
             this.exit(0);
@@ -85,22 +85,22 @@ class ConfigSet extends Command {
 ConfigSet.flags = {
     name: flags.string({
         char: 'n',
-        description: chalk.blue.bold('Full name for configuration.'),
+        description: 'Full name for configuration.',
         required: false,
     }),
     email: flags.string({
         char: 'e',
-        description: chalk.blue.bold('Email for configuration.'),
+        description: 'Email for configuration.',
         required: false,
     }),
     key: flags.string({
         char: 'k',
-        description: chalk.blue.bold('API key for configuration.'),
+        description: 'API key for configuration.',
         required: false,
     }),
     secret: flags.string({
         char: 's',
-        description: chalk.blue.bold('API secret for configuration.'),
+        description: 'API secret for configuration.',
         required: false,
     }),
 };

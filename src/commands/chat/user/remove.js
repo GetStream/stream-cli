@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -16,10 +15,11 @@ class UserRemove extends Command {
             await channel.demoteModerators(flags.moderators.split(','));
 
             this.log(
-                `${flags.moderators} have been removed as moderators from the ${
+                `${chalk.bold(
+                    flags.moderators
+                )} have been removed as moderators from the ${chalk.bold(
                     flags.type
-                } channel ${flags.id}`,
-                emoji.get('warning')
+                )} channel ${chalk.bold(flags.id)}.`
             );
             this.exit(0);
         } catch (err) {
@@ -31,19 +31,17 @@ class UserRemove extends Command {
 UserRemove.flags = {
     id: flags.string({
         char: 'i',
-        description: chalk.blue.bold('Channel name.'),
+        description: 'Channel name.',
         required: true,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('Channel type.'),
+        description: 'Channel type.',
         required: true,
     }),
     moderators: flags.string({
         char: 'm',
-        description: chalk.blue.bold(
-            'Comma separated list of moderators to remove.'
-        ),
+        description: 'Comma separated list of moderators to remove.',
         required: true,
     }),
 };

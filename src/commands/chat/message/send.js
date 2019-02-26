@@ -83,7 +83,7 @@ class MessageSend extends Command {
                 flags.message
             )} has been sent to the ${chalk.bold(
                 flags.channel
-            )} channel by user ${chalk.bold(flags.user)}!`;
+            )} channel by user ${chalk.bold(flags.user)}.`;
 
             this.log(message);
             this.exit();
@@ -96,34 +96,30 @@ class MessageSend extends Command {
 MessageSend.flags = {
     user: flags.string({
         char: 'u',
-        description: chalk.blue.bold('The ID of the user sending the message.'),
+        description: 'The ID of the user sending the message.',
         required: false,
     }),
     type: flags.string({
         char: 't',
-        description: chalk.blue.bold('The type of channel.'),
+        description: 'The type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold(
-            'The ID of the channel that you would like to send a message to.'
-        ),
+        description:
+            'The ID of the channel that you would like to send a message to.',
         required: false,
     }),
     message: flags.string({
         char: 'm',
-        description: chalk.blue.bold(
-            'The message you would like to send as plaintext.'
-        ),
+        description: 'The message you would like to send as plaintext.',
         required: false,
     }),
     attachments: flags.string({
         char: 'a',
-        description: chalk.blue.bold(
-            'A JSON payload of attachments to send along with a message.'
-        ),
+        description:
+            'A JSON payload of attachments to send along with a message.',
         required: false,
     }),
 };

@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -11,13 +10,9 @@ class ModerateMute extends Command {
 
         try {
             const client = await auth(this);
-
             await client.muteUser(flags.user);
 
-            this.log(
-                `The message ${flags.user} has been flagged!`,
-                emoji.get('two_flags')
-            );
+            this.log(`The message ${chalk.bold(flags.user)} has been flagged!`);
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -28,7 +23,7 @@ class ModerateMute extends Command {
 ModerateMute.flags = {
     user: flags.string({
         char: 'u',
-        description: chalk.blue.bold('The ID of the offending user.'),
+        description: 'The ID of the user to mute.',
         required: true,
     }),
 };

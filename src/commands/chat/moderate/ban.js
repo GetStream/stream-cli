@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -17,10 +16,7 @@ class ModerateBan extends Command {
                 reason: flags.reason,
             });
 
-            this.log(
-                `The user ${flags.user} has been banned!`,
-                emoji.get('banned')
-            );
+            this.log(`The user ${chalk.bold(flags.user)} has been banned!`);
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -31,18 +27,18 @@ class ModerateBan extends Command {
 ModerateBan.flags = {
     user: flags.string({
         char: 'u',
-        description: chalk.blue.bold('The ID of the offending user.'),
+        description: 'The ID of the offending user.',
         exclusive: ['message'],
         required: true,
     }),
     reason: flags.string({
         char: 'r',
-        description: chalk.blue.bold('A reason for adding a timeout.'),
+        description: 'A reason for adding a timeout.',
         required: true,
     }),
     timeout: flags.string({
         char: 't',
-        description: chalk.blue.bold('Duration of timeout in minutes.'),
+        description: 'Duration of timeout in minutes.',
         default: '60',
         required: true,
     }),

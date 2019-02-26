@@ -13,7 +13,7 @@ class MessageRemove extends Command {
 
             await client.deleteMessage(flags.id);
 
-            this.log(`The message ${flags.id} has been removed!`);
+            this.log(`The message ${chalk.bold(flags.id)} has been removed.`);
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -24,15 +24,13 @@ class MessageRemove extends Command {
 MessageRemove.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold('The channel ID you are targeting.'),
+        description: 'The channel ID you are targeting.',
         required: true,
     }),
     message: flags.string({
         char: 'message',
-        description: chalk.blue.bold(
-            'The ID of the message you would like to remove.'
-        ),
-        required: false,
+        description: 'The ID of the message you would like to remove.',
+        required: true,
     }),
 };
 
