@@ -2,7 +2,6 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
-const opn = require('opn');
 const path = require('path');
 const fs = require('fs-extra');
 
