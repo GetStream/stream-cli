@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -37,12 +36,9 @@ class ChannelEdit extends Command {
                 text: flags.reason,
             });
 
-            this.log(
-                `The channel ${flags.id} has been modified!`,
-                emoji.get('rocket')
-            );
+            this.log(`The channel ${flags.id} has been modified!`);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }

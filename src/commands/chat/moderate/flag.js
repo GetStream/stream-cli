@@ -30,14 +30,14 @@ class ModerateFlag extends Command {
                 this.exit(0);
             } else {
                 this.warn(
-                    `Please pass a valid command. Use the command ${chalk.blue.bold(
+                    `Please pass a valid command. Use the command ${chalk.bold(
                         'moderate:flag --help'
                     )} for more information.`
                 );
                 this.exit(0);
             }
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }

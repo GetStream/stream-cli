@@ -21,14 +21,14 @@ class ChannelQuery extends Command {
             this.log(channels[0].data);
             this.exit(0);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 ChannelQuery.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: chalk.blue.bold('The channel ID you wish to query.'),
         required: true,
     }),

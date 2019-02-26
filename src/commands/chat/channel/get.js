@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
-const Table = require('cli-table');
+const { prompt } = require('enquirer');
+const treeify = require('treeify');
 const numeral = require('numeral');
 const chalk = require('chalk');
 const path = require('path');
@@ -11,122 +12,84 @@ class ChannelGet extends Command {
         const { flags } = this.parse(ChannelGet);
 
         try {
+            if (!flags.channel || !flags.type) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        hint: 'The name of the channel',
+                        message: `What is the unique identifier for the channel?`,
+                        required: true,
+                    },
+                    {
+                        type: 'select',
+                        name: 'type',
+                        message: 'What type of channel is this?',
+                        required: true,
+                        choices: [
+                            { message: 'Livestream', value: 'livestream' },
+                            { message: 'Messaging', value: 'messaging' },
+                            { message: 'Gaming', value: 'gaming' },
+                            { message: 'Commerce', value: 'commerce' },
+                            { message: 'Team', value: 'team' },
+                        ],
+                    },
+                ]);
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
+            }
+
             const client = await auth(this);
 
             const channel = await client.queryChannels(
-                { id: flags.id, type: flags.type },
+                { id: flags.channel, type: flags.type },
                 { last_message_at: -1 },
                 {
                     subscribe: false,
                 }
             );
 
-            const table = new Table();
+            if (flags.raw) {
+                this.log(channel[0]);
+                this.exit(0);
+            }
 
-            const data = channel[0].data;
-            const config = data.config;
+            delete channel[0].data.config['commands'];
+            delete channel[0].data.config['created_at'];
+            delete channel[0].data.config['updated_at'];
 
-            table.push(
-                { [`${chalk.green.bold('CID')}`]: data.cid },
-                { [`${chalk.green.bold('Name')}`]: data.name },
-                { [`${chalk.green.bold('Type')}`]: data.type },
-                {
-                    [`${chalk.green.bold('Owner')}`]: `${
-                        data.created_by.name
-                    } (${data.created_by.role})`,
-                },
-                {
-                    [`${chalk.green.bold('Roles')}`]: data.channel_roles.length
-                        ? data.channel_roles.join(', ')
-                        : chalk.red('No roles defined'),
-                },
-                {
-                    [`${chalk.green.bold('Members')}`]: data.members.length
-                        ? data.members.join(', ')
-                        : chalk.red('No active members'),
-                },
-                {
-                    [`${chalk.green.bold('Automod')}`]:
-                        config.automod === 'enabled'
-                            ? chalk.green('enabled')
-                            : chalk.red('disabled'),
-                },
-                {
-                    [`${chalk.green.bold('Commands')}`]: config.commands
-                        .map(
-                            command =>
-                                `${command.name} (${chalk.green('enabled')})`
-                        )
-                        .join(', '),
-                },
-                {
-                    [`${chalk.green.bold('Mutes')}`]:
-                        config.mutes === true
-                            ? chalk.green('enabled')
-                            : chalk.red('disabled'),
-                },
-                {
-                    [`${chalk.green.bold('Reactions')}`]:
-                        config.reactions === true
-                            ? chalk.green('enabled')
-                            : chalk.red('disabled'),
-                },
-                {
-                    [`${chalk.green.bold('Replies')}`]:
-                        config.replies === true
-                            ? chalk.green('enabled')
-                            : chalk.red('disabled'),
-                },
-                {
-                    [`${chalk.green.bold('Search')}`]:
-                        config.search === true
-                            ? chalk.green('enabled')
-                            : chalk.red('disabled'),
-                },
-                {
-                    [`${chalk.green.bold('Events')}`]: [
-                        config.connect_events === true
-                            ? `connect (${chalk.green('enabled')})`
-                            : '',
-                        config.seen_events === true
-                            ? `seen (${chalk.green('enabled')})`
-                            : '',
-                        config.typing_events === true
-                            ? `typing (${chalk.green('enabled')})`
-                            : '',
-                    ].join(', '),
-                },
-                {
-                    [`${chalk.green.bold(
-                        'Message Retention'
-                    )}`]: config.message_retention,
-                },
-                {
-                    [`${chalk.green.bold('Max Message Length')}`]: `${numeral(
-                        config.max_message_length
-                    ).format('0,0')} characters`,
-                }
-            );
+            const tree = treeify.asTree(channel[0].data, true, false);
 
-            this.log(table.toString());
+            this.log(tree);
             this.exit(0);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
 ChannelGet.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: chalk.blue.bold('The channel ID you wish to get.'),
-        required: true,
+        required: false,
     }),
     type: flags.string({
         char: 't',
         description: chalk.blue.bold('Type of channel.'),
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: true,
+        required: false,
+    }),
+    raw: flags.string({
+        char: 'r',
+        description: chalk.blue.bold(
+            'A raw object containing all channel data.'
+        ),
+        required: false,
     }),
 };
 

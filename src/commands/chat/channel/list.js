@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
+const treeify = require('treeify');
+const moment = require('moment');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -7,6 +8,8 @@ const { auth } = require('../../../utils/auth');
 
 class ChannelList extends Command {
     async run() {
+        const { flags } = this.parse(ChannelList);
+
         try {
             const client = await auth(this);
 
@@ -14,38 +17,45 @@ class ChannelList extends Command {
                 {},
                 { last_message_at: -1 },
                 {
+                    watch: false,
+                    state: false,
                     subscribe: false,
                 }
             );
 
-            if (channels.length) {
-                channels.map(channel =>
-                    this.log(
-                        `The channel ${chalk.bold(
-                            channel.id
-                        )} of type ${chalk.bold(
-                            channel.type
-                        )} with the CID of ${chalk.bold(
-                            channel.cid
-                        )} has ${chalk.bold(
-                            channel.data.members.length
-                        )} members.`
-                    )
-                );
-
-                this.exit(0);
-            } else {
-                this.warn(
-                    `Your application does not have any channels.`,
-                    emoji.get('pensive')
-                );
+            if (flags.raw) {
+                for (const channel of channels) {
+                    this.log(channel, '\n');
+                }
 
                 this.exit(0);
             }
+
+            for (const channel of channels) {
+                delete channel.data.config['commands'];
+                delete channel.data.config['created_at'];
+                delete channel.data.config['updated_at'];
+
+                const tree = treeify.asTree(channel.data, true, false);
+
+                this.log(tree);
+            }
+
+            this.exit(0);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
+
+ChannelList.flags = {
+    raw: flags.string({
+        char: 'r',
+        description: chalk.blue.bold(
+            'A raw object containing all channel data.'
+        ),
+        required: false,
+    }),
+};
 
 module.exports.ChannelList = ChannelList;

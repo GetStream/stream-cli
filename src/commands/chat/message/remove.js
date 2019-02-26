@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -14,13 +13,10 @@ class MessageRemove extends Command {
 
             await client.deleteMessage(flags.id);
 
-            this.log(
-                `The message ${flags.id} has been removed!`,
-                emoji.get('wastebasket')
-            );
+            this.log(`The message ${flags.id} has been removed!`);
             this.exit(0);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
@@ -28,10 +24,15 @@ class MessageRemove extends Command {
 MessageRemove.flags = {
     channel: flags.string({
         char: 'c',
-        description: chalk.blue.bold(
-            'The channel ID that you would like to remove.'
-        ),
+        description: chalk.blue.bold('The channel ID you are targeting.'),
         required: true,
+    }),
+    message: flags.string({
+        char: 'message',
+        description: chalk.blue.bold(
+            'The ID of the message you would like to remove.'
+        ),
+        required: false,
     }),
 };
 

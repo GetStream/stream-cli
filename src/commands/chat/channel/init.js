@@ -37,12 +37,10 @@ class ChannelInit extends Command {
             );
             await channel.create();
 
-            this.log(`The channel ${flags.name} has been initialized!`, {
-                emoji: 'rocket',
-            });
+            this.log(`The channel ${flags.name} has been initialized!`);
             this.exit(0);
         } catch (err) {
-            this.error(err || 'A CLI error has occurred.', { exit: 1 });
+            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
