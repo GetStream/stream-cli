@@ -95,7 +95,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.20 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.22 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
@@ -112,7 +112,7 @@ USAGE
 -   [`stream chat`](docs/chat.md) - configure and manage all things related to chat
 -   [`stream commands`](docs/commands.md) - list all the commands
 -   [`stream config`](docs/config.md) - manage configuration variables
--   [`stream debug`](docs/debug.md)
+-   [`stream debug`](docs/debug.md) - debugging tools for the command line
 -   [`stream help`](docs/help.md) - display help for stream
 
 <!-- commandsstop -->

@@ -33,7 +33,7 @@ OPTIONS
   -u, --url=url                                         URL to the channel image.
 ```
 
-_See code: [src/commands/chat/channel/edit.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/channel/edit.js)_
+_See code: [src/commands/chat/channel/edit.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/edit.js)_
 
 ## `stream chat:channel:get`
 
@@ -42,11 +42,12 @@ USAGE
   $ stream chat:channel:get
 
 OPTIONS
-  -i, --id=id                                           (required) The channel ID you wish to get.
-  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+  -c, --channel=channel                                 The channel ID you wish to get.
+  -r, --raw=raw                                         A raw object containing all channel data.
+  -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-_See code: [src/commands/chat/channel/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/channel/get.js)_
+_See code: [src/commands/chat/channel/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/get.js)_
 
 ## `stream chat:channel:init`
 
@@ -55,10 +56,10 @@ USAGE
   $ stream chat:channel:init
 
 OPTIONS
-  -d, --data=data                                       Additional data as a JSON.
-
-  -i, --id=id                                           (required) [default: b0832680-c41f-42b3-b0ea-6f9fd2273799] A
+  -c, --channel=channel                                 (required) [default: 98426852-25d1-4935-b3a5-e737e5e0cce5] A
                                                         unique ID for the channel you wish to create.
+
+  -d, --data=data                                       Additional data as a JSON.
 
   -m, --members=members                                 Comma separated list of members to add to the channel.
 
@@ -69,16 +70,19 @@ OPTIONS
   -u, --image=image                                     URL to channel image.
 ```
 
-_See code: [src/commands/chat/channel/init.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/channel/init.js)_
+_See code: [src/commands/chat/channel/init.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/init.js)_
 
 ## `stream chat:channel:list`
 
 ```
 USAGE
   $ stream chat:channel:list
+
+OPTIONS
+  -r, --raw=raw  A raw object containing all channel data.
 ```
 
-_See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/channel/list.js)_
+_See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/list.js)_
 
 ## `stream chat:channel:query`
 
@@ -87,13 +91,13 @@ USAGE
   $ stream chat:channel:query
 
 OPTIONS
+  -c, --channel=channel                                 (required) The channel ID you wish to query.
   -f, --filter=filter                                   Filters to apply to the query.
-  -i, --id=id                                           (required) The channel ID you wish to query.
   -s, --sort=sort                                       Sort to apply to the query.
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-_See code: [src/commands/chat/channel/query.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/channel/query.js)_
+_See code: [src/commands/chat/channel/query.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/channel/query.js)_
 
 ## `stream chat:log`
 
@@ -109,13 +113,13 @@ OPTIONS
       The type of event you want to listen on.
 
   -i, --id=id
-      [default: 1909d31e-24f2-4e11-9ca1-945ca2ac7a13] The channel ID you wish to log.
+      [default: e4ea0f3d-1add-4b82-baaf-e70382ef5c17] The channel ID you wish to log.
 
   -t, --type=livestream|messaging|gaming|commerce|team
       (required) The type of channel.
 ```
 
-_See code: [src/commands/chat/log/index.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/log/index.js)_
+_See code: [src/commands/chat/log/index.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/log/index.js)_
 
 ## `stream chat:message:remove`
 
@@ -124,10 +128,11 @@ USAGE
   $ stream chat:message:remove
 
 OPTIONS
-  -i, --id=id  (required) The channel ID that you would like to remove.
+  -c, --channel=channel  (required) The channel ID you are targeting.
+  -m, --message=message  The ID of the message you would like to remove.
 ```
 
-_See code: [src/commands/chat/message/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/message/remove.js)_
+_See code: [src/commands/chat/message/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/message/remove.js)_
 
 ## `stream chat:message:send`
 
@@ -136,16 +141,14 @@ USAGE
   $ stream chat:message:send
 
 OPTIONS
-  -a, --attachments=attachments                         A JSON payload of attachments to send with the message.
-  -i, --id=id                                           The channel ID that you would like to send a message to.
-  -m, --message=message                                 (required) The message you would like to send as plaintext.
-  -t, --type=livestream|messaging|gaming|commerce|team  (required) The type of channel.
-
-  -u, --user=user                                       (required) [default: *] The ID of the acting user sending the
-                                                        message.
+  -a, --attachments=attachments                         A JSON payload of attachments to send along with a message.
+  -c, --channel=channel                                 The ID of the channel that you would like to send a message to.
+  -m, --message=message                                 The message you would like to send as plaintext.
+  -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
+  -u, --user=user                                       The ID of the user sending the message.
 ```
 
-_See code: [src/commands/chat/message/send.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/message/send.js)_
+_See code: [src/commands/chat/message/send.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/message/send.js)_
 
 ## `stream chat:moderate:ban`
 
@@ -159,7 +162,7 @@ OPTIONS
   -u, --user=user        (required) The ID of the offending user.
 ```
 
-_See code: [src/commands/chat/moderate/ban.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/moderate/ban.js)_
+_See code: [src/commands/chat/moderate/ban.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/moderate/ban.js)_
 
 ## `stream chat:moderate:flag`
 
@@ -172,7 +175,7 @@ OPTIONS
   -u, --user=user        The ID of the offending user.
 ```
 
-_See code: [src/commands/chat/moderate/flag.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/moderate/flag.js)_
+_See code: [src/commands/chat/moderate/flag.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/moderate/flag.js)_
 
 ## `stream chat:moderate:mute`
 
@@ -184,7 +187,7 @@ OPTIONS
   -u, --user=user  (required) The ID of the offending user.
 ```
 
-_See code: [src/commands/chat/moderate/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/moderate/mute.js)_
+_See code: [src/commands/chat/moderate/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/moderate/mute.js)_
 
 ## `stream chat:user:add`
 
@@ -193,12 +196,12 @@ USAGE
   $ stream chat:user:add
 
 OPTIONS
-  -i, --id=id                  (required) Channel name.
-  -m, --moderators=moderators  (required) Comma separated list of moderators to add.
-  -t, --type=type              (required) Channel type.
+  -c, --channel=channel                                 Channel identifier.
+  -m, --moderators=moderators                           Comma separated list of moderators.
+  -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
 ```
 
-_See code: [src/commands/chat/user/add.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/user/add.js)_
+_See code: [src/commands/chat/user/add.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/user/add.js)_
 
 ## `stream chat:user:remove`
 
@@ -212,4 +215,4 @@ OPTIONS
   -t, --type=type              (required) Channel type.
 ```
 
-_See code: [src/commands/chat/user/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.20/src/commands/chat/user/remove.js)_
+_See code: [src/commands/chat/user/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.22/src/commands/chat/user/remove.js)_
