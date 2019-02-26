@@ -91,6 +91,9 @@
             "config": {
                 "description": "manage configuration variables"
             },
+            "debug": {
+                "description": "debugging tools for the command line"
+            },
             "debug:token": {
                 "description": "debug stream jwt tokens on the fly"
             },
