@@ -52,7 +52,7 @@ class ChannelGet extends Command {
                 }
             );
 
-            if (flags.raw) {
+            if (flags.json) {
                 this.log(channel[0]);
                 this.exit(0);
             }
@@ -83,9 +83,10 @@ ChannelGet.flags = {
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
-    raw: flags.boolean({
-        char: 'r',
-        description: 'A raw object containing all channel data.',
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

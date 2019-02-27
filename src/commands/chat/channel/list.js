@@ -23,7 +23,7 @@ class ChannelList extends Command {
                 }
             );
 
-            if (flags.raw) {
+            if (flags.json) {
                 for (const channel of channels) {
                     this.log(channel, '\n');
                 }
@@ -49,9 +49,10 @@ class ChannelList extends Command {
 }
 
 ChannelList.flags = {
-    raw: flags.boolean({
-        char: 'r',
-        description: 'A raw object containing all channel data.',
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

@@ -21,11 +21,6 @@ class DebugToken extends Command {
                 this.exit(0);
             }
 
-            if (flags.raw) {
-                this.log(decoded);
-                this.exit();
-            }
-
             const table = new Table();
 
             table.push(
@@ -55,13 +50,8 @@ class DebugToken extends Command {
 DebugToken.flags = {
     jwt: flags.string({
         char: 'j',
-        description: 'The JWT token you are trying to debug.',
+        description: 'JWT token you are trying to debug.',
         required: true,
-    }),
-    raw: flags.boolean({
-        char: 'r',
-        description: 'A raw object containing the data from your JWT.',
-        required: false,
     }),
 };
 
