@@ -10,13 +10,17 @@ class ModerateBan extends Command {
 
         try {
             const client = await auth(this);
-
-            await client.banUser(flags.user, {
+            const ban = await client.banUser(flags.user, {
                 timeout: Number(flags.timeout),
                 reason: flags.reason,
             });
 
-            this.log(`The user ${chalk.bold(flags.user)} has been banned!`);
+            if (flags.json) {
+                this.log(json);
+                this.exit(0);
+            }
+
+            this.log(`The user ${chalk.bold(flags.user)} has been banned.`);
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -41,6 +45,12 @@ ModerateBan.flags = {
         description: 'Duration of timeout in minutes.',
         default: '60',
         required: true,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
     }),
 };
 

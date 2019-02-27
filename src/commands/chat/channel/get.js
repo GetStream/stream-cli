@@ -10,10 +10,9 @@ const { auth } = require('../../../utils/auth');
 class ChannelGet extends Command {
     async run() {
         const { flags } = this.parse(ChannelGet);
-        const client = await auth(this);
 
         try {
-            if (!flags.channel || !flags.type) {
+            if (!flags.json) {
                 const res = await prompt([
                     {
                         type: 'input',
@@ -43,6 +42,8 @@ class ChannelGet extends Command {
                     }
                 }
             }
+
+            const client = await auth(this);
 
             const channel = await client.queryChannels(
                 { id: flags.channel, type: flags.type },

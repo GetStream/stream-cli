@@ -8,16 +8,22 @@ const { credentials } = require('../../utils/config');
 
 class DebugToken extends Command {
     async run() {
-        const { apiKey, apiSecret } = await credentials(this);
         const { flags } = this.parse(DebugToken);
 
         try {
+            const { apiKey, apiSecret } = await credentials(this);
+
             const decoded = await jwt.verify(flags.jwt, apiSecret, {
                 complete: true,
             });
 
             if (!decoded) {
                 this.warn('Invalid JWT token or Stream API secret.');
+                this.exit(0);
+            }
+
+            if (flags.json) {
+                this.log(decoded);
                 this.exit(0);
             }
 
@@ -48,10 +54,16 @@ class DebugToken extends Command {
 }
 
 DebugToken.flags = {
-    jwt: flags.string({
-        char: 'j',
-        description: 'JWT token you are trying to debug.',
+    token: flags.string({
+        char: 't',
+        description: 'The Stream token you are trying to debug.',
         required: true,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
     }),
 };
 

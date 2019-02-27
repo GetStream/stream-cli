@@ -74,16 +74,16 @@ $ stream command:COMMAND:SUBCOMMAND --arg1 "foo" --arg2 "bar"
 
 # 🎩 Fun Facts
 
-Interested in using the calling the CLI from a script? You can do that! Many of the commands accept a `raw` argument as a `boolean`. Just pass the following along to the CLI and you'll get back a full representation of the response (in a raw data format such as JSON):
+Interested in using the calling the CLI from a script? Or maybe you simply want raw response data? You can do that! Many of the commands accept a `json` argument as a `boolean`. Just pass the following along to the CLI and you'll get back a full representation of the response (in a raw data format):
 
 ```sh-session
-$ stream command:COMMAND --arg1 "foo" --arg2 "bar" --raw
+$ stream command:COMMAND --arg1 "foo" --arg2 "bar" --json
 ```
 
-Need to copy the output to your clipboard? Not a problem. Just pipe the information to `pbcopy` (on macOS) along with the `--raw` flag:
+Need to copy the output to your clipboard? Not a problem. Just pipe the information to `pbcopy` (on macOS) along with the `--json` flag:
 
 ```sh-session
-$ stream debug:token --jwt "foo.bar.baz" --raw | pbcopy
+$ stream debug:token --token "foo.bar.baz" --json | pbcopy
 ```
 
 # 🥳‍ Usage
@@ -95,7 +95,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.23 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.24 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND

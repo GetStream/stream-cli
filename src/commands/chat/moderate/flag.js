@@ -14,12 +14,15 @@ class ModerateFlag extends Command {
             if (flags.user) {
                 await client.flagUser(flags.user);
 
-                this.log(
-                    `The user ${fchalk.bold(lags.user)} has been flagged!`
-                );
+                this.log(`The user ${chalk.bold(lags.user)} has been flagged!`);
                 this.exit(0);
             } else if (flags.message) {
-                await client.flagMessage(flags.message);
+                const flag = await client.flagMessage(flags.message);
+
+                if (flags.json) {
+                    this.log(flag);
+                    this.exit(0);
+                }
 
                 this.log(
                     `The message ${chalk.bold(flags.user)} has been flagged!`
@@ -50,6 +53,12 @@ ModerateFlag.flags = {
         char: 'm',
         description: 'The ID of the message you want to flag.',
         exclusive: ['user'],
+        required: false,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

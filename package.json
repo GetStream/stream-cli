@@ -116,8 +116,8 @@
             "chat:channel:get": {
                 "description": "get details from a specific channel"
             },
-            "chat:channel:edit": {
-                "description": "edit configuration for a channel"
+            "chat:channel:update": {
+                "description": "update a configuration for a channel"
             },
             "chat:channel:init": {
                 "description": "create a new channel"
@@ -137,8 +137,8 @@
             "chat:message:remove": {
                 "description": "remove a message from a channel"
             },
-            "chat:message:send": {
-                "description": "send a new message with our without attachments"
+            "chat:message:create": {
+                "description": "create a new message with or without attachments"
             },
             "chat:moderate": {
                 "description": "moderatation tools for a channel"
@@ -155,8 +155,8 @@
             "chat:user": {
                 "description": "manage users within channels"
             },
-            "chat:user:add": {
-                "description": "add a user to a channel"
+            "chat:user:create": {
+                "description": "create a new user within a channel"
             },
             "chat:user:remove": {
                 "description": "remove a user from a channel"

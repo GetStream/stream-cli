@@ -10,7 +10,12 @@ class ModerateMute extends Command {
 
         try {
             const client = await auth(this);
-            await client.muteUser(flags.user);
+            const mute = await client.muteUser(flags.user);
+
+            if (flags.json) {
+                this.log(mute);
+                this.exit(0);
+            }
 
             this.log(`The message ${chalk.bold(flags.user)} has been flagged!`);
             this.exit(0);
@@ -25,6 +30,12 @@ ModerateMute.flags = {
         char: 'u',
         description: 'The ID of the user to mute.',
         required: true,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
     }),
 };
 

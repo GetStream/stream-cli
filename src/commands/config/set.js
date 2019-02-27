@@ -5,6 +5,8 @@ const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs-extra');
 
+const { credentials } = require('../../utils/config');
+
 class ConfigSet extends Command {
     async run() {
         const { flags } = this.parse(ConfigSet);
@@ -71,6 +73,11 @@ class ConfigSet extends Command {
                 apiSecret: flags.secret,
             });
 
+            if (flags.json) {
+                this.log(await credentials(this));
+                this.exit(0);
+            }
+
             this.log(
                 'Your Stream CLI configuration has been generated!',
                 emoji.get('rocket')
@@ -101,6 +108,12 @@ ConfigSet.flags = {
     secret: flags.string({
         char: 's',
         description: 'API secret for configuration.',
+        required: false,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

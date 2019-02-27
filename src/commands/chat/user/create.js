@@ -5,13 +5,11 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-class UserAdd extends Command {
+class UserCreate extends Command {
     async run() {
-        const { flags } = this.parse(UserAdd);
+        const { flags } = this.parse(UserCreate);
 
         try {
-            const client = await auth(this);
-
             if (!flags.type || !flags.moderators || !flags.channel) {
                 const res = await prompt([
                     {
@@ -50,8 +48,16 @@ class UserAdd extends Command {
                 }
             }
 
+            const client = await auth(this);
             const channel = await client.channel(flags.type, flags.channel);
-            await channel.addModerators(flags.moderators.split(','));
+            const create = await channel.addModerators(
+                flags.moderators.split(',')
+            );
+
+            if (flags.json) {
+                this.log(create);
+                this.exit(0);
+            }
 
             this.log(
                 `${chalk.bold(
@@ -67,7 +73,7 @@ class UserAdd extends Command {
     }
 }
 
-UserAdd.flags = {
+UserCreate.flags = {
     channel: flags.string({
         char: 'c',
         description: 'Channel identifier.',
@@ -84,6 +90,12 @@ UserAdd.flags = {
         description: 'Comma separated list of moderators.',
         required: false,
     }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
+    }),
 };
 
-module.exports.UserAdd = UserAdd;
+module.exports.UserCreate = UserCreate;

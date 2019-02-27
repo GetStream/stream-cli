@@ -2,19 +2,16 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const uuid = require('uuid/v4');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 const { credentials } = require('../../../utils/config');
 
-class MessageSend extends Command {
+class MessageCreate extends Command {
     async run() {
-        const { name } = await credentials(this);
-
-        const { flags } = this.parse(MessageSend);
+        const { flags } = this.parse(MessageCreate);
 
         try {
-            const client = await auth(this);
+            const { name } = await credentials(this);
 
             if (!flags.user || !flags.channel || !flags.message || flags.type) {
                 const res = await prompt([
@@ -28,7 +25,6 @@ class MessageSend extends Command {
                     {
                         type: 'input',
                         name: 'channel',
-                        hint: 'The name of the channel',
                         message: `What is the unique identifier for the channel?`,
                         required: true,
                     },
@@ -48,7 +44,6 @@ class MessageSend extends Command {
                     {
                         type: 'input',
                         name: 'message',
-                        hint: 'Hello World!',
                         message: 'What is the message you would like to send?',
                         required: true,
                     },
@@ -61,6 +56,7 @@ class MessageSend extends Command {
                 }
             }
 
+            const client = await auth(this);
             await client.updateUser({
                 id: flags.user,
                 role: 'admin',
@@ -77,7 +73,12 @@ class MessageSend extends Command {
                 payload.attachments = JSON.parse(flags.attachments);
             }
 
-            await channel.sendMessage(payload);
+            const add = await channel.sendMessage(payload);
+
+            if (flags.json) {
+                this.log(add);
+                this.exit(0);
+            }
 
             const message = `Message ${chalk.bold(
                 flags.message
@@ -93,7 +94,7 @@ class MessageSend extends Command {
     }
 }
 
-MessageSend.flags = {
+MessageCreate.flags = {
     user: flags.string({
         char: 'u',
         description: 'The ID of the user sending the message.',
@@ -122,6 +123,12 @@ MessageSend.flags = {
             'A JSON payload of attachments to send along with a message.',
         required: false,
     }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
+    }),
 };
 
-module.exports.MessageSend = MessageSend;
+module.exports.MessageCreate = MessageCreate;

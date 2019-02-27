@@ -5,13 +5,13 @@ const path = require('path');
 const { auth } = require('../../../utils/auth');
 const { credentials } = require('../../../utils/config');
 
-class ChannelEdit extends Command {
+class ChannelUpdate extends Command {
     async run() {
-        const { name, email } = await credentials(this);
-
-        const { flags } = this.parse(ChannelEdit);
+        const { flags } = this.parse(ChannelUpdate);
 
         try {
+            const { name, email } = await credentials(this);
+
             const client = await auth(this);
             const channel = await client.channel(flags.type, flags.id);
 
@@ -30,10 +30,15 @@ class ChannelEdit extends Command {
                 payload = Object.assign({}, payload, parsed);
             }
 
-            await channel.update(payload, {
+            const update = await channel.update(payload, {
                 name: flags.name,
                 text: flags.reason,
             });
+
+            if (flags.json) {
+                this.log(update);
+                this.exit(0);
+            }
 
             this.log(`The channel ${chalk.bold(flags.id)} has been modified.`);
         } catch (err) {
@@ -42,10 +47,10 @@ class ChannelEdit extends Command {
     }
 }
 
-ChannelEdit.flags = {
+ChannelUpdate.flags = {
     id: flags.string({
         char: 'i',
-        description: 'The ID of the channel you wish to edit.',
+        description: 'The ID of the channel you wish to update.',
         required: true,
     }),
     type: flags.string({
@@ -79,6 +84,12 @@ ChannelEdit.flags = {
         description: 'Additional data as JSON.',
         required: false,
     }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
+    }),
 };
 
-module.exports.ChannelEdit = ChannelEdit;
+module.exports.ChannelUpdate = ChannelUpdate;

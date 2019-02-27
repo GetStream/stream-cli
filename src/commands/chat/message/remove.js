@@ -10,8 +10,12 @@ class MessageRemove extends Command {
 
         try {
             const client = await auth(this);
+            const remove = await client.deleteMessage(flags.id);
 
-            await client.deleteMessage(flags.id);
+            if (flags.json) {
+                this.log(remove);
+                this.exit(0);
+            }
 
             this.log(`The message ${chalk.bold(flags.id)} has been removed.`);
             this.exit(0);
@@ -31,6 +35,12 @@ MessageRemove.flags = {
         char: 'message',
         description: 'The ID of the message you would like to remove.',
         required: true,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
     }),
 };
 

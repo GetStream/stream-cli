@@ -18,6 +18,11 @@ class ChannelQuery extends Command {
                 subscribe: false,
             });
 
+            if (flags.json) {
+                this.log(channels);
+                this.exit(0);
+            }
+
             this.log(channels[0].data);
             this.exit(0);
         } catch (err) {
@@ -46,6 +51,12 @@ ChannelQuery.flags = {
     sort: flags.string({
         char: 's',
         description: 'Sort to apply to the query.',
+        required: false,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

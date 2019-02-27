@@ -34,8 +34,6 @@ class Log extends Command {
         const { flags } = this.parse(Log);
 
         try {
-            const client = await auth(this);
-
             if (!flags.event) {
                 const res = await prompt({
                     type: 'autocomplete',
@@ -52,6 +50,8 @@ class Log extends Command {
 
                 flags.event = res.event;
             }
+
+            const client = await auth(this);
 
             await client.updateUser({
                 id: '*',
@@ -70,7 +70,11 @@ class Log extends Command {
 
             const time = 'dddd, MMMM Do YYYY [at] h:mm:ss A';
 
-            if (flags.event === 'all') {
+            if (flags.json) {
+                channel.on(event => {
+                    this.log(event);
+                });
+            } else if (flags.event === 'all') {
                 channel.on(event => {
                     const timestamp = chalk.yellow.bold(
                         moment(event.created_at).format(time)
@@ -122,6 +126,12 @@ Log.flags = {
         char: 'e',
         description: 'The type of event you want to listen on.',
         options: events,
+        required: false,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

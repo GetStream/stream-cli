@@ -8,11 +8,10 @@ const { credentials } = require('../../../utils/config');
 
 class ChannelInit extends Command {
     async run() {
-        const { name, email } = await credentials(this);
-
         const { flags } = this.parse(ChannelInit);
 
         try {
+            const { name, email } = await credentials(this);
             const client = await auth(this);
 
             let payload = {
@@ -35,7 +34,13 @@ class ChannelInit extends Command {
                 flags.channel,
                 payload
             );
-            await channel.create();
+
+            const create = await channel.create();
+
+            if (flags.json) {
+                this.log(create);
+                this.exit(0);
+            }
 
             this.log(
                 `The channel ${chalk.bold(flags.name)} has been initialized.`
@@ -78,6 +83,12 @@ ChannelInit.flags = {
     data: flags.string({
         char: 'd',
         description: 'Additional data as a JSON.',
+        required: false,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };

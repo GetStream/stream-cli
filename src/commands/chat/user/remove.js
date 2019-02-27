@@ -11,15 +11,22 @@ class UserRemove extends Command {
         try {
             const client = await auth(this);
 
-            const channel = await client.channel(flags.type, flags.id);
-            await channel.demoteModerators(flags.moderators.split(','));
+            const channel = await client.channel(flags.type, flags.channel);
+            const remove = await channel.demoteModerators(
+                flags.moderators.split(',')
+            );
+
+            if (flags.json) {
+                this.log(remove);
+                this.exit(0);
+            }
 
             this.log(
                 `${chalk.bold(
                     flags.moderators
                 )} have been removed as moderators from the ${chalk.bold(
                     flags.type
-                )} channel ${chalk.bold(flags.id)}.`
+                )} channel ${chalk.bold(flags.channel)}.`
             );
             this.exit(0);
         } catch (err) {
@@ -29,8 +36,8 @@ class UserRemove extends Command {
 }
 
 UserRemove.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: 'Channel name.',
         required: true,
     }),
@@ -43,6 +50,12 @@ UserRemove.flags = {
         char: 'm',
         description: 'Comma separated list of moderators to remove.',
         required: true,
+    }),
+    json: flags.boolean({
+        char: 'j',
+        description:
+            'Output results in JSON. When not specified, returns output in a human friendly format.',
+        required: false,
     }),
 };
 
