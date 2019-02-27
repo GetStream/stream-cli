@@ -1,8 +1,6 @@
 const { Command } = require('@oclif/command');
 const Table = require('cli-table');
-const emoji = require('node-emoji');
 const chalk = require('chalk');
-const path = require('path');
 
 const { credentials } = require('../../utils/config');
 

@@ -1,6 +1,6 @@
 {
     "name": "getstream-cli",
-    "description": "The Stream Command Line Interface (CLI) makes it easy to create and manage your Stream apps directly from the terminal.",
+    "description": "The Stream CLI makes managing Stream applications directly from the command line easy.",
     "version": "0.0.1-beta.23",
     "author": "Nick Parsons <nparsons08@gmail.com>",
     "bin": {
@@ -19,10 +19,11 @@
     "license": "BSD-3-Clause",
     "main": "src/index.js",
     "scripts": {
-        "prepack": "rm -f oclif.manifest.json && oclif-dev manifest",
-        "posttest": "eslint .",
+        "manifest": "rm -f oclif.manifest.json && oclif-dev manifest",
+        "readme": "oclif-dev readme --multi",
+        "build": "yarn manifest && yarn readme",
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-        "readme": "oclif-dev readme --multi"
+        "posttest": "eslint ."
     },
     "dependencies": {
         "@oclif/command": "^1",
@@ -52,14 +53,13 @@
         "uuid": "^3.3.2"
     },
     "devDependencies": {
-        "@babel/runtime": "^7.3.1",
+        "@babel/runtime": "^7.3.4",
         "@oclif/dev-cli": "^1",
         "@oclif/test": "^1",
-        "aws-sdk": "^2.408.0",
         "chai": "^4",
         "eslint": "^5.14",
         "eslint-config-oclif": "^3.1",
-        "mocha": "^6.0.1",
+        "mocha": "^6.0.2",
         "nyc": "^13",
         "prettier": "^1.16.4"
     },
@@ -91,10 +91,19 @@
                 "description": "manage configuration variables"
             },
             "debug": {
-                "description": "debugging tools for the command line"
+                "description": "debugging tools"
             },
             "debug:token": {
-                "description": "debug stream jwt tokens on the fly"
+                "description": "debug stream jwt tokens"
+            },
+            "settings": {
+                "description": "manage account settings"
+            },
+            "settings:get": {
+                "description": "retrieve all account settings"
+            },
+            "settings:set": {
+                "description": "update account settings"
             },
             "chat": {
                 "description": "configure and manage all things related to chat"
