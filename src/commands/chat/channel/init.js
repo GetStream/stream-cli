@@ -82,7 +82,7 @@ ChannelInit.flags = {
     }),
     data: flags.string({
         char: 'd',
-        description: 'Additional data as a JSON.',
+        description: 'Additional data as JSON.',
         required: false,
     }),
     json: flags.boolean({

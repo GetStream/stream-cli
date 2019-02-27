@@ -4,9 +4,9 @@ const axios = require('axios');
 
 const { credentials } = require('../../../utils/config');
 
-class SettingsSet extends Command {
+class SettingsPush extends Command {
     async run() {
-        const { flags } = this.parse(SettingsSet);
+        const { flags } = this.parse(SettingsPush);
 
         try {
             const { apiKey, apiSecret } = await credentials(this);
@@ -35,7 +35,7 @@ class SettingsSet extends Command {
                 }
             }
 
-            this.log('Your Stream orginzation settings have been updated.');
+            this.log('Your push notification settings have been updated.');
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -43,15 +43,51 @@ class SettingsSet extends Command {
     }
 }
 
-SettingsSet.flags = {
-    p12: flags.string({
-        char: 'p',
-        description: '.p12 file.',
+SettingsPush.flags = {
+    type: flags.boolean({
+        char: 't',
+        description: 'Type of configuration.',
+        options: ['apn', 'firebase', 'webhook'],
         required: false,
     }),
-    key: flags.string({
+    auth_key: flags.string({
+        char: 'a',
+        description: 'Private auth key for APN.',
+        required: false,
+    }),
+    key_id: flags.string({
         char: 'k',
-        description: '.p8 file',
+        description: 'Key ID for APN.',
+        required: false,
+    }),
+    team_id: flags.string({
+        char: 't',
+        description: 'Team ID for APN.',
+        required: false,
+    }),
+    pem_cert: flags.string({
+        char: 'p',
+        description: 'Private RSA key for APN (.pem).',
+        required: false,
+    }),
+    p12_cert: flags.string({
+        char: 'b',
+        description: 'Base64 encoded .p12 file for APN.',
+        required: false,
+    }),
+    notification_template: flags.string({
+        char: 'n',
+        description: 'Interpolated JSON template for notifications.',
+        required: false,
+    }),
+    api_key: flags.string({
+        char: 'a',
+        description: 'API key for Firebase.',
+        required: false,
+    }),
+    webhook_url: flags.string({
+        char: 'w',
+        description: 'Webhook URL to receive notifications to.',
         required: false,
     }),
     json: flags.boolean({
@@ -62,4 +98,4 @@ SettingsSet.flags = {
     }),
 };
 
-module.exports.SettingsSet = SettingsSet;
+module.exports.SettingsPush = SettingsPush;

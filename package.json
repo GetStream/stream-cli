@@ -21,7 +21,6 @@
     "scripts": {
         "manifest": "rm -f oclif.manifest.json && oclif-dev manifest",
         "readme": "oclif-dev readme --multi",
-        "prepare": "yarn depcheck && yarn manifest && yarn readme",
         "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
         "posttest": "eslint ."
     },
