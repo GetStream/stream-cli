@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const axios = require('axios');
 
 const { credentials } = require('../../../utils/config');
 
@@ -11,31 +10,22 @@ class SettingsPush extends Command {
         try {
             const { apiKey, apiSecret } = await credentials(this);
 
-            if (!flags.name || !flags.p12) {
-                const res = await prompt([
-                    {
-                        type: 'input',
-                        name: 'name',
-                        message: `What is your name?`,
-                        required: true,
-                    },
-                ]);
-
-                for (const key in res) {
-                    if (res.hasOwnProperty(key)) {
-                        flags[key] = res[key];
-                    }
-                }
-
-                const setting = null;
-
-                if (flags.json) {
-                    this.log(settings);
-                    this.exit(0);
-                }
+            if (flags.enable && flags.type === 'apn') {
+                this.log('Push notifications have been enabled with APN.');
             }
 
-            this.log('Your push notification settings have been updated.');
+            if (flags.enable && flags.type === 'firebase') {
+                this.log('Push notifications have been enabled for Firebase.');
+            }
+
+            if (flags.enable && flags.type === 'webhook') {
+                this.log('Push notifications have been enabled for webhooks.');
+            }
+
+            if (flags.disable) {
+                this.log('Push notifications have been disabled.');
+            }
+
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -44,6 +34,16 @@ class SettingsPush extends Command {
 }
 
 SettingsPush.flags = {
+    enable: flags.boolean({
+        chart: 'e',
+        description: 'Enable push notifications for your project.',
+        required: false,
+    }),
+    disable: flags.boolean({
+        chart: 'd',
+        description: 'Disable push notifications for your project.',
+        required: false,
+    }),
     type: flags.boolean({
         char: 't',
         description: 'Type of configuration.',
@@ -61,7 +61,7 @@ SettingsPush.flags = {
         required: false,
     }),
     team_id: flags.string({
-        char: 't',
+        char: 'i',
         description: 'Team ID for APN.',
         required: false,
     }),
@@ -77,17 +77,17 @@ SettingsPush.flags = {
     }),
     notification_template: flags.string({
         char: 'n',
-        description: 'Interpolated JSON template for notifications.',
+        description: 'JSON template for notifications (APN and Firebase).',
         required: false,
     }),
     api_key: flags.string({
-        char: 'a',
+        char: 'f',
         description: 'API key for Firebase.',
         required: false,
     }),
     webhook_url: flags.string({
         char: 'w',
-        description: 'Webhook URL to receive notifications to.',
+        description: 'Fully qualified URL for webhook support.',
         required: false,
     }),
     json: flags.boolean({
