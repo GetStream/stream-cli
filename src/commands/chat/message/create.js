@@ -4,22 +4,19 @@ const chalk = require('chalk');
 const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
-const { credentials } = require('../../../utils/config');
 
 class MessageCreate extends Command {
     async run() {
         const { flags } = this.parse(MessageCreate);
 
         try {
-            const { name } = await credentials(this);
-
-            if (!flags.user || !flags.channel || !flags.message || flags.type) {
+            if (!flags.message) {
                 const res = await prompt([
                     {
                         type: 'input',
                         name: 'user',
                         message: `What is the unique identifier for the user sending this message?`,
-                        default: name || uuid(),
+                        default: uuid(),
                         required: true,
                     },
                     {
@@ -73,20 +70,14 @@ class MessageCreate extends Command {
                 payload.attachments = JSON.parse(flags.attachments);
             }
 
-            const add = await channel.sendMessage(payload);
+            const create = await channel.sendMessage(payload);
 
             if (flags.json) {
-                this.log(add);
+                this.log(create);
                 this.exit(0);
             }
 
-            const message = `Message ${chalk.bold(
-                flags.message
-            )} has been sent to the ${chalk.bold(
-                flags.channel
-            )} channel by user ${chalk.bold(flags.user)}.`;
-
-            this.log(message);
+            this.log(`Message ${chalk.bold(create.message.id)} was created.`);
             this.exit();
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
