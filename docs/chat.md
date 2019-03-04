@@ -3,23 +3,50 @@
 
 configure and manage all things related to chat
 
+* [`stream chat:channel:create`](#stream-chatchannelcreate)
 * [`stream chat:channel:get`](#stream-chatchannelget)
-* [`stream chat:channel:init`](#stream-chatchannelinit)
 * [`stream chat:channel:list`](#stream-chatchannellist)
 * [`stream chat:channel:query`](#stream-chatchannelquery)
 * [`stream chat:channel:update`](#stream-chatchannelupdate)
 * [`stream chat:log`](#stream-chatlog)
 * [`stream chat:message:create`](#stream-chatmessagecreate)
+* [`stream chat:message:list`](#stream-chatmessagelist)
 * [`stream chat:message:remove`](#stream-chatmessageremove)
+* [`stream chat:message:update`](#stream-chatmessageupdate)
 * [`stream chat:moderate:ban`](#stream-chatmoderateban)
 * [`stream chat:moderate:flag`](#stream-chatmoderateflag)
 * [`stream chat:moderate:mute`](#stream-chatmoderatemute)
 * [`stream chat:reaction:add`](#stream-chatreactionadd)
 * [`stream chat:reaction:remove`](#stream-chatreactionremove)
 * [`stream chat:settings:get`](#stream-chatsettingsget)
+* [`stream chat:settings:push`](#stream-chatsettingspush)
 * [`stream chat:settings:set`](#stream-chatsettingsset)
 * [`stream chat:user:create`](#stream-chatusercreate)
 * [`stream chat:user:remove`](#stream-chatuserremove)
+
+## `stream chat:channel:create`
+
+```
+USAGE
+  $ stream chat:channel:create
+
+OPTIONS
+  -c, --channel=channel                                 [default: 60081bee-83d7-48d2-b609-f6d1a1b7c534] A unique ID for
+                                                        the channel you wish to create.
+
+  -d, --data=data                                       Additional data as JSON.
+
+  -i, --image=image                                     URL to channel image.
+
+  -j, --json                                            Output results in JSON. When not specified, returns output in a
+                                                        human friendly format.
+
+  -n, --name=name                                       (required) Name of the channel room.
+
+  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
+```
+
+_See code: [src/commands/chat/channel/create.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/channel/create.js)_
 
 ## `stream chat:channel:get`
 
@@ -36,33 +63,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-_See code: [src/commands/chat/channel/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/channel/get.js)_
-
-## `stream chat:channel:init`
-
-```
-USAGE
-  $ stream chat:channel:init
-
-OPTIONS
-  -c, --channel=channel                                 (required) [default: 5c74e59e-ee57-4e50-b387-f6f3816211ab] A
-                                                        unique ID for the channel you wish to create.
-
-  -d, --data=data                                       Additional data as a JSON.
-
-  -i, --image=image                                     URL to channel image.
-
-  -j, --json                                            Output results in JSON. When not specified, returns output in a
-                                                        human friendly format.
-
-  -m, --members=members                                 Comma separated list of members to add to the channel.
-
-  -n, --name=name                                       (required) Name of the channel room.
-
-  -t, --type=livestream|messaging|gaming|commerce|team  (required) Type of channel.
-```
-
-_See code: [src/commands/chat/channel/init.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/channel/init.js)_
+_See code: [src/commands/chat/channel/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/channel/get.js)_
 
 ## `stream chat:channel:list`
 
@@ -74,7 +75,7 @@ OPTIONS
   -j, --json  Output results in JSON. When not specified, returns output in a human friendly format.
 ```
 
-_See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/channel/list.js)_
+_See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/channel/list.js)_
 
 ## `stream chat:channel:query`
 
@@ -94,7 +95,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  Type of channel.
 ```
 
-_See code: [src/commands/chat/channel/query.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/channel/query.js)_
+_See code: [src/commands/chat/channel/query.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/channel/query.js)_
 
 ## `stream chat:channel:update`
 
@@ -120,7 +121,7 @@ OPTIONS
   -u, --url=url                                         URL to the channel image.
 ```
 
-_See code: [src/commands/chat/channel/update.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/channel/update.js)_
+_See code: [src/commands/chat/channel/update.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/channel/update.js)_
 
 ## `stream chat:log`
 
@@ -145,7 +146,7 @@ OPTIONS
       (required) The type of channel.
 ```
 
-_See code: [src/commands/chat/log/index.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/log/index.js)_
+_See code: [src/commands/chat/log/index.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/log/index.js)_
 
 ## `stream chat:message:create`
 
@@ -162,12 +163,31 @@ OPTIONS
 
   -m, --message=message                                 The message you would like to send as plaintext.
 
+  -n, --name=name                                       The name of the user sending the message.
+
   -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
 
   -u, --user=user                                       The ID of the user sending the message.
 ```
 
-_See code: [src/commands/chat/message/create.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/message/create.js)_
+_See code: [src/commands/chat/message/create.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/message/create.js)_
+
+## `stream chat:message:list`
+
+```
+USAGE
+  $ stream chat:message:list
+
+OPTIONS
+  -c, --channel=channel                                 The ID of the channel that you would like to send a message to.
+
+  -j, --json                                            Output results in JSON. When not specified, returns output in a
+                                                        human friendly format.
+
+  -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
+```
+
+_See code: [src/commands/chat/message/list.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/message/list.js)_
 
 ## `stream chat:message:remove`
 
@@ -181,7 +201,22 @@ OPTIONS
   -m, --message=message  (required) The ID of the message you would like to remove.
 ```
 
-_See code: [src/commands/chat/message/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/message/remove.js)_
+_See code: [src/commands/chat/message/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/message/remove.js)_
+
+## `stream chat:message:update`
+
+```
+USAGE
+  $ stream chat:message:update
+
+OPTIONS
+  -a, --attachments=attachments  A JSON payload of attachments to send along with a message.
+  -j, --json                     Output results in JSON. When not specified, returns output in a human friendly format.
+  -m, --message=message          The unique identifier for the message.
+  -t, --text=text                The message you would like to send as text.
+```
+
+_See code: [src/commands/chat/message/update.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/message/update.js)_
 
 ## `stream chat:moderate:ban`
 
@@ -196,7 +231,7 @@ OPTIONS
   -u, --user=user        (required) The ID of the offending user.
 ```
 
-_See code: [src/commands/chat/moderate/ban.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/moderate/ban.js)_
+_See code: [src/commands/chat/moderate/ban.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/moderate/ban.js)_
 
 ## `stream chat:moderate:flag`
 
@@ -210,7 +245,7 @@ OPTIONS
   -u, --user=user        The ID of the offending user.
 ```
 
-_See code: [src/commands/chat/moderate/flag.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/moderate/flag.js)_
+_See code: [src/commands/chat/moderate/flag.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/moderate/flag.js)_
 
 ## `stream chat:moderate:mute`
 
@@ -223,7 +258,7 @@ OPTIONS
   -u, --user=user  (required) The ID of the user to mute.
 ```
 
-_See code: [src/commands/chat/moderate/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/moderate/mute.js)_
+_See code: [src/commands/chat/moderate/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/moderate/mute.js)_
 
 ## `stream chat:reaction:add`
 
@@ -243,7 +278,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
 ```
 
-_See code: [src/commands/chat/reaction/add.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/reaction/add.js)_
+_See code: [src/commands/chat/reaction/add.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/reaction/add.js)_
 
 ## `stream chat:reaction:remove`
 
@@ -263,7 +298,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
 ```
 
-_See code: [src/commands/chat/reaction/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/reaction/remove.js)_
+_See code: [src/commands/chat/reaction/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/reaction/remove.js)_
 
 ## `stream chat:settings:get`
 
@@ -275,7 +310,39 @@ OPTIONS
   -j, --json  Output results in JSON. When not specified, returns output in a human friendly format.
 ```
 
-_See code: [src/commands/chat/settings/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/settings/get.js)_
+_See code: [src/commands/chat/settings/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/settings/get.js)_
+
+## `stream chat:settings:push`
+
+```
+USAGE
+  $ stream chat:settings:push
+
+OPTIONS
+  -a, --auth_key=auth_key                            Private auth key for APN.
+  -b, --p12_cert=p12_cert                            Base64 encoded .p12 file for APN.
+  -f, --api_key=api_key                              API key for Firebase.
+  -i, --team_id=team_id                              Team ID for APN.
+
+  -j, --json                                         Output results in JSON. When not specified, returns output in a
+                                                     human friendly format.
+
+  -k, --key_id=key_id                                Key ID for APN.
+
+  -n, --notification_template=notification_template  JSON template for notifications (APN and Firebase).
+
+  -p, --pem_cert=pem_cert                            Private RSA key for APN (.pem).
+
+  -t, --type                                         Type of configuration.
+
+  -w, --webhook_url=webhook_url                      Fully qualified URL for webhook support.
+
+  --disable                                          Disable push notifications for your project.
+
+  --enable                                           Enable push notifications for your project.
+```
+
+_See code: [src/commands/chat/settings/push.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/settings/push.js)_
 
 ## `stream chat:settings:set`
 
@@ -284,13 +351,12 @@ USAGE
   $ stream chat:settings:set
 
 OPTIONS
-  -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
-  -n, --name=name  Full name for settings.
-  -p, --p12=p12    A .p12 file for push notifications.
-  -p, --pem=pem    The .pem file associated with your .p12
+  -j, --json     Output results in JSON. When not specified, returns output in a human friendly format.
+  -k, --key=key  .p8 file
+  -p, --p12=p12  .p12 file.
 ```
 
-_See code: [src/commands/chat/settings/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/settings/set.js)_
+_See code: [src/commands/chat/settings/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/settings/set.js)_
 
 ## `stream chat:user:create`
 
@@ -309,7 +375,7 @@ OPTIONS
   -t, --type=livestream|messaging|gaming|commerce|team  The type of channel.
 ```
 
-_See code: [src/commands/chat/user/create.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/user/create.js)_
+_See code: [src/commands/chat/user/create.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/user/create.js)_
 
 ## `stream chat:user:remove`
 
@@ -324,4 +390,4 @@ OPTIONS
   -t, --type=type              (required) Channel type.
 ```
 
-_See code: [src/commands/chat/user/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.24/src/commands/chat/user/remove.js)_
+_See code: [src/commands/chat/user/remove.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.25/src/commands/chat/user/remove.js)_

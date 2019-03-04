@@ -95,7 +95,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.24 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.25 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
