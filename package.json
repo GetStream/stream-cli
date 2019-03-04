@@ -117,7 +117,7 @@
             "chat:channel:update": {
                 "description": "update a configuration for a channel"
             },
-            "chat:channel:init": {
+            "chat:channel:create": {
                 "description": "create a new channel"
             },
             "chat:channel:list": {

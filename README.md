@@ -26,13 +26,13 @@ As with any project, things are always changing. If you're interested in seeing 
 The Stream CLI is easy to install and available via npm.
 
 ```sh-session
-$ npm install -g getstream-cli
+$ yarn global add getstream-cli
 ```
 
 **OR**
 
 ```sh-session
-$ yarn global add getstream-cli
+$ npm install -g getstream-cli
 ```
 
 # 🚀 Getting Started
@@ -46,17 +46,13 @@ $ stream config:set
 You will then be prompted to enter your API key and secret.
 
 ```sh-session
-$ ? What's your API key? 🔒
-$ ? What's your API secret? 🔒
+$ ? What's your API key?
+$ ? What's your API secret?
 ```
 
 Now, you're good to go!
 
-```sh-session
-$ Your config has been generated! 🚀
-```
-
-> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your application.
+> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your organization.
 
 # 🔨 Syntax
 
@@ -95,7 +91,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.25 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.26 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
