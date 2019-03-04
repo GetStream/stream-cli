@@ -1,15 +1,12 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const treeify = require('treeify');
-const numeral = require('numeral');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-class ChannelGet extends Command {
+class MessageList extends Command {
     async run() {
-        const { flags } = this.parse(ChannelGet);
+        const { flags } = this.parse(MessageList);
 
         try {
             if (!flags.json) {
@@ -43,44 +40,56 @@ class ChannelGet extends Command {
             }
 
             const client = await auth(this);
+            const channel = client.channel(flags.type, flags.channel);
 
-            const channel = await client.queryChannels(
-                { id: flags.channel, type: flags.type },
-                { last_message_at: -1 },
-                {
-                    subscribe: false,
-                }
+            const messages = await client.queryChannels(
+                {},
+                { last_message_at: -1 }
             );
 
             if (flags.json) {
-                this.log(channel[0]);
+                if (!messages.length) {
+                    this.log(messages);
+                    this.exit(0);
+                }
+
+                this.log(messages[0].state.messages);
                 this.exit(0);
             }
 
-            delete channel[0].data.config['commands'];
-            delete channel[0].data.config['created_at'];
-            delete channel[0].data.config['updated_at'];
+            const data = messages[0].state.messages;
 
-            const tree = treeify.asTree(channel[0].data, true, false);
+            if (!data.length) {
+                this.log('No messages available.');
+                this.exit();
+            }
 
-            this.log(tree);
-            this.exit(0);
+            data.map(message => {
+                this.log(
+                    `${chalk.bold.green(message.id)} (${message.created_at}): ${
+                        message.text
+                    }`
+                );
+            });
+
+            this.exit();
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }
 
-ChannelGet.flags = {
-    channel: flags.string({
-        char: 'c',
-        description: 'The channel ID you wish to retrieve.',
-        required: false,
-    }),
+MessageList.flags = {
     type: flags.string({
         char: 't',
-        description: 'Type of channel.',
+        description: 'The type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
+        required: false,
+    }),
+    channel: flags.string({
+        char: 'c',
+        description:
+            'The ID of the channel that you would like to send a message to.',
         required: false,
     }),
     json: flags.boolean({
@@ -91,4 +100,4 @@ ChannelGet.flags = {
     }),
 };
 
-module.exports.ChannelGet = ChannelGet;
+module.exports.MessageList = MessageList;

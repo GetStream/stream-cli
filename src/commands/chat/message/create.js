@@ -10,13 +10,25 @@ class MessageCreate extends Command {
         const { flags } = this.parse(MessageCreate);
 
         try {
-            if (!flags.message) {
+            if (
+                !flags.user ||
+                !flags.name ||
+                !flags.channel ||
+                !flags.type ||
+                !flags.message
+            ) {
                 const res = await prompt([
                     {
                         type: 'input',
                         name: 'user',
                         message: `What is the unique identifier for the user sending this message?`,
                         default: uuid(),
+                        required: true,
+                    },
+                    {
+                        type: 'input',
+                        name: 'name',
+                        message: `What is the name of the user sending this message?`,
                         required: true,
                     },
                     {
@@ -54,12 +66,13 @@ class MessageCreate extends Command {
             }
 
             const client = await auth(this);
-            await client.updateUser({
+
+            await client.setUser({
                 id: flags.user,
-                role: 'admin',
+                name: flags.name,
+                status: 'invisible',
             });
 
-            await client.setUser({ id: flags.user, status: 'invisible' });
             const channel = client.channel(flags.type, flags.channel);
 
             const payload = {
@@ -89,6 +102,11 @@ MessageCreate.flags = {
     user: flags.string({
         char: 'u',
         description: 'The ID of the user sending the message.',
+        required: false,
+    }),
+    name: flags.string({
+        char: 'n',
+        description: 'The name of the user sending the message.',
         required: false,
     }),
     type: flags.string({

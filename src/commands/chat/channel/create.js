@@ -6,23 +6,58 @@ const uuid = require('uuid/v4');
 const { auth } = require('../../../utils/auth');
 const { credentials } = require('../../../utils/config');
 
-class ChannelInit extends Command {
+class ChannelCreate extends Command {
     async run() {
-        const { flags } = this.parse(ChannelInit);
+        const { flags } = this.parse(ChannelCreate);
 
         try {
-            const { name, email } = await credentials(this);
+            if (!flags.json) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        message: `What is the unique identifier for the channel?`,
+                        required: true,
+                    },
+                    {
+                        type: 'select',
+                        name: 'type',
+                        message: 'What type of channel is this?',
+                        required: true,
+                        choices: [
+                            { message: 'Livestream', value: 'livestream' },
+                            { message: 'Messaging', value: 'messaging' },
+                            { message: 'Gaming', value: 'gaming' },
+                            { message: 'Commerce', value: 'commerce' },
+                            { message: 'Team', value: 'team' },
+                        ],
+                    },
+                    {
+                        type: 'input',
+                        name: 'image',
+                        message: `What is the absolute URL to the channel image?`,
+                        required: true,
+                    },
+                ]);
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
+            }
+
+            const { name } = await credentials(this);
             const client = await auth(this);
 
             let payload = {
                 name: flags.name,
                 created_by: {
-                    id: email,
+                    id: 'CLI',
                     name,
                 },
             };
             if (flags.image) payload.image = flags.image;
-            if (flags.members) payload.members = flags.members.split(',');
 
             if (flags.data) {
                 const parsed = JSON.parse(flags.data);
@@ -43,7 +78,7 @@ class ChannelInit extends Command {
             }
 
             this.log(
-                `The channel ${chalk.bold(flags.name)} has been initialized.`
+                `The channel ${chalk.bold(create.channel.id)} has been created.`
             );
             this.exit(0);
         } catch (err) {
@@ -52,12 +87,12 @@ class ChannelInit extends Command {
     }
 }
 
-ChannelInit.flags = {
+ChannelCreate.flags = {
     channel: flags.string({
         char: 'c',
         description: 'A unique ID for the channel you wish to create.',
         default: uuid(),
-        required: true,
+        required: false,
     }),
     type: flags.string({
         char: 't',
@@ -75,11 +110,6 @@ ChannelInit.flags = {
         description: 'URL to channel image.',
         required: false,
     }),
-    members: flags.string({
-        char: 'm',
-        description: 'Comma separated list of members to add to the channel.',
-        required: false,
-    }),
     data: flags.string({
         char: 'd',
         description: 'Additional data as JSON.',
@@ -93,4 +123,4 @@ ChannelInit.flags = {
     }),
 };
 
-module.exports.ChannelInit = ChannelInit;
+module.exports.ChannelCreate = ChannelCreate;

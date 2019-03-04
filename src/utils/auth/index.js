@@ -6,9 +6,7 @@ async function auth(ctx) {
     try {
         const { apiKey, apiSecret } = await credentials(ctx);
 
-        const client = new StreamChat(apiKey, apiSecret);
-
-        return client;
+        return new StreamChat(apiKey, apiSecret);
     } catch (err) {
         ctx.error(err || 'A Stream authentication error has occurred.', {
             exit: 1,

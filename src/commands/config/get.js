@@ -11,7 +11,7 @@ class ConfigGet extends Command {
         try {
             const { name, email, apiKey, apiSecret } = await credentials(this);
 
-            if (flag.json) {
+            if (flags.json) {
                 this.log(await credentials(this));
                 this.exit(0);
             }

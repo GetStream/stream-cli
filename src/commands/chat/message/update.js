@@ -51,7 +51,9 @@ class MessageUpdate extends Command {
                 this.exit(0);
             }
 
-            this.log(`Message ${chalk.bold(flags.message)} has been updated.`);
+            this.log(
+                `Message ${chalk.bold(flags.message.id)} has been updated.`
+            );
             this.exit();
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
