@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 const { credentials } = require('../../../utils/config');
@@ -23,7 +22,6 @@ class ChannelUpdate extends Command {
                 },
             };
             if (flags.image) payload.image = flags.image;
-            if (flags.members) payload.members = flags.members.split(',');
 
             if (flags.data) {
                 const parsed = JSON.parse(flags.data);
@@ -48,21 +46,21 @@ class ChannelUpdate extends Command {
 }
 
 ChannelUpdate.flags = {
-    id: flags.string({
-        char: 'i',
+    channel: flags.string({
+        char: 'c',
         description: 'The ID of the channel you wish to update.',
-        required: true,
+        required: false,
     }),
     type: flags.string({
         char: 't',
         description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: true,
+        required: false,
     }),
     name: flags.string({
         char: 'n',
         description: 'Name of the channel room.',
-        required: true,
+        required: false,
     }),
     url: flags.string({
         char: 'u',
@@ -72,11 +70,6 @@ ChannelUpdate.flags = {
     reason: flags.string({
         char: 'r',
         description: 'Reason for changing channel.',
-        required: true,
-    }),
-    members: flags.string({
-        char: 'm',
-        description: 'Comma separated list of members.',
         required: false,
     }),
     data: flags.string({

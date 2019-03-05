@@ -3,9 +3,9 @@ const { prompt } = require('enquirer');
 
 const { auth } = require('../../../utils/auth');
 
-class ReactionAdd extends Command {
+class ReactionCreate extends Command {
     async run() {
-        const { flags } = this.parse(ReactionAdd);
+        const { flags } = this.parse(ReactionCreate);
 
         try {
             if (!flags.json) {
@@ -71,7 +71,7 @@ class ReactionAdd extends Command {
     }
 }
 
-ReactionAdd.flags = {
+ReactionCreate.flags = {
     channel: flags.string({
         char: 'c',
         description: 'The unique identifier for the channel.',
@@ -101,4 +101,4 @@ ReactionAdd.flags = {
     }),
 };
 
-module.exports.ReactionAdd = ReactionAdd;
+module.exports.ReactionCreate = ReactionCreate;
