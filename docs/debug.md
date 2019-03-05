@@ -13,7 +13,7 @@ USAGE
 
 OPTIONS
   -j, --json         Output results in JSON. When not specified, returns output in a human friendly format.
-  -t, --token=token  (required) The Stream token you are trying to debug.
+  -t, --token=token  The Stream token you are trying to debug.
 ```
 
-_See code: [src/commands/debug/token.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.27/src/commands/debug/token.js)_
+_See code: [src/commands/debug/token.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.28/src/commands/debug/token.js)_
