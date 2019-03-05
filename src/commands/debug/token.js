@@ -31,11 +31,6 @@ class DebugToken extends Command {
                 complete: true,
             });
 
-            if (!decoded) {
-                this.warn('Invalid JWT token or Stream API secret.');
-                this.exit(0);
-            }
-
             if (flags.json) {
                 this.log(decoded);
                 this.exit(0);
