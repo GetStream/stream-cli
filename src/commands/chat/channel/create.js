@@ -1,4 +1,5 @@
 const { Command, flags } = require('@oclif/command');
+const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const path = require('path');
 const uuid = require('uuid/v4');
@@ -78,7 +79,7 @@ class ChannelCreate extends Command {
             }
 
             this.log(
-                `The channel ${chalk.bold(create.channel.id)} has been created.`
+                `Channel ${chalk.bold(create.channel.id)} has been created.`
             );
             this.exit(0);
         } catch (err) {

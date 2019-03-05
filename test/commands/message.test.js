@@ -10,6 +10,6 @@ describe('message', () => {
         ])
         .exit(1)
         .it('runs chat:message:list', ctx => {
-            expect(ctx.stdout).to.be.a('string');
+            expect(JSON.parse(ctx.stdout)).to.be.an('array');
         });
 });

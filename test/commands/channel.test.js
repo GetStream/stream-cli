@@ -13,6 +13,6 @@ describe('channel', () => {
         ])
         .exit(1)
         .it('runs chat:channel:create', ctx => {
-            expect(ctx.stdout).to.be.a('string');
+            expect(ctx.stdout).to.be.an('object');
         });
 });

@@ -1,6 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const stringify = require('json-stringify-pretty-compact');
-const prompt = require('enquirer');
+const { prompt } = require('enquirer');
 const cardinal = require('cardinal');
 const moment = require('moment');
 const chalk = require('chalk');
@@ -8,47 +8,119 @@ const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
-const events = [
-    'all',
-    'user.status.changed',
-    'user.watching.start',
-    'user.watching.stop',
-    'user.updated',
-    'typing.start',
-    'typing.stop',
-    'message.new',
-    'message.updated',
-    'message.deleted',
-    'message.seen',
-    'message.reaction',
-    'member.added',
-    'member.removed',
-    'channel.updated',
-    'health.check',
-    'connection.changed',
-    'connection.recovered',
-];
-
 class Log extends Command {
     async run() {
         const { flags } = this.parse(Log);
 
         try {
-            if (!flags.event) {
-                const res = await prompt({
-                    type: 'autocomplete',
-                    name: 'event',
-                    message: 'What event would you like to filter on?',
-                    limit: events.length,
-                    suggest(input, choices) {
-                        return choices.filter(choice =>
-                            choice.message.startsWith(input)
-                        );
+            if (!flags.channel || !flags.type || !flags.event) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        message: `What is the unique identifier for the channel?`,
+                        required: true,
                     },
-                    choices: events,
-                });
+                    {
+                        type: 'select',
+                        name: 'type',
+                        message: 'What type of channel is this?',
+                        required: true,
+                        choices: [
+                            { message: 'Livestream', value: 'livestream' },
+                            { message: 'Messaging', value: 'messaging' },
+                            { message: 'Gaming', value: 'gaming' },
+                            { message: 'Commerce', value: 'commerce' },
+                            { message: 'Team', value: 'team' },
+                        ],
+                    },
+                    {
+                        type: 'select',
+                        name: 'event',
+                        message: 'What event would you like to filter on?',
+                        required: true,
+                        choices: [
+                            {
+                                message: 'All Events - JSON',
+                                value: 'all',
+                            },
+                            {
+                                message: 'User Status - Changed',
+                                value: 'user.status.changed',
+                            },
+                            {
+                                message: 'User Watching - Start',
+                                value: 'user.watching.start',
+                            },
+                            {
+                                message: 'User Watching - Stop',
+                                value: 'user.watching.stop',
+                            },
+                            {
+                                message: 'User Updated',
+                                value: 'user.updated',
+                            },
+                            {
+                                message: 'Typing - Start',
+                                value: 'typing.start',
+                            },
+                            {
+                                message: 'Typing - Stop',
+                                value: 'typing.stop',
+                            },
+                            {
+                                message: 'Message - New',
+                                value: 'message.new',
+                            },
+                            {
+                                message: 'Message - Updated',
+                                value: 'message.updated',
+                            },
+                            {
+                                message: 'Message - Deleted',
+                                value: 'message.deleted',
+                            },
+                            {
+                                message: 'Message - Seen',
+                                value: 'message.seen',
+                            },
+                            {
+                                message: 'Message - Reaction',
+                                value: 'message.reaction',
+                            },
+                            {
+                                message: 'Member - Added',
+                                value: 'member.added',
+                            },
+                            {
+                                message: 'Member - Removed',
+                                value: 'member.removed',
+                            },
+                            {
+                                message: 'Channel - Updated',
+                                value: 'channel.updated',
+                            },
+                            {
+                                message: 'Health - Check',
+                                value: 'health.check',
+                            },
+                            {
+                                message: 'Connection - Changed',
+                                value: 'connection.changed',
+                            },
+                            {
+                                message: 'Connection - Recovered',
+                                value: 'connection.recovered',
+                            },
+                        ],
+                    },
+                ]);
 
-                flags.event = res.event;
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
             }
 
             const client = await auth(this);
@@ -120,12 +192,31 @@ Log.flags = {
         char: 't',
         description: 'The type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: true,
+        required: false,
     }),
     event: flags.string({
         char: 'e',
         description: 'The type of event you want to listen on.',
-        options: events,
+        options: [
+            'all',
+            'user.status.changed',
+            'user.watching.start',
+            'user.watching.stop',
+            'user.updated',
+            'typing.start',
+            'typing.stop',
+            'message.new',
+            'message.updated',
+            'message.deleted',
+            'message.seen',
+            'message.reaction',
+            'member.added',
+            'member.removed',
+            'channel.updated',
+            'health.check',
+            'connection.changed',
+            'connection.recovered',
+        ],
         required: false,
     }),
     json: flags.boolean({
