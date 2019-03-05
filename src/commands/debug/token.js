@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const Table = require('cli-table');
+const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const jwt = require('jsonwebtoken');
 const path = require('path');
@@ -11,6 +12,19 @@ class DebugToken extends Command {
         const { flags } = this.parse(DebugToken);
 
         try {
+            if (!flags.token) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'jwt',
+                        message: `What is the Stream token you would like to debug?`,
+                        required: true,
+                    },
+                ]);
+
+                flags.jwt = res.jwt;
+            }
+
             const { apiKey, apiSecret } = await credentials(this);
 
             const decoded = await jwt.verify(flags.jwt, apiSecret, {
@@ -48,7 +62,9 @@ class DebugToken extends Command {
             this.log(table.toString());
             this.exit(0);
         } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+            this.error('Malformed JWT token or Stream API secret.', {
+                exit: 1,
+            });
         }
     }
 }
@@ -57,7 +73,7 @@ DebugToken.flags = {
     token: flags.string({
         char: 't',
         description: 'The Stream token you are trying to debug.',
-        required: true,
+        required: false,
     }),
     json: flags.boolean({
         char: 'j',

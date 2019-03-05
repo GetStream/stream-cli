@@ -14,7 +14,7 @@ class ModerateFlag extends Command {
             if (flags.user) {
                 await client.flagUser(flags.user);
 
-                this.log(`The user ${chalk.bold(lags.user)} has been flagged!`);
+                this.log(`User ${chalk.bold(lags.user)} has been flagged!`);
                 this.exit(0);
             } else if (flags.message) {
                 const flag = await client.flagMessage(flags.message);
@@ -25,13 +25,13 @@ class ModerateFlag extends Command {
                 }
 
                 this.log(
-                    `The message ${chalk.bold(flags.user)} has been flagged!`
+                    `Message ${chalk.bold(flags.message)} has been flagged!`
                 );
                 this.exit(0);
             } else {
                 this.warn(
                     `Please pass a valid command. Use the command ${chalk.bold(
-                        'moderate:flag --help'
+                        'chat:moderate:flag --help'
                     )} for more information.`
                 );
                 this.exit(0);

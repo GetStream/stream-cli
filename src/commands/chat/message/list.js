@@ -9,7 +9,7 @@ class MessageList extends Command {
         const { flags } = this.parse(MessageList);
 
         try {
-            if (!flags.json) {
+            if (!flags.channel || !flags.type || !flags.json) {
                 const res = await prompt([
                     {
                         type: 'input',

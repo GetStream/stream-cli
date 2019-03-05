@@ -1,4 +1,5 @@
 const { Command, flags } = require('@oclif/command');
+const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const path = require('path');
 
@@ -9,15 +10,34 @@ class MessageRemove extends Command {
         const { flags } = this.parse(MessageRemove);
 
         try {
+            if (!flags.message || !flags.json) {
+                const res = await prompt([
+                    {
+                        type: 'input',
+                        name: 'channel',
+                        message: `What is the unique identifier for the message?`,
+                        required: true,
+                    },
+                ]);
+
+                for (const key in res) {
+                    if (res.hasOwnProperty(key)) {
+                        flags[key] = res[key];
+                    }
+                }
+            }
+
             const client = await auth(this);
-            const remove = await client.deleteMessage(flags.id);
+            const remove = await client.deleteMessage(flags.message);
 
             if (flags.json) {
                 this.log(remove);
                 this.exit(0);
             }
 
-            this.log(`The message ${chalk.bold(flags.id)} has been removed.`);
+            this.log(
+                `The message ${chalk.bold(flags.message)} has been removed.`
+            );
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
@@ -26,15 +46,10 @@ class MessageRemove extends Command {
 }
 
 MessageRemove.flags = {
-    channel: flags.string({
-        char: 'c',
-        description: 'The channel ID you are targeting.',
-        required: true,
-    }),
     message: flags.string({
         char: 'message',
         description: 'The ID of the message you would like to remove.',
-        required: true,
+        required: false,
     }),
     json: flags.boolean({
         char: 'j',

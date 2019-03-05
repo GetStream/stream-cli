@@ -17,7 +17,7 @@ class ModerateMute extends Command {
                 this.exit(0);
             }
 
-            this.log(`The message ${chalk.bold(flags.user)} has been flagged!`);
+            this.log(`User ${chalk.bold(flags.user)} has been muted!`);
             this.exit(0);
         } catch (err) {
             this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
