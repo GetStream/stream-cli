@@ -28,10 +28,7 @@ class ChannelUpdate extends Command {
                 payload = Object.assign({}, payload, parsed);
             }
 
-            const update = await channel.update(payload, {
-                name: flags.name,
-                text: flags.reason,
-            });
+            const update = await channel.update(payload);
 
             if (flags.json) {
                 this.log(JSON.stringify(update));

@@ -22,6 +22,7 @@
         "manifest": "rm -f oclif.manifest.json && oclif-dev manifest",
         "readme": "oclif-dev readme --multi",
         "test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
+        "cover": "nyc mocha --exit --forbid-only \"test/**/*.test.js\"",
         "posttest": "eslint ."
     },
     "dependencies": {

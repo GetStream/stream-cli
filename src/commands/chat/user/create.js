@@ -9,7 +9,7 @@ class UserCreate extends Command {
         const { flags } = this.parse(UserCreate);
 
         try {
-            if (!flags.type || !flags.moderators || !flags.channel) {
+            if (!flags.type || !flags.channel || !flags.user || !flags.role) {
                 const res = await prompt([
                     {
                         type: 'input',
@@ -32,11 +32,36 @@ class UserCreate extends Command {
                         ],
                     },
                     {
-                        type: 'input',
-                        name: 'moderators',
-                        message: 'Who would you like to add as a moderator?',
-                        hint: 'e.g. Thierry, Tommaso, Nick (Comma Separated)',
+                        type: 'select',
+                        name: 'role',
+                        message: 'What role would you like assign to the user?',
                         required: true,
+                        choices: [
+                            {
+                                message: 'Admin',
+                                value: 'admin',
+                            },
+                            {
+                                message: 'Moderator',
+                                value: 'channel_moderator',
+                            },
+                            {
+                                message: 'Guest',
+                                value: 'guest',
+                            },
+                            {
+                                message: 'Channel Member',
+                                value: 'channel_member',
+                            },
+                            {
+                                message: 'Channel Owner',
+                                value: 'channel_owner',
+                            },
+                            {
+                                message: 'Message Owner',
+                                value: 'message_owner',
+                            },
+                        ],
                     },
                 ]);
 
@@ -48,23 +73,17 @@ class UserCreate extends Command {
             }
 
             const client = await auth(this);
-            const channel = await client.channel(flags.type, flags.channel);
-            const create = await channel.addModerators(
-                flags.moderators.split(',')
-            );
+            await client.updateUser({ id: flags.user, role: flags.role });
+
+            const channel = client.channel(flags.type, flags.channel);
+            const create = channel.addMembers([flags.user]);
 
             if (flags.json) {
                 this.log(JSON.stringify(create));
-                this.exit(0);
+                this.exit(1);
             }
 
-            this.log(
-                `${chalk.bold(
-                    flags.moderators
-                )} have been added as moderators to channel ${chalk.bold(
-                    flags.type
-                )}:${chalk.bold(flags.channel)}`
-            );
+            this.log(create);
             this.exit(0);
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {
@@ -86,9 +105,22 @@ UserCreate.flags = {
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
         required: false,
     }),
-    moderators: flags.string({
-        char: 'm',
-        description: 'Comma separated list of moderators.',
+    user: flags.string({
+        char: 'u',
+        description: 'Comma separated list of users to add.',
+        required: false,
+    }),
+    role: flags.string({
+        char: 'r',
+        description: 'The role to assign to the user.',
+        options: [
+            'admin',
+            'channel_moderator',
+            'guest',
+            'channel_member',
+            'channel_owner',
+            'message_owner',
+        ],
         required: false,
     }),
     json: flags.boolean({
