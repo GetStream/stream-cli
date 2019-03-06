@@ -83,6 +83,34 @@ Need to copy the output to your clipboard? Not a problem. Just pipe the informat
 $ stream debug:token --token "foo.bar.baz" --json | pbcopy
 ```
 
+Want to call the Stream CLI using a bash command? No problem! Make sense of output using [jq](https://stedolan.github.io/jq/), a lightweight and flexible command-line JSON processor.
+
+```bash
+#! /bin/bash
+
+run=$(stream config:get --json)
+
+name=$(jq --raw-output '.name' <<< "${run}")
+email=$(jq --raw-output '.email' <<< "${run}")
+apiKey=$(jq --raw-output '.apiKey' <<< "${run}")
+apiSecret=$(jq --raw-output '.apiSecret' <<< "${run}")
+
+echo $name
+echo $email
+echo $apiKey
+echo $apiSecret
+```
+
+**OR**
+
+```bash
+#! /bin/bash
+
+stream chat:channel:create --channel=$(openssl rand -hex 12) --type="messaging" --name="CLI" --json | jq '.'
+```
+
+> Note: See [here](https://github.com/GetStream/stream-cli/tree/master/examples/bash) for additonal examples!
+
 # 🥳‍ Usage
 
 <!-- usage -->
