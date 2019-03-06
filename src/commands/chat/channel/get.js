@@ -50,7 +50,7 @@ class ChannelGet extends Command {
             );
 
             if (flags.json) {
-                this.log(JSON.stringify(channel[0]));
+                this.log(JSON.stringify(channel[0].data));
                 this.exit(0);
             }
 

@@ -21,10 +21,13 @@ class ChannelList extends Command {
             );
 
             if (flags.json) {
-                for (const channel of channels) {
-                    this.log(JSON.stringofy(channel));
+                const arr = [];
+
+                for (let i = 0; i < channels.length; i++) {
+                    arr.push(channels[i].data);
                 }
 
+                this.log(JSON.stringify(arr));
                 this.exit(0);
             }
 

@@ -9,11 +9,9 @@ describe('message', () => {
             '--json',
         ])
         .exit(1)
-        .it('runs chat:message:list', (ctx, done) => {
+        .it('runs chat:message:list', ctx => {
             const data = JSON.parse(ctx.stdout);
 
             expect(data).to.be.an('array');
-
-            done();
         });
 });

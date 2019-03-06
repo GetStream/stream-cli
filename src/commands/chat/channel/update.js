@@ -12,7 +12,7 @@ class ChannelUpdate extends Command {
             const { name, email } = await credentials(this);
 
             const client = await auth(this);
-            const channel = await client.channel(flags.type, flags.id);
+            const channel = await client.channel(flags.type, flags.channel);
 
             let payload = {
                 name: flags.name,
@@ -38,9 +38,11 @@ class ChannelUpdate extends Command {
                 this.exit(0);
             }
 
-            this.log(`The channel ${chalk.bold(flags.id)} has been modified.`);
+            this.log(`Channel ${chalk.bold(flags.channel)} has been modified.`);
         } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }
@@ -62,8 +64,8 @@ ChannelUpdate.flags = {
         description: 'Name of the channel room.',
         required: false,
     }),
-    url: flags.string({
-        char: 'u',
+    image: flags.string({
+        char: 'i',
         description: 'URL to the channel image.',
         required: false,
     }),
