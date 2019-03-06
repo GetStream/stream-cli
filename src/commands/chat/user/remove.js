@@ -1,6 +1,6 @@
 const { Command, flags } = require('@oclif/command');
+const { prompt } = require('enquirer');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -58,7 +58,7 @@ class UserRemove extends Command {
             );
 
             if (flags.json) {
-                this.log(remove);
+                this.log(JSON.stringify(remove));
                 this.exit(0);
             }
 
@@ -68,8 +68,10 @@ class UserRemove extends Command {
                 )} moderators have been removed.`
             );
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

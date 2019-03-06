@@ -12,7 +12,12 @@ describe('channel', () => {
             '--json',
         ])
         .exit(1)
-        .it('runs chat:channel:create', ctx => {
-            expect(ctx.stdout).to.be.an('object');
+        .it('runs chat:channel:create', (ctx, done) => {
+            const data = JSON.parse(ctx.stdout);
+
+            expect(data).to.be.an('object');
+            expect(data).to.have.property('channel');
+
+            done();
         });
 });

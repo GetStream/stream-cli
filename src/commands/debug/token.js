@@ -3,7 +3,6 @@ const Table = require('cli-table');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 
 const { credentials } = require('../../utils/config');
 
@@ -25,14 +24,14 @@ class DebugToken extends Command {
                 flags.jwt = res.jwt;
             }
 
-            const { apiKey, apiSecret } = await credentials(this);
+            const { apiSecret } = await credentials(this);
 
             const decoded = await jwt.verify(flags.jwt, apiSecret, {
                 complete: true,
             });
 
             if (flags.json) {
-                this.log(decoded);
+                this.log(JSON.stringify(decoded));
                 this.exit(0);
             }
 
@@ -56,7 +55,7 @@ class DebugToken extends Command {
 
             this.log(table.toString());
             this.exit(0);
-        } catch (err) {
+        } catch (error) {
             this.error('Malformed JWT token or Stream API secret.', {
                 exit: 1,
             });

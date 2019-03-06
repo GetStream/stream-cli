@@ -1,7 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -31,7 +30,7 @@ class MessageRemove extends Command {
             const remove = await client.deleteMessage(flags.message);
 
             if (flags.json) {
-                this.log(remove);
+                this.log(JSON.stringify(remove));
                 this.exit(0);
             }
 
@@ -39,8 +38,10 @@ class MessageRemove extends Command {
                 `The message ${chalk.bold(flags.message)} has been removed.`
             );
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

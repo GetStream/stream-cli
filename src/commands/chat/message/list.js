@@ -40,7 +40,7 @@ class MessageList extends Command {
             }
 
             const client = await auth(this);
-            const channel = client.channel(flags.type, flags.channel);
+            client.channel(flags.type, flags.channel);
 
             const messages = await client.queryChannels(
                 {},
@@ -48,8 +48,8 @@ class MessageList extends Command {
             );
 
             if (flags.json) {
-                if (!messages.length) {
-                    this.log(messages);
+                if (messages.length === 0) {
+                    this.log(JSON.stringify(messages));
                     this.exit(0);
                 }
 
@@ -59,22 +59,24 @@ class MessageList extends Command {
 
             const data = messages[0].state.messages;
 
-            if (!data.length) {
+            if (data.length === 0) {
                 this.log('No messages available.');
                 this.exit();
             }
 
-            data.map(message => {
+            for (let i = 0; i < data.length; i++) {
                 this.log(
-                    `${chalk.bold.green(message.id)} (${message.created_at}): ${
-                        message.text
+                    `${chalk.bold.green(data[i].id)} (${data[i].created_at}): ${
+                        data[i].text
                     }`
                 );
-            });
+            }
 
             this.exit();
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

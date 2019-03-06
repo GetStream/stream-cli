@@ -1,6 +1,4 @@
 const { Command, flags } = require('@oclif/command');
-const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -19,14 +17,16 @@ class ChannelQuery extends Command {
             });
 
             if (flags.json) {
-                this.log(channels);
+                this.log(JSON.stringify(channels));
                 this.exit(0);
             }
 
             this.log(channels[0].data);
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

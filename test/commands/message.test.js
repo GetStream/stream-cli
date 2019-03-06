@@ -9,7 +9,11 @@ describe('message', () => {
             '--json',
         ])
         .exit(1)
-        .it('runs chat:message:list', ctx => {
-            expect(JSON.parse(ctx.stdout)).to.be.an('array');
+        .it('runs chat:message:list', (ctx, done) => {
+            const data = JSON.parse(ctx.stdout);
+
+            expect(data).to.be.an('array');
+
+            done();
         });
 });

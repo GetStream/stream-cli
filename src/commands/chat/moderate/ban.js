@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -16,14 +15,16 @@ class ModerateBan extends Command {
             });
 
             if (flags.json) {
-                this.log(json);
+                this.log(JSON.stringify(ban));
                 this.exit(0);
             }
 
             this.log(`The user ${chalk.bold(flags.user)} has been banned.`);
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

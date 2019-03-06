@@ -1,16 +1,11 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const axios = require('axios');
-
-const { credentials } = require('../../../utils/config');
 
 class SettingsSet extends Command {
     async run() {
         const { flags } = this.parse(SettingsSet);
 
         try {
-            const { apiKey, apiSecret } = await credentials(this);
-
             if (!flags.name || !flags.p12) {
                 const res = await prompt([
                     {
@@ -27,18 +22,18 @@ class SettingsSet extends Command {
                     }
                 }
 
-                const setting = null;
-
                 if (flags.json) {
-                    this.log(settings);
+                    this.log('settings');
                     this.exit(0);
                 }
             }
 
             this.log('Your Stream orginzation settings have been updated.');
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

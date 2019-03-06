@@ -4,7 +4,6 @@ const { prompt } = require('enquirer');
 const cardinal = require('cardinal');
 const moment = require('moment');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -144,7 +143,7 @@ class Log extends Command {
 
             if (flags.json) {
                 channel.on(event => {
-                    this.log(event);
+                    this.log(JSON.stringify(event));
                 });
             } else if (flags.event === 'all') {
                 channel.on(event => {
@@ -176,8 +175,10 @@ class Log extends Command {
                     this.log(`${timestamp}:`, '\n\n', payload, '\n\n');
                 });
             }
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

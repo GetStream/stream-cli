@@ -16,7 +16,7 @@ class MessageUpdate extends Command {
                         type: 'input',
                         name: 'message',
                         message: `What is the unique identifier for the message?`,
-                        default: name || uuid(),
+                        default: uuid(),
                         required: true,
                     },
                     {
@@ -47,7 +47,7 @@ class MessageUpdate extends Command {
             const update = await client.updateMessage(payload);
 
             if (flags.json) {
-                this.log(update);
+                this.log(JSON.stringify(update));
                 this.exit(0);
             }
 
@@ -55,8 +55,10 @@ class MessageUpdate extends Command {
                 `Message ${chalk.bold(flags.message.id)} has been updated.`
             );
             this.exit();
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

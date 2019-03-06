@@ -59,14 +59,14 @@ class ReactionCreate extends Command {
             });
 
             if (this.json) {
-                this.log(reaction);
+                this.log(JSON.stringify(reaction));
                 this.exit(0);
             }
 
             this.log('Your reaction has been created.');
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }

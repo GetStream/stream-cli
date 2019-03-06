@@ -1,4 +1,3 @@
-const { Command } = require('@oclif/command');
 const emoji = require('node-emoji');
 const chalk = require('chalk');
 const path = require('path');
@@ -31,8 +30,8 @@ async function credentials(ctx) {
         }
 
         return { name, email, apiKey, apiSecret };
-    } catch (err) {
-        ctx.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+    } catch (error) {
+        ctx.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
     }
 }
 

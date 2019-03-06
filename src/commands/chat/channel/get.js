@@ -1,9 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const treeify = require('treeify');
-const numeral = require('numeral');
-const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -53,7 +50,7 @@ class ChannelGet extends Command {
             );
 
             if (flags.json) {
-                this.log(channel[0]);
+                this.log(JSON.stringify(channel[0]));
                 this.exit(0);
             }
 
@@ -65,8 +62,10 @@ class ChannelGet extends Command {
 
             this.log(tree);
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

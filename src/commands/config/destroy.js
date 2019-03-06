@@ -35,8 +35,8 @@ class ConfigDestroy extends Command {
             );
 
             this.exit(0);
-        } catch (err) {
-            this.error(err, { exit: 1 });
+        } catch (error) {
+            this.error(error, { exit: 1 });
         }
     }
 }
@@ -44,7 +44,8 @@ class ConfigDestroy extends Command {
 ConfigDestroy.flags = {
     force: flags.boolean({
         char: 'f',
-        description: 'Force remove Stream configuration.',
+        description: 'Force remove Stream configuration from cache.',
+        required: false,
     }),
 };
 

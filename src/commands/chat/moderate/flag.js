@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -14,13 +13,13 @@ class ModerateFlag extends Command {
             if (flags.user) {
                 await client.flagUser(flags.user);
 
-                this.log(`User ${chalk.bold(lags.user)} has been flagged!`);
+                this.log(`User ${chalk.bold(flags.user)} has been flagged!`);
                 this.exit(0);
             } else if (flags.message) {
                 const flag = await client.flagMessage(flags.message);
 
                 if (flags.json) {
-                    this.log(flag);
+                    this.log(JSON.stringify(flag));
                     this.exit(0);
                 }
 
@@ -36,8 +35,10 @@ class ModerateFlag extends Command {
                 );
                 this.exit(0);
             }
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

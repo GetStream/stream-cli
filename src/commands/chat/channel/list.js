@@ -1,8 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const treeify = require('treeify');
-const moment = require('moment');
-const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -25,7 +22,7 @@ class ChannelList extends Command {
 
             if (flags.json) {
                 for (const channel of channels) {
-                    this.log(channel, '\n');
+                    this.log(JSON.stringofy(channel));
                 }
 
                 this.exit(0);
@@ -42,8 +39,10 @@ class ChannelList extends Command {
             }
 
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

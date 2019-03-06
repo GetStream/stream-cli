@@ -74,7 +74,7 @@ class ConfigSet extends Command {
             });
 
             if (flags.json) {
-                this.log(await credentials(this));
+                this.log(JSON.stringify(await credentials(this)));
                 this.exit(0);
             }
 
@@ -83,8 +83,10 @@ class ConfigSet extends Command {
                 emoji.get('rocket')
             );
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

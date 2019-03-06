@@ -34,13 +34,13 @@ class ChannelUpdate extends Command {
             });
 
             if (flags.json) {
-                this.log(update);
+                this.log(JSON.stringify(update));
                 this.exit(0);
             }
 
             this.log(`The channel ${chalk.bold(flags.id)} has been modified.`);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }

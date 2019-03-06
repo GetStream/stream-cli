@@ -86,14 +86,14 @@ class MessageCreate extends Command {
             const create = await channel.sendMessage(payload);
 
             if (flags.json) {
-                this.log(create);
+                this.log(JSON.stringify(create));
                 this.exit(0);
             }
 
             this.log(`Message ${chalk.bold(create.message.id)} was created.`);
             this.exit();
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
         }
     }
 }

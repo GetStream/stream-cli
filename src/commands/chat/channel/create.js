@@ -1,7 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
-const path = require('path');
 const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
@@ -74,7 +73,7 @@ class ChannelCreate extends Command {
             const create = await channel.create();
 
             if (flags.json) {
-                this.log(create);
+                this.log(JSON.stringify(create));
                 this.exit(0);
             }
 
@@ -82,8 +81,10 @@ class ChannelCreate extends Command {
                 `Channel ${chalk.bold(create.channel.id)} has been created.`
             );
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

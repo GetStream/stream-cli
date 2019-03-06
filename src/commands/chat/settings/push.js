@@ -1,15 +1,10 @@
 const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-
-const { credentials } = require('../../../utils/config');
 
 class SettingsPush extends Command {
     async run() {
         const { flags } = this.parse(SettingsPush);
 
         try {
-            const { apiKey, apiSecret } = await credentials(this);
-
             if (flags.enable && flags.type === 'apn') {
                 this.log('Push notifications have been enabled with APN.');
             }
@@ -27,8 +22,10 @@ class SettingsPush extends Command {
             }
 
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

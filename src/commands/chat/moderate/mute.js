@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const chalk = require('chalk');
-const path = require('path');
 
 const { auth } = require('../../../utils/auth');
 
@@ -13,14 +12,16 @@ class ModerateMute extends Command {
             const mute = await client.muteUser(flags.user);
 
             if (flags.json) {
-                this.log(mute);
+                this.log(JSON.stringify(mute));
                 this.exit(0);
             }
 
             this.log(`User ${chalk.bold(flags.user)} has been muted!`);
             this.exit(0);
-        } catch (err) {
-            this.error(err || 'A Stream CLI error has occurred.', { exit: 1 });
+        } catch (error) {
+            this.error(error || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }
