@@ -20,10 +20,14 @@ class ChannelList extends Command {
                 }
             );
 
-            console.log(channels);
-
             if (flags.json) {
-                console.log(channels);
+                const arr = [];
+
+                for (const c of channels) {
+                    arr.push(c.data);
+                }
+
+                this.log(arr);
                 this.exit(0);
             }
 

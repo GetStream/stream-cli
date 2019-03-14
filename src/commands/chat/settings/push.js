@@ -28,7 +28,9 @@ class SettingsPush extends Command {
                     },
                 });
 
-                this.log('Push notifications have been enabled with APN.');
+                if (!flags.json) {
+                    this.log('Push notifications have been enabled with APN.');
+                }
             }
 
             if (flags.enable && flags.type === 'firebase') {
@@ -39,7 +41,11 @@ class SettingsPush extends Command {
                     },
                 });
 
-                this.log('Push notifications have been enabled for Firebase.');
+                if (!flags.json) {
+                    this.log(
+                        'Push notifications have been enabled for Firebase.'
+                    );
+                }
             }
 
             if (flags.enable && flags.type === 'webhook') {
@@ -47,7 +53,11 @@ class SettingsPush extends Command {
                     webhook_url: flags.webhook_url,
                 });
 
-                this.log('Push notifications have been enabled for Webhooks.');
+                if (!flags.json) {
+                    this.log(
+                        'Push notifications have been enabled for Webhooks.'
+                    );
+                }
             }
 
             if (flags.disable) {
@@ -97,12 +107,12 @@ SettingsPush.flags = {
     }),
     pem_cert: flags.string({
         char: 'p',
-        description: 'Private RSA key for APN (.pem).',
+        description: 'Absolute path to RSA key for APN (.pem).',
         required: false,
     }),
     p12_cert: flags.string({
         char: 'b',
-        description: 'Base64 encoded .p12 file for APN.',
+        description: 'Absolute path to .p12 file for APN.',
         required: false,
     }),
     notification_template: flags.string({

@@ -73,7 +73,7 @@ class ChannelCreate extends Command {
             const create = await channel.create();
 
             if (flags.json) {
-                this.log(JSON.stringify(create));
+                this.log(JSON.stringify(create.channel));
                 this.exit(0);
             }
 
