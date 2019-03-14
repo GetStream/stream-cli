@@ -13,7 +13,7 @@ class MessageRemove extends Command {
                 const res = await prompt([
                     {
                         type: 'input',
-                        name: 'channel',
+                        name: 'message',
                         message: `What is the unique identifier for the message?`,
                         required: true,
                     },

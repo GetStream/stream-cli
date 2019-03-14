@@ -37,8 +37,8 @@ class UserRemove extends Command {
                     },
                     {
                         type: 'input',
-                        name: 'moderators',
-                        message: `What moderators would you like to remove (comma separated)?`,
+                        name: 'users',
+                        message: `What users would you like to remove (comma separated)?`,
                         required: true,
                     },
                 ]);
@@ -54,7 +54,7 @@ class UserRemove extends Command {
 
             const channel = await client.channel(flags.type, flags.channel);
             const remove = await channel.demoteModerators(
-                flags.moderators.split(',')
+                flags.users.split(',')
             );
 
             if (flags.json) {
@@ -63,9 +63,7 @@ class UserRemove extends Command {
             }
 
             this.log(
-                `${chalk.bold(
-                    flags.moderators.length
-                )} moderators have been removed.`
+                `${chalk.bold(flags.users.length)} users have been removed.`
             );
             this.exit(0);
         } catch (error) {

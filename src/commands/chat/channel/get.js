@@ -9,7 +9,7 @@ class ChannelGet extends Command {
         const { flags } = this.parse(ChannelGet);
 
         try {
-            if (!flags.json) {
+            if (!flags.channel || !flags.type) {
                 const res = await prompt([
                     {
                         type: 'input',
