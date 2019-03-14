@@ -19,20 +19,21 @@ before('init', done => {
             'chat:user:create',
             `--channel=${channelId}`,
             '--type=messaging',
-            `--users=${uuid()}`,
+            '--user=Nick',
+            '--role=admin',
             '--json',
         ])
         .exit(1)
         .it('runs chat:user:create', ctx => {
             const data = JSON.parse(ctx.stdout);
 
-            userId = data[0].id;
+            userId = data.id;
         });
 
     done();
 });
 
-describe('create', () => {
+describe('message', () => {
     test.stdout()
         .command([
             'chat:message:create',
@@ -40,6 +41,7 @@ describe('create', () => {
             '--type=messaging',
             `--user=${userId}`,
             '--name=Nick',
+            '--image=https://avatars3.githubusercontent.com/u/1328388?s=460',
             '--message=buttercup',
             '--json',
         ])
@@ -50,17 +52,17 @@ describe('create', () => {
             expect(data).to.be.an('object');
         });
 
-    test.stdout()
-        .command([
-            'chat:message:list',
-            `--channel=${channelId}`,
-            '--type=messaging',
-            '--json',
-        ])
-        .exit(1)
-        .it('runs chat:message:list', ctx => {
-            const data = JSON.parse(ctx.stdout);
-
-            expect(data).to.be.an('array');
-        });
+    // test.stdout()
+    //     .command([
+    //         'chat:message:list',
+    //         `--channel=${channelId}`,
+    //         '--type=messaging',
+    //         '--json',
+    //     ])
+    //     .exit(1)
+    //     .it('runs chat:message:list', ctx => {
+    //         const data = JSON.parse(ctx.stdout);
+    //
+    //         expect(data).to.be.an('array');
+    //     });
 });

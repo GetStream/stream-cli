@@ -1,24 +1,57 @@
 const { Command, flags } = require('@oclif/command');
+const fs = require('fs');
 
 class SettingsPush extends Command {
     async run() {
         const { flags } = this.parse(SettingsPush);
 
         try {
+            if (!type) {
+                this.log(
+                    'Please specify a push notification type of apn, firebase or webhook'
+                );
+                this.exit(0);
+            }
+
             if (flags.enable && flags.type === 'apn') {
+                const client = await auth(this);
+
+                const settings = await client.updateAppSettings({
+                    apn_config: {
+                        p12_cert: fs.readFileSync(flags.p12_cert) || '',
+                        pem_cert:
+                            fs.readFileSync(flags.pem_cert, 'utf-8') || '',
+                        auth_key: flags.auth_key || '',
+                        key_id: flags.key_id || '',
+                        team_id: flags.team_id || '',
+                        notification_template: flags.notification_template,
+                    },
+                });
+
                 this.log('Push notifications have been enabled with APN.');
             }
 
             if (flags.enable && flags.type === 'firebase') {
+                const settings = await client.updateAppSettings({
+                    firebase_config: {
+                        api_key: flags.api_key,
+                        notification_template: flags.notification_template,
+                    },
+                });
+
                 this.log('Push notifications have been enabled for Firebase.');
             }
 
             if (flags.enable && flags.type === 'webhook') {
-                this.log('Push notifications have been enabled for webhooks.');
+                const settings = await client.updateAppSettings({
+                    webhook_url: flags.webhook_url,
+                });
+
+                this.log('Push notifications have been enabled for Webhooks.');
             }
 
             if (flags.disable) {
-                this.log('Push notifications have been disabled.');
+                this.log(`Push via ${flags.type} has been disabled.`);
             }
 
             this.exit(0);
@@ -41,7 +74,7 @@ SettingsPush.flags = {
         description: 'Disable push notifications for your project.',
         required: false,
     }),
-    type: flags.boolean({
+    type: flags.string({
         char: 't',
         description: 'Type of configuration.',
         options: ['apn', 'firebase', 'webhook'],

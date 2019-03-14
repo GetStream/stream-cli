@@ -38,20 +38,9 @@ $ npm install -g getstream-cli
 
 # 🚀 Getting Started
 
-In order to initialize the CLI, please have your Stream API key and secret ready. Run the following command:
+In order to initialize the CLI, it's as simple as:
 
-```sh-session
-$ stream config:set
-```
-
-You will then be prompted to enter your API key and secret.
-
-```sh-session
-$ ? What's your API key?
-$ ? What's your API secret?
-```
-
-Now, you're good to go!
+![Stream](https://i.imgur.com/SA9uMQ1.png)
 
 > Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your organization.
 
@@ -120,7 +109,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.31 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.32 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND

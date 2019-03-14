@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const chalk = require('chalk');
 
 const { auth } = require('../../../utils/auth');
 
@@ -14,7 +13,6 @@ class UserCreate extends Command {
                     {
                         type: 'input',
                         name: 'channel',
-                        hint: 'The name of the channel',
                         message: `What is the unique identifier for the channel?`,
                         required: true,
                     },
@@ -32,6 +30,12 @@ class UserCreate extends Command {
                         ],
                     },
                     {
+                        type: 'input',
+                        name: 'user',
+                        message: `What is the unique identifier for the user?`,
+                        required: true,
+                    },
+                    {
                         type: 'select',
                         name: 'role',
                         message: 'What role would you like assign to the user?',
@@ -42,12 +46,12 @@ class UserCreate extends Command {
                                 value: 'admin',
                             },
                             {
-                                message: 'Moderator',
-                                value: 'channel_moderator',
-                            },
-                            {
                                 message: 'Guest',
                                 value: 'guest',
+                            },
+                            {
+                                message: 'Moderator',
+                                value: 'channel_moderator',
                             },
                             {
                                 message: 'Channel Member',
@@ -75,15 +79,16 @@ class UserCreate extends Command {
             const client = await auth(this);
             await client.updateUser({ id: flags.user, role: flags.role });
 
-            const channel = client.channel(flags.type, flags.channel);
-            const create = channel.addMembers([flags.user]);
+            const create = await client
+                .channel(flags.type, flags.channel)
+                .addMembers([flags.user]);
 
             if (flags.json) {
-                this.log(JSON.stringify(create));
-                this.exit(1);
+                this.log(JSON.stringify(create.channel.members[0].user));
+                this.exit(0);
             }
 
-            this.log(create);
+            this.log(create.channel.members[0]);
             this.exit(0);
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {
@@ -115,8 +120,8 @@ UserCreate.flags = {
         description: 'The role to assign to the user.',
         options: [
             'admin',
-            'channel_moderator',
             'guest',
+            'channel_moderator',
             'channel_member',
             'channel_owner',
             'message_owner',

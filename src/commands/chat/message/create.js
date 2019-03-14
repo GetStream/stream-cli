@@ -33,6 +33,12 @@ class MessageCreate extends Command {
                     },
                     {
                         type: 'input',
+                        name: 'image',
+                        message: `What is an absolute URL to the avatar of the user sending this message?`,
+                        required: true,
+                    },
+                    {
+                        type: 'input',
                         name: 'channel',
                         message: `What is the unique identifier for the channel?`,
                         required: true,
@@ -66,34 +72,24 @@ class MessageCreate extends Command {
             }
 
             const client = await auth(this);
+            const channel = await client.channel(flags.type, flags.channel);
 
-            await client.setUser({
-                id: flags.user,
-                name: flags.name,
-                status: 'invisible',
+            const create = await channel.sendMessage({
+                text: flags.message,
+                user: {
+                    id: flags.user,
+                    name: flags.name,
+                    image: flags.image,
+                },
             });
 
-            const channel = client.channel(flags.type, flags.channel);
-
-            const payload = {
-                text: flags.message,
-            };
-
-            if (flags.attachments) {
-                payload.attachments = JSON.parse(flags.attachments);
-            }
-
-            const create = await channel.sendMessage(payload);
-
             if (flags.json) {
-                console.log(create);
-
-                this.log(JSON.stringify(create));
+                this.log(JSON.stringify(create.message));
                 this.exit(0);
             }
 
             this.log(`Message ${chalk.bold(create.message.id)} was created.`);
-            this.exit();
+            this.exit(0);
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {
                 exit: 1,
@@ -113,6 +109,12 @@ MessageCreate.flags = {
         description: 'The name of the user sending the message.',
         required: false,
     }),
+    image: flags.string({
+        char: 'n',
+        description:
+            'Absolute URL for an avatar of the user sending the message.',
+        required: false,
+    }),
     type: flags.string({
         char: 't',
         description: 'The type of channel.',
@@ -128,12 +130,6 @@ MessageCreate.flags = {
     message: flags.string({
         char: 'm',
         description: 'The message you would like to send as plaintext.',
-        required: false,
-    }),
-    attachments: flags.string({
-        char: 'a',
-        description:
-            'A JSON payload of attachments to send along with a message.',
         required: false,
     }),
     json: flags.boolean({

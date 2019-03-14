@@ -17,7 +17,7 @@ OPTIONS
   -f, --force  Force remove Stream configuration from cache.
 ```
 
-_See code: [src/commands/config/destroy.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.31/src/commands/config/destroy.js)_
+_See code: [src/commands/config/destroy.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.32/src/commands/config/destroy.js)_
 
 ## `stream config:get`
 
@@ -29,7 +29,7 @@ OPTIONS
   -j, --json  Output results in JSON. When not specified, returns output in a human friendly format.
 ```
 
-_See code: [src/commands/config/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.31/src/commands/config/get.js)_
+_See code: [src/commands/config/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.32/src/commands/config/get.js)_
 
 ## `stream config:set`
 
@@ -45,4 +45,4 @@ OPTIONS
   -s, --secret=secret  API secret for configuration.
 ```
 
-_See code: [src/commands/config/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.31/src/commands/config/set.js)_
+_See code: [src/commands/config/set.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.32/src/commands/config/set.js)_

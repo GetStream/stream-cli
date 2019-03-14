@@ -100,12 +100,12 @@ ChannelCreate.flags = {
         char: 't',
         description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: true,
+        required: false,
     }),
     name: flags.string({
         char: 'n',
         description: 'Name of the channel room.',
-        required: true,
+        required: false,
     }),
     image: flags.string({
         char: 'i',
