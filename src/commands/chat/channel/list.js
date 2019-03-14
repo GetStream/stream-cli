@@ -27,7 +27,7 @@ class ChannelList extends Command {
                     arr.push(c.data);
                 }
 
-                this.log(arr);
+                this.log(JSON.stringify(arr));
                 this.exit(0);
             }
 
