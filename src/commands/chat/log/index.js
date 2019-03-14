@@ -137,18 +137,18 @@ class Log extends Command {
             const channel = client.channel(flags.type, flags.channel);
             await channel.watch();
 
-            this.log(`Logging real-time events for ${flags.event}...}`);
-
-            const time = 'dddd, MMMM Do YYYY [at] h:mm:ss A';
+            const format = 'dddd, MMMM Do YYYY [at] h:mm:ss A';
 
             if (flags.json) {
                 channel.on(event => {
                     this.log(JSON.stringify(event));
                 });
             } else if (flags.event === 'all') {
+                this.log(`Logging real-time events for ${flags.event}...}`);
+
                 channel.on(event => {
                     const timestamp = chalk.yellow.bold(
-                        moment(event.created_at).format(time)
+                        moment(event.created_at).format(format)
                     );
 
                     const payload = `${timestamp}: ${chalk.bold(
@@ -162,9 +162,11 @@ class Log extends Command {
                     this.log(payload);
                 });
             } else {
+                this.log(`Logging real-time events for ${flags.event}...}`);
+
                 channel.on(flags.event, event => {
                     const timestamp = chalk.yellow.bold(
-                        moment(event.created_at).format(time)
+                        moment(event.created_at).format(format)
                     );
 
                     const payload = cardinal.highlight(
