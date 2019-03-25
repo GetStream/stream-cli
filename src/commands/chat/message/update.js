@@ -3,12 +3,15 @@ const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
 const { auth } = require('../../../utils/auth');
+const { credentials } = require('../../../utils/config');
 
 class MessageUpdate extends Command {
     async run() {
         const { flags } = this.parse(MessageUpdate);
 
         try {
+            const { name } = await credentials(this);
+
             if (!flags.message || !flags.text) {
                 const res = await prompt([
                     {
@@ -35,6 +38,10 @@ class MessageUpdate extends Command {
             const payload = {
                 id: flags.message,
                 text: flags.text,
+                user: {
+                    id: 'CLI',
+                    name,
+                },
             };
 
             if (flags.attachments) {
@@ -43,6 +50,11 @@ class MessageUpdate extends Command {
 
             const client = await auth(this);
 
+            await client.setUser({
+                id: 'CLI',
+                status: 'invisible',
+            });
+
             const update = await client.updateMessage(payload);
 
             if (flags.json) {
@@ -50,9 +62,7 @@ class MessageUpdate extends Command {
                 this.exit(0);
             }
 
-            this.log(
-                `Message ${chalk.bold(flags.message.id)} has been updated.`
-            );
+            this.log(`Message ${chalk.bold(flags.message)} has been updated.`);
             this.exit();
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {

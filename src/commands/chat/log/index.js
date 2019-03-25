@@ -124,11 +124,6 @@ class Log extends Command {
 
             const client = await auth(this);
 
-            await client.updateUser({
-                id: 'CLI',
-                role: 'admin',
-            });
-
             await client.setUser({
                 id: 'CLI',
                 status: 'invisible',
@@ -147,7 +142,7 @@ class Log extends Command {
                 this.log(`Logging real-time events for ${flags.event}...`);
 
                 channel.on(event => {
-                    const timestamp = chalk.yellow.bold(
+                    const timestamp = chalk.bold.green(
                         moment(event.created_at).format(format)
                     );
 
@@ -165,7 +160,7 @@ class Log extends Command {
                 this.log(`Logging real-time events for ${flags.event}...`);
 
                 channel.on(flags.event, event => {
-                    const timestamp = chalk.yellow.bold(
+                    const timestamp = chalk.bold(
                         moment(event.created_at).format(format)
                     );
 

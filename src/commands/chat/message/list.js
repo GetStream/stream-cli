@@ -74,9 +74,9 @@ class MessageList extends Command {
                 )}`;
 
                 this.log(
-                    `Message ID ${chalk.bold.green(
-                        data[i].id
-                    )} (${timestamp}): ${data[i].text}`
+                    `Message ${chalk.bold(data[i].id)} (${timestamp}): ${
+                        data[i].text
+                    }`
                 );
             }
 
