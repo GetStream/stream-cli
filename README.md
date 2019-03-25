@@ -98,7 +98,7 @@ echo $apiSecret
 stream chat:channel:create --channel=$(openssl rand -hex 12) --type="messaging" --name="CLI" --json | jq '.'
 ```
 
-> Note: See [here](https://github.com/GetStream/stream-cli/tree/master/examples/bash) for additonal examples!
+> Note: See [here](https://github.com/GetStream/stream-cli/tree/master/examples/bash) for additional examples!
 
 # 🥳‍ Usage
 
@@ -109,7 +109,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.36 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.37 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
