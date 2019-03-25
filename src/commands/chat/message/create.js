@@ -39,7 +39,7 @@ class MessageCreate extends Command {
                         type: 'input',
                         name: 'image',
                         message: `What is an absolute URL to the avatar of the user sending this message?`,
-                        required: true,
+                        required: false,
                     },
                     {
                         type: 'input',
@@ -83,7 +83,7 @@ class MessageCreate extends Command {
                 user: {
                     id: flags.user,
                     name: flags.name,
-                    image: flags.image,
+                    image: flags.image || null,
                 },
             });
 
@@ -95,7 +95,7 @@ class MessageCreate extends Command {
             this.log(`Message ${chalk.bold(create.message.id)} was created.`);
             this.exit(0);
         } catch (error) {
-            this.error(error.message || 'A Stream CLI error has occurred.', {
+            this.error(error || 'A Stream CLI error has occurred.', {
                 exit: 1,
             });
         }

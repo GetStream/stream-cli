@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
+const moment = require('moment');
 const chalk = require('chalk');
 
 const { auth } = require('../../../utils/auth');
@@ -44,17 +45,18 @@ class MessageList extends Command {
 
             const messages = await client.queryChannels(
                 {},
-                { last_message_at: -1 }
+                {},
+                { watch: false, presence: false }
             );
 
             if (flags.json) {
                 if (messages.length === 0) {
                     this.log(JSON.stringify(messages));
-                    this.exit(0);
+                    this.exit();
                 }
 
                 this.log(messages[0].state.messages);
-                this.exit(0);
+                this.exit();
             }
 
             const data = messages[0].state.messages;
@@ -65,16 +67,22 @@ class MessageList extends Command {
             }
 
             for (let i = 0; i < data.length; i++) {
+                const timestamp = `${
+                    data[i].deleted_at ? 'Deleted on' : 'Created at'
+                } ${moment(data[i].created_at).format(
+                    'dddd, MMMM Do YYYY [at] h:mm:ss A'
+                )}`;
+
                 this.log(
-                    `${chalk.bold.green(data[i].id)} (${data[i].created_at}): ${
-                        data[i].text
-                    }`
+                    `Message ID ${chalk.bold.green(
+                        data[i].id
+                    )} (${timestamp}): ${data[i].text}`
                 );
             }
 
             this.exit();
         } catch (error) {
-            this.error(error.message || 'A Stream CLI error has occurred.', {
+            this.error(error || 'A Stream CLI error has occurred.', {
                 exit: 1,
             });
         }
