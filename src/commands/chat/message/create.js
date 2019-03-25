@@ -4,12 +4,15 @@ const chalk = require('chalk');
 const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
+const { credentials } = require('../../../utils/config');
 
 class MessageCreate extends Command {
     async run() {
         const { flags } = this.parse(MessageCreate);
 
         try {
+            const { name } = await credentials(this);
+
             if (
                 !flags.user ||
                 !flags.name ||
@@ -29,6 +32,7 @@ class MessageCreate extends Command {
                         type: 'input',
                         name: 'name',
                         message: `What is the name of the user sending this message?`,
+                        default: name,
                         required: true,
                     },
                     {

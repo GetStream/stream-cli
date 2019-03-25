@@ -1,7 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
-const uuid = require('uuid/v4');
 
 const { auth } = require('../../../utils/auth');
 
@@ -16,7 +15,6 @@ class MessageUpdate extends Command {
                         type: 'input',
                         name: 'message',
                         message: `What is the unique identifier for the message?`,
-                        default: uuid(),
                         required: true,
                     },
                     {

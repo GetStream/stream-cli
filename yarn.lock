@@ -3605,7 +3605,7 @@ stdout-stderr@^0.1.9:
     debug "^3.1.0"
     strip-ansi "^4.0.0"
 
-stream-chat@^0.4.3:
+stream-chat@^0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/stream-chat/-/stream-chat-0.4.5.tgz#c0e8436e4b7c312cb8bfae09a9883f437aa7811c"
   integrity sha512-sBvbkndQ/jgD8upbIAM9+GTr4wwqXyVTTGFYXTC+xaUDTXVy+oYmpFVGWouFx53jpZ3gPRmsRF+sP6nhljwuLw==

@@ -9,7 +9,7 @@ class MessageRemove extends Command {
         const { flags } = this.parse(MessageRemove);
 
         try {
-            if (!flags.message || !flags.json) {
+            if (!flags.message) {
                 const res = await prompt([
                     {
                         type: 'input',
