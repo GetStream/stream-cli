@@ -147,10 +147,8 @@ class Log extends Command {
                     );
 
                     const payload = `${timestamp}: ${chalk.bold(
-                        event.user.name || event.user.id
-                    )} (${chalk.bold(
-                        event.user.role
-                    )}) performed event ${chalk.bold(
+                        event.channel.updated_by.name || event.channel.user.id
+                    )} performed event ${chalk.bold(
                         event.type
                     )} in channel ${chalk.bold(flags.channel)}.`;
 

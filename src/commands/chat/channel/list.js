@@ -1,12 +1,9 @@
-const { Command, flags } = require('@oclif/command');
-const treeify = require('treeify');
+const { Command } = require('@oclif/command');
 
 const { auth } = require('../../../utils/auth');
 
 class ChannelList extends Command {
     async run() {
-        const { flags } = this.parse(ChannelList);
-
         try {
             const client = await auth(this);
 
@@ -20,28 +17,15 @@ class ChannelList extends Command {
                 }
             );
 
-            if (flags.json) {
-                const arr = [];
+            const arr = [];
 
-                for (const c of channels) {
-                    arr.push(c.data);
-                }
-
-                this.log(JSON.stringify(arr));
-                this.exit(0);
+            for (const c of channels) {
+                arr.push(c.data);
             }
 
-            for (const channel of channels) {
-                delete channel.data.config['commands'];
-                delete channel.data.config['created_at'];
-                delete channel.data.config['updated_at'];
+            this.log(JSON.stringify(arr));
 
-                const tree = treeify.asTree(channel.data, true, false);
-
-                this.log(tree);
-            }
-
-            this.exit(0);
+            this.exit();
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {
                 exit: 1,
@@ -49,14 +33,5 @@ class ChannelList extends Command {
         }
     }
 }
-
-ChannelList.flags = {
-    json: flags.boolean({
-        char: 'j',
-        description:
-            'Output results in JSON. When not specified, returns output in a human friendly format.',
-        required: false,
-    }),
-};
 
 module.exports.ChannelList = ChannelList;
