@@ -10,7 +10,7 @@ class SettingsPush extends Command {
 		try {
 			if (!flags.type) {
 				this.log(
-					'Please specify a push notification type of apn, firebase or webhook'
+					'Please specify a push notification type of apn, firebase or webhook.'
 				);
 				this.exit(0);
 			}
