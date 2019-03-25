@@ -66,7 +66,9 @@ class ReactionRemove extends Command {
             this.log('The reaction has been removed.');
             this.exit(0);
         } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', { exit: 1 });
+            this.error(error.message || 'A Stream CLI error has occurred.', {
+                exit: 1,
+            });
         }
     }
 }

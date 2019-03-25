@@ -36,7 +36,7 @@ class ConfigDestroy extends Command {
 
             this.exit(0);
         } catch (error) {
-            this.error(error, { exit: 1 });
+            this.error(error.message, { exit: 1 });
         }
     }
 }

@@ -27,6 +27,17 @@ class MessageRemove extends Command {
             }
 
             const client = await auth(this);
+
+            await client.updateUser({
+                id: 'CLI',
+                role: 'admin',
+            });
+
+            await client.setUser({
+                id: 'CLI',
+                status: 'invisible',
+            });
+
             const remove = await client.deleteMessage(flags.message);
 
             if (flags.json) {
@@ -39,7 +50,7 @@ class MessageRemove extends Command {
             );
             this.exit(0);
         } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', {
+            this.error(error.message || 'A Stream CLI error has occurred.', {
                 exit: 1,
             });
         }

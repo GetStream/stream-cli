@@ -8,9 +8,12 @@ async function auth(ctx) {
 
         return new StreamChat(apiKey, apiSecret);
     } catch (error) {
-        ctx.error(error || 'A Stream authentication error has occurred.', {
-            exit: 1,
-        });
+        ctx.error(
+            error.message || 'A Stream authentication error has occurred.',
+            {
+                exit: 1,
+            }
+        );
     }
 }
 

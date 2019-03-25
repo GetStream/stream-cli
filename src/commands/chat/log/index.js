@@ -125,7 +125,7 @@ class Log extends Command {
             const client = await auth(this);
 
             await client.updateUser({
-                id: '*',
+                id: 'CLI',
                 role: 'admin',
             });
 
@@ -178,7 +178,7 @@ class Log extends Command {
                 });
             }
         } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', {
+            this.error(error.message || 'A Stream CLI error has occurred.', {
                 exit: 1,
             });
         }

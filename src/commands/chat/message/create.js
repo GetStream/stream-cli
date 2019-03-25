@@ -95,7 +95,7 @@ class MessageCreate extends Command {
             this.log(`Message ${chalk.bold(create.message.id)} was created.`);
             this.exit(0);
         } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', {
+            this.error(error.message || 'A Stream CLI error has occurred.', {
                 exit: 1,
             });
         }
