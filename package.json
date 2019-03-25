@@ -31,8 +31,10 @@
         "test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
         "lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src"
     },
-    "hooks": {
-        "pre-commit": "yarn lint"
+    "husky": {
+        "hooks": {
+            "pre-commit": "yarn lint"
+        }
     },
     "dependencies": {
         "@babel/runtime": "^7.4.2",
