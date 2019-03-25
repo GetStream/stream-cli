@@ -1,14 +1,21 @@
 {
     "name": "getstream-cli",
-    "description": "The Stream CLI makes managing Stream applications directly from the command line easy.",
+    "description": "A carefully crafted CLI for managing Stream applications directly from the command line. 🚀",
     "version": "0.0.1-beta.38",
-    "author": "Nick Parsons <nparsons08@gmail.com>",
+    "author": {
+        "name": "Nick Parsons",
+        "email": "nick@getstream.io",
+        "url": "https://getstream.io/"
+    },
     "bin": {
         "stream": "./bin/run"
     },
-    "bugs": "https://github.com/getstream/stream-cli/issues",
+    "bugs": {
+        "url": "https://github.com/getstream/stream-cli/issues",
+        "email": "support@getstream.io"
+    },
     "repository": "getstream/stream-cli",
-    "homepage": "https://github.com/getstream/stream-cli",
+    "homepage": "https://github.com/GetStream/stream-cli/blob/master/README.md",
     "keywords": [
         "GetStream",
         "Stream",
