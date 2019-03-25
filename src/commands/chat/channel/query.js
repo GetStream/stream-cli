@@ -35,7 +35,7 @@ ChannelQuery.flags = {
     channel: flags.string({
         char: 'c',
         description: 'The channel ID you wish to query.',
-        required: true,
+        required: false,
     }),
     type: flags.string({
         char: 't',
