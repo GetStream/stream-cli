@@ -26,6 +26,7 @@ class SettingsPush extends Command {
 						auth_key: flags.auth_key || '',
 						key_id: flags.key_id || '',
 						team_id: flags.team_id || '',
+						topic: flags.bundle_id || '',
 						notification_template: flags.notification_template,
 					},
 				});
@@ -100,6 +101,11 @@ SettingsPush.flags = {
 	key_id: flags.string({
 		char: 'k',
 		description: 'Key ID for APN.',
+		required: false,
+	}),
+	bundle_id: flags.string({
+		char: 'b',
+		description: 'Bundle identifier for APN (e.g. com.apple.test)',
 		required: false,
 	}),
 	team_id: flags.string({

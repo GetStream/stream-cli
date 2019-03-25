@@ -31,7 +31,7 @@ async function credentials(ctx) {
 
 		return { name, email, apiKey, apiSecret };
 	} catch (error) {
-		ctx.error(error.message || 'A Stream CLI error has occurred.', {
+		ctx.error(error || 'A Stream CLI error has occurred.', {
 			exit: 1,
 		});
 	}

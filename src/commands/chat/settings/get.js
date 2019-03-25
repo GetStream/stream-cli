@@ -7,6 +7,9 @@ class SettingsGet extends Command {
 		try {
 			const client = await auth(this);
 
+			const settings = await client.getAppSettings();
+
+			this.log(settings);
 			this.exit(0);
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
