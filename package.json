@@ -2,13 +2,14 @@
     "name": "getstream-cli",
     "description": "A carefully crafted CLI for managing Stream applications directly from the command line. 🚀",
     "version": "0.0.1-beta.39",
+    "bin": {
+        "stream": "./bin/run"
+    },
+    "main": "src/index.js",
     "author": {
         "name": "Nick Parsons",
         "email": "nick@getstream.io",
         "url": "https://getstream.io/"
-    },
-    "bin": {
-        "stream": "./bin/run"
     },
     "bugs": {
         "url": "https://github.com/getstream/stream-cli/issues",
@@ -24,13 +25,11 @@
         "Chat"
     ],
     "license": "BSD-3-Clause",
-    "main": "src/index.js",
     "scripts": {
         "manifest": "rm -f oclif.manifest.json && oclif-dev manifest",
         "readme": "oclif-dev readme --multi",
         "test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
-        "cover": "nyc mocha --exit --forbid-only \"test/**/*.test.js\"",
-        "posttest": "eslint ."
+        "lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src"
     },
     "dependencies": {
         "@babel/runtime": "^7.4.2",

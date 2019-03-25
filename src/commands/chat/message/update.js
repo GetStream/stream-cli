@@ -6,95 +6,95 @@ const { auth } = require('../../../utils/auth');
 const { credentials } = require('../../../utils/config');
 
 class MessageUpdate extends Command {
-    async run() {
-        const { flags } = this.parse(MessageUpdate);
+	async run() {
+		const { flags } = this.parse(MessageUpdate);
 
-        try {
-            const { name } = await credentials(this);
+		try {
+			const { name } = await credentials(this);
 
-            if (!flags.message || !flags.text) {
-                const res = await prompt([
-                    {
-                        type: 'input',
-                        name: 'message',
-                        message: `What is the unique identifier for the message?`,
-                        required: true,
-                    },
-                    {
-                        type: 'input',
-                        name: 'text',
-                        message: 'What is the updated message?',
-                        required: true,
-                    },
-                ]);
+			if (!flags.message || !flags.text) {
+				const res = await prompt([
+					{
+						type: 'input',
+						name: 'message',
+						message: `What is the unique identifier for the message?`,
+						required: true,
+					},
+					{
+						type: 'input',
+						name: 'text',
+						message: 'What is the updated message?',
+						required: true,
+					},
+				]);
 
-                for (const key in res) {
-                    if (res.hasOwnProperty(key)) {
-                        flags[key] = res[key];
-                    }
-                }
-            }
+				for (const key in res) {
+					if (res.hasOwnProperty(key)) {
+						flags[key] = res[key];
+					}
+				}
+			}
 
-            const payload = {
-                id: flags.message,
-                text: flags.text,
-                user: {
-                    id: 'CLI',
-                    name,
-                },
-            };
+			const payload = {
+				id: flags.message,
+				text: flags.text,
+				user: {
+					id: 'CLI',
+					name,
+				},
+			};
 
-            if (flags.attachments) {
-                payload.attachments = JSON.parse(flags.attachments);
-            }
+			if (flags.attachments) {
+				payload.attachments = JSON.parse(flags.attachments);
+			}
 
-            const client = await auth(this);
+			const client = await auth(this);
 
-            await client.setUser({
-                id: 'CLI',
-                status: 'invisible',
-            });
+			await client.setUser({
+				id: 'CLI',
+				status: 'invisible',
+			});
 
-            const update = await client.updateMessage(payload);
+			const update = await client.updateMessage(payload);
 
-            if (flags.json) {
-                this.log(JSON.stringify(update));
-                this.exit(0);
-            }
+			if (flags.json) {
+				this.log(JSON.stringify(update));
+				this.exit(0);
+			}
 
-            this.log(`Message ${chalk.bold(flags.message)} has been updated.`);
-            this.exit();
-        } catch (error) {
-            this.error(error || 'A Stream CLI error has occurred.', {
-                exit: 1,
-            });
-        }
-    }
+			this.log(`Message ${chalk.bold(flags.message)} has been updated.`);
+			this.exit();
+		} catch (error) {
+			this.error(error || 'A Stream CLI error has occurred.', {
+				exit: 1,
+			});
+		}
+	}
 }
 
 MessageUpdate.flags = {
-    message: flags.string({
-        char: 'm',
-        description: 'The unique identifier for the message.',
-        required: false,
-    }),
-    text: flags.string({
-        char: 't',
-        description: 'The message you would like to send as text.',
-        required: false,
-    }),
-    attachments: flags.string({
-        char: 'a',
-        description:
-            'A JSON payload of attachments to send along with a message.',
-        required: false,
-    }),
-    json: flags.boolean({
-        char: 'j',
-        description:
-            'Output results in JSON. When not specified, returns output in a human friendly format.',
-        required: false,
-    }),
+	message: flags.string({
+		char: 'm',
+		description: 'The unique identifier for the message.',
+		required: false,
+	}),
+	text: flags.string({
+		char: 't',
+		description: 'The message you would like to send as text.',
+		required: false,
+	}),
+	attachments: flags.string({
+		char: 'a',
+		description:
+			'A JSON payload of attachments to send along with a message.',
+		required: false,
+	}),
+	json: flags.boolean({
+		char: 'j',
+		description:
+			'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false,
+	}),
 };
 
 module.exports.MessageUpdate = MessageUpdate;
