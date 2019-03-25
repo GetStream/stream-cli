@@ -1,6 +1,5 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const treeify = require('treeify');
 
 const { auth } = require('../../../utils/auth');
 
@@ -49,18 +48,7 @@ class ChannelGet extends Command {
                 }
             );
 
-            if (flags.json) {
-                this.log(JSON.stringify(channel[0].data));
-                this.exit(0);
-            }
-
-            delete channel[0].data.config['commands'];
-            delete channel[0].data.config['created_at'];
-            delete channel[0].data.config['updated_at'];
-
-            const tree = treeify.asTree(channel[0].data, true, false);
-
-            this.log(tree);
+            this.log(JSON.stringify(channel[0].data));
             this.exit(0);
         } catch (error) {
             this.error(error || 'A Stream CLI error has occurred.', {
@@ -80,12 +68,6 @@ ChannelGet.flags = {
         char: 't',
         description: 'Type of channel.',
         options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
-        required: false,
-    }),
-    json: flags.boolean({
-        char: 'j',
-        description:
-            'Output results in JSON. When not specified, returns output in a human friendly format.',
         required: false,
     }),
 };
