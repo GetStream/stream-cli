@@ -1,7 +1,7 @@
 {
     "name": "getstream-cli",
     "description": "A carefully crafted CLI for managing Stream applications directly from the command line. 🚀",
-    "version": "0.0.1-beta.38",
+    "version": "0.0.1-beta.39",
     "author": {
         "name": "Nick Parsons",
         "email": "nick@getstream.io",
