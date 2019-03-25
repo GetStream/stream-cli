@@ -24,7 +24,7 @@ As with any project, things are always changing. If you're interested in seeing 
 
 # 🏗 Installation
 
-The Stream CLI is easy to install and available via npm.
+The Stream CLI is easy to install and available via npm. The CLI requires Node v10.x or above.
 
 ```sh-session
 $ yarn global add getstream-cli
@@ -109,7 +109,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.32 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.36 darwin-x64 node-v10.15.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
