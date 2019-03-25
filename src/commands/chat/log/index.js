@@ -130,7 +130,7 @@ class Log extends Command {
             });
 
             await client.setUser({
-                id: '*',
+                id: 'CLI',
                 status: 'invisible',
             });
 
@@ -144,7 +144,7 @@ class Log extends Command {
                     this.log(JSON.stringify(event));
                 });
             } else if (flags.event === 'all') {
-                this.log(`Logging real-time events for ${flags.event}...}`);
+                this.log(`Logging real-time events for ${flags.event}...`);
 
                 channel.on(event => {
                     const timestamp = chalk.yellow.bold(
@@ -162,7 +162,7 @@ class Log extends Command {
                     this.log(payload);
                 });
             } else {
-                this.log(`Logging real-time events for ${flags.event}...}`);
+                this.log(`Logging real-time events for ${flags.event}...`);
 
                 channel.on(flags.event, event => {
                     const timestamp = chalk.yellow.bold(

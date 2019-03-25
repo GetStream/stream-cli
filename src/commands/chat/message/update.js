@@ -42,6 +42,7 @@ class MessageUpdate extends Command {
             }
 
             const client = await auth(this);
+
             const update = await client.updateMessage(payload);
 
             if (flags.json) {
