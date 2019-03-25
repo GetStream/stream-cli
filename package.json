@@ -109,17 +109,20 @@
             "debug:token": {
                 "description": "debug stream jwt tokens"
             },
-            "settings": {
-                "description": "manage account settings"
-            },
-            "settings:get": {
-                "description": "retrieve all account settings"
-            },
-            "settings:set": {
-                "description": "update account settings"
-            },
             "chat": {
                 "description": "configure and manage all things related to chat"
+            },
+            "chat:push:get": {
+                "description": "retrieve all push settings for chat"
+            },
+            "chat:push:set:apn": {
+                "description": "configure push notifications with apn for chat"
+            },
+            "chat:push:set:firebase": {
+                "description": "configure push notifications with firebase for chat"
+            },
+            "chat:push:set:webhook": {
+                "description": "configure push notifications with webhooks for chat"
             },
             "chat:channel": {
                 "description": "get and manage configurations for a channel"
