@@ -32,7 +32,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel                                 [default: 62cb0a47-0575-44f5-8f61-c4e3e1378eb3] A unique ID for
+  -c, --channel=channel                                 [default: 63dc4601-a7fc-452e-84ad-5184e70420a9] A unique ID for
                                                         the channel you wish to create.
 
   -d, --data=data                                       Additional data as JSON.
@@ -270,7 +270,7 @@ USAGE
   $ stream chat:push:set:apn
 
 OPTIONS
-  -a, --auth_key=auth_key                            Private auth key.
+  -a, --auth_key=auth_key                            Absolute path to .p8 auth key.
   -b, --bundle_id=bundle_id                          Bundle identifier (e.g. com.apple.test).
   -b, --p12_cert=p12_cert                            Absolute path to .p12 file.
 
@@ -295,12 +295,12 @@ USAGE
   $ stream chat:push:set:firebase
 
 OPTIONS
-  -f, --api_key=api_key                              API key for Firebase.
-
   -j, --json                                         Output results in JSON. When not specified, returns output in a
                                                      human friendly format.
 
-  -n, --notification_template=notification_template  JSON template for notifications (APN and Firebase).
+  -k, --key=key                                      API key for Firebase.
+
+  -n, --notification_template=notification_template  JSON notification template.
 ```
 
 _See code: [src/commands/chat/push/set/firebase.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.43/src/commands/chat/push/set/firebase.js)_
