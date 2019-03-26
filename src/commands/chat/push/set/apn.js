@@ -9,7 +9,7 @@ class PushSetApn extends Command {
         const { flags } = this.parse(PushSetApn);
 
         try {
-            if (!flags.p12_cert || !flags.pem_cert) {
+            if (!flags.p12_cert && !flags.pem_cert && !flags.auth_key) {
                 const type = await prompt([
                     {
                         type: 'select',
@@ -31,8 +31,9 @@ class PushSetApn extends Command {
                         {
                             type: 'input',
                             name: 'p12_cert',
-                            hint: '~/Users/name/Desktop/cert.p12',
-                            message: 'What is the filepath to your .p12 file?',
+                            hint: '/Users/username/Desktop/cert.p12',
+                            message:
+                                'What is the absolute path to your .p12 file?',
                             required: true,
                         },
                         {
@@ -57,8 +58,9 @@ class PushSetApn extends Command {
                         {
                             type: 'input',
                             name: 'pem_cert',
-                            hint: '~/Users/name/Desktop/cert.pem',
-                            message: 'What is the filepath to your .pem file?',
+                            hint: '/Users/username/Desktop/cert.pem',
+                            message:
+                                'What is the absolute path to your .pem file?',
                             required: true,
                         },
                         {
@@ -83,7 +85,7 @@ class PushSetApn extends Command {
                         {
                             type: 'input',
                             name: 'auth_key',
-                            hint: '~/Users/name/Desktop/key.p8',
+                            hint: '/Users/username/Desktop/key.p8',
                             message: 'What is the filepath to your .p8 file?',
                             required: true,
                         },
@@ -123,16 +125,25 @@ class PushSetApn extends Command {
                 }
             }
 
-            console.log(flags);
-            this.exit();
-
             const client = await auth(this);
 
             const payload = {
                 apn_config: {
-                    p12_cert: fs.readFileSync(flags.p12_cert) || '',
-                    pem_cert: fs.readFileSync(flags.pem_cert, 'utf-8') || '',
-                    auth_key: flags.auth_key || '',
+                    p12_cert: fs.existsSync(flags.p12_cert.replace('~', ''))
+                        ? fs.readFileSync(flags.p12_cert.replace('~', ''))
+                        : '',
+                    pem_cert: fs.existsSync(flags.pem_cert)
+                        ? fs.readFileSync(
+                              flags.pem_cert.replace('~', ''),
+                              'utf-8'
+                          )
+                        : '',
+                    auth_key: fs.existsSync(flags.auth_key)
+                        ? fs.readFileSync(
+                              flags.auth_key.replace('~', ''),
+                              'utf-8'
+                          )
+                        : '',
                     key_id: flags.key_id || '',
                     team_id: flags.team_id || '',
                     topic: flags.bundle_id || '',
@@ -144,10 +155,12 @@ class PushSetApn extends Command {
                     flags.notification_template;
             }
 
-            const settings = await client.updateAppSettings(flags);
+            const settings = await client.updateAppSettings(payload);
 
             if (flags.json) {
-                this.log(JSON.stringify(settings));
+                const settings = await client.getAppSettings();
+
+                this.log(JSON.stringify(settings.app.push_notifications));
                 this.exit();
             }
 
