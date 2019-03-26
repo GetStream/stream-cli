@@ -44,11 +44,10 @@ class PushGet extends Command {
 								.notification_template,
 				},
 				{
-					[`${chalk.green.bold('Firebase')}`]:
-						settings.app.push_notifications.firebase.enabled ===
-						'enabled'
-							? 'Enabled'
-							: 'Disabled',
+					[`${chalk.green.bold('Firebase')}`]: settings.app
+						.push_notifications.firebase.enabled
+						? 'Enabled'
+						: 'Disabled',
 				},
 				{
 					[`${chalk.green.bold(

@@ -1,4 +1,5 @@
 const { Command, flags } = require('@oclif/command');
+const { prompt } = require('enquirer');
 
 const { auth } = require('../../../../utils/auth');
 
@@ -7,17 +8,52 @@ class PushSetFirebase extends Command {
 		const { flags } = this.parse(PushSetFirebase);
 
 		try {
+			if (!flags.key || !flags.notification_template) {
+				const res = await prompt([
+					{
+						type: 'input',
+						name: 'key',
+						message: `What is your API key for Firebase?`,
+						required: true,
+					},
+					{
+						type: 'input',
+						name: 'notification_template',
+						hint: 'Omit for Stream default',
+						message: `What JSON notification template would you like to use?`,
+						required: false,
+					},
+				]);
+
+				for (const key in res) {
+					if (res.hasOwnProperty(key)) {
+						flags[key] = res[key];
+					}
+				}
+			}
+
 			const client = await auth(this);
 
-			const settings = await client.updateAppSettings({
+			const payload = {
 				firebase_config: {
-					api_key: flags.api_key,
-					notification_template: flags.notification_template,
+					api_key: flags.key,
+					notification_template: flags.notification_template || '',
 				},
-			});
+			};
+
+			if (flags.notification_template) {
+				payload.firebase_config.notification_template =
+					flags.notification_template;
+			}
+
+			await client.updateAppSettings(payload);
 
 			if (flags.json) {
-				this.log(JSON.stringify(settings));
+				const settings = await client.getAppSettings();
+
+				this.log(
+					JSON.stringify(settings.app.push_notifications.firebase)
+				);
 				this.exit();
 			}
 
@@ -32,14 +68,14 @@ class PushSetFirebase extends Command {
 }
 
 PushSetFirebase.flags = {
-	api_key: flags.string({
-		char: 'f',
+	key: flags.string({
+		char: 'k',
 		description: 'API key for Firebase.',
 		required: false,
 	}),
 	notification_template: flags.string({
 		char: 'n',
-		description: 'JSON template for notifications (APN and Firebase).',
+		description: 'JSON notification template.',
 		required: false,
 	}),
 	json: flags.boolean({

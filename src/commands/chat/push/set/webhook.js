@@ -22,13 +22,19 @@ class PushSetWebhook extends Command {
 			}
 
 			const client = await auth(this);
-
-			const settings = await client.updateAppSettings({
+			await client.updateAppSettings({
 				webhook_url: flags.url,
 			});
 
 			if (flags.json) {
-				this.log(JSON.stringify(settings));
+				const settings = await client.getAppSettings();
+
+				this.log(
+					JSON.stringify({
+						webhook_url: settings.app.webhook_url,
+					})
+				);
+				this.exit();
 			}
 
 			this.log('Push notifications have been enabled for Webhooks.');
