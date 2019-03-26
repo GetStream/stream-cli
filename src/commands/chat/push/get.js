@@ -22,7 +22,7 @@ class PushGet extends Command {
 
 			table.push(
 				{
-					[`${chalk.green.bold('APN - Status')}`]: settings.app
+					[`${chalk.green.bold('APN')}`]: settings.app
 						.push_notifications.apn.enabled
 						? 'Enabled'
 						: 'Disabled',
