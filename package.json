@@ -1,7 +1,7 @@
 {
     "name": "getstream-cli",
     "description": "A carefully crafted CLI for managing Stream applications directly from the command line. 🚀",
-    "version": "0.0.1-beta.46",
+    "version": "0.0.1-beta.47",
     "bin": {
         "stream": "./bin/run"
     },
@@ -149,7 +149,7 @@
                 "description": "send and remove messages from a channel"
             },
             "chat:message:remove": {
-                "description": "remove a message from a channel"
+                "description": "remove a chat message"
             },
             "chat:message:create": {
                 "description": "create a new message with or without attachments"
@@ -159,9 +159,6 @@
             },
             "chat:message:list": {
                 "description": "list messages for a specific channel"
-            },
-            "chat:message:remove": {
-                "description": "remove a chat message"
             },
             "chat:message:flag": {
                 "description": "flag a chat message"
