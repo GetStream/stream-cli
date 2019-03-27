@@ -78,7 +78,7 @@ class ChannelUpdate extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(update));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(`Channel ${chalk.bold(flags.channel)} has been updated.`);

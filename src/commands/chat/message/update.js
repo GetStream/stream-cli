@@ -59,7 +59,7 @@ class MessageUpdate extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(update));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(`Message ${chalk.bold(flags.message)} has been updated.`);

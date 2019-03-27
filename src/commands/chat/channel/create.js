@@ -74,13 +74,13 @@ class ChannelCreate extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(create.channel));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(
 				`Channel ${chalk.bold(create.channel.id)} has been created.`
 			);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

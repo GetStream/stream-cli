@@ -89,11 +89,11 @@ class MessageCreate extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(create.message));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(`Message ${chalk.bold(create.message.id)} was created.`);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

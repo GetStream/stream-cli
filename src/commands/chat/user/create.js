@@ -85,11 +85,11 @@ class UserCreate extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(create.channel.members[0].user));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(create.channel.members[0]);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

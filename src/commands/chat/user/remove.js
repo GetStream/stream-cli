@@ -59,13 +59,13 @@ class UserRemove extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(remove));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(
 				`${chalk.bold(flags.users.length)} users have been removed.`
 			);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

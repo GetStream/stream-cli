@@ -4,45 +4,34 @@ const chalk = require('chalk');
 
 const { auth } = require('../../../utils/auth');
 
-class PushWebhook extends Command {
+class MessageFlag extends Command {
 	async run() {
-		const { flags } = this.parse(PushWebhook);
+		const { flags } = this.parse(MessageFlag);
 
 		try {
-			if (!flags.url) {
+			if (!flags.message) {
 				const res = await prompt([
 					{
 						type: 'input',
-						name: 'url',
-						message: `What is the absolute URL for your webhook?`,
+						name: 'message',
+						message:
+							'What is the unique identifier for the message?',
 						required: true,
 					},
 				]);
 
-				flags.url = res.url;
+				flags.message = res.message;
 			}
 
 			const client = await auth(this);
-			await client.updateAppSettings({
-				webhook_url: flags.url,
-			});
+			const flag = client.flagMessage(flags.message);
 
 			if (flags.json) {
-				const settings = await client.getAppSettings();
-
-				this.log(
-					JSON.stringify({
-						webhook_url: settings.app.webhook_url,
-					})
-				);
+				this.log(JSON.stringify(flag));
 				this.exit();
 			}
 
-			this.log(
-				`Push notifications have been enabled for ${chalk.bold(
-					'Webhooks'
-				)}.`
-			);
+			this.log(`Message ${chalk.bold(flags.message)} has been flagged.`);
 			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
@@ -52,10 +41,10 @@ class PushWebhook extends Command {
 	}
 }
 
-PushWebhook.flags = {
-	url: flags.string({
-		char: 'u',
-		description: 'Fully qualified URL for webhook support.',
+MessageFlag.flags = {
+	message: flags.string({
+		char: 'm',
+		description: 'The unique identifier of the message you want to flag.',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -66,4 +55,4 @@ PushWebhook.flags = {
 	}),
 };
 
-module.exports.PushWebhook = PushWebhook;
+module.exports.MessageFlag = MessageFlag;

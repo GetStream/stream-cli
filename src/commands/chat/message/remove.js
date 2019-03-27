@@ -31,13 +31,13 @@ class MessageRemove extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(remove));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(
 				`The message ${chalk.bold(flags.message)} has been removed.`
 			);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,
@@ -49,7 +49,8 @@ class MessageRemove extends Command {
 MessageRemove.flags = {
 	message: flags.string({
 		char: 'message',
-		description: 'The ID of the message you would like to remove.',
+		description:
+			'The unique identifier of the message you would like to remove.',
 		required: false,
 	}),
 	json: flags.boolean({

@@ -18,11 +18,11 @@ class ChannelQuery extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(channel[0].data));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log(channel[0].data);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

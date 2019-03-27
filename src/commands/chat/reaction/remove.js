@@ -13,7 +13,8 @@ class ReactionRemove extends Command {
 					{
 						type: 'input',
 						name: 'channel',
-						message: `What is the unique identifier for the channel?`,
+						message:
+							'What is the unique identifier for the channel?',
 						required: true,
 					},
 					{
@@ -32,13 +33,15 @@ class ReactionRemove extends Command {
 					{
 						type: 'input',
 						name: 'message',
-						message: `What is the unique identifier for the message?`,
+						message:
+							'What is the unique identifier for the message?',
 						required: true,
 					},
 					{
 						type: 'input',
 						name: 'reaction',
-						message: `What is the unique identifier for the reaction?`,
+						message:
+							'What is the unique identifier for the reaction?',
 						required: true,
 					},
 				]);
@@ -60,11 +63,11 @@ class ReactionRemove extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(reaction));
-				this.exit(0);
+				this.exit();
 			}
 
 			this.log('The reaction has been removed.');
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

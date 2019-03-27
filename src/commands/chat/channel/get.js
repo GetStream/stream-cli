@@ -49,7 +49,7 @@ class ChannelGet extends Command {
 			);
 
 			this.log(JSON.stringify(channel[0].data));
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,

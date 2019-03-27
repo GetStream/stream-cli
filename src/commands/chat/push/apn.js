@@ -164,7 +164,7 @@ class PushApn extends Command {
 					'APN'
 				)}.`
 			);
-			this.exit(0);
+			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
 				exit: 1,
