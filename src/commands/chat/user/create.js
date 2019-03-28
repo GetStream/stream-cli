@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class UserCreate extends Command {
 	async run() {
@@ -76,7 +76,7 @@ class UserCreate extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			await client.updateUser({ id: flags.user, role: flags.role });
 
 			const create = await client

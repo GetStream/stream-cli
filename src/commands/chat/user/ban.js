@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class UserBan extends Command {
 	async run() {
@@ -81,7 +81,7 @@ class UserBan extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			const payload = {
 				reason: flags.reason,
 			};

@@ -2,7 +2,7 @@ const { StreamChat } = require('stream-chat');
 
 const { credentials } = require('../../utils/config');
 
-async function auth(ctx) {
+async function chatAuth(ctx) {
 	try {
 		const { apiKey, apiSecret } = await credentials(ctx);
 
@@ -14,4 +14,4 @@ async function auth(ctx) {
 	}
 }
 
-module.exports.auth = auth;
+module.exports.chatAuth = chatAuth;

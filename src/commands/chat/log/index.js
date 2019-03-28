@@ -5,7 +5,7 @@ const cardinal = require('cardinal');
 const moment = require('moment');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class Log extends Command {
 	async run() {
@@ -122,7 +122,7 @@ class Log extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			await client.setUser({
 				id: 'CLI',

@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class UserMute extends Command {
 	async run() {
@@ -22,7 +22,7 @@ class UserMute extends Command {
 				flags.user = res.user;
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			const flag = client.muteUser(flags.user);
 
 			if (flags.json) {

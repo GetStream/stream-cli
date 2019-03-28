@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ChannelGet extends Command {
 	async run() {
@@ -38,7 +38,7 @@ class ChannelGet extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const channel = await client.queryChannels(
 				{ id: flags.channel, type: flags.type },

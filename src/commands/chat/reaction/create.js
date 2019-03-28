@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ReactionCreate extends Command {
 	async run() {
@@ -53,7 +53,7 @@ class ReactionCreate extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const channel = client.channel(flags.type, flags.channel);
 			const reaction = await channel.sendReaction(flags.message, {

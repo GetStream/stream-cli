@@ -2,14 +2,14 @@ const { Command, flags } = require('@oclif/command');
 const Table = require('cli-table');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class PushGet extends Command {
 	async run() {
 		const { flags } = this.parse(PushGet);
 
 		try {
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const settings = await client.getAppSettings();
 

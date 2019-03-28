@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class PushWebhook extends Command {
 	async run() {
@@ -22,7 +22,7 @@ class PushWebhook extends Command {
 				flags.url = res.url;
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			await client.updateAppSettings({
 				webhook_url: flags.url,
 			});

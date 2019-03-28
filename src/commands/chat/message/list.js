@@ -3,7 +3,7 @@ const { prompt } = require('enquirer');
 const moment = require('moment');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class MessageList extends Command {
 	async run() {
@@ -40,7 +40,7 @@ class MessageList extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			client.channel(flags.type, flags.channel);
 
 			const messages = await client.queryChannels(

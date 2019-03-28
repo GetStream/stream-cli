@@ -3,7 +3,7 @@ const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const fs = require('fs');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class PushApn extends Command {
 	async run() {
@@ -126,7 +126,7 @@ class PushApn extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const payload = {
 				apn_config: {

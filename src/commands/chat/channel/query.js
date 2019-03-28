@@ -1,13 +1,13 @@
 const { Command, flags } = require('@oclif/command');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ChannelQuery extends Command {
 	async run() {
 		const { flags } = this.parse(ChannelQuery);
 
 		try {
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const filter = flags.filters ? JSON.parse(flags.filters) : {};
 			const sort = flags.sort ? JSON.parse(flags.sort) : {};

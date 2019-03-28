@@ -3,7 +3,7 @@ const { prompt } = require('enquirer');
 const chalk = require('chalk');
 const uuid = require('uuid/v4');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 const { credentials } = require('../../../utils/config');
 
 class ChannelCreate extends Command {
@@ -48,7 +48,7 @@ class ChannelCreate extends Command {
 			}
 
 			const { name } = await credentials(this);
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			let payload = {
 				name: flags.name,

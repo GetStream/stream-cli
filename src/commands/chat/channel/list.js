@@ -1,12 +1,11 @@
 const { Command } = require('@oclif/command');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ChannelList extends Command {
 	async run() {
 		try {
-			const client = await auth(this);
-
+			const client = await chatAuth(this);
 			const channels = await client.queryChannels(
 				{},
 				{ last_message_at: -1 },

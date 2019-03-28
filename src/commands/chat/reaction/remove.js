@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ReactionRemove extends Command {
 	async run() {
@@ -53,7 +53,7 @@ class ReactionRemove extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 			const channel = client.channel(flags.type, flags.channel);
 
 			const reaction = await channel.deleteReaction(

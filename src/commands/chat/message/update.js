@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 const { credentials } = require('../../../utils/config');
 
 class MessageUpdate extends Command {
@@ -48,7 +48,7 @@ class MessageUpdate extends Command {
 				payload.attachments = JSON.parse(flags.attachments);
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			await client.setUser({
 				id: 'CLI',

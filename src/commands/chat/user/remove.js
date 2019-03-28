@@ -2,7 +2,7 @@ const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
 
-const { auth } = require('../../../utils/auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class UserRemove extends Command {
 	async run() {
@@ -50,7 +50,7 @@ class UserRemove extends Command {
 				}
 			}
 
-			const client = await auth(this);
+			const client = await chatAuth(this);
 
 			const channel = await client.channel(flags.type, flags.channel);
 			const remove = await channel.demoteModerators(
