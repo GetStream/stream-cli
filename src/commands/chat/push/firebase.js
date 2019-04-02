@@ -9,7 +9,7 @@ class PushFirebase extends Command {
 		const { flags } = this.parse(PushFirebase);
 
 		try {
-			if (!flags.key || !flags.notification_template) {
+			if (!flags.disable && !flags.key) {
 				const res = await prompt([
 					{
 						type: 'input',
@@ -38,7 +38,7 @@ class PushFirebase extends Command {
 			const payload = {
 				firebase_config: {
 					api_key: flags.key,
-					notification_template: flags.notification_template || '',
+					disabled: flags.disable || false,
 				},
 			};
 
@@ -59,9 +59,11 @@ class PushFirebase extends Command {
 			}
 
 			this.log(
-				`Push notifications have been enabled for ${chalk.bold(
-					'Firebase'
-				)}.`
+				`Push notifications have been ${
+					flags.disable
+						? chalk.red('disabled')
+						: chalk.green('enabled')
+				} for ${chalk.bold('Firebase')}.`
 			);
 			this.exit();
 		} catch (error) {
@@ -81,6 +83,10 @@ PushFirebase.flags = {
 	notification_template: flags.string({
 		char: 'n',
 		description: 'JSON notification template.',
+		required: false,
+	}),
+	disable: flags.boolean({
+		description: 'Disable Firebase push notifications and clear config.',
 		required: false,
 	}),
 	json: flags.boolean({

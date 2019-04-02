@@ -10,7 +10,7 @@ class PushApn extends Command {
 		const { flags } = this.parse(PushApn);
 
 		try {
-			if (!flags.p12_cert && !flags.pem_cert && !flags.auth_key) {
+			if (!flags.disable && !flags.p12_cert && !flags.auth_key) {
 				const type = await prompt([
 					{
 						type: 'select',
@@ -18,16 +18,15 @@ class PushApn extends Command {
 						message: 'What type of APN configuration will you use?',
 						required: true,
 						choices: [
-							{ message: '.p12', value: 'p12' },
-							{ message: '.pem', value: 'pem' },
-							{ message: '.p8', value: 'p8' },
+							{ message: 'certificate', value: 'cert' },
+							{ message: 'token', value: 'token' },
 						],
 					},
 				]);
 
 				let res = {};
 
-				if (type.apn === 'p12') {
+				if (type.apn === 'cert') {
 					res = await prompt([
 						{
 							type: 'input',
@@ -39,13 +38,6 @@ class PushApn extends Command {
 						},
 						{
 							type: 'input',
-							name: 'bundle_id',
-							hint: 'com.apple.test',
-							message: 'What is your bundle ID?',
-							required: true,
-						},
-						{
-							type: 'input',
 							name: 'notification_template',
 							hint: 'Omit for Stream default',
 							message: `What JSON notification template would you like to use?`,
@@ -54,34 +46,7 @@ class PushApn extends Command {
 					]);
 				}
 
-				if (type.apn === 'pem') {
-					res = await prompt([
-						{
-							type: 'input',
-							name: 'pem_cert',
-							hint: '/Users/username/Desktop/cert.pem',
-							message:
-								'What is the absolute path to your .pem file?',
-							required: true,
-						},
-						{
-							type: 'input',
-							name: 'bundle_id',
-							hint: 'com.apple.test',
-							message: 'What is your bundle ID?',
-							required: true,
-						},
-						{
-							type: 'input',
-							name: 'notification_template',
-							hint: 'Omit for Stream default',
-							message: `What JSON notification template would you like to use?`,
-							required: false,
-						},
-					]);
-				}
-
-				if (type.apn === 'p8') {
+				if (type.apn === 'token') {
 					res = await prompt([
 						{
 							type: 'input',
@@ -110,6 +75,13 @@ class PushApn extends Command {
 							required: true,
 						},
 						{
+							type: 'toggle',
+							name: 'development',
+							message:
+								'Do you want to use the development endpoint for APNs?',
+							required: true,
+						},
+						{
 							type: 'input',
 							name: 'notification_template',
 							hint: 'Omit for Stream default',
@@ -133,15 +105,14 @@ class PushApn extends Command {
 					p12_cert: fs.existsSync(flags.p12_cert)
 						? fs.readFileSync(flags.p12_cert)
 						: '',
-					pem_cert: fs.existsSync(flags.pem_cert)
-						? fs.readFileSync(flags.pem_cert, 'utf-8')
-						: '',
 					auth_key: fs.existsSync(flags.auth_key)
 						? fs.readFileSync(flags.auth_key, 'utf-8')
 						: '',
 					key_id: flags.key_id || '',
 					team_id: flags.team_id || '',
-					topic: flags.bundle_id || '',
+					bundle_id: flags.bundle_id || '',
+					development: flags.development || false,
+					disabled: flags.disable || false,
 				},
 			};
 
@@ -149,6 +120,14 @@ class PushApn extends Command {
 				payload.apn_config.notification_template =
 					flags.notification_template;
 			}
+
+			let auth_type = '';
+			if (flags.p12_cert) {
+				auth_type = 'certificate';
+			} else if (flags.auth_key) {
+				auth_type = 'token';
+			}
+			payload.apn_config.auth_type = auth_type;
 
 			await client.updateAppSettings(payload);
 
@@ -160,9 +139,11 @@ class PushApn extends Command {
 			}
 
 			this.log(
-				`Push notifications have been enabled with ${chalk.bold(
-					'APN'
-				)}.`
+				`Push notifications have been ${
+					flags.disable
+						? chalk.red('disabled')
+						: chalk.green('enabled')
+				} with ${chalk.bold('APN')}.`
 			);
 			this.exit();
 		} catch (error) {
@@ -194,9 +175,9 @@ PushApn.flags = {
 		description: 'Team ID.',
 		required: false,
 	}),
-	pem_cert: flags.string({
-		char: 'p',
-		description: 'Absolute path to .pem RSA key.',
+	development: flags.boolean({
+		char: 'd',
+		description: 'Use development endpoint',
 		required: false,
 	}),
 	p12_cert: flags.string({
@@ -207,6 +188,10 @@ PushApn.flags = {
 	notification_template: flags.string({
 		char: 'n',
 		description: 'JSON template for notifications.',
+		required: false,
+	}),
+	disable: flags.boolean({
+		description: 'Disable APN push notifications and clear config.',
 		required: false,
 	}),
 	json: flags.boolean({
