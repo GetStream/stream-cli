@@ -9,7 +9,29 @@ class PushFirebase extends Command {
 		const { flags } = this.parse(PushFirebase);
 
 		try {
-			if (!flags.disable && !flags.key) {
+			const client = await chatAuth(this);
+			if (flags.disable) {
+				const result = await prompt({
+					type: 'toggle',
+					name: 'proceed',
+					message:
+						'This will disable Firebase push notifications and remove your Firebase API Key. Are you sure?',
+					required: true,
+				});
+				if (result.proceed) {
+					await client.updateAppSettings({
+						firebase_config: {
+							disabled: true,
+						},
+					});
+					this.log(
+						`Push notifications have been ${chalk.red(
+							'disabled'
+						)} with ${chalk.bold('Firebase')}.`
+					);
+				}
+				this.exit();
+			} else if (!flags.key) {
 				const res = await prompt([
 					{
 						type: 'input',
@@ -33,12 +55,9 @@ class PushFirebase extends Command {
 				}
 			}
 
-			const client = await chatAuth(this);
-
 			const payload = {
 				firebase_config: {
 					api_key: flags.key,
-					disabled: flags.disable || false,
 				},
 			};
 
@@ -59,11 +78,9 @@ class PushFirebase extends Command {
 			}
 
 			this.log(
-				`Push notifications have been ${
-					flags.disable
-						? chalk.red('disabled')
-						: chalk.green('enabled')
-				} for ${chalk.bold('Firebase')}.`
+				`Push notifications have been ${chalk.green(
+					'enabled'
+				)} for ${chalk.bold('Firebase')}.`
 			);
 			this.exit();
 		} catch (error) {

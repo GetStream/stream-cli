@@ -10,7 +10,29 @@ class PushApn extends Command {
 		const { flags } = this.parse(PushApn);
 
 		try {
-			if (!flags.disable && !flags.p12_cert && !flags.auth_key) {
+			const client = await chatAuth(this);
+			if (flags.disable) {
+				const result = await prompt({
+					type: 'toggle',
+					name: 'proceed',
+					message:
+						'This will disable APN push notifications and remove your APN settings, such as certificates or tokens. Are you sure?',
+					required: true,
+				});
+				if (result.proceed) {
+					await client.updateAppSettings({
+						apn_config: {
+							disabled: true,
+						},
+					});
+					this.log(
+						`Push notifications have been ${chalk.red(
+							'disabled'
+						)} with ${chalk.bold('APN')}.`
+					);
+				}
+				this.exit();
+			} else if (!flags.p12_cert && !flags.auth_key) {
 				const type = await prompt([
 					{
 						type: 'select',
@@ -98,8 +120,6 @@ class PushApn extends Command {
 				}
 			}
 
-			const client = await chatAuth(this);
-
 			const payload = {
 				apn_config: {
 					p12_cert: fs.existsSync(flags.p12_cert)
@@ -112,7 +132,6 @@ class PushApn extends Command {
 					team_id: flags.team_id || '',
 					bundle_id: flags.bundle_id || '',
 					development: flags.development || false,
-					disabled: flags.disable || false,
 				},
 			};
 
@@ -124,7 +143,7 @@ class PushApn extends Command {
 			let auth_type = '';
 			if (flags.p12_cert) {
 				auth_type = 'certificate';
-			} else if (flags.auth_key) {
+			} else {
 				auth_type = 'token';
 			}
 			payload.apn_config.auth_type = auth_type;
@@ -139,11 +158,9 @@ class PushApn extends Command {
 			}
 
 			this.log(
-				`Push notifications have been ${
-					flags.disable
-						? chalk.red('disabled')
-						: chalk.green('enabled')
-				} with ${chalk.bold('APN')}.`
+				`Push notifications have been ${chalk.green(
+					'enabled'
+				)} with ${chalk.bold('APN')}.`
 			);
 			this.exit();
 		} catch (error) {
