@@ -36,7 +36,7 @@ class PushFirebase extends Command {
 					{
 						type: 'input',
 						name: 'key',
-						message: `What is your API key for Firebase?`,
+						message: `What is your Server key for Firebase?`,
 						required: true,
 					},
 					{
@@ -57,7 +57,7 @@ class PushFirebase extends Command {
 
 			const payload = {
 				firebase_config: {
-					api_key: flags.key,
+					server_key: flags.key,
 				},
 			};
 
@@ -94,7 +94,7 @@ class PushFirebase extends Command {
 PushFirebase.flags = {
 	key: flags.string({
 		char: 'k',
-		description: 'API key for Firebase.',
+		description: 'Server key for Firebase.',
 		required: false,
 	}),
 	notification_template: flags.string({
