@@ -120,6 +120,12 @@ class PushApn extends Command {
 				}
 			}
 
+			if (flags.p12_cert && flags.auth_key) {
+				this.error(`Can't have both certificate and auth key`, {
+					exit: 1,
+				});
+			}
+
 			const payload = {
 				apn_config: {
 					p12_cert: fs.existsSync(flags.p12_cert)
@@ -198,7 +204,7 @@ PushApn.flags = {
 		required: false,
 	}),
 	p12_cert: flags.string({
-		char: 'b',
+		char: 'c',
 		description: 'Absolute path to .p12 file.',
 		required: false,
 	}),
