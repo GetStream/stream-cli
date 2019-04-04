@@ -16,4 +16,4 @@ OPTIONS
   -t, --token=token  The Stream token you are trying to debug.
 ```
 
-_See code: [src/commands/debug/token.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.50/src/commands/debug/token.js)_
+_See code: [src/commands/debug/token.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/debug/token.js)_
