@@ -15,8 +15,12 @@ configure and manage all things related to chat
 * [`stream chat:message:remove`](#stream-chatmessageremove)
 * [`stream chat:message:update`](#stream-chatmessageupdate)
 * [`stream chat:push:apn`](#stream-chatpushapn)
+* [`stream chat:push:device:add`](#stream-chatpushdeviceadd)
+* [`stream chat:push:device:delete`](#stream-chatpushdevicedelete)
+* [`stream chat:push:device:get`](#stream-chatpushdeviceget)
 * [`stream chat:push:firebase`](#stream-chatpushfirebase)
 * [`stream chat:push:get`](#stream-chatpushget)
+* [`stream chat:push:test`](#stream-chatpushtest)
 * [`stream chat:push:webhook`](#stream-chatpushwebhook)
 * [`stream chat:reaction:create`](#stream-chatreactioncreate)
 * [`stream chat:reaction:remove`](#stream-chatreactionremove)
@@ -33,7 +37,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel                                 [default: 2b787ce2-0130-45dc-b2db-00b9440d744f] A unique ID for
+  -c, --channel=channel                                 [default: b1fc606e-5364-434e-9385-857ca9194d25] A unique ID for
                                                         the channel you wish to create.
 
   -d, --data=data                                       Additional data as JSON.
@@ -249,6 +253,45 @@ OPTIONS
 
 _See code: [src/commands/chat/push/apn.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/apn.js)_
 
+## `stream chat:push:device:add`
+
+```
+USAGE
+  $ stream chat:push:device:add
+
+OPTIONS
+  -d, --device_id=device_id  Device id or token.
+  -p, --provider=provider    Push provider
+  -u, --user_id=user_id      User ID
+```
+
+_See code: [src/commands/chat/push/device/add.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/device/add.js)_
+
+## `stream chat:push:device:delete`
+
+```
+USAGE
+  $ stream chat:push:device:delete
+
+OPTIONS
+  -d, --device_id=device_id  Device id or token.
+  -u, --user_id=user_id      User ID
+```
+
+_See code: [src/commands/chat/push/device/delete.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/device/delete.js)_
+
+## `stream chat:push:device:get`
+
+```
+USAGE
+  $ stream chat:push:device:get
+
+OPTIONS
+  -u, --user_id=user_id  User ID
+```
+
+_See code: [src/commands/chat/push/device/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/device/get.js)_
+
 ## `stream chat:push:firebase`
 
 ```
@@ -279,6 +322,26 @@ OPTIONS
 ```
 
 _See code: [src/commands/chat/push/get.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/get.js)_
+
+## `stream chat:push:test`
+
+```
+USAGE
+  $ stream chat:push:test
+
+OPTIONS
+  -a, --apn_notification_template=apn_notification_template            APN notification template
+  -f, --firebase_notification_template=firebase_notification_template  Firebase notification template
+
+  -j, --json                                                           Output results in JSON. When not specified,
+                                                                       returns output in a human friendly format.
+
+  -m, --message_id=message_id                                          Message ID.
+
+  -u, --user_id=user_id                                                User ID
+```
+
+_See code: [src/commands/chat/push/test.js](https://github.com/getstream/stream-cli/blob/v0.0.1-beta.52/src/commands/chat/push/test.js)_
 
 ## `stream chat:push:webhook`
 

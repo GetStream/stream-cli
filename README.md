@@ -103,31 +103,30 @@ stream chat:channel:create --channel=$(openssl rand -hex 12) --type="messaging" 
 # 🥳‍ Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.1-beta.52 darwin-x64 node-v10.15.1
+getstream-cli/0.0.1-beta.52 darwin-x64 node-v11.13.0
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # 💻 Commands
 
 <!-- commands -->
+# Command Topics
 
--   [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
--   [`stream chat`](docs/chat.md) - configure and manage all things related to chat
--   [`stream commands`](docs/commands.md) - list all the commands
--   [`stream config`](docs/config.md) - manage configuration variables
--   [`stream debug`](docs/debug.md) - debugging tools
--   [`stream help`](docs/help.md) - display help for stream
+* [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+* [`stream chat`](docs/chat.md) - configure and manage all things related to chat
+* [`stream commands`](docs/commands.md) - list all the commands
+* [`stream config`](docs/config.md) - manage configuration variables
+* [`stream debug`](docs/debug.md) - debugging tools
+* [`stream help`](docs/help.md) - display help for stream
 
 <!-- commandsstop -->
 

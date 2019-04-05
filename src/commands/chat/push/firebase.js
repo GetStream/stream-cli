@@ -15,7 +15,7 @@ class PushFirebase extends Command {
 					type: 'toggle',
 					name: 'proceed',
 					message:
-						'This will disable Firebase push notifications and remove your Firebase API Key. Are you sure?',
+						'This will disable Firebase push notifications and remove your Firebase Server Key. Are you sure?',
 					required: true,
 				});
 				if (result.proceed) {

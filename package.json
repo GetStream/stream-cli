@@ -58,7 +58,7 @@
 		"node-emoji": "^1.10.0",
 		"node-notifier": "^5.4.0",
 		"numeral": "^2.0.6",
-		"stream-chat": "^0.4.10",
+		"stream-chat": "0.5.1",
 		"uuid": "^3.3.2"
 	},
 	"devDependencies": {
@@ -115,13 +115,25 @@
 			"chat:push:get": {
 				"description": "retrieve all push settings for chat"
 			},
-			"chat:push:set:apn": {
+			"chat:push:test": {
+				"description": "test notification templates for both push providers"
+			},
+			"chat:push:device:add": {
+				"description": "add a device to a user"
+			},
+			"chat:push:device:get": {
+				"description": "list all user devices"
+			},
+			"chat:push:device:delete": {
+				"description": "remove a device from a user"
+			},
+			"chat:push:apn": {
 				"description": "configure push notifications with apn for chat"
 			},
-			"chat:push:set:firebase": {
+			"chat:push:firebase": {
 				"description": "configure push notifications with firebase for chat"
 			},
-			"chat:push:set:webhook": {
+			"chat:push:webhook": {
 				"description": "configure push notifications with webhooks for chat"
 			},
 			"chat:channel": {
