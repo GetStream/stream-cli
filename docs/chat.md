@@ -1,34 +1,33 @@
-`stream chat`
-=============
+# `stream chat`
 
 configure and manage all things related to chat
 
-* [`stream chat:channel:create`](#stream-chatchannelcreate)
-* [`stream chat:channel:get`](#stream-chatchannelget)
-* [`stream chat:channel:list`](#stream-chatchannellist)
-* [`stream chat:channel:query`](#stream-chatchannelquery)
-* [`stream chat:channel:update`](#stream-chatchannelupdate)
-* [`stream chat:log`](#stream-chatlog)
-* [`stream chat:message:create`](#stream-chatmessagecreate)
-* [`stream chat:message:flag`](#stream-chatmessageflag)
-* [`stream chat:message:list`](#stream-chatmessagelist)
-* [`stream chat:message:remove`](#stream-chatmessageremove)
-* [`stream chat:message:update`](#stream-chatmessageupdate)
-* [`stream chat:push:apn`](#stream-chatpushapn)
-* [`stream chat:push:device:add`](#stream-chatpushdeviceadd)
-* [`stream chat:push:device:delete`](#stream-chatpushdevicedelete)
-* [`stream chat:push:device:get`](#stream-chatpushdeviceget)
-* [`stream chat:push:firebase`](#stream-chatpushfirebase)
-* [`stream chat:push:get`](#stream-chatpushget)
-* [`stream chat:push:test`](#stream-chatpushtest)
-* [`stream chat:push:webhook`](#stream-chatpushwebhook)
-* [`stream chat:reaction:create`](#stream-chatreactioncreate)
-* [`stream chat:reaction:remove`](#stream-chatreactionremove)
-* [`stream chat:user:ban`](#stream-chatuserban)
-* [`stream chat:user:create`](#stream-chatusercreate)
-* [`stream chat:user:flag`](#stream-chatuserflag)
-* [`stream chat:user:mute`](#stream-chatusermute)
-* [`stream chat:user:remove`](#stream-chatuserremove)
+-   [`stream chat:channel:create`](#stream-chatchannelcreate)
+-   [`stream chat:channel:get`](#stream-chatchannelget)
+-   [`stream chat:channel:list`](#stream-chatchannellist)
+-   [`stream chat:channel:query`](#stream-chatchannelquery)
+-   [`stream chat:channel:update`](#stream-chatchannelupdate)
+-   [`stream chat:log`](#stream-chatlog)
+-   [`stream chat:message:create`](#stream-chatmessagecreate)
+-   [`stream chat:message:flag`](#stream-chatmessageflag)
+-   [`stream chat:message:list`](#stream-chatmessagelist)
+-   [`stream chat:message:remove`](#stream-chatmessageremove)
+-   [`stream chat:message:update`](#stream-chatmessageupdate)
+-   [`stream chat:push:apn`](#stream-chatpushapn)
+-   [`stream chat:push:device:add`](#stream-chatpushdeviceadd)
+-   [`stream chat:push:device:delete`](#stream-chatpushdevicedelete)
+-   [`stream chat:push:device:get`](#stream-chatpushdeviceget)
+-   [`stream chat:push:firebase`](#stream-chatpushfirebase)
+-   [`stream chat:push:get`](#stream-chatpushget)
+-   [`stream chat:push:test`](#stream-chatpushtest)
+-   [`stream chat:push:webhook`](#stream-chatpushwebhook)
+-   [`stream chat:reaction:create`](#stream-chatreactioncreate)
+-   [`stream chat:reaction:remove`](#stream-chatreactionremove)
+-   [`stream chat:user:ban`](#stream-chatuserban)
+-   [`stream chat:user:create`](#stream-chatusercreate)
+-   [`stream chat:user:flag`](#stream-chatuserflag)
+-   [`stream chat:user:mute`](#stream-chatusermute)
+-   [`stream chat:user:remove`](#stream-chatuserremove)
 
 ## `stream chat:channel:create`
 
@@ -37,7 +36,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel                                 [default: 8d87730f-44d0-44df-a0ae-abcf5a871a9b] A unique ID for
+  -c, --channel=channel                                 [default: 2b787ce2-0130-45dc-b2db-00b9440d744f] A unique ID for
                                                         the channel you wish to create.
 
   -d, --data=data                                       Additional data as JSON.
@@ -129,7 +128,7 @@ OPTIONS
   -c, --channel=channel
       The channel ID you wish to log.
 
-  -e, 
+  -e,
   --event=all|user.status.changed|user.watching.start|user.watching.stop|user.updated|typing.start|typing.stop|message.n
   ew|message.updated|message.deleted|message.seen|message.reaction|member.added|member.removed|channel.updated|health.ch
   eck|connection.changed|connection.recovered
