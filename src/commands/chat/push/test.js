@@ -3,11 +3,11 @@ const { prompt } = require('enquirer');
 const Table = require('cli-table');
 const chalk = require('chalk');
 
-const { chatAuth } = require('../../../../utils/auth/chat-auth');
+const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class APNPushTest extends Command {
+class PushTest extends Command {
 	async run() {
-		const { flags } = this.parse(APNPushTest);
+		const { flags } = this.parse(PushTest);
 
 		try {
 			if (!flags.user_id) {
@@ -30,9 +30,18 @@ class APNPushTest extends Command {
 					},
 					{
 						type: 'input',
-						name: 'notification_template',
-						hint: 'Omit for the template configured in your app',
-						message: `What JSON notification template would you like to use?`,
+						name: 'apn_notification_template',
+						hint:
+							'Omit for the APN template configured in your app',
+						message: `What JSON notification template would you like to use for APN?`,
+						required: false,
+					},
+					{
+						type: 'input',
+						name: 'firebase_notification_template',
+						hint:
+							'Omit for the Firebase template configured in your app',
+						message: `What JSON notification template would you like to use for Firebase?`,
 						required: false,
 					},
 				]);
@@ -49,6 +58,8 @@ class APNPushTest extends Command {
 			const payload = {
 				messageID: flags.message_id || '',
 				apnTemplate: flags.notification_template || '',
+				firebase_notification_template:
+					flags.firebase_notification_template || '',
 			};
 			const userID = flags.user_id || '';
 
@@ -72,11 +83,23 @@ class APNPushTest extends Command {
 
 			if (response.rendered_apn_template) {
 				this.log(
-					`Here is the rendered notification that was sent to your devices:`
+					`Here is the rendered APN notification that will be sent to your devices:`
 				);
 				this.log(
 					JSON.stringify(
 						JSON.parse(response.rendered_apn_template),
+						null,
+						4
+					)
+				);
+			}
+			if (response.rendered_firebase_template) {
+				this.log(
+					`Here is the rendered Firebase notification that will be sent to your devices:`
+				);
+				this.log(
+					JSON.stringify(
+						JSON.parse(response.rendered_firebase_template),
 						null,
 						4
 					)
@@ -89,11 +112,13 @@ class APNPushTest extends Command {
 						'errors'
 					)} for each device:`
 				);
-				const table = new Table();
+				const table = new Table({
+					head: ['Device ID', 'Error message'],
+				});
 				for (const [deviceID, deviceError] of Object.entries(
 					response.device_errors
 				)) {
-					table.push({ [deviceID]: deviceError });
+					table.push([deviceID, deviceError]);
 				}
 				this.log(table.toString());
 			}
@@ -107,7 +132,7 @@ class APNPushTest extends Command {
 	}
 }
 
-APNPushTest.flags = {
+PushTest.flags = {
 	user_id: flags.string({
 		char: 'u',
 		description: 'User ID',
@@ -118,9 +143,14 @@ APNPushTest.flags = {
 		description: 'Message ID.',
 		required: false,
 	}),
-	notification_template: flags.string({
-		char: 'n',
-		description: 'Notification template',
+	apn_notification_template: flags.string({
+		char: 'a',
+		description: 'APN notification template',
+		required: false,
+	}),
+	firebase_notification_template: flags.string({
+		char: 'f',
+		description: 'Firebase notification template',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -131,4 +161,4 @@ APNPushTest.flags = {
 	}),
 };
 
-module.exports.PushTest = APNPushTest;
+module.exports.PushTest = PushTest;
