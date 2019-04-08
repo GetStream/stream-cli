@@ -57,9 +57,8 @@ class PushTest extends Command {
 
 			const payload = {
 				messageID: flags.message_id || '',
-				apnTemplate: flags.notification_template || '',
-				firebase_notification_template:
-					flags.firebase_notification_template || '',
+				apnTemplate: flags.apn_notification_template || '',
+				firebaseTemplate: flags.firebase_notification_template || '',
 			};
 			const userID = flags.user_id || '';
 
