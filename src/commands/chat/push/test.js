@@ -113,12 +113,16 @@ class PushTest extends Command {
 					)} for each device:`
 				);
 				const table = new Table({
-					head: ['Device ID', 'Error message'],
+					head: ['Device ID', 'Push provider', 'Error message'],
 				});
-				for (const [deviceID, deviceError] of Object.entries(
+				for (const [deviceID, errorDetails] of Object.entries(
 					response.device_errors
 				)) {
-					table.push([deviceID, deviceError]);
+					table.push([
+						deviceID || 'N/A',
+						errorDetails.provider || 'N/A',
+						errorDetails.error_message || 'N/A',
+					]);
 				}
 				this.log(table.toString());
 			}
