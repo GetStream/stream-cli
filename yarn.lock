@@ -3651,10 +3651,10 @@ stdout-stderr@^0.1.9:
     debug "^3.1.0"
     strip-ansi "^4.0.0"
 
-stream-chat@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/stream-chat/-/stream-chat-0.6.0.tgz#ceaf907284e833e4c1aeab25415100fe550e5659"
-  integrity sha512-/v7Un3bhjQUyTnC04L1ArAYl1JXlXKxwl7OjYYgFt5dyNLSxfyNydXqR8MjisyVF9ST+p1vvf+nyHdG3Pp4QLw==
+stream-chat@0.7.5:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/stream-chat/-/stream-chat-0.7.5.tgz#3dd86e669bbe7f27a71f8e1e6d5872acbbef1585"
+  integrity sha512-KR/V2E/++/BpER7qjGCr5UuHtIjzhc/KA7eHZArzB/N5/Z1ifOXkfjGWwGQfLFEmQ+xJPjN4gqHG6NAb+Brc0Q==
   dependencies:
     axios "^0.18.0"
     cross-fetch "^3.0.0"

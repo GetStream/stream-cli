@@ -58,7 +58,7 @@
 		"node-emoji": "^1.10.0",
 		"node-notifier": "^5.4.0",
 		"numeral": "^2.0.6",
-		"stream-chat": "0.6.0",
+		"stream-chat": "0.7.5",
 		"uuid": "^3.3.2"
 	},
 	"devDependencies": {
