@@ -2,8 +2,6 @@
 
 # Stream CLI
 
-> Note: The Stream CLI is currently in beta and may contain bugs. This _should not_ be used against a production environment at this time. To report bugs, please follow the instructions below. Thank you for your support!
-
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
 [![Coverage Status](https://coveralls.io/repos/github/GetStream/stream-cli/badge.svg?branch=master)](https://coveralls.io/github/GetStream/stream-cli?branch=master)
@@ -103,6 +101,7 @@ stream chat:channel:create --channel=$(openssl rand -hex 12) --type="messaging" 
 # 🥳‍ Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g getstream-cli
 $ stream COMMAND
@@ -114,19 +113,21 @@ USAGE
   $ stream COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # 💻 Commands
 
 <!-- commands -->
+
 # Command Topics
 
-* [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
-* [`stream chat`](docs/chat.md) - configure and manage all things related to chat
-* [`stream commands`](docs/commands.md) - list all the commands
-* [`stream config`](docs/config.md) - manage configuration variables
-* [`stream debug`](docs/debug.md) - debugging tools
-* [`stream help`](docs/help.md) - display help for stream
+-   [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+-   [`stream chat`](docs/chat.md) - configure and manage all things related to chat
+-   [`stream commands`](docs/commands.md) - list all the commands
+-   [`stream config`](docs/config.md) - manage configuration variables
+-   [`stream debug`](docs/debug.md) - debugging tools
+-   [`stream help`](docs/help.md) - display help for stream
 
 <!-- commandsstop -->
 
