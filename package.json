@@ -30,9 +30,9 @@
         "readme": "oclif-dev readme --multi",
         "test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
         "lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
-        "bump": "npm version patch && npm publish",
+        "bump": "npm version patch",
         "preversion": "yarn lint",
-        "postversion": "npm publish && git push && git push --tags"
+        "postversion": "git push"
     },
     "husky": {
         "hooks": {
