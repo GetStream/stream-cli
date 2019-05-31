@@ -42,28 +42,16 @@ class UserCreate extends Command {
 						required: true,
 						choices: [
 							{
-								message: 'Admin',
-								value: 'admin',
+								message: 'User',
+								value: 'user',
 							},
 							{
 								message: 'Guest',
 								value: 'guest',
 							},
 							{
-								message: 'Moderator',
-								value: 'channel_moderator',
-							},
-							{
-								message: 'Channel Member',
-								value: 'channel_member',
-							},
-							{
-								message: 'Channel Owner',
-								value: 'channel_owner',
-							},
-							{
-								message: 'Message Owner',
-								value: 'message_owner',
+								message: 'Admin',
+								value: 'admin',
 							},
 						],
 					},
