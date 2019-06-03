@@ -84,7 +84,6 @@ ReactionCreate.flags = {
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		
 		required: false,
 	}),
 	message: flags.string({

@@ -122,7 +122,6 @@ MessageCreate.flags = {
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		
 		required: false,
 	}),
 	channel: flags.string({
