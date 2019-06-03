@@ -122,7 +122,6 @@ MessageCreate.flags = {
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
 		required: false,
 	}),
 	channel: flags.string({

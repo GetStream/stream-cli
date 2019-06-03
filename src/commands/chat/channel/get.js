@@ -67,7 +67,6 @@ ChannelGet.flags = {
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		options: ['livestream', 'messaging', 'gaming', 'commerce', 'team'],
 		required: false,
 	}),
 };
