@@ -46,6 +46,10 @@ class UserCreate extends Command {
 								value: 'user',
 							},
 							{
+								message: 'Moderator',
+								value: 'moderator',
+							},
+							{
 								message: 'Guest',
 								value: 'guest',
 							},
