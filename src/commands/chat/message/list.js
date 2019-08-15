@@ -55,7 +55,7 @@ class MessageList extends Command {
 					this.exit();
 				}
 
-				this.log(messages[0].state.messages);
+				this.log(JSON.stringify(messages[0].state.messages));
 				this.exit();
 			}
 
