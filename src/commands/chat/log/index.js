@@ -126,6 +126,7 @@ class Log extends Command {
 
 			await client.setUser({
 				id: 'CLI',
+				role: 'admin',
 				status: 'invisible',
 			});
 
