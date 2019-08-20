@@ -44,18 +44,25 @@ class MessageList extends Command {
 			client.channel(flags.type, flags.channel);
 
 			const messages = await client.queryChannels(
-				{},
-				{},
+				{ cid: `${flags.type}:${flags.channel}` },
+				{ last_message_at: -1 },
 				{ watch: false, presence: false }
 			);
 
 			if (flags.json) {
-				if (messages.length === 0) {
-					this.log(JSON.stringify(messages));
+				if (!messages.length) {
+					this.log(
+						JSON.stringify({ error: 'No messages available.' })
+					);
 					this.exit();
 				}
 
 				this.log(JSON.stringify(messages[0].state.messages));
+				this.exit();
+			}
+
+			if (!messages.length) {
+				this.log('No messages available.');
 				this.exit();
 			}
 
