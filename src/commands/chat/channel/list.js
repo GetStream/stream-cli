@@ -1,9 +1,11 @@
-const { Command } = require('@oclif/command');
+const { Command, flags } = require('@oclif/command');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class ChannelList extends Command {
 	async run() {
+		const { flags } = this.parse(ChannelList);
+
 		try {
 			const client = await chatAuth(this);
 			const channels = await client.queryChannels(
@@ -13,6 +15,8 @@ class ChannelList extends Command {
 					watch: false,
 					state: false,
 					subscribe: false,
+					limit: parseInt(flags.limit, 10) || 10,
+					offset: parseInt(flags.offset, 10) || 0,
 				}
 			);
 
@@ -31,5 +35,18 @@ class ChannelList extends Command {
 		}
 	}
 }
+
+ChannelList.flags = {
+	limit: flags.string({
+		char: 'l',
+		description: 'Channel list limit.',
+		required: true,
+	}),
+	offset: flags.string({
+		char: 'o',
+		description: 'Channel list offset.',
+		required: true,
+	}),
+};
 
 module.exports.ChannelList = ChannelList;
