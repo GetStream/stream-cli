@@ -38,7 +38,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 3d7b62b8-9586-4f4f-97d2-c9af236b3bb0] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 46d3f4ba-cd3a-4608-9c18-a84b8f42922e] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -66,6 +66,10 @@ _See code: [src/commands/chat/channel/get.js](https://github.com/getstream/strea
 ```
 USAGE
   $ stream chat:channel:list
+
+OPTIONS
+  -l, --limit=limit    (required) Channel list limit.
+  -o, --offset=offset  (required) Channel list offset.
 ```
 
 _See code: [src/commands/chat/channel/list.js](https://github.com/getstream/stream-cli/blob/v0.0.10/src/commands/chat/channel/list.js)_
