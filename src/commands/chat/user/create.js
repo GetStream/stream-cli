@@ -46,10 +46,6 @@ class UserCreate extends Command {
 								value: 'user',
 							},
 							{
-								message: 'Moderator',
-								value: 'moderator',
-							},
-							{
 								message: 'Guest',
 								value: 'guest',
 							},
@@ -76,11 +72,11 @@ class UserCreate extends Command {
 				.addMembers([flags.user]);
 
 			if (flags.json) {
-				this.log(JSON.stringify(create.channel.members[0].user));
+				this.log(JSON.stringify(create.members[0]));
 				this.exit();
 			}
 
-			this.log(create.channel.members[0]);
+			this.log(`The user ${flags.user} has been created.`);
 			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {

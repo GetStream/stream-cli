@@ -86,9 +86,11 @@ class UserBan extends Command {
 				reason: flags.reason,
 			};
 
-			if (flags.timeout) {
-				payload.timeout = Number(flags.timeout);
+			if (flags.duration) {
+				payload.timeout = parseInt(flags.duration * 60, 10);
 			}
+
+			console.log(payload);
 
 			let ban;
 			if (type.ban === 'channel') {
