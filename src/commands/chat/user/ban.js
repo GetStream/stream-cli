@@ -87,6 +87,12 @@ class UserBan extends Command {
 				user_id: 'CLI',
 			};
 
+			await client.updateUser({
+				id: 'CLI',
+				name: 'CLI',
+				role: 'admin',
+			});
+
 			if (flags.duration) {
 				payload.timeout = parseInt(flags.duration * 60, 10);
 			}
