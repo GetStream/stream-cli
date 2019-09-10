@@ -84,13 +84,12 @@ class UserBan extends Command {
 			const client = await chatAuth(this);
 			const payload = {
 				reason: flags.reason,
+				user_id: 'CLI',
 			};
 
 			if (flags.duration) {
 				payload.timeout = parseInt(flags.duration * 60, 10);
 			}
-
-			console.log(payload);
 
 			let ban;
 			if (type.ban === 'channel') {
