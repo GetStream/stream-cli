@@ -93,8 +93,6 @@ class UserBan extends Command {
 				role: 'admin',
 			});
 
-			await client.channel(cid.type, cid.type).addMembers(['CLI']);
-
 			if (flags.duration) {
 				payload.timeout = parseInt(flags.duration * 60, 10);
 			}
