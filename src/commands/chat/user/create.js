@@ -108,7 +108,6 @@ UserCreate.flags = {
 		options: [
 			'admin',
 			'guest',
-			'channel_moderator',
 			'channel_member',
 			'channel_owner',
 			'message_owner',
