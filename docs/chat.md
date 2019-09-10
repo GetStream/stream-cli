@@ -38,7 +38,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: ba912722-c4ea-425a-9387-6601867953a6] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 70a8104a-49d3-44a2-bba1-c7340e3c6668] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -390,18 +390,16 @@ USAGE
   $ stream chat:user:create
 
 OPTIONS
-  -c, --channel=channel                                                                Channel identifier.
+  -c, --channel=channel                                              Channel identifier.
 
-  -j, --json                                                                           Output results in JSON. When not
-                                                                                       specified, returns output in a
-                                                                                       human friendly format.
+  -j, --json                                                         Output results in JSON. When not specified, returns
+                                                                     output in a human friendly format.
 
-  -r, --role=admin|guest|channel_moderator|channel_member|channel_owner|message_owner  The role to assign to the user.
+  -r, --role=admin|guest|channel_member|channel_owner|message_owner  The role to assign to the user.
 
-  -t, --type=type                                                                      The type of channel.
+  -t, --type=type                                                    The type of channel.
 
-  -u, --user=user                                                                      Comma separated list of users to
-                                                                                       add.
+  -u, --user=user                                                    Comma separated list of users to add.
 ```
 
 _See code: [src/commands/chat/user/create.js](https://github.com/getstream/stream-cli/blob/v0.0.14/src/commands/chat/user/create.js)_
