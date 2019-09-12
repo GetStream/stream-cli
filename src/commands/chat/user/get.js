@@ -1,12 +1,11 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
-const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserMute extends Command {
+class UserGet extends Command {
 	async run() {
-		const { flags } = this.parse(UserMute);
+		const { flags } = this.parse(UserGet);
 
 		try {
 			if (!flags.user) {
@@ -19,18 +18,25 @@ class UserMute extends Command {
 					},
 				]);
 
-				flags.user = res.user;
+				for (const key in res) {
+					if (res.hasOwnProperty(key)) {
+						flags[key] = res[key];
+					}
+				}
 			}
 
 			const client = await chatAuth(this);
-			const flag = await client.muteUser(flags.user);
+			const user = await client.queryUsers(
+				{ id: { $in: [flags.user] } },
+				{ id: -1 }
+			);
 
 			if (flags.json) {
-				this.log(JSON.stringify(flag));
+				this.log(JSON.stringify(user.users[0]));
 				this.exit();
 			}
 
-			this.log(`User ${chalk.bold(flags.user)} has been muted.`);
+			this.log(user.users[0]);
 			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
@@ -40,10 +46,15 @@ class UserMute extends Command {
 	}
 }
 
-UserMute.flags = {
+UserGet.flags = {
 	user: flags.string({
 		char: 'u',
-		description: 'The unique identifier of the user to mute.',
+		description: 'The unique identifier of the user to get.',
+		required: false,
+	}),
+	presence: flags.string({
+		char: 'p',
+		description: 'Display the current status of the user.',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -54,4 +65,4 @@ UserMute.flags = {
 	}),
 };
 
-module.exports.UserMute = UserMute;
+module.exports.UserGet = UserGet;

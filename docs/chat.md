@@ -27,7 +27,9 @@ configure and manage all things related to chat
 * [`stream chat:user:ban`](#stream-chatuserban)
 * [`stream chat:user:create`](#stream-chatusercreate)
 * [`stream chat:user:flag`](#stream-chatuserflag)
+* [`stream chat:user:get`](#stream-chatuserget)
 * [`stream chat:user:mute`](#stream-chatusermute)
+* [`stream chat:user:query`](#stream-chatuserquery)
 * [`stream chat:user:remove`](#stream-chatuserremove)
 * [`stream chat:user:set`](#stream-chatuserset)
 
@@ -38,7 +40,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 64b0273e-7350-4c59-bc96-dfe5bb92864e] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: f03a1c7b-8c2a-479e-954e-05832428515f] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -417,6 +419,20 @@ OPTIONS
 
 _See code: [src/commands/chat/user/flag.js](https://github.com/getstream/stream-cli/blob/v0.0.15/src/commands/chat/user/flag.js)_
 
+## `stream chat:user:get`
+
+```
+USAGE
+  $ stream chat:user:get
+
+OPTIONS
+  -j, --json               Output results in JSON. When not specified, returns output in a human friendly format.
+  -p, --presence=presence  Display the current status of the user.
+  -u, --user=user          The unique identifier of the user to get.
+```
+
+_See code: [src/commands/chat/user/get.js](https://github.com/getstream/stream-cli/blob/v0.0.15/src/commands/chat/user/get.js)_
+
 ## `stream chat:user:mute`
 
 ```
@@ -429,6 +445,22 @@ OPTIONS
 ```
 
 _See code: [src/commands/chat/user/mute.js](https://github.com/getstream/stream-cli/blob/v0.0.15/src/commands/chat/user/mute.js)_
+
+## `stream chat:user:query`
+
+```
+USAGE
+  $ stream chat:user:query
+
+OPTIONS
+  -j, --json           Output results in JSON. When not specified, returns output in a human friendly format.
+  -l, --limit=limit    The limit to apply to the query.
+  -o, --offset=offset  The offset to apply to the query.
+  -q, --query=query    The query you would like to perform.
+  -s, --sort=sort      Display the current status of the user.
+```
+
+_See code: [src/commands/chat/user/query.js](https://github.com/getstream/stream-cli/blob/v0.0.15/src/commands/chat/user/query.js)_
 
 ## `stream chat:user:remove`
 
