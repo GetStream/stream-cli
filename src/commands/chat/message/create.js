@@ -114,7 +114,7 @@ MessageCreate.flags = {
 		required: false,
 	}),
 	image: flags.string({
-		char: 'n',
+		char: 'i',
 		description:
 			'Absolute URL for an avatar of the user sending the message.',
 		required: false,
