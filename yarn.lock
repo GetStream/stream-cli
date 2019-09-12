@@ -3919,10 +3919,10 @@ stdout-stderr@^0.1.9:
     debug "^3.1.0"
     strip-ansi "^4.0.0"
 
-stream-chat@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/stream-chat/-/stream-chat-1.0.4.tgz#2e3f11bb0ccc3b21f0b9058d68bda41f4cc3f45f"
-  integrity sha512-yzjpLjXNLhJjJHraD4942qlEP3qDvSW7vrCt0bHP3sIb8sf2sngwON7PCFE0+WdzEI9vi/idXxFaUWg7UJsamQ==
+stream-chat@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/stream-chat/-/stream-chat-1.0.5.tgz#e896b9a437938c378fd6ec324d623d899ec3ef99"
+  integrity sha512-JOaERrMzOdM1EkLH3cXMyj3jXcO1NyizQRV7ceAciQgWYtKWOcroNbOUcnG/1z/UguZoRzu4F3kUIB29XiZwWw==
   dependencies:
     "@babel/runtime" "^7.3.1"
     "@types/seamless-immutable" "^7.1.10"

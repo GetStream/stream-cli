@@ -60,7 +60,7 @@
 		"node-emoji": "^1.10.0",
 		"node-notifier": "^5.4.3",
 		"numeral": "^2.0.6",
-		"stream-chat": "1.0.4",
+		"stream-chat": "1.0.5",
 		"uuid": "^3.3.3"
 	},
 	"devDependencies": {
