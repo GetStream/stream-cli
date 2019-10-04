@@ -5,6 +5,9 @@
 	"bin": {
 		"stream": "./bin/run"
 	},
+	"engines": {
+		"node": ">=10.0.0"
+	},
 	"main": "src/index.js",
 	"author": {
 		"name": "Nick Parsons",
@@ -15,7 +18,10 @@
 		"url": "https://github.com/getstream/stream-cli/issues",
 		"email": "support@getstream.io"
 	},
-	"repository": "getstream/stream-cli",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:GetStream/stream-cli.git"
+	},
 	"homepage": "https://github.com/GetStream/stream-cli/blob/master/README.md",
 	"keywords": [
 		"GetStream",
@@ -28,10 +34,11 @@
 	"scripts": {
 		"manifest": "rm -f oclif.manifest.json && oclif-dev manifest",
 		"readme": "oclif-dev readme --multi",
-		"changelog": "auto-changelog",
 		"bump": "yarn manifest && yarn readme && yarn changelog",
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
-		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src"
+		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
+		"build": "./build.sh",
+		"release": "release-it --dry-run"
 	},
 	"husky": {
 		"hooks": {
@@ -76,10 +83,8 @@
 		"mocha": "^6.2.1",
 		"mocha-lcov-reporter": "^1.3.0",
 		"nyc": "^14",
-		"prettier": "^1.18.2"
-	},
-	"engines": {
-		"node": ">=10.0.0"
+		"prettier": "^1.18.2",
+		"release-it": "^12.4.2"
 	},
 	"files": [
 		"/bin",
