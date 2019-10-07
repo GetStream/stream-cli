@@ -77,7 +77,7 @@ class UserQuery extends Command {
 
 			const s = {};
 			if (flags.sort.sort !== 'none') {
-				switch (flags.sort.sort) {
+				switch (flags.sort) {
 					case 'id':
 						s.id = -1;
 						break;
@@ -85,19 +85,20 @@ class UserQuery extends Command {
 						s.last_active = -1;
 						break;
 					default:
-						return;
+						s.id = -1;
 				}
 			}
 
+			let q = {};
+			if (flags.query.length) {
+				q = JSON.parse(flags.query);
+			}
+
 			const client = await chatAuth(this);
-			const { users } = await client.queryUsers(
-				flags.query !== '' ? {} : flags.query,
-				s !== {} ? s : null,
-				{
-					limit: parseInt(flags.limit.query, 10) || 25,
-					offset: parseInt(flags.offset.query, 10) || 0,
-				}
-			);
+			const { users } = await client.queryUsers(q, s, {
+				limit: parseInt(flags.limit.query, 10) || 25,
+				offset: parseInt(flags.offset.query, 10) || 0,
+			});
 
 			if (flags.json) {
 				this.log(JSON.stringify(users));

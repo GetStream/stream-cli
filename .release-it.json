@@ -6,6 +6,7 @@
 		"release": true
 	},
 	"hooks": {
-		"after:bump": "./build.sh"
+		"before:init": "yarn lint",
+		"after:bump": "yarn manifest && yarn readme && yarn build"
 	}
 }
