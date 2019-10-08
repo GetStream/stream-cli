@@ -46,6 +46,13 @@ class PushFirebase extends Command {
 						message: `What JSON notification template would you like to use?`,
 						required: false,
 					},
+					{
+						type: 'input',
+						name: 'data_template',
+						hint: 'Omit for Stream default',
+						message: `What JSON data template would you like to use?`,
+						required: false,
+					},
 				]);
 
 				for (const key in res) {
@@ -64,6 +71,9 @@ class PushFirebase extends Command {
 			if (flags.notification_template) {
 				payload.firebase_config.notification_template =
 					flags.notification_template;
+			}
+			if (flags.data_template) {
+				payload.firebase_config.data_template = flags.data_template;
 			}
 
 			await client.updateAppSettings(payload);
@@ -100,6 +110,11 @@ PushFirebase.flags = {
 	notification_template: flags.string({
 		char: 'n',
 		description: 'JSON notification template.',
+		required: false,
+	}),
+	data_template: flags.string({
+		char: 'd',
+		description: 'JSON data template.',
 		required: false,
 	}),
 	disable: flags.boolean({

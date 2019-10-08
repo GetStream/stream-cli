@@ -44,6 +44,14 @@ class PushTest extends Command {
 						message: `What JSON notification template would you like to use for Firebase?`,
 						required: false,
 					},
+					{
+						type: 'input',
+						name: 'firebase_data_template',
+						hint:
+							'Omit for the Firebase data template configured in your app',
+						message: `What JSON data template would you like to use for Firebase?`,
+						required: false,
+					},
 				]);
 
 				for (const key in result) {
@@ -59,6 +67,7 @@ class PushTest extends Command {
 				messageID: flags.message_id || '',
 				apnTemplate: flags.apn_notification_template || '',
 				firebaseTemplate: flags.firebase_notification_template || '',
+				firebaseDataTemplate: flags.firebase_data_template || '',
 			};
 			const userID = flags.user_id || '';
 
@@ -154,6 +163,11 @@ PushTest.flags = {
 	firebase_notification_template: flags.string({
 		char: 'f',
 		description: 'Firebase notification template',
+		required: false,
+	}),
+	firebase_data_template: flags.string({
+		char: 'd',
+		description: 'Firebase data template',
 		required: false,
 	}),
 	json: flags.boolean({
