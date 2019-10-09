@@ -18,10 +18,6 @@
 		"url": "https://github.com/getstream/stream-cli/issues",
 		"email": "support@getstream.io"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:GetStream/stream-cli.git"
-	},
 	"publishConfig": {
 		"registry": "https://registry.npmjs.org/"
 	},
@@ -41,7 +37,7 @@
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
 		"build": "./build.sh",
-		"pre-release": "yarn lint && git checkout master && git pull origin master && yarn install && git add . && git commit -m 'Updated Release' && git push origin master",
+		"pre-release": "yarn lint && git add . && git commit -m 'Updated Release' && git push origin master",
 		"post-release": "git add . && git commit -m 'Updated Release' && git push origin master",
 		"release": "release-it"
 	},
