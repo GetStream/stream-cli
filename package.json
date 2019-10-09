@@ -38,7 +38,7 @@
 		"build": "./build.sh",
 		"pre-release": "git pull origin master && yarn lint",
 		"mid-release": "git pull origin master && yarn manifest && yarn readme",
-		"post-release": "git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master && yarn build",
+		"post-release": "yarn build",
 		"release": "release-it"
 	},
 	"dependencies": {
