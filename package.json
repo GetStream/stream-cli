@@ -36,7 +36,7 @@
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
 		"build": "./build.sh",
-		"pre-release": "git add . && git commit -m 'WIP' && git pull origin master && yarn lint",
+		"pre-release": "git pull origin master && yarn lint",
 		"mid-release": "git pull origin master && yarn manifest && yarn readme",
 		"post-release": "git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master && yarn build",
 		"release": "release-it"
