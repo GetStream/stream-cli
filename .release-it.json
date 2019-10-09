@@ -7,6 +7,7 @@
 	},
 	"hooks": {
 		"before:init": "yarn lint",
-		"after:bump": "yarn manifest && yarn readme && yarn build"
+		"after:bump": "yarn manifest && yarn readme && yarn build",
+		"after:release": "./github.sh"
 	}
 }
