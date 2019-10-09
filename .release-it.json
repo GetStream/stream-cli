@@ -10,6 +10,7 @@
 	},
 	"hooks": {
 		"before:init": "yarn pre-release",
+		"after:bump": "yarn mid-release",
 		"after:release": "yarn post-release"
 	}
 }
