@@ -1,13 +1,17 @@
 {
 	"git": {
-		"tagName": "v${version}"
+		"tagName": "v${version}",
+		"changelog": "git log --pretty=format:'* %s (%h)' [REV_RANGE]"
 	},
 	"github": {
-		"release": true
+		"release": true,
+		"releaseName": "Release %s",
+		"tokenRef": "GITHUB_TOKEN"
 	},
 	"hooks": {
 		"before:init": "yarn lint",
-		"after:bump": "yarn manifest && yarn readme && yarn build",
-		"after:release": "./github.sh"
+		"before:bump": "yarn pre-release",
+		"after:bump": "yarn manifest && yarn readme",
+		"after:release": "yarn build && yarn post-release"
 	}
 }
