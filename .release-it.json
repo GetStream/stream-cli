@@ -10,7 +10,6 @@
 	},
 	"hooks": {
 		"before:init": "yarn pre-release",
-		"after:bump": "yarn manifest && yarn readme",
-		"after:release": "yarn build && yarn post-release"
+		"after:release": "yarn post-release"
 	}
 }
