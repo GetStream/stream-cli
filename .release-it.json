@@ -9,8 +9,7 @@
 		"tokenRef": "GITHUB_TOKEN"
 	},
 	"hooks": {
-		"before:init": "yarn lint",
-		"before:bump": "yarn pre-release",
+		"before:init": "yarn pre-release",
 		"after:bump": "yarn manifest && yarn readme",
 		"after:release": "yarn build && yarn post-release"
 	}
