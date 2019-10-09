@@ -1,7 +1,7 @@
 {
 	"name": "getstream-cli",
 	"description": "Configure & manage Stream applications from the command line. 🚀",
-	"version": "0.0.24",
+	"version": "0.0.25",
 	"bin": {
 		"stream": "./bin/run"
 	},
@@ -36,9 +36,9 @@
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
 		"build": "./build.sh",
-		"pre-release": "yarn lint",
-		"mid-release": "git pull origin master && yarn manifest && yarn readme && yarn build",
-		"post-release": "git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master",
+		"pre-release": "git add . && git commit -m 'WIP' && gir pull origin master && yarn lint",
+		"mid-release": "git pull origin master && yarn manifest && yarn readme",
+		"post-release": "git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master && yarn build",
 		"release": "release-it"
 	},
 	"dependencies": {
