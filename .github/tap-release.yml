@@ -1,5 +1,5 @@
 asset: app.zip
-tap: getstream/stream-cli/app.rb
+tap: getstream/getstream-cli/app.rb
 template: |
     class App < Formula
       desc     "$REPO_DESCRIPTION"
