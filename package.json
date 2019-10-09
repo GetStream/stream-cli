@@ -37,7 +37,8 @@
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
 		"build": "./build.sh",
 		"pre-release": "yarn lint",
-		"post-release": "yarn manifest && yarn readme && git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master",
+		"mid-release": "git pull origin master && yarn manifest && yarn readme",
+		"post-release": "git add . && git commit -m 'Updated CLI Manifest and README' && git push origin master",
 		"release": "release-it"
 	},
 	"dependencies": {
