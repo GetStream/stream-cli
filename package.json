@@ -38,7 +38,7 @@
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
 		"build": "./build.sh",
-		"release": "release-it --dry-run"
+		"release": "release-it"
 	},
 	"husky": {
 		"hooks": {
