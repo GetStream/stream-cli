@@ -43,7 +43,7 @@
 		"build": "./build.sh",
 		"pre-release": "git checkout master && git pull origin master && yarn install && git add .",
 		"release": "release-it",
-		"post-release": "git add . && git commit -m 'Release echo v$npm_package_version'"
+		"post-release": "git add . && git commit -m v$npm_package_version"
 	},
 	"husky": {
 		"hooks": {
