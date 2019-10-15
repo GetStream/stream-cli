@@ -32,6 +32,7 @@ configure and manage all things related to chat
 * [`stream chat:user:query`](#stream-chatuserquery)
 * [`stream chat:user:remove`](#stream-chatuserremove)
 * [`stream chat:user:set`](#stream-chatuserset)
+* [`stream chat:user:unban`](#stream-chatuserunban)
 
 ## `stream chat:channel:create`
 
@@ -40,7 +41,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: a7c2c261-0f05-4065-bdf5-2184c968b8d9] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: b1927455-952c-4a9e-a171-bf74f46b05e5] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -336,7 +337,7 @@ USAGE
 OPTIONS
   -d, --duration=duration  [default: 60] Duration of timeout in minutes.
   -j, --json               Output results in JSON. When not specified, returns output in a human friendly format.
-  -r, --reason=reason      A reason for adding a timeout.
+  -r, --reason=reason      (required) A reason for adding a timeout.
   -u, --type=type          Type of ban to perform (e.g. global or channel).
   -u, --user=user          The unique identifier of the user to ban.
 ```
@@ -431,4 +432,15 @@ OPTIONS
   -i, --id=id        The unique identifier for the user.
   -m, --image=image  URL to the image of the user.
   -n, --name=name    Name of the user.
+```
+
+## `stream chat:user:unban`
+
+```
+USAGE
+  $ stream chat:user:unban
+
+OPTIONS
+  -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --user=user  The unique identifier of the user to unban.
 ```
