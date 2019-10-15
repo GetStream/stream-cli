@@ -137,7 +137,7 @@ UserBan.flags = {
 	reason: flags.string({
 		char: 'r',
 		description: 'A reason for adding a timeout.',
-		required: false,
+		required: true,
 	}),
 	duration: flags.string({
 		char: 'd',
