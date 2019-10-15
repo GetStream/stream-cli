@@ -70,6 +70,15 @@ class PushGet extends Command {
 								.notification_template,
 				},
 				{
+					[`${chalk.green.bold(
+						'Firebase – Data Template'
+					)}`]: !settings.app.push_notifications.firebase
+						.data_template
+						? 'Stream Default'
+						: settings.app.push_notifications.firebase
+								.data_template,
+				},
+				{
 					[`${chalk.green.bold('Webhook – URL')}`]: !settings.app
 						.webhook_url
 						? 'N/A'

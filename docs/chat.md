@@ -258,6 +258,8 @@ OPTIONS
 
   -n, --notification_template=notification_template  JSON notification template.
 
+  -d, --data_template=data_template                  JSON data template.
+
   --disable                                          Disable Firebase push notifications and clear config.
 ```
 
@@ -280,6 +282,7 @@ USAGE
 OPTIONS
   -a, --apn_notification_template=apn_notification_template            APN notification template
   -f, --firebase_notification_template=firebase_notification_template  Firebase notification template
+  -d, --firebase_data_template=firebase_data_template                  Firebase data template
 
   -j, --json                                                           Output results in JSON. When not specified,
                                                                        returns output in a human friendly format.
