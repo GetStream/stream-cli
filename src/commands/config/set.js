@@ -108,11 +108,6 @@ ConfigSet.flags = {
 		description: 'API secret for configuration.',
 		required: false,
 	}),
-	secret: flags.string({
-		char: 's',
-		description: 'API secret for configuration.',
-		required: false,
-	}),
 	url: flags.string({
 		char: 'u',
 		description: 'API base URL for configuration.',

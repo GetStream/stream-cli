@@ -39,4 +39,5 @@ OPTIONS
   -k, --key=key        API key for configuration.
   -n, --name=name      Full name for configuration.
   -s, --secret=secret  API secret for configuration.
+  -u, --url=url        API base URL for configuration.
 ```
