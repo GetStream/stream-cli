@@ -41,7 +41,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 834d9976-ac62-4628-9f4f-1e4d252d4370] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: cfb4b0a3-7d1d-4c6a-b0a6-cf46cccad9e9] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -251,14 +251,14 @@ USAGE
   $ stream chat:push:firebase
 
 OPTIONS
+  -d, --data_template=data_template                  JSON data template.
+
   -j, --json                                         Output results in JSON. When not specified, returns output in a
                                                      human friendly format.
 
   -k, --key=key                                      Server key for Firebase.
 
   -n, --notification_template=notification_template  JSON notification template.
-
-  -d, --data_template=data_template                  JSON data template.
 
   --disable                                          Disable Firebase push notifications and clear config.
 ```
@@ -281,8 +281,8 @@ USAGE
 
 OPTIONS
   -a, --apn_notification_template=apn_notification_template            APN notification template
-  -f, --firebase_notification_template=firebase_notification_template  Firebase notification template
   -d, --firebase_data_template=firebase_data_template                  Firebase data template
+  -f, --firebase_notification_template=firebase_notification_template  Firebase notification template
 
   -j, --json                                                           Output results in JSON. When not specified,
                                                                        returns output in a human friendly format.
