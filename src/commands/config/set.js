@@ -12,7 +12,13 @@ class ConfigSet extends Command {
 		const config = path.join(this.config.configDir, 'config.json');
 
 		try {
-			if (!flags.name || !flags.email || !flags.key || !flags.secret) {
+			if (
+				!flags.name ||
+				!flags.email ||
+				!flags.key ||
+				!flags.secret ||
+				!flags.url
+			) {
 				const res = await prompt([
 					{
 						type: 'input',
@@ -38,6 +44,13 @@ class ConfigSet extends Command {
 						message: `What is your Stream API secret?`,
 						required: true,
 					},
+					{
+						type: 'input',
+						name: 'url',
+						message: `What is your Stream API baseUrl?`,
+						default: 'https://chat-us-east-1.stream-io-api.com',
+						required: false,
+					},
 				]);
 
 				for (const key in res) {
@@ -53,6 +66,7 @@ class ConfigSet extends Command {
 				email: flags.email.toLowerCase(),
 				apiKey: flags.key,
 				apiSecret: flags.secret,
+				apiBaseUrl: flags.url,
 			});
 
 			if (flags.json) {
@@ -92,6 +106,16 @@ ConfigSet.flags = {
 	secret: flags.string({
 		char: 's',
 		description: 'API secret for configuration.',
+		required: false,
+	}),
+	secret: flags.string({
+		char: 's',
+		description: 'API secret for configuration.',
+		required: false,
+	}),
+	url: flags.string({
+		char: 'u',
+		description: 'API base URL for configuration.',
 		required: false,
 	}),
 	json: flags.boolean({

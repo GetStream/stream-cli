@@ -13,12 +13,19 @@ async function credentials(ctx) {
 				email: '',
 				apiKey: '',
 				apiSecret: '',
+				apiBaseUrl: 'https://chat-us-east-1.stream-io-api.com',
 			});
 		}
 
-		const { name, email, apiKey, apiSecret } = await fs.readJson(config);
+		const {
+			name,
+			email,
+			apiKey,
+			apiSecret,
+			apiBaseUrl,
+		} = await fs.readJson(config);
 
-		if (!name || !email || !apiKey || !apiSecret) {
+		if (!name || !email || !apiKey || !apiSecret || !apiBaseUrl) {
 			console.warn(
 				`Credentials not found. Run the command ${chalk.bold(
 					'stream config:set'
@@ -29,7 +36,7 @@ async function credentials(ctx) {
 			ctx.exit(0);
 		}
 
-		return { name, email, apiKey, apiSecret };
+		return { name, email, apiKey, apiSecret, apiBaseUrl };
 	} catch (error) {
 		ctx.error(error || 'A Stream CLI error has occurred.', {
 			exit: 1,

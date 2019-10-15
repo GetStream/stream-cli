@@ -9,7 +9,13 @@ class ConfigGet extends Command {
 		const { flags } = this.parse(ConfigGet);
 
 		try {
-			const { name, email, apiKey, apiSecret } = await credentials(this);
+			const {
+				name,
+				email,
+				apiKey,
+				apiSecret,
+				apiBaseUrl,
+			} = await credentials(this);
 
 			if (flags.json) {
 				this.log(JSON.stringify(await credentials(this)));
@@ -30,6 +36,9 @@ class ConfigGet extends Command {
 				},
 				{
 					[`${chalk.green.bold('API Secret')}`]: apiSecret,
+				},
+				{
+					[`${chalk.green.bold('API Base URL')}`]: apiBaseUrl,
 				}
 			);
 
