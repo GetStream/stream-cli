@@ -6,7 +6,7 @@ const { chatAuth } = require('../../../utils/auth/chat-auth');
 
 class UserUnban extends Command {
 	async run() {
-		const { flags } = this.parse(UserBan);
+		const { flags } = this.parse(UserUnban);
 
 		try {
 			if (!flags.user) {
