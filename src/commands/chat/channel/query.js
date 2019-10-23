@@ -12,8 +12,6 @@ class ChannelQuery extends Command {
 			const filter = flags.filter ? JSON.parse(flags.filter) : {};
 			const sort = flags.sort ? JSON.parse(flags.sort) : {};
 
-			console.log(sort);
-
 			const channel = await client.queryChannels(filter, sort, {
 				subscribe: false,
 			});
