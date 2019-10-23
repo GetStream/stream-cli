@@ -41,7 +41,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: c7c59e90-b23b-4ff0-9a7f-03dca20df365] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 3fa07630-d453-43f3-92be-79320150b1ab] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -78,7 +78,7 @@ USAGE
   $ stream chat:channel:query
 
 OPTIONS
-  -c, --channel=channel  The unique indentifier for the channel you want to query.
+  -c, --channel=channel  The unique identifier for the channel you want to query.
   -f, --filter=filter    Filters to apply to the query.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
   -s, --sort=sort        Sort to apply to the query.
