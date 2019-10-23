@@ -9,8 +9,10 @@ class ChannelQuery extends Command {
 		try {
 			const client = await chatAuth(this);
 
-			const filter = flags.filters ? JSON.parse(flags.filters) : {};
+			const filter = flags.filter ? JSON.parse(flags.filter) : {};
 			const sort = flags.sort ? JSON.parse(flags.sort) : {};
+
+			console.log(sort);
 
 			const channel = await client.queryChannels(filter, sort, {
 				subscribe: false,
