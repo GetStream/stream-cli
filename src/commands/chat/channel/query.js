@@ -34,8 +34,7 @@ class ChannelQuery extends Command {
 ChannelQuery.flags = {
 	channel: flags.string({
 		char: 'c',
-		description:
-			'The unique indentifier for the channel you want to query.',
+		description: 'The unique identifier for the channel you want to query.',
 		required: false,
 	}),
 	type: flags.string({
