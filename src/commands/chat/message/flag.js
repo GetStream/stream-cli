@@ -24,10 +24,10 @@ class MessageFlag extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const flag = client.flagMessage(flags.message);
+			const response = client.flagMessage(flags.message);
 
 			if (flags.json) {
-				this.log(JSON.stringify(flag));
+				this.log(JSON.stringify(response));
 				this.exit();
 			}
 

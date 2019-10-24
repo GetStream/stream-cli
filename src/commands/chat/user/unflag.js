@@ -4,9 +4,9 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserMute extends Command {
+class UserUnflag extends Command {
 	async run() {
-		const { flags } = this.parse(UserMute);
+		const { flags } = this.parse(UserUnflag);
 
 		try {
 			if (!flags.user) {
@@ -23,14 +23,14 @@ class UserMute extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const response = await client.muteUser(flags.user);
+			const response = client.unflagUser(flags.user);
 
 			if (flags.json) {
 				this.log(JSON.stringify(response));
 				this.exit();
 			}
 
-			this.log(`User ${chalk.bold(flags.user)} has been muted.`);
+			this.log(`User ${chalk.bold(flags.user)} has been unflagged.`);
 			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
@@ -40,10 +40,10 @@ class UserMute extends Command {
 	}
 }
 
-UserMute.flags = {
+UserUnflag.flags = {
 	user: flags.string({
 		char: 'u',
-		description: 'The unique identifier of the user to mute.',
+		description: 'The ID of the offending user.',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -54,4 +54,4 @@ UserMute.flags = {
 	}),
 };
 
-module.exports.UserMute = UserMute;
+module.exports.UserUnflag = UserUnflag;

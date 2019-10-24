@@ -23,10 +23,10 @@ class UserFlag extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const flag = client.flagUser(flags.user);
+			const response = client.flagUser(flags.user);
 
 			if (flags.json) {
-				this.log(JSON.stringify(flag));
+				this.log(JSON.stringify(response));
 				this.exit();
 			}
 

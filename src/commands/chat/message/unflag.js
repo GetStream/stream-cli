@@ -4,33 +4,36 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserMute extends Command {
+class MessageUnflag extends Command {
 	async run() {
-		const { flags } = this.parse(UserMute);
+		const { flags } = this.parse(MessageUnflag);
 
 		try {
-			if (!flags.user) {
+			if (!flags.message) {
 				const res = await prompt([
 					{
 						type: 'input',
-						name: 'user',
-						message: 'What is the unique identifier for the user?',
+						name: 'message',
+						message:
+							'What is the unique identifier for the message?',
 						required: true,
 					},
 				]);
 
-				flags.user = res.user;
+				flags.message = res.message;
 			}
 
 			const client = await chatAuth(this);
-			const response = await client.muteUser(flags.user);
+			const response = client.unflagMessage(flags.message);
 
 			if (flags.json) {
 				this.log(JSON.stringify(response));
 				this.exit();
 			}
 
-			this.log(`User ${chalk.bold(flags.user)} has been muted.`);
+			this.log(
+				`Message ${chalk.bold(flags.message)} has been unflagged.`
+			);
 			this.exit();
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
@@ -40,10 +43,10 @@ class UserMute extends Command {
 	}
 }
 
-UserMute.flags = {
-	user: flags.string({
-		char: 'u',
-		description: 'The unique identifier of the user to mute.',
+MessageUnflag.flags = {
+	message: flags.string({
+		char: 'm',
+		description: 'The unique identifier of the message you want to flag.',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -54,4 +57,4 @@ UserMute.flags = {
 	}),
 };
 
-module.exports.UserMute = UserMute;
+module.exports.MessageUnflag = MessageUnflag;
