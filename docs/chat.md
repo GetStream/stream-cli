@@ -14,6 +14,7 @@ configure and manage all things related to chat
 * [`stream chat:message:flag`](#stream-chatmessageflag)
 * [`stream chat:message:list`](#stream-chatmessagelist)
 * [`stream chat:message:remove`](#stream-chatmessageremove)
+* [`stream chat:message:unflag`](#stream-chatmessageunflag)
 * [`stream chat:message:update`](#stream-chatmessageupdate)
 * [`stream chat:push:apn`](#stream-chatpushapn)
 * [`stream chat:push:device:add`](#stream-chatpushdeviceadd)
@@ -34,6 +35,8 @@ configure and manage all things related to chat
 * [`stream chat:user:remove`](#stream-chatuserremove)
 * [`stream chat:user:set`](#stream-chatuserset)
 * [`stream chat:user:unban`](#stream-chatuserunban)
+* [`stream chat:user:unflag`](#stream-chatuserunflag)
+* [`stream chat:user:unmute`](#stream-chatuserunmute)
 
 ## `stream chat:channel:create`
 
@@ -42,7 +45,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 468f8ef4-fb1d-4df1-8a81-64d92ec0015d] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 907766c2-2b88-48f9-8162-1385f35d8614] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -185,6 +188,17 @@ USAGE
 OPTIONS
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
   -m, --message=message  The unique identifier of the message you would like to remove.
+```
+
+## `stream chat:message:unflag`
+
+```
+USAGE
+  $ stream chat:message:unflag
+
+OPTIONS
+  -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
+  -m, --message=message  The unique identifier of the message you want to flag.
 ```
 
 ## `stream chat:message:update`
@@ -459,4 +473,26 @@ USAGE
 OPTIONS
   -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
   -u, --user=user  The unique identifier of the user to unban.
+```
+
+## `stream chat:user:unflag`
+
+```
+USAGE
+  $ stream chat:user:unflag
+
+OPTIONS
+  -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --user=user  The ID of the offending user.
+```
+
+## `stream chat:user:unmute`
+
+```
+USAGE
+  $ stream chat:user:unmute
+
+OPTIONS
+  -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --user=user  The unique identifier of the user to unmute.
 ```
