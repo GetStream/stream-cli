@@ -44,6 +44,14 @@ class ChannelCreate extends Command {
 						type: 'input',
 						name: 'image',
 						message: `What is the absolute URL to the channel image?`,
+						hint: 'optional',
+						required: false,
+					},
+					{
+						type: 'input',
+						name: 'users',
+						message: `What users would you like to add (comma separated)?`,
+						hint: 'optional',
 						required: false,
 					},
 				]);
@@ -79,6 +87,11 @@ class ChannelCreate extends Command {
 			);
 
 			const create = await channel.create();
+
+			const members = flags.users.split(',');
+			if (members.length > 0) {
+				await channel.addMembers(members);
+			}
 
 			if (flags.json) {
 				this.log(JSON.stringify(create.channel));
@@ -117,6 +130,11 @@ ChannelCreate.flags = {
 	image: flags.string({
 		char: 'i',
 		description: 'URL to channel image.',
+		required: false,
+	}),
+	users: flags.string({
+		char: 'u',
+		description: 'Comma separated list of users to add.',
 		required: false,
 	}),
 	data: flags.string({
