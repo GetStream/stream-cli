@@ -47,7 +47,7 @@ class ConfigSet extends Command {
 					{
 						type: 'input',
 						name: 'url',
-						message: `What is your Stream API baseUrl?`,
+						message: `What is your Stream API base URL?`,
 						default: 'https://chat-us-east-1.stream-io-api.com',
 						required: false,
 					},

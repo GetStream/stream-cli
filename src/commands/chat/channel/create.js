@@ -17,6 +17,7 @@ class ChannelCreate extends Command {
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
+						default: uuid(),
 						required: true,
 					},
 					{
@@ -31,6 +32,13 @@ class ChannelCreate extends Command {
 							{ message: 'Commerce', value: 'commerce' },
 							{ message: 'Team', value: 'team' },
 						],
+					},
+					{
+						type: 'input',
+						name: 'name',
+						message: `What is the name of your channel?`,
+						default: uuid(),
+						required: false,
 					},
 					{
 						type: 'input',
