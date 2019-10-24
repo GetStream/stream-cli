@@ -7,6 +7,7 @@ configure and manage all things related to chat
 * [`stream chat:channel:get`](#stream-chatchannelget)
 * [`stream chat:channel:list`](#stream-chatchannellist)
 * [`stream chat:channel:query`](#stream-chatchannelquery)
+* [`stream chat:channel:remove`](#stream-chatchannelremove)
 * [`stream chat:channel:update`](#stream-chatchannelupdate)
 * [`stream chat:log`](#stream-chatlog)
 * [`stream chat:message:create`](#stream-chatmessagecreate)
@@ -41,7 +42,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 5d884b9b-4efe-41da-a7f3-2ed746120f7b] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 8b4f1d1e-3b9b-4adb-a134-5cc749dec507] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -83,6 +84,17 @@ OPTIONS
   -f, --filter=filter    Filters to apply to the query.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
   -s, --sort=sort        Sort to apply to the query.
+  -t, --type=type        Type of channel.
+```
+
+## `stream chat:channel:remove`
+
+```
+USAGE
+  $ stream chat:channel:remove
+
+OPTIONS
+  -c, --channel=channel  The channel ID you wish to remove.
   -t, --type=type        Type of channel.
 ```
 
