@@ -17,7 +17,8 @@ class ConfigSet extends Command {
 				!flags.email ||
 				!flags.key ||
 				!flags.secret ||
-				!flags.url
+				!flags.url ||
+				!flags.environment
 			) {
 				const res = await prompt([
 					{
@@ -51,6 +52,13 @@ class ConfigSet extends Command {
 						default: 'https://chat-us-east-1.stream-io-api.com',
 						required: false,
 					},
+					{
+						type: 'input',
+						name: 'environment',
+						message: `What environment would you like to run in?`,
+						default: 'production',
+						required: false,
+					},
 				]);
 
 				for (const key in res) {
@@ -67,6 +75,7 @@ class ConfigSet extends Command {
 				apiKey: flags.key,
 				apiSecret: flags.secret,
 				apiBaseUrl: flags.url,
+				environment: flags.environment,
 			});
 
 			if (flags.json) {
@@ -111,6 +120,12 @@ ConfigSet.flags = {
 	url: flags.string({
 		char: 'u',
 		description: 'API base URL for configuration.',
+		required: false,
+	}),
+	mode: flags.string({
+		char: 'm',
+		description:
+			'Environment to run in (production or development for token and permission checking).',
 		required: false,
 	}),
 	json: flags.boolean({
