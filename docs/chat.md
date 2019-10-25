@@ -45,7 +45,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: 907766c2-2b88-48f9-8162-1385f35d8614] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 173edaab-aa95-4c52-a466-0fa582416d74] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -327,7 +327,7 @@ USAGE
 
 OPTIONS
   -j, --json     Output results in JSON. When not specified, returns output in a human friendly format.
-  -u, --url=url  Fully qualified URL for webhook support.
+  -u, --url=url  A fully qualified URL for webhook support.
 ```
 
 ## `stream chat:reaction:create`
@@ -367,7 +367,7 @@ USAGE
 OPTIONS
   -d, --duration=duration  [default: 60] Duration of timeout in minutes.
   -j, --json               Output results in JSON. When not specified, returns output in a human friendly format.
-  -r, --reason=reason      (required) A reason for adding a timeout.
+  -r, --reason=reason      A reason for adding a timeout.
   -u, --type=type          Type of ban to perform (e.g. global or channel).
   -u, --user=user          The unique identifier of the user to ban.
 ```

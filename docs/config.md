@@ -40,5 +40,6 @@ OPTIONS
   -m, --mode=mode      Environment to run in (production or development for token and permission checking).
   -n, --name=name      Full name for configuration.
   -s, --secret=secret  API secret for configuration.
+  -t, --telemetry      Enable error reporting for debugging purposes.
   -u, --url=url        API base URL for configuration.
 ```
