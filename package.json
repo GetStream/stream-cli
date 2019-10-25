@@ -54,15 +54,18 @@
 		"chalk": "^2.4.2",
 		"cli-table": "^0.3.1",
 		"data-store": "^4.0.3",
+		"dotenv": "^8.2.0",
 		"enquirer": "^2.3.2",
 		"fs-extra": "^8.1.0",
 		"globby": "^10.0.1",
 		"json-stringify-pretty-compact": "^2.0.0",
 		"jsonwebtoken": "^8.5.1",
+		"md5": "^2.2.1",
 		"moment": "^2.24.0",
 		"node-emoji": "^1.10.0",
 		"node-notifier": "^6.0.0",
 		"numeral": "^2.0.6",
+		"rollbar": "^2.13.0",
 		"stream-chat": "1.1.6",
 		"uuid": "^3.3.3"
 	},
@@ -101,6 +104,9 @@
 		"warn-if-update-available": {
 			"timeoutInDays": 7,
 			"message": "NOTICE: <%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>!"
+		},
+		"hooks": {
+			"telemetry": "./src/utils/hooks/telemetry"
 		},
 		"topics": {
 			"config": {

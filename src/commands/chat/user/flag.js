@@ -33,8 +33,9 @@ class UserFlag extends Command {
 			this.log(`User ${chalk.bold(flags.user)} has been flagged.`);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

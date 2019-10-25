@@ -59,6 +59,13 @@ class ConfigSet extends Command {
 						default: 'production',
 						required: false,
 					},
+					{
+						type: 'input',
+						name: 'telemetry',
+						message: `Would you like to enable error tracking for debugging purposes?`,
+						default: true,
+						required: false,
+					},
 				]);
 
 				for (const key in res) {
@@ -76,6 +83,7 @@ class ConfigSet extends Command {
 				apiSecret: flags.secret,
 				apiBaseUrl: flags.url,
 				environment: flags.environment,
+				telemetry: flags.telemetry,
 			});
 
 			if (flags.json) {
@@ -126,6 +134,11 @@ ConfigSet.flags = {
 		char: 'm',
 		description:
 			'Environment to run in (production or development for token and permission checking).',
+		required: false,
+	}),
+	telemetry: flags.boolean({
+		char: 't',
+		description: 'Enable error reporting for debugging purposes.',
 		required: false,
 	}),
 	json: flags.boolean({

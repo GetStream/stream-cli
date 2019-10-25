@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
+const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
@@ -31,6 +32,11 @@ class UserGet extends Command {
 				{ id: -1 }
 			);
 
+			if (!user.users.length) {
+				this.log(`User ${chalk.bold(flags.user)} could not be found.`);
+				this.exit();
+			}
+
 			if (flags.json) {
 				this.log(JSON.stringify(user.users[0]));
 				this.exit();
@@ -39,8 +45,9 @@ class UserGet extends Command {
 			this.log(user.users[0]);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

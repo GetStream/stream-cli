@@ -38,8 +38,9 @@ class UserUnban extends Command {
 			this.log(`The user ${chalk.bold(flags.user)} has been unbanned.`);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

@@ -81,6 +81,11 @@ class UserBan extends Command {
 				}
 			}
 
+			if (!flags.reason.length) {
+				this.error('A reason is required to ban a user.');
+				this.exit();
+			}
+
 			const client = await chatAuth(this);
 			const payload = {
 				reason: flags.reason,
@@ -116,8 +121,9 @@ class UserBan extends Command {
 			this.log(`The user ${chalk.bold(flags.user)} has been banned.`);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}
@@ -137,7 +143,7 @@ UserBan.flags = {
 	reason: flags.string({
 		char: 'r',
 		description: 'A reason for adding a timeout.',
-		required: true,
+		required: false,
 	}),
 	duration: flags.string({
 		char: 'd',
