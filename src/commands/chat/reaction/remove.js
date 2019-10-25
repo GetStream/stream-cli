@@ -69,8 +69,9 @@ class ReactionRemove extends Command {
 			this.log('The reaction has been removed.');
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

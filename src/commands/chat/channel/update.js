@@ -84,8 +84,9 @@ class ChannelUpdate extends Command {
 			this.log(`Channel ${chalk.bold(flags.channel)} has been updated.`);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

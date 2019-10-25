@@ -59,8 +59,9 @@ class UserSet extends Command {
 			this.log(`The user ${flags.name} (${flags.id}) has been set.`);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}

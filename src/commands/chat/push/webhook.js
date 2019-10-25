@@ -45,8 +45,9 @@ class PushWebhook extends Command {
 			);
 			this.exit();
 		} catch (error) {
-			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1,
+			await this.config.runHook('telemetry', {
+				ctx: this,
+				error,
 			});
 		}
 	}
@@ -55,7 +56,7 @@ class PushWebhook extends Command {
 PushWebhook.flags = {
 	url: flags.string({
 		char: 'u',
-		description: 'Fully qualified URL for webhook support.',
+		description: 'A fully qualified URL for webhook support.',
 		required: false,
 	}),
 	json: flags.boolean({

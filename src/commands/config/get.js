@@ -16,6 +16,7 @@ class ConfigGet extends Command {
 				apiSecret,
 				apiBaseUrl,
 				environment,
+				telemetry,
 			} = await credentials(this);
 
 			if (flags.json) {
@@ -43,6 +44,9 @@ class ConfigGet extends Command {
 				},
 				{
 					[`${chalk.green.bold('Environment')}`]: environment,
+				},
+				{
+					[`${chalk.green.bold('Telemetry')}`]: telemetry,
 				}
 			);
 
