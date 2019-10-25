@@ -8,7 +8,7 @@ class DeviceAdd extends Command {
 		const { flags } = this.parse(DeviceAdd);
 
 		try {
-			if (!flags.user_id || !flags.provider || !flags.provider) {
+			if (!flags.user_id || !flags.provider || !flags.device_id) {
 				const result = await prompt([
 					{
 						type: 'input',
