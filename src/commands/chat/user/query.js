@@ -55,6 +55,7 @@ class UserQuery extends Command {
 						type: 'input',
 						name: 'query',
 						message: 'How many records would you like to display?',
+						default: 25,
 						required: false,
 					},
 				]);
@@ -68,6 +69,8 @@ class UserQuery extends Command {
 						type: 'input',
 						name: 'query',
 						message: 'How many users would you like to skip?',
+						hint: 0,
+						default: 0,
 						required: false,
 					},
 				]);
@@ -90,8 +93,8 @@ class UserQuery extends Command {
 			}
 
 			let q = {};
-			if (flags.query.length) {
-				q = JSON.parse(flags.query);
+			if (flags.query.query.length) {
+				q = JSON.parse(flags.query.query.replace(/\'/g, ''));
 			}
 
 			const client = await chatAuth(this);

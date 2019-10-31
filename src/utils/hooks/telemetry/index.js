@@ -38,8 +38,11 @@ module.exports = async ({ ctx, error }) => {
 		});
 	}
 
-	if (typeof error === 'object' && error.code !== 'EEXIT') {
-		ctx.error(`A Stream CLI error has occurred: ${error.message}`, {
+	if (
+		typeof error === 'object' &&
+		(error.code !== 'EEXIT' || error.code === undefined)
+	) {
+		ctx.error(error.message, {
 			exit: 1,
 		});
 	}
