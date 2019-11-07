@@ -85,22 +85,8 @@ class PushApn extends Command {
 						},
 						{
 							type: 'input',
-							name: 'bundle_id',
-							hint: 'com.apple.test',
-							message: 'What is your bundle ID?',
-							required: true,
-						},
-						{
-							type: 'input',
 							name: 'team_id',
 							message: 'What is your team ID?',
-							required: true,
-						},
-						{
-							type: 'toggle',
-							name: 'development',
-							message:
-								'Do you want to use the development endpoint for APNs?',
 							required: true,
 						},
 						{
@@ -112,6 +98,23 @@ class PushApn extends Command {
 						},
 					]);
 				}
+
+				res = await prompt([
+					{
+						type: 'input',
+						name: 'bundle_id',
+						hint: 'com.apple.test',
+						message: 'What is your bundle ID?',
+						required: true,
+					},
+					{
+						type: 'toggle',
+						name: 'development',
+						message:
+							'Do you want to use the development endpoint for APNs?',
+						required: true,
+					},
+				]);
 
 				for (const key in res) {
 					if (res.hasOwnProperty(key)) {
