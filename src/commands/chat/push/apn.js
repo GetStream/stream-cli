@@ -99,6 +99,12 @@ class PushApn extends Command {
 					]);
 				}
 
+				for (const key in res) {
+					if (res.hasOwnProperty(key)) {
+						flags[key] = res[key];
+					}
+				}
+
 				res = await prompt([
 					{
 						type: 'input',
