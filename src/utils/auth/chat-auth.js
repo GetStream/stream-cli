@@ -5,12 +5,7 @@ const { credentials } = require('../../utils/config');
 
 async function chatAuth(ctx) {
 	try {
-		const {
-			apiKey,
-			apiSecret,
-			apiBaseUrl,
-			environment,
-		} = await credentials(ctx);
+		const { apiKey, apiSecret, apiBaseUrl } = await credentials(ctx);
 
 		const chatClient = new StreamChat(apiKey, apiSecret);
 		chatClient.setBaseURL(apiBaseUrl);
