@@ -15,13 +15,6 @@ async function chatAuth(ctx) {
 		const chatClient = new StreamChat(apiKey, apiSecret);
 		chatClient.setBaseURL(apiBaseUrl);
 
-		const settings = environment === 'production' ? false : true;
-
-		await chatClient.updateAppSettings({
-			disable_auth_checks: settings,
-			disable_permissions_checks: settings,
-		});
-
 		return chatClient;
 	} catch (error) {
 		ctx.error(
