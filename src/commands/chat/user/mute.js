@@ -23,7 +23,7 @@ class UserMute extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const response = await client.muteUser(flags.user);
+			const response = await client.muteUser(flags.user, 'CLI');
 
 			if (flags.json) {
 				this.log(JSON.stringify(response));
