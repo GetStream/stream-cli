@@ -51,7 +51,7 @@
 		"@oclif/plugin-not-found": "^1.2.3",
 		"@oclif/plugin-warn-if-update-available": "^1.7.0",
 		"cardinal": "^2.1.1",
-		"chalk": "^2.4.2",
+		"chalk": "^3.0.0",
 		"cli-table": "^0.3.1",
 		"data-store": "^4.0.3",
 		"dotenv": "^8.2.0",
@@ -66,7 +66,7 @@
 		"node-emoji": "^1.10.0",
 		"node-notifier": "^6.0.0",
 		"numeral": "^2.0.6",
-		"rollbar": "^2.14.2",
+		"rollbar": "^2.14.3",
 		"stream-chat": "1.1.7",
 		"uuid": "^3.3.3"
 	},
@@ -82,7 +82,7 @@
 		"mocha": "^6.2.2",
 		"mocha-lcov-reporter": "^1.3.0",
 		"nyc": "^14",
-		"prettier": "^1.18.2",
+		"prettier": "^1.19.1",
 		"release-it": "^12.4.3"
 	},
 	"files": [
