@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
+const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
@@ -47,6 +48,15 @@ class ChannelGet extends Command {
 					subscribe: false,
 				}
 			);
+
+			if (!channel.length) {
+				this.log(
+					`Channel ${chalk.bold(
+						flags.channel
+					)} with type ${chalk.bold(flags.type)} could not be found.`
+				);
+				this.exit();
+			}
 
 			this.log(JSON.stringify(channel[0].data));
 			this.exit();
