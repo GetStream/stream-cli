@@ -3,9 +3,9 @@ const { prompt } = require('enquirer');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserSet extends Command {
+class UserUpdate extends Command {
 	async run() {
-		const { flags } = this.parse(UserSet);
+		const { flags } = this.parse(UserUpdate);
 
 		try {
 			if (!flags.user || !flags.name) {
@@ -67,7 +67,7 @@ class UserSet extends Command {
 	}
 }
 
-UserSet.flags = {
+UserUpdate.flags = {
 	id: flags.string({
 		char: 'i',
 		description: 'The unique identifier for the user.',
@@ -85,4 +85,4 @@ UserSet.flags = {
 	}),
 };
 
-module.exports.UserSet = UserSet;
+module.exports.UserUpdate = UserUpdate;

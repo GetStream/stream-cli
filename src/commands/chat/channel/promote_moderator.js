@@ -4,17 +4,12 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserRemove extends Command {
+class ChannelDemoteModerator extends Command {
 	async run() {
-		const { flags } = this.parse(UserRemove);
+		const { flags } = this.parse(ChannelDemoteModerator);
 
 		try {
-			if (
-				!flags.channel ||
-				!flags.type ||
-				!flags.moderators ||
-				!flags.json
-			) {
+			if (!flags.channel || !flags.type || !flags.image) {
 				const res = await prompt([
 					{
 						type: 'input',
@@ -37,10 +32,9 @@ class UserRemove extends Command {
 					},
 					{
 						type: 'input',
-						name: 'users',
-						message:
-							'What is the unique ID of the user you would like to remove?',
-						required: true,
+						name: 'user',
+						message: `What is the unique ID of the user to promote as a moderator?`,
+						required: false,
 					},
 				]);
 
@@ -52,20 +46,30 @@ class UserRemove extends Command {
 			}
 
 			const client = await chatAuth(this);
-
 			const channel = await client.channel(flags.type, flags.channel);
-			// const remove = await channel.demoteModerators(
-			// 	flags.users.split(',')
-			// );
 
-			if (flags.json) {
-				this.log(JSON.stringify(remove));
+			const exists = await client.queryUsers({
+				id: { $in: [flags.user] },
+			});
+
+			if (!exists.users.length) {
+				this.log(
+					`The user ${flags.user} in channel ${chalk.bold(
+						flags.channel
+					)} (${flags.type}) does not exist.`
+				);
+
 				this.exit();
 			}
 
-			this.log(
-				`${chalk.bold(flags.users.length)} users have been removed.`
-			);
+			await channel.addModerators([flags.user]);
+
+			if (flags.json) {
+				this.log(JSON.stringify(create.channel));
+				this.exit();
+			}
+
+			this.log(`User ${chalk.bold(flags.user)} has been promoted.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
@@ -76,28 +80,22 @@ class UserRemove extends Command {
 	}
 }
 
-UserRemove.flags = {
+ChannelDemoteModerator.flags = {
 	channel: flags.string({
 		char: 'c',
-		description: 'The Channel name.',
+		description: 'A unique ID for the channel you wish to create.',
 		required: false,
 	}),
 	type: flags.string({
 		char: 't',
-		description: 'The Channel type.',
+		description: 'Type of channel.',
 		required: false,
 	}),
-	moderators: flags.string({
-		char: 'm',
-		description: 'A unique ID of the user you would like to remove.',
-		required: true,
-	}),
-	json: flags.boolean({
-		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
+	user: flags.string({
+		char: 'u',
+		description: 'A unique ID for user user to demote.',
 		required: false,
 	}),
 };
 
-module.exports.UserRemove = UserRemove;
+module.exports.ChannelDemoteModerator = ChannelDemoteModerator;

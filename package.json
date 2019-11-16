@@ -157,11 +157,20 @@
 			"chat:channel:create": {
 				"description": "create a new channel"
 			},
+			"chat:channel:user": {
+				"description": "adds a user and role to a channel"
+			},
 			"chat:channel:list": {
 				"description": "get all channels"
 			},
 			"chat:channel:query": {
 				"description": "query all channels"
+			},
+			"chat:channel:promote_moderators": {
+				"description": "promotes a user to a moderator"
+			},
+			"chat:channel:demote_moderators": {
+				"description": "demotes a user from a moderator"
 			},
 			"chat:log": {
 				"description": "log events from a channel"
@@ -188,7 +197,7 @@
 				"description": "manage users within channels"
 			},
 			"chat:user:create": {
-				"description": "create a new user within a channel"
+				"description": "create a new user"
 			},
 			"chat:user:remove": {
 				"description": "remove a user from a channel"

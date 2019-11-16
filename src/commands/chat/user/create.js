@@ -1,5 +1,6 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
+const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
@@ -8,27 +9,8 @@ class UserCreate extends Command {
 		const { flags } = this.parse(UserCreate);
 
 		try {
-			if (!flags.type || !flags.channel || !flags.user || !flags.role) {
+			if (!flags.user || !flags.role) {
 				const res = await prompt([
-					{
-						type: 'input',
-						name: 'channel',
-						message: `What is the unique identifier for the channel?`,
-						required: true,
-					},
-					{
-						type: 'select',
-						name: 'type',
-						message: 'What type of channel is this?',
-						required: true,
-						choices: [
-							{ message: 'Livestream', value: 'livestream' },
-							{ message: 'Messaging', value: 'messaging' },
-							{ message: 'Gaming', value: 'gaming' },
-							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
-					},
 					{
 						type: 'input',
 						name: 'user',
@@ -42,16 +24,12 @@ class UserCreate extends Command {
 						required: true,
 						choices: [
 							{
-								message: 'User',
-								value: 'user',
-							},
-							{
-								message: 'Guest',
-								value: 'guest',
-							},
-							{
 								message: 'Admin',
 								value: 'admin',
+							},
+							{
+								message: 'User',
+								value: 'user',
 							},
 						],
 					},
@@ -65,18 +43,21 @@ class UserCreate extends Command {
 			}
 
 			const client = await chatAuth(this);
-			await client.updateUser({ id: flags.user, role: flags.role });
-
-			const create = await client
-				.channel(flags.type, flags.channel)
-				.addMembers([flags.user]);
+			const create = await client.updateUser({
+				id: flags.user,
+				role: flags.role,
+			});
 
 			if (flags.json) {
-				this.log(JSON.stringify(create.members[0]));
+				this.log(JSON.stringify(create));
 				this.exit();
 			}
 
-			this.log(`The user ${flags.user} has been created.`);
+			this.log(
+				`The user ${chalk.bold(flags.user)} (${
+					flags.role
+				}) has been created.`
+			);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
@@ -88,16 +69,6 @@ class UserCreate extends Command {
 }
 
 UserCreate.flags = {
-	channel: flags.string({
-		char: 'c',
-		description: 'Channel identifier.',
-		required: false,
-	}),
-	type: flags.string({
-		char: 't',
-		description: 'The type of channel.',
-		required: false,
-	}),
 	user: flags.string({
 		char: 'u',
 		description: 'Comma separated list of users to add.',
@@ -106,13 +77,7 @@ UserCreate.flags = {
 	role: flags.string({
 		char: 'r',
 		description: 'The role to assign to the user.',
-		options: [
-			'admin',
-			'guest',
-			'channel_member',
-			'channel_owner',
-			'message_owner',
-		],
+		options: ['admin', 'user'],
 		required: false,
 	}),
 	json: flags.boolean({

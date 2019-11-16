@@ -1,14 +1,13 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
-const uuid = require('uuid/v4');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 const { credentials } = require('../../../utils/config');
 
-class ChannelCreate extends Command {
+class ChannelAddMember extends Command {
 	async run() {
-		const { flags } = this.parse(ChannelCreate);
+		const { flags } = this.parse(ChannelAddMember);
 
 		try {
 			if (!flags.channel || !flags.type || !flags.image) {
@@ -16,8 +15,7 @@ class ChannelCreate extends Command {
 					{
 						type: 'input',
 						name: 'channel',
-						message: `What is the unique identifier for the channel?`,
-						default: uuid(),
+						message: 'What is the unique ID for the channel?',
 						required: true,
 					},
 					{
@@ -35,17 +33,9 @@ class ChannelCreate extends Command {
 					},
 					{
 						type: 'input',
-						name: 'name',
-						message: `What is the name of your channel?`,
-						default: uuid(),
-						required: false,
-					},
-					{
-						type: 'input',
-						name: 'image',
-						message: `What is the absolute URL to the channel image?`,
-						hint: 'optional',
-						required: false,
+						name: 'user',
+						message: 'What is the unique ID of the user to add?',
+						required: true,
 					},
 				]);
 
@@ -56,40 +46,32 @@ class ChannelCreate extends Command {
 				}
 			}
 
-			const { name } = await credentials(this);
 			const client = await chatAuth(this);
 
-			let payload = {
-				name: flags.name,
-				created_by: {
-					id: 'CLI',
-					name,
-				},
-			};
-			if (flags.image) payload.image = flags.image;
+			const channel = await client.channel(flags.type, flags.channel);
 
-			if (flags.data) {
-				const parsed = JSON.parse(flags.data);
-				payload = Object.assign({}, payload, parsed);
-			}
+			if (typeof channel === 'object') {
+				await channel.addMembers([flags.user]);
 
-			const channel = await client.channel(
-				flags.type,
-				flags.channel,
-				payload
-			);
+				if (flags.json) {
+					this.log(JSON.stringify(channel));
+					this.exit();
+				}
 
-			const create = await channel.create();
+				this.log(
+					`User ${chalk.bold(flags.user)} has been added as a member.`
+				);
 
-			if (flags.json) {
-				this.log(JSON.stringify(create.channel));
+				this.exit();
+			} else if (!Array.isArray(channel) && !channel.length) {
+				this.log(
+					`Channel ${chalk.bold(
+						flags.channel
+					)} with type ${chalk.bold(flags.type)} could not be found.`
+				);
+
 				this.exit();
 			}
-
-			this.log(
-				`Channel ${chalk.bold(create.channel.id)} has been created.`
-			);
-			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
@@ -99,11 +81,10 @@ class ChannelCreate extends Command {
 	}
 }
 
-ChannelCreate.flags = {
+ChannelAddMember.flags = {
 	channel: flags.string({
 		char: 'c',
-		description: 'A unique ID for the channel you wish to create.',
-		default: uuid(),
+		description: 'A unique ID for the channel add the user to.',
 		required: false,
 	}),
 	type: flags.string({
@@ -123,12 +104,12 @@ ChannelCreate.flags = {
 	}),
 	users: flags.string({
 		char: 'u',
-		description: 'Comma separated list of users to add.',
+		description: 'Unique identifier for the user you are adding.',
 		required: false,
 	}),
 	data: flags.string({
-		char: 'd',
-		description: 'Additional data as JSON.',
+		char: 'r',
+		description: 'The role of the user you are adding.',
 		required: false,
 	}),
 	json: flags.boolean({
@@ -139,4 +120,4 @@ ChannelCreate.flags = {
 	}),
 };
 
-module.exports.ChannelCreate = ChannelCreate;
+module.exports.ChannelAddMember = ChannelAddMember;
