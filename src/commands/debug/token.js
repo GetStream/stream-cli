@@ -77,4 +77,6 @@ DebugToken.flags = {
 	}),
 };
 
+DebugToken.description = 'Debugs a JWT token provided by Stream.';
+
 module.exports.DebugToken = DebugToken;

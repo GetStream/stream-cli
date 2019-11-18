@@ -98,4 +98,6 @@ MessageUpdate.flags = {
 	}),
 };
 
+MessageUpdate.description = 'Updates a message.';
+
 module.exports.MessageUpdate = MessageUpdate;

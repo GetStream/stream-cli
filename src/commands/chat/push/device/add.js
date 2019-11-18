@@ -79,4 +79,6 @@ DeviceAdd.flags = {
 	}),
 };
 
+DeviceAdd.description = 'Adds a new device for push.';
+
 module.exports.DeviceAdd = DeviceAdd;

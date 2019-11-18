@@ -50,4 +50,6 @@ ChannelList.flags = {
 	}),
 };
 
+ChannelList.description = 'Lists all channels.';
+
 module.exports.ChannelList = ChannelList;

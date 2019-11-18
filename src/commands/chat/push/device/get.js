@@ -60,4 +60,6 @@ DeviceList.flags = {
 	}),
 };
 
+DeviceList.description = 'Gets all devices registered for push.';
+
 module.exports.DeviceList = DeviceList;

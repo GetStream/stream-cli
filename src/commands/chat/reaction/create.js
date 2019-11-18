@@ -105,4 +105,6 @@ ReactionCreate.flags = {
 	}),
 };
 
+ReactionCreate.description = 'Creates a new reaction.';
+
 module.exports.ReactionCreate = ReactionCreate;

@@ -106,4 +106,6 @@ PushGet.flags = {
 	}),
 };
 
+PushGet.description = 'Gets push notification settings.';
+
 module.exports.PushGet = PushGet;

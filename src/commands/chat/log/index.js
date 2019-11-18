@@ -224,4 +224,6 @@ Log.flags = {
 	}),
 };
 
+Log.description = 'Logs events in realtime.';
+
 module.exports.Log = Log;

@@ -60,4 +60,6 @@ UserUnban.flags = {
 	}),
 };
 
+UserUnban.description = 'Unbans a user.';
+
 module.exports.UserUnban = UserUnban;

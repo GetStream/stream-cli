@@ -62,10 +62,10 @@ class ChannelDemoteModerator extends Command {
 				this.exit();
 			}
 
-			await channel.demoteModerators([flags.user]);
+			const demote = await channel.demoteModerators([flags.user]);
 
 			if (flags.json) {
-				this.log(JSON.stringify(create.channel));
+				this.log(JSON.stringify(demote));
 				this.exit();
 			}
 
@@ -97,5 +97,7 @@ ChannelDemoteModerator.flags = {
 		required: false,
 	}),
 };
+
+ChannelDemoteModerator.description = 'Demotes a moderator from a channel.';
 
 module.exports.ChannelDemoteModerator = ChannelDemoteModerator;

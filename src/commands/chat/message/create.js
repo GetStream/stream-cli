@@ -144,4 +144,6 @@ MessageCreate.flags = {
 	}),
 };
 
+MessageCreate.description = 'Creates a new message.';
+
 module.exports.MessageCreate = MessageCreate;

@@ -131,4 +131,6 @@ ChannelUpdate.flags = {
 	}),
 };
 
+ChannelUpdate.description = 'Updates a channel.';
+
 module.exports.ChannelUpdate = ChannelUpdate;

@@ -56,4 +56,6 @@ MessageFlag.flags = {
 	}),
 };
 
+MessageFlag.description = 'Flags a message.';
+
 module.exports.MessageFlag = MessageFlag;

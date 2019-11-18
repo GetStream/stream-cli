@@ -69,4 +69,6 @@ ConfigGet.flags = {
 	}),
 };
 
+ConfigGet.description = 'Outputs your user configuration.';
+
 module.exports.ConfigGet = ConfigGet;

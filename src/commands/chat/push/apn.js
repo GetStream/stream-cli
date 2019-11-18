@@ -235,4 +235,6 @@ PushApn.flags = {
 	}),
 };
 
+PushApn.description = 'Specifies APN for push notifications.';
+
 module.exports.PushApn = PushApn;

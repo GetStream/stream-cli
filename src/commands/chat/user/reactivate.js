@@ -4,32 +4,35 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserCreate extends Command {
+class UserReactivate extends Command {
 	async run() {
-		const { flags } = this.parse(UserCreate);
+		const { flags } = this.parse(UserReactivate);
+
+		this.log(flags);
 
 		try {
-			if (!flags.user || !flags.role) {
+			if (!flags.user || !flags.restore) {
 				const res = await prompt([
 					{
 						type: 'input',
 						name: 'user',
-						message: 'What is the unique identifier for the user?',
+						message:
+							'What is the unique ID of the user you would like to reactivate?',
 						required: true,
 					},
 					{
 						type: 'select',
-						name: 'role',
-						message: 'What role would you like assign to the user?',
+						name: 'restore',
+						message: 'Would you like to restore all messages?',
 						required: true,
 						choices: [
 							{
-								message: 'Admin',
-								value: 'admin',
+								message: 'No',
+								value: false,
 							},
 							{
-								message: 'User',
-								value: 'user',
+								message: 'Yes',
+								value: true,
 							},
 						],
 					},
@@ -43,21 +46,17 @@ class UserCreate extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const create = await client.updateUser({
-				id: flags.user,
-				role: flags.role,
+
+			const { user } = await client.reactivateUser(flags.user, {
+				restore_messages: Boolean(flags.restore),
 			});
 
 			if (flags.json) {
-				this.log(JSON.stringify(create));
+				this.log(JSON.stringify(user));
 				this.exit();
 			}
 
-			this.log(
-				`The user ${chalk.bold(flags.user)} (${
-					flags.role
-				}) has been created.`
-			);
+			this.log(`${chalk.bold(flags.user)} has been reactivated.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
@@ -68,19 +67,18 @@ class UserCreate extends Command {
 	}
 }
 
-UserCreate.flags = {
+UserReactivate.flags = {
 	user: flags.string({
-		char: 'u',
-		description: 'Comma separated list of users to add.',
+		char: 'm',
+		description: 'A unique ID of the user you would like to reactivate.',
 		required: false,
 	}),
-	role: flags.string({
+	restore: flags.string({
 		char: 'r',
-		description: 'The role to assign to the user.',
-		options: ['admin', 'user'],
+		description: 'Restores all deleted messages associated with the user.',
 		required: false,
 	}),
-	json: flags.boolean({
+	json: flags.string({
 		char: 'j',
 		description:
 			'Output results in JSON. When not specified, returns output in a human friendly format.',
@@ -88,6 +86,7 @@ UserCreate.flags = {
 	}),
 };
 
-UserCreate.description = 'Creates a new user.';
+UserReactivate.description =
+	'Reactivates a user who was previously deactivated.';
 
-module.exports.UserCreate = UserCreate;
+module.exports.UserReactivate = UserReactivate;

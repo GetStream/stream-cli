@@ -4,19 +4,36 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class UserRemove extends Command {
+class UserDeactivate extends Command {
 	async run() {
-		const { flags } = this.parse(UserRemove);
+		const { flags } = this.parse(UserDeactivate);
 
 		try {
-			if (!flags.user) {
+			if (!flags.user || !flags.hard) {
 				const res = await prompt([
 					{
 						type: 'input',
 						name: 'user',
 						message:
-							'What is the unique ID of the user you would like to remove?',
+							'What is the unique ID of the user you would like to deactivate?',
 						required: true,
+					},
+					{
+						type: 'select',
+						name: 'hard',
+						message:
+							'Would you like to perform a hard delete on messages?',
+						required: true,
+						choices: [
+							{
+								message: 'No',
+								value: false,
+							},
+							{
+								message: 'Yes',
+								value: true,
+							},
+						],
 					},
 				]);
 
@@ -36,22 +53,21 @@ class UserRemove extends Command {
 
 			if (!exists.users.length) {
 				this.log(
-					`User ${flags.user} does not exist or has already been removed.`
+					`User ${flags.user} does not exist or has already been deactivated.`
 				);
 				this.exit();
 			}
 
-			const remove = await client.deleteUser(flags.user, {
-				mark_messages_deleted: true,
-				hard_delete: true,
+			const deactivate = await client.deactivateUser(flags.user, {
+				mark_messages_deleted: Boolean(flags.hard),
 			});
 
 			if (flags.json) {
-				this.log(JSON.stringify(remove));
+				this.log(JSON.stringify(deactivate));
 				this.exit();
 			}
 
-			this.log(`${chalk.bold(flags.user)} has been removed.`);
+			this.log(`${chalk.bold(flags.user)} has been deactivated.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
@@ -62,10 +78,15 @@ class UserRemove extends Command {
 	}
 }
 
-UserRemove.flags = {
+UserDeactivate.flags = {
 	user: flags.string({
 		char: 'm',
-		description: 'A unique ID of the user you would like to remove.',
+		description: 'A unique ID of the user you would like to deactivate.',
+		required: false,
+	}),
+	hard: flags.string({
+		char: 'h',
+		description: 'Hard deletes all messages associated with the user.',
 		required: false,
 	}),
 	json: flags.string({
@@ -76,7 +97,7 @@ UserRemove.flags = {
 	}),
 };
 
-UserRemove.description =
+UserDeactivate.description =
 	'Allows for deactivating a user and wiping all of their messages.';
 
-module.exports.UserRemove = UserRemove;
+module.exports.UserDeactivate = UserDeactivate;

@@ -98,6 +98,7 @@ class UserQuery extends Command {
 			}
 
 			const client = await chatAuth(this);
+
 			const { users } = await client.queryUsers(q, s, {
 				limit: parseInt(flags.limit.query, 10) || 25,
 				offset: parseInt(flags.offset.query, 10) || 0,
@@ -147,5 +148,7 @@ UserQuery.flags = {
 		required: false,
 	}),
 };
+
+UserQuery.description = 'Queries all users.';
 
 module.exports.UserQuery = UserQuery;

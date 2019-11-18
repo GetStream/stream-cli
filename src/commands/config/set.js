@@ -149,4 +149,6 @@ ConfigSet.flags = {
 	}),
 };
 
+ConfigSet.description = 'Sets your user configuration.';
+
 module.exports.ConfigSet = ConfigSet;

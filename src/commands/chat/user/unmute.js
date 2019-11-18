@@ -55,4 +55,6 @@ UserUnmute.flags = {
 	}),
 };
 
+UserUnmute.description = 'Unmutes a user.';
+
 module.exports.UserUnmute = UserUnmute;

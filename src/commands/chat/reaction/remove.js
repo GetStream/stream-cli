@@ -106,4 +106,6 @@ ReactionRemove.flags = {
 	}),
 };
 
+ReactionRemove.description = 'Removes a reaction.';
+
 module.exports.ReactionRemove = ReactionRemove;

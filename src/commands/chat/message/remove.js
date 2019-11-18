@@ -62,4 +62,6 @@ MessageRemove.flags = {
 	}),
 };
 
+MessageRemove.description = 'Removes a message.';
+
 module.exports.MessageRemove = MessageRemove;

@@ -4,9 +4,9 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class ChannelDemoteModerator extends Command {
+class ChannelPromoteModerator extends Command {
 	async run() {
-		const { flags } = this.parse(ChannelDemoteModerator);
+		const { flags } = this.parse(ChannelPromoteModerator);
 
 		try {
 			if (!flags.channel || !flags.type || !flags.image) {
@@ -62,10 +62,10 @@ class ChannelDemoteModerator extends Command {
 				this.exit();
 			}
 
-			await channel.addModerators([flags.user]);
+			const promote = await channel.addModerators([flags.user]);
 
 			if (flags.json) {
-				this.log(JSON.stringify(create.channel));
+				this.log(JSON.stringify(promote));
 				this.exit();
 			}
 
@@ -80,7 +80,7 @@ class ChannelDemoteModerator extends Command {
 	}
 }
 
-ChannelDemoteModerator.flags = {
+ChannelPromoteModerator.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'A unique ID for the channel you wish to create.',
@@ -98,4 +98,7 @@ ChannelDemoteModerator.flags = {
 	}),
 };
 
-module.exports.ChannelDemoteModerator = ChannelDemoteModerator;
+ChannelPromoteModerator.description =
+	'Promotes a user to a moderator in a channel.';
+
+module.exports.ChannelPromoteModerator = ChannelPromoteModerator;

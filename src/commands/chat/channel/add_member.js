@@ -120,4 +120,6 @@ ChannelAddMember.flags = {
 	}),
 };
 
+ChannelAddMember.description = 'Adds a member to a channel.';
+
 module.exports.ChannelAddMember = ChannelAddMember;

@@ -139,4 +139,6 @@ ChannelCreate.flags = {
 	}),
 };
 
+ChannelCreate.description = 'Creates a new channel.';
+
 module.exports.ChannelCreate = ChannelCreate;

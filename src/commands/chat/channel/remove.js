@@ -70,4 +70,6 @@ ChannelRemove.flags = {
 	}),
 };
 
-module.exports.ChannelGet = ChannelRemove;
+ChannelRemove.description = 'Removes a channel.';
+
+module.exports.ChannelRemove = ChannelRemove;

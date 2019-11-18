@@ -72,4 +72,6 @@ UserGet.flags = {
 	}),
 };
 
+UserGet.description = 'Get a user by their unique ID.';
+
 module.exports.UserGet = UserGet;

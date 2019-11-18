@@ -130,4 +130,6 @@ PushFirebase.flags = {
 	}),
 };
 
+PushFirebase.description = 'Specifies Firebase for push notifications.';
+
 module.exports.PushFirebase = PushFirebase;

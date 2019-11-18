@@ -117,4 +117,6 @@ MessageList.flags = {
 	}),
 };
 
+MessageList.description = 'Lists all messages.';
+
 module.exports.MessageList = MessageList;

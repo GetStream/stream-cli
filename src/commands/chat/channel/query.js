@@ -61,4 +61,6 @@ ChannelQuery.flags = {
 	}),
 };
 
+ChannelQuery.description = 'Queries all channels.';
+
 module.exports.ChannelQuery = ChannelQuery;

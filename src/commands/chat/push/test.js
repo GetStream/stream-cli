@@ -179,4 +179,6 @@ PushTest.flags = {
 	}),
 };
 
+PushTest.description = 'Tests push notifications.';
+
 module.exports.PushTest = PushTest;

@@ -159,4 +159,6 @@ UserBan.flags = {
 	}),
 };
 
+UserBan.description = 'Bans a user.';
+
 module.exports.UserBan = UserBan;

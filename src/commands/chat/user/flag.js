@@ -55,4 +55,6 @@ UserFlag.flags = {
 	}),
 };
 
+UserFlag.description = 'Flags a user for bad behavior.';
+
 module.exports.UserFlag = UserFlag;

@@ -85,4 +85,6 @@ UserUpdate.flags = {
 	}),
 };
 
+UserUpdate.description = 'Updates a user.';
+
 module.exports.UserUpdate = UserUpdate;

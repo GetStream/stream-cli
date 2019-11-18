@@ -58,4 +58,6 @@ MessageUnflag.flags = {
 	}),
 };
 
+MessageUnflag.description = 'Unflags a message.';
+
 module.exports.MessageUnflag = MessageUnflag;

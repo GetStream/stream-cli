@@ -63,4 +63,6 @@ DeviceDelete.flags = {
 	}),
 };
 
+DeviceDelete.description = 'Removes a device from push.';
+
 module.exports.DeviceDelete = DeviceDelete;

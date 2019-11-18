@@ -49,4 +49,6 @@ ConfigDestroy.flags = {
 	}),
 };
 
+ConfigDestroy.description = 'Destroys your user configuration.';
+
 module.exports.ConfigDestroy = ConfigDestroy;

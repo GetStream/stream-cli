@@ -67,4 +67,6 @@ PushWebhook.flags = {
 	}),
 };
 
+PushWebhook.description = 'Tests webhook notifications.';
+
 module.exports.PushWebhook = PushWebhook;

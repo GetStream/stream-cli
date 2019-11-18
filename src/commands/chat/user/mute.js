@@ -55,4 +55,6 @@ UserMute.flags = {
 	}),
 };
 
+UserMute.description = 'Mutes a user.';
+
 module.exports.UserMute = UserMute;

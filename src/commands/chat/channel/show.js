@@ -4,9 +4,9 @@ const chalk = require('chalk');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
-class ChannelGet extends Command {
+class ChannelShow extends Command {
 	async run() {
-		const { flags } = this.parse(ChannelGet);
+		const { flags } = this.parse(ChannelShow);
 
 		try {
 			if (!flags.channel || !flags.type) {
@@ -41,24 +41,12 @@ class ChannelGet extends Command {
 
 			const client = await chatAuth(this);
 
-			const channel = await client.queryChannels(
-				{ id: flags.channel, type: flags.type },
-				{ last_message_at: -1 },
-				{
-					subscribe: false,
-				}
+			const channel = client.channel(flags.type, flags.channel);
+			await channel.show();
+
+			this.log(
+				`The channel ${chalk.bold(flags.channel)} has been shown.`
 			);
-
-			if (!channel.length) {
-				this.log(
-					`Channel ${chalk.bold(
-						flags.channel
-					)} with type ${chalk.bold(flags.type)} could not be found.`
-				);
-				this.exit();
-			}
-
-			this.log(JSON.stringify(channel[0].data));
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
@@ -69,10 +57,10 @@ class ChannelGet extends Command {
 	}
 }
 
-ChannelGet.flags = {
+ChannelShow.flags = {
 	channel: flags.string({
 		char: 'c',
-		description: 'The channel ID you wish to retrieve.',
+		description: 'The channel ID you wish to remove.',
 		required: false,
 	}),
 	type: flags.string({
@@ -82,6 +70,6 @@ ChannelGet.flags = {
 	}),
 };
 
-ChannelGet.description = 'Gets a specific channel by its ID and type.';
+ChannelShow.description = 'Unhindes (shows) a channel.';
 
-module.exports.ChannelGet = ChannelGet;
+module.exports.ChannelShow = ChannelShow;

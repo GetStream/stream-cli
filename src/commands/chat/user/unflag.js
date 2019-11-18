@@ -55,4 +55,6 @@ UserUnflag.flags = {
 	}),
 };
 
+UserUnflag.description = 'Unflags a user.';
+
 module.exports.UserUnflag = UserUnflag;
