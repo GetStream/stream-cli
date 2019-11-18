@@ -10,7 +10,7 @@ class ChannelAddMember extends Command {
 		const { flags } = this.parse(ChannelAddMember);
 
 		try {
-			if (!flags.channel || !flags.type || !flags.image) {
+			if (!flags.channel || !flags.type || !flags.user) {
 				const res = await prompt([
 					{
 						type: 'input',
