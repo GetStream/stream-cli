@@ -1,13 +1,15 @@
 `stream config`
 ===============
 
-manage configuration variables
+Destroys your user configuration.
 
 * [`stream config:destroy`](#stream-configdestroy)
 * [`stream config:get`](#stream-configget)
 * [`stream config:set`](#stream-configset)
 
 ## `stream config:destroy`
+
+Destroys your user configuration.
 
 ```
 USAGE
@@ -19,6 +21,8 @@ OPTIONS
 
 ## `stream config:get`
 
+Outputs your user configuration.
+
 ```
 USAGE
   $ stream config:get
@@ -28,6 +32,8 @@ OPTIONS
 ```
 
 ## `stream config:set`
+
+Sets your user configuration.
 
 ```
 USAGE

@@ -106,7 +106,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.53 darwin-x64 node-v13.0.1
+getstream-cli/0.0.54 darwin-x64 node-v13.0.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
@@ -120,10 +120,10 @@ USAGE
 # Command Topics
 
 * [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
-* [`stream chat`](docs/chat.md) - configure and manage all things related to chat
+* [`stream chat`](docs/chat.md) - Adds a member to a channel.
 * [`stream commands`](docs/commands.md) - list all the commands
-* [`stream config`](docs/config.md) - manage configuration variables
-* [`stream debug`](docs/debug.md) - debugging tools
+* [`stream config`](docs/config.md) - Destroys your user configuration.
+* [`stream debug`](docs/debug.md) - Debugs a JWT token provided by Stream.
 * [`stream help`](docs/help.md) - display help for stream
 
 <!-- commandsstop -->

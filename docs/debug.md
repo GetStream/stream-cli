@@ -1,11 +1,13 @@
 `stream debug`
 ==============
 
-debugging tools
+Debugs a JWT token provided by Stream.
 
 * [`stream debug:token`](#stream-debugtoken)
 
 ## `stream debug:token`
+
+Debugs a JWT token provided by Stream.
 
 ```
 USAGE

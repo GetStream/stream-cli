@@ -1,13 +1,18 @@
 `stream chat`
 =============
 
-configure and manage all things related to chat
+Adds a member to a channel.
 
+* [`stream chat:channel:add_member`](#stream-chatchanneladd_member)
 * [`stream chat:channel:create`](#stream-chatchannelcreate)
+* [`stream chat:channel:demote_moderator`](#stream-chatchanneldemote_moderator)
 * [`stream chat:channel:get`](#stream-chatchannelget)
+* [`stream chat:channel:hide`](#stream-chatchannelhide)
 * [`stream chat:channel:list`](#stream-chatchannellist)
+* [`stream chat:channel:promote_moderator`](#stream-chatchannelpromote_moderator)
 * [`stream chat:channel:query`](#stream-chatchannelquery)
 * [`stream chat:channel:remove`](#stream-chatchannelremove)
+* [`stream chat:channel:show`](#stream-chatchannelshow)
 * [`stream chat:channel:update`](#stream-chatchannelupdate)
 * [`stream chat:log`](#stream-chatlog)
 * [`stream chat:message:create`](#stream-chatmessagecreate)
@@ -28,24 +33,46 @@ configure and manage all things related to chat
 * [`stream chat:reaction:remove`](#stream-chatreactionremove)
 * [`stream chat:user:ban`](#stream-chatuserban)
 * [`stream chat:user:create`](#stream-chatusercreate)
+* [`stream chat:user:deactivate`](#stream-chatuserdeactivate)
 * [`stream chat:user:flag`](#stream-chatuserflag)
 * [`stream chat:user:get`](#stream-chatuserget)
 * [`stream chat:user:mute`](#stream-chatusermute)
 * [`stream chat:user:query`](#stream-chatuserquery)
+* [`stream chat:user:reactivate`](#stream-chatuserreactivate)
 * [`stream chat:user:remove`](#stream-chatuserremove)
-* [`stream chat:user:set`](#stream-chatuserset)
 * [`stream chat:user:unban`](#stream-chatuserunban)
 * [`stream chat:user:unflag`](#stream-chatuserunflag)
 * [`stream chat:user:unmute`](#stream-chatuserunmute)
+* [`stream chat:user:update`](#stream-chatuserupdate)
+
+## `stream chat:channel:add_member`
+
+Adds a member to a channel.
+
+```
+USAGE
+  $ stream chat:channel:add_member
+
+OPTIONS
+  -c, --channel=channel  A unique ID for the channel add the user to.
+  -i, --image=image      URL to channel image.
+  -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
+  -n, --name=name        Name of the channel room.
+  -r, --data=data        The role of the user you are adding.
+  -t, --type=type        Type of channel.
+  -u, --users=users      Unique identifier for the user you are adding.
+```
 
 ## `stream chat:channel:create`
+
+Creates a new channel.
 
 ```
 USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: fdad82cc-766e-4b66-8fa7-cb12439b4399] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 3be8743e-029a-4e68-bd33-885602ae5cee] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -54,7 +81,23 @@ OPTIONS
   -u, --users=users      Comma separated list of users to add.
 ```
 
+## `stream chat:channel:demote_moderator`
+
+Demotes a moderator from a channel.
+
+```
+USAGE
+  $ stream chat:channel:demote_moderator
+
+OPTIONS
+  -c, --channel=channel  A unique ID for the channel you wish to create.
+  -t, --type=type        Type of channel.
+  -u, --user=user        A unique ID for user to demote from a moderator.
+```
+
 ## `stream chat:channel:get`
+
+Gets a specific channel by its ID and type.
 
 ```
 USAGE
@@ -65,7 +108,22 @@ OPTIONS
   -t, --type=type        Type of channel.
 ```
 
+## `stream chat:channel:hide`
+
+Hides a channel.
+
+```
+USAGE
+  $ stream chat:channel:hide
+
+OPTIONS
+  -c, --channel=channel  The channel ID you wish to remove.
+  -t, --type=type        Type of channel.
+```
+
 ## `stream chat:channel:list`
+
+Lists all channels.
 
 ```
 USAGE
@@ -76,7 +134,23 @@ OPTIONS
   -o, --offset=offset  (required) Channel list offset.
 ```
 
+## `stream chat:channel:promote_moderator`
+
+Promotes a user to a moderator in a channel.
+
+```
+USAGE
+  $ stream chat:channel:promote_moderator
+
+OPTIONS
+  -c, --channel=channel  A unique ID for the channel you wish to create.
+  -t, --type=type        Type of channel.
+  -u, --user=user        A unique ID for user user to demote.
+```
+
 ## `stream chat:channel:query`
+
+Queries all channels.
 
 ```
 USAGE
@@ -92,6 +166,8 @@ OPTIONS
 
 ## `stream chat:channel:remove`
 
+Removes a channel.
+
 ```
 USAGE
   $ stream chat:channel:remove
@@ -101,7 +177,22 @@ OPTIONS
   -t, --type=type        Type of channel.
 ```
 
+## `stream chat:channel:show`
+
+Unhindes (shows) a channel.
+
+```
+USAGE
+  $ stream chat:channel:show
+
+OPTIONS
+  -c, --channel=channel  The channel ID you wish to remove.
+  -t, --type=type        Type of channel.
+```
+
 ## `stream chat:channel:update`
+
+Updates a channel.
 
 ```
 USAGE
@@ -118,6 +209,8 @@ OPTIONS
 ```
 
 ## `stream chat:log`
+
+Logs events in realtime.
 
 ```
 USAGE
@@ -142,6 +235,8 @@ OPTIONS
 
 ## `stream chat:message:create`
 
+Creates a new message.
+
 ```
 USAGE
   $ stream chat:message:create
@@ -158,6 +253,8 @@ OPTIONS
 
 ## `stream chat:message:flag`
 
+Flags a message.
+
 ```
 USAGE
   $ stream chat:message:flag
@@ -168,6 +265,8 @@ OPTIONS
 ```
 
 ## `stream chat:message:list`
+
+Lists all messages.
 
 ```
 USAGE
@@ -181,6 +280,8 @@ OPTIONS
 
 ## `stream chat:message:remove`
 
+Removes a message.
+
 ```
 USAGE
   $ stream chat:message:remove
@@ -192,6 +293,8 @@ OPTIONS
 
 ## `stream chat:message:unflag`
 
+Unflags a message.
+
 ```
 USAGE
   $ stream chat:message:unflag
@@ -202,6 +305,8 @@ OPTIONS
 ```
 
 ## `stream chat:message:update`
+
+Updates a message.
 
 ```
 USAGE
@@ -215,6 +320,8 @@ OPTIONS
 ```
 
 ## `stream chat:push:apn`
+
+Specifies APN for push notifications.
 
 ```
 USAGE
@@ -240,6 +347,8 @@ OPTIONS
 
 ## `stream chat:push:device:add`
 
+Adds a new device for push.
+
 ```
 USAGE
   $ stream chat:push:device:add
@@ -252,6 +361,8 @@ OPTIONS
 
 ## `stream chat:push:device:delete`
 
+Removes a device from push.
+
 ```
 USAGE
   $ stream chat:push:device:delete
@@ -263,6 +374,8 @@ OPTIONS
 
 ## `stream chat:push:device:get`
 
+Gets all devices registered for push.
+
 ```
 USAGE
   $ stream chat:push:device:get
@@ -272,6 +385,8 @@ OPTIONS
 ```
 
 ## `stream chat:push:firebase`
+
+Specifies Firebase for push notifications.
 
 ```
 USAGE
@@ -292,6 +407,8 @@ OPTIONS
 
 ## `stream chat:push:get`
 
+Gets push notification settings.
+
 ```
 USAGE
   $ stream chat:push:get
@@ -301,6 +418,8 @@ OPTIONS
 ```
 
 ## `stream chat:push:test`
+
+Tests push notifications.
 
 ```
 USAGE
@@ -321,6 +440,8 @@ OPTIONS
 
 ## `stream chat:push:webhook`
 
+Tests webhook notifications.
+
 ```
 USAGE
   $ stream chat:push:webhook
@@ -331,6 +452,8 @@ OPTIONS
 ```
 
 ## `stream chat:reaction:create`
+
+Creates a new reaction.
 
 ```
 USAGE
@@ -346,6 +469,8 @@ OPTIONS
 
 ## `stream chat:reaction:remove`
 
+Removes a reaction.
+
 ```
 USAGE
   $ stream chat:reaction:remove
@@ -359,6 +484,8 @@ OPTIONS
 ```
 
 ## `stream chat:user:ban`
+
+Bans a user.
 
 ```
 USAGE
@@ -374,24 +501,35 @@ OPTIONS
 
 ## `stream chat:user:create`
 
+Creates a new user.
+
 ```
 USAGE
   $ stream chat:user:create
 
 OPTIONS
-  -c, --channel=channel                                              Channel identifier.
+  -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
+  -r, --role=admin|user  The role to assign to the user.
+  -u, --user=user        Comma separated list of users to add.
+```
 
-  -j, --json                                                         Output results in JSON. When not specified, returns
-                                                                     output in a human friendly format.
+## `stream chat:user:deactivate`
 
-  -r, --role=admin|guest|channel_member|channel_owner|message_owner  The role to assign to the user.
+Allows for deactivating a user and wiping all of their messages.
 
-  -t, --type=type                                                    The type of channel.
+```
+USAGE
+  $ stream chat:user:deactivate
 
-  -u, --user=user                                                    Comma separated list of users to add.
+OPTIONS
+  -h, --hard=hard  Hard deletes all messages associated with the user.
+  -j, --json=json  Output results in JSON. When not specified, returns output in a human friendly format.
+  -m, --user=user  A unique ID of the user you would like to deactivate.
 ```
 
 ## `stream chat:user:flag`
+
+Flags a user for bad behavior.
 
 ```
 USAGE
@@ -403,6 +541,8 @@ OPTIONS
 ```
 
 ## `stream chat:user:get`
+
+Get a user by their unique ID.
 
 ```
 USAGE
@@ -416,6 +556,8 @@ OPTIONS
 
 ## `stream chat:user:mute`
 
+Mutes a user.
+
 ```
 USAGE
   $ stream chat:user:mute
@@ -426,6 +568,8 @@ OPTIONS
 ```
 
 ## `stream chat:user:query`
+
+Queries all users.
 
 ```
 USAGE
@@ -439,32 +583,36 @@ OPTIONS
   -s, --sort=sort      Display the current status of the user.
 ```
 
+## `stream chat:user:reactivate`
+
+Reactivates a user who was previously deactivated.
+
+```
+USAGE
+  $ stream chat:user:reactivate
+
+OPTIONS
+  -j, --json=json        Output results in JSON. When not specified, returns output in a human friendly format.
+  -m, --user=user        A unique ID of the user you would like to reactivate.
+  -r, --restore=restore  Restores all deleted messages associated with the user.
+```
+
 ## `stream chat:user:remove`
+
+Allows for deactivating a user and wiping all of their messages.
 
 ```
 USAGE
   $ stream chat:user:remove
 
 OPTIONS
-  -c, --channel=channel        Channel name.
-  -j, --json                   Output results in JSON. When not specified, returns output in a human friendly format.
-  -m, --moderators=moderators  (required) Comma separated list of moderators to remove.
-  -t, --type=type              Channel type.
-```
-
-## `stream chat:user:set`
-
-```
-USAGE
-  $ stream chat:user:set
-
-OPTIONS
-  -i, --id=id        The unique identifier for the user.
-  -m, --image=image  URL to the image of the user.
-  -n, --name=name    Name of the user.
+  -j, --json=json  Output results in JSON. When not specified, returns output in a human friendly format.
+  -m, --user=user  A unique ID of the user you would like to remove.
 ```
 
 ## `stream chat:user:unban`
+
+Unbans a user.
 
 ```
 USAGE
@@ -477,6 +625,8 @@ OPTIONS
 
 ## `stream chat:user:unflag`
 
+Unflags a user.
+
 ```
 USAGE
   $ stream chat:user:unflag
@@ -488,6 +638,8 @@ OPTIONS
 
 ## `stream chat:user:unmute`
 
+Unmutes a user.
+
 ```
 USAGE
   $ stream chat:user:unmute
@@ -495,4 +647,18 @@ USAGE
 OPTIONS
   -j, --json       Output results in JSON. When not specified, returns output in a human friendly format.
   -u, --user=user  The unique identifier of the user to unmute.
+```
+
+## `stream chat:user:update`
+
+Updates a user.
+
+```
+USAGE
+  $ stream chat:user:update
+
+OPTIONS
+  -i, --id=id        The unique identifier for the user.
+  -m, --image=image  URL to the image of the user.
+  -n, --name=name    Name of the user.
 ```
