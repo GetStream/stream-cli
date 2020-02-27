@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserUpdate extends Command {
 	async run() {

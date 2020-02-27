@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../../utils/auth/chat-auth');
+import { chatAuth } from '../../../../utils/auth/chat-auth';
 
 class DeviceDelete extends Command {
 	async run() {
@@ -15,15 +15,15 @@ class DeviceDelete extends Command {
 						name: 'user_id',
 						hint: 'user-123',
 						message: 'What is the User ID?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'device_id',
 						hint: `device-123`,
 						message: 'What is the Device ID?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in result) {
@@ -35,16 +35,13 @@ class DeviceDelete extends Command {
 
 			const client = await chatAuth(this);
 
-			await client.removeDevice(
-				flags.device_id || '',
-				flags.user_id || ''
-			);
+			await client.removeDevice(flags.device_id || '', flags.user_id || '');
 
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -54,13 +51,13 @@ DeviceDelete.flags = {
 	user_id: flags.string({
 		char: 'u',
 		description: 'User ID',
-		required: false,
+		required: false
 	}),
 	device_id: flags.string({
 		char: 'd',
 		description: 'Device id or token.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 DeviceDelete.description = 'Removes a device from push.';

@@ -1,9 +1,9 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const moment = require('moment');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import moment from 'moment';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class MessageList extends Command {
 	async run() {
@@ -16,7 +16,7 @@ class MessageList extends Command {
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -28,9 +28,9 @@ class MessageList extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
-					},
+							{ message: 'Team', value: 'team' }
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -51,9 +51,7 @@ class MessageList extends Command {
 
 			if (flags.json) {
 				if (!messages.length) {
-					this.log(
-						JSON.stringify({ error: 'No messages available.' })
-					);
+					this.log(JSON.stringify({ error: 'No messages available.' }));
 					this.exit();
 				}
 
@@ -74,24 +72,18 @@ class MessageList extends Command {
 			}
 
 			for (let i = 0; i < data.length; i++) {
-				const timestamp = `${
-					data[i].deleted_at ? 'Deleted on' : 'Created at'
-				} ${moment(data[i].created_at).format(
-					'dddd, MMMM Do YYYY [at] h:mm:ss A'
-				)}`;
+				const timestamp = `${data[i].deleted_at ? 'Deleted on' : 'Created at'} ${moment(
+					data[i].created_at
+				).format('dddd, MMMM Do YYYY [at] h:mm:ss A')}`;
 
-				this.log(
-					`Message ${chalk.bold(data[i].id)} (${timestamp}): ${
-						data[i].text
-					}`
-				);
+				this.log(`Message ${chalk.bold(data[i].id)} (${timestamp}): ${data[i].text}`);
 			}
 
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -101,20 +93,18 @@ MessageList.flags = {
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		required: false,
+		required: false
 	}),
 	channel: flags.string({
 		char: 'c',
-		description:
-			'The ID of the channel that you would like to send a message to.',
-		required: false,
+		description: 'The ID of the channel that you would like to send a message to.',
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 MessageList.description = 'Lists all messages.';

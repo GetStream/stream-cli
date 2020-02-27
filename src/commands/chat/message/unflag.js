@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class MessageUnflag extends Command {
 	async run() {
@@ -14,10 +14,9 @@ class MessageUnflag extends Command {
 					{
 						type: 'input',
 						name: 'message',
-						message:
-							'What is the unique identifier for the message?',
-						required: true,
-					},
+						message: 'What is the unique identifier for the message?',
+						required: true
+					}
 				]);
 
 				flags.message = res.message;
@@ -31,14 +30,12 @@ class MessageUnflag extends Command {
 				this.exit();
 			}
 
-			this.log(
-				`Message ${chalk.bold(flags.message)} has been unflagged.`
-			);
+			this.log(`Message ${chalk.bold(flags.message)} has been unflagged.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -48,14 +45,13 @@ MessageUnflag.flags = {
 	message: flags.string({
 		char: 'm',
 		description: 'The unique identifier of the message you want to flag.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 MessageUnflag.description = 'Unflags a message.';

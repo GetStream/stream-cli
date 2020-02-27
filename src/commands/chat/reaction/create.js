@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ReactionCreate extends Command {
 	async run() {
@@ -13,9 +13,8 @@ class ReactionCreate extends Command {
 					{
 						type: 'input',
 						name: 'channel',
-						message:
-							'What is the unique identifier for the channel?',
-						required: true,
+						message: 'What is the unique identifier for the channel?',
+						required: true
 					},
 					{
 						type: 'select',
@@ -27,23 +26,22 @@ class ReactionCreate extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
+							{ message: 'Team', value: 'team' }
+						]
 					},
 					{
 						type: 'input',
 						name: 'message',
-						message:
-							'What is the unique identifier for the message?',
-						required: true,
+						message: 'What is the unique identifier for the message?',
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'reaction',
 						hint: 'love',
 						message: 'What is the reaction you would like to add?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -57,7 +55,7 @@ class ReactionCreate extends Command {
 
 			const channel = client.channel(flags.type, flags.channel);
 			const reaction = await channel.sendReaction(flags.message, {
-				type: flags.reaction,
+				type: flags.reaction
 			});
 
 			if (this.json) {
@@ -70,7 +68,7 @@ class ReactionCreate extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -80,29 +78,28 @@ ReactionCreate.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'The unique identifier for the channel.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		required: false,
+		required: false
 	}),
 	message: flags.string({
 		char: 'c',
 		description: 'The unique identifier for the message.',
-		required: false,
+		required: false
 	}),
 	reaction: flags.string({
 		char: 'r',
 		description: 'A reaction for the message (e.g. love).',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 ReactionCreate.description = 'Creates a new reaction.';

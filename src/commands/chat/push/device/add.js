@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../../utils/auth/chat-auth');
+import { chatAuth } from '../../../../utils/auth/chat-auth';
 
 class DeviceAdd extends Command {
 	async run() {
@@ -15,25 +15,22 @@ class DeviceAdd extends Command {
 						name: 'user_id',
 						hint: 'user-123',
 						message: 'What is the User ID?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'device_id',
 						hint: `device-123`,
 						message: 'What is the Device ID?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
 						name: 'provider',
 						message: 'What is the push provider?',
 						required: true,
-						choices: [
-							{ message: 'APN', value: 'apn' },
-							{ message: 'Firebase', value: 'firebase' },
-						],
-					},
+						choices: [ { message: 'APN', value: 'apn' }, { message: 'Firebase', value: 'firebase' } ]
+					}
 				]);
 
 				for (const key in result) {
@@ -45,17 +42,13 @@ class DeviceAdd extends Command {
 
 			const client = await chatAuth(this);
 
-			await client.addDevice(
-				flags.device_id || '',
-				flags.provider || '',
-				flags.user_id || ''
-			);
+			await client.addDevice(flags.device_id || '', flags.provider || '', flags.user_id || '');
 
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -65,18 +58,18 @@ DeviceAdd.flags = {
 	user_id: flags.string({
 		char: 'u',
 		description: 'User ID',
-		required: false,
+		required: false
 	}),
 	device_id: flags.string({
 		char: 'd',
 		description: 'Device id or token.',
-		required: false,
+		required: false
 	}),
 	provider: flags.string({
 		char: 'p',
 		description: 'Push provider',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 DeviceAdd.description = 'Adds a new device for push.';

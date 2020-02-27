@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserDeactivate extends Command {
 	async run() {
@@ -14,27 +14,25 @@ class UserDeactivate extends Command {
 					{
 						type: 'input',
 						name: 'user',
-						message:
-							'What is the unique ID of the user you would like to deactivate?',
-						required: true,
+						message: 'What is the unique ID of the user you would like to deactivate?',
+						required: true
 					},
 					{
 						type: 'select',
 						name: 'hard',
-						message:
-							'Would you like to perform a hard delete on messages?',
+						message: 'Would you like to perform a hard delete on messages?',
 						required: true,
 						choices: [
 							{
 								message: 'No',
-								value: false,
+								value: false
 							},
 							{
 								message: 'Yes',
-								value: true,
-							},
-						],
-					},
+								value: true
+							}
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -46,20 +44,15 @@ class UserDeactivate extends Command {
 
 			const client = await chatAuth(this);
 
-			const exists = await client.queryUsers(
-				{ id: flags.user },
-				{ id: -1 }
-			);
+			const exists = await client.queryUsers({ id: flags.user }, { id: -1 });
 
 			if (!exists.users.length) {
-				this.log(
-					`User ${flags.user} does not exist or has already been deactivated.`
-				);
+				this.log(`User ${flags.user} does not exist or has already been deactivated.`);
 				this.exit();
 			}
 
 			const deactivate = await client.deactivateUser(flags.user, {
-				mark_messages_deleted: Boolean(flags.hard),
+				mark_messages_deleted: Boolean(flags.hard)
 			});
 
 			if (flags.json) {
@@ -72,7 +65,7 @@ class UserDeactivate extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -82,22 +75,20 @@ UserDeactivate.flags = {
 	user: flags.string({
 		char: 'm',
 		description: 'A unique ID of the user you would like to deactivate.',
-		required: false,
+		required: false
 	}),
 	hard: flags.string({
 		char: 'h',
 		description: 'Hard deletes all messages associated with the user.',
-		required: false,
+		required: false
 	}),
 	json: flags.string({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
-UserDeactivate.description =
-	'Allows for deactivating a user and wiping all of their messages.';
+UserDeactivate.description = 'Allows for deactivating a user and wiping all of their messages.';
 
 module.exports.UserDeactivate = UserDeactivate;

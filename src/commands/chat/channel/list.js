@@ -1,6 +1,6 @@
-const { Command, flags } = require('@oclif/command');
+import { Command, flags } from '@oclif/command';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelList extends Command {
 	async run() {
@@ -16,7 +16,7 @@ class ChannelList extends Command {
 					state: false,
 					subscribe: false,
 					limit: parseInt(flags.limit, 10) || 10,
-					offset: parseInt(flags.offset, 10) || 0,
+					offset: parseInt(flags.offset, 10) || 0
 				}
 			);
 
@@ -31,7 +31,7 @@ class ChannelList extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -41,13 +41,13 @@ ChannelList.flags = {
 	limit: flags.string({
 		char: 'l',
 		description: 'Channel list limit.',
-		required: true,
+		required: true
 	}),
 	offset: flags.string({
 		char: 'o',
 		description: 'Channel list offset.',
-		required: true,
-	}),
+		required: true
+	})
 };
 
 ChannelList.description = 'Lists all channels.';

@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserBan extends Command {
 	async run() {
@@ -15,14 +15,10 @@ class UserBan extends Command {
 					{
 						type: 'select',
 						name: 'ban',
-						message:
-							'Would you like to apply a global or channel ban?',
+						message: 'Would you like to apply a global or channel ban?',
 						required: true,
-						choices: [
-							{ message: 'Global', value: 'global' },
-							{ message: 'Channel', value: 'channel' },
-						],
-					},
+						choices: [ { message: 'Global', value: 'global' }, { message: 'Channel', value: 'channel' } ]
+					}
 				]);
 			}
 
@@ -33,7 +29,7 @@ class UserBan extends Command {
 						type: 'input',
 						name: 'id',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -45,9 +41,9 @@ class UserBan extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
-					},
+							{ message: 'Team', value: 'team' }
+						]
+					}
 				]);
 			}
 
@@ -57,21 +53,21 @@ class UserBan extends Command {
 						type: 'input',
 						name: 'user',
 						message: 'What is the unique identifier for the user?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'reason',
 						message: 'What is the reason for banning the user?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'duration',
 						hint: 'minutes',
 						message: 'How long would you like to ban the user for?',
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				for (const key in res) {
@@ -89,13 +85,13 @@ class UserBan extends Command {
 			const client = await chatAuth(this);
 			const payload = {
 				reason: flags.reason,
-				user_id: 'CLI',
+				user_id: 'CLI'
 			};
 
 			await client.updateUser({
 				id: 'CLI',
 				name: 'CLI',
-				role: 'admin',
+				role: 'admin'
 			});
 
 			if (flags.duration) {
@@ -104,9 +100,7 @@ class UserBan extends Command {
 
 			let ban;
 			if (type.ban === 'channel') {
-				ban = await client
-					.channel(cid.type, cid.id)
-					.banUser(flags.user, payload);
+				ban = await client.channel(cid.type, cid.id).banUser(flags.user, payload);
 			}
 
 			if (type.ban === 'global') {
@@ -123,7 +117,7 @@ class UserBan extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -133,30 +127,29 @@ UserBan.flags = {
 	type: flags.string({
 		char: 'u',
 		description: 'Type of ban to perform (e.g. global or channel).',
-		required: false,
+		required: false
 	}),
 	user: flags.string({
 		char: 'u',
 		description: 'The unique identifier of the user to ban.',
-		required: false,
+		required: false
 	}),
 	reason: flags.string({
 		char: 'r',
 		description: 'A reason for adding a timeout.',
-		required: false,
+		required: false
 	}),
 	duration: flags.string({
 		char: 'd',
 		description: 'Duration of timeout in minutes.',
 		default: '60',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 UserBan.description = 'Bans a user.';

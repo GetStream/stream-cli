@@ -1,14 +1,12 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserReactivate extends Command {
 	async run() {
 		const { flags } = this.parse(UserReactivate);
-
-		this.log(flags);
 
 		try {
 			if (!flags.user || !flags.restore) {
@@ -16,9 +14,8 @@ class UserReactivate extends Command {
 					{
 						type: 'input',
 						name: 'user',
-						message:
-							'What is the unique ID of the user you would like to reactivate?',
-						required: true,
+						message: 'What is the unique ID of the user you would like to reactivate?',
+						required: true
 					},
 					{
 						type: 'select',
@@ -28,14 +25,14 @@ class UserReactivate extends Command {
 						choices: [
 							{
 								message: 'No',
-								value: false,
+								value: false
 							},
 							{
 								message: 'Yes',
-								value: true,
-							},
-						],
-					},
+								value: true
+							}
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -48,7 +45,7 @@ class UserReactivate extends Command {
 			const client = await chatAuth(this);
 
 			const { user } = await client.reactivateUser(flags.user, {
-				restore_messages: Boolean(flags.restore),
+				restore_messages: Boolean(flags.restore)
 			});
 
 			if (flags.json) {
@@ -61,7 +58,7 @@ class UserReactivate extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -71,22 +68,20 @@ UserReactivate.flags = {
 	user: flags.string({
 		char: 'm',
 		description: 'A unique ID of the user you would like to reactivate.',
-		required: false,
+		required: false
 	}),
 	restore: flags.string({
 		char: 'r',
 		description: 'Restores all deleted messages associated with the user.',
-		required: false,
+		required: false
 	}),
 	json: flags.string({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
-UserReactivate.description =
-	'Reactivates a user who was previously deactivated.';
+UserReactivate.description = 'Reactivates a user who was previously deactivated.';
 
 module.exports.UserReactivate = UserReactivate;

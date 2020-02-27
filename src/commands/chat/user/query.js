@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserQuery extends Command {
 	async run() {
@@ -15,8 +15,8 @@ class UserQuery extends Command {
 						name: 'query',
 						message: 'What is the query you would like to perform?',
 						hint: 'optional',
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				flags.query = query;
@@ -31,19 +31,19 @@ class UserQuery extends Command {
 						choices: [
 							{
 								message: 'ID',
-								value: 'id',
+								value: 'id'
 							},
 							{
 								message: 'Last Active',
-								value: 'last_active',
+								value: 'last_active'
 							},
 							{
 								message: 'None',
-								value: 'none',
-							},
+								value: 'none'
+							}
 						],
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				flags.sort = sort;
@@ -56,8 +56,8 @@ class UserQuery extends Command {
 						name: 'query',
 						message: 'How many records would you like to display?',
 						default: 25,
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				flags.limit = limit;
@@ -71,8 +71,8 @@ class UserQuery extends Command {
 						message: 'How many users would you like to skip?',
 						hint: 0,
 						default: 0,
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				flags.offset = offset;
@@ -101,7 +101,7 @@ class UserQuery extends Command {
 
 			const { users } = await client.queryUsers(q, s, {
 				limit: parseInt(flags.limit.query, 10) || 25,
-				offset: parseInt(flags.offset.query, 10) || 0,
+				offset: parseInt(flags.offset.query, 10) || 0
 			});
 
 			if (flags.json) {
@@ -114,7 +114,7 @@ class UserQuery extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -124,29 +124,28 @@ UserQuery.flags = {
 	query: flags.string({
 		char: 'q',
 		description: 'The query you would like to perform.',
-		required: false,
+		required: false
 	}),
 	sort: flags.string({
 		char: 's',
 		description: 'Display the current status of the user.',
-		required: false,
+		required: false
 	}),
 	limit: flags.string({
 		char: 'l',
 		description: 'The limit to apply to the query.',
-		required: false,
+		required: false
 	}),
 	offset: flags.string({
 		char: 'o',
 		description: 'The offset to apply to the query.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 UserQuery.description = 'Queries all users.';

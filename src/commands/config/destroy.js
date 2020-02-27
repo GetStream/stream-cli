@@ -1,9 +1,9 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const emoji = require('node-emoji');
-const chalk = require('chalk');
-const path = require('path');
-const fs = require('fs-extra');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import emoji from 'node-emoji';
+import chalk from 'chalk';
+import path from 'path';
+import fs from 'fs-extra';
 
 class ConfigDestroy extends Command {
 	async run() {
@@ -20,7 +20,7 @@ class ConfigDestroy extends Command {
 						`This command will delete your current configuration. Are you sure you want to continue? ${emoji.get(
 							'warning'
 						)} `
-					),
+					)
 				});
 
 				if (answer.continue) {
@@ -45,8 +45,8 @@ ConfigDestroy.flags = {
 	force: flags.boolean({
 		char: 'f',
 		description: 'Force remove Stream configuration from cache.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 ConfigDestroy.description = 'Destroys your user configuration.';
