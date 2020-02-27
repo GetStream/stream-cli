@@ -1,6 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const { prompt } = require('enquirer');
 const chalk = require('chalk');
+const uuid = require('uuid/v4');
 
 const { chatAuth } = require('../../../utils/auth/chat-auth');
 
@@ -15,7 +16,8 @@ class UserCreate extends Command {
 						type: 'input',
 						name: 'user',
 						message: 'What is the unique identifier for the user?',
-						required: true,
+						default: uuid(),
+						required: true
 					},
 					{
 						type: 'select',
@@ -25,14 +27,14 @@ class UserCreate extends Command {
 						choices: [
 							{
 								message: 'Admin',
-								value: 'admin',
+								value: 'admin'
 							},
 							{
 								message: 'User',
-								value: 'user',
-							},
-						],
-					},
+								value: 'user'
+							}
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -45,7 +47,7 @@ class UserCreate extends Command {
 			const client = await chatAuth(this);
 			const create = await client.updateUser({
 				id: flags.user,
-				role: flags.role,
+				role: flags.role
 			});
 
 			if (flags.json) {
@@ -53,16 +55,12 @@ class UserCreate extends Command {
 				this.exit();
 			}
 
-			this.log(
-				`The user ${chalk.bold(flags.user)} (${
-					flags.role
-				}) has been created.`
-			);
+			this.log(`The user ${chalk.bold(flags.user)} (${flags.role}) has been created.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -72,20 +70,19 @@ UserCreate.flags = {
 	user: flags.string({
 		char: 'u',
 		description: 'Comma separated list of users to add.',
-		required: false,
+		required: false
 	}),
 	role: flags.string({
 		char: 'r',
 		description: 'The role to assign to the user.',
-		options: ['admin', 'user'],
-		required: false,
+		options: [ 'admin', 'user' ],
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 UserCreate.description = 'Creates a new user.';

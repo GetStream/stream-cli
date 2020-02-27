@@ -14,20 +14,21 @@ class UserUpdate extends Command {
 						type: 'input',
 						name: 'id',
 						message: 'What is the unique identifier for the user?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'name',
 						message: 'What is the name of the user?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'image',
 						message: 'What is the URL of the users image?',
-						required: false,
-					},
+						hint: 'Optional',
+						required: false
+					}
 				]);
 
 				for (const key in res) {
@@ -42,26 +43,26 @@ class UserUpdate extends Command {
 
 			const payload = {
 				id: flags.id,
-				name: flags.name,
+				name: flags.name
 			};
 
 			if (flags.image) {
 				payload.image = flags.image;
 			}
 
-			await client.setUser(payload, token);
+			await client.updateUser(payload);
 
 			if (flags.json) {
 				this.log(JSON.stringify(payload));
 				this.exit();
 			}
 
-			this.log(`The user ${flags.name} (${flags.id}) has been set.`);
+			this.log(`The user ${flags.name} (${flags.id}) has been updated.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -71,18 +72,18 @@ UserUpdate.flags = {
 	id: flags.string({
 		char: 'i',
 		description: 'The unique identifier for the user.',
-		required: false,
+		required: false
 	}),
 	name: flags.string({
 		char: 'n',
 		description: 'Name of the user.',
-		required: false,
+		required: false
 	}),
 	image: flags.string({
 		char: 'm',
 		description: 'URL to the image of the user.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 UserUpdate.description = 'Updates a user.';
