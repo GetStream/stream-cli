@@ -1,6 +1,6 @@
-const { Command, flags } = require('@oclif/command');
+import { Command, flags } from '@oclif/command';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelQuery extends Command {
 	async run() {
@@ -13,7 +13,7 @@ class ChannelQuery extends Command {
 			const sort = flags.sort ? JSON.parse(flags.sort) : {};
 
 			const channel = await client.queryChannels(filter, sort, {
-				subscribe: false,
+				subscribe: false
 			});
 
 			if (flags.json) {
@@ -26,7 +26,7 @@ class ChannelQuery extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -36,29 +36,28 @@ ChannelQuery.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'The unique identifier for the channel you want to query.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		required: false,
+		required: false
 	}),
 	filter: flags.string({
 		char: 'f',
 		description: 'Filters to apply to the query.',
-		required: false,
+		required: false
 	}),
 	sort: flags.string({
 		char: 's',
 		description: 'Sort to apply to the query.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 ChannelQuery.description = 'Queries all channels.';

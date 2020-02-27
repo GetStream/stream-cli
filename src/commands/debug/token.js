@@ -1,10 +1,10 @@
-const { Command, flags } = require('@oclif/command');
-const Table = require('cli-table');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
-const jwt = require('jsonwebtoken');
+import { Command, flags } from '@oclif/command';
+import Table from 'cli-table';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
+import jwt from 'jsonwebtoken';
 
-const { credentials } = require('../../utils/config');
+import { credentials } from '../../utils/config';
 
 class DebugToken extends Command {
 	async run() {
@@ -17,8 +17,8 @@ class DebugToken extends Command {
 						type: 'input',
 						name: 'jwt',
 						message: `What is the Stream token you would like to debug?`,
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				flags.jwt = res.jwt;
@@ -27,7 +27,7 @@ class DebugToken extends Command {
 			const { apiSecret } = await credentials(this);
 
 			const decoded = await jwt.verify(flags.jwt, apiSecret, {
-				complete: true,
+				complete: true
 			});
 
 			if (flags.json) {
@@ -39,17 +39,16 @@ class DebugToken extends Command {
 
 			table.push(
 				{
-					[`${chalk.green.bold('Header Type')}`]: decoded.header.typ,
+					[`${chalk.green.bold('Header Type')}`]: decoded.header.typ
 				},
 				{
-					[`${chalk.green.bold('Header Algorithm')}`]: decoded.header
-						.alg,
+					[`${chalk.green.bold('Header Algorithm')}`]: decoded.header.alg
 				},
 				{
-					[`${chalk.green.bold('Signature')}`]: decoded.signature,
+					[`${chalk.green.bold('Signature')}`]: decoded.signature
 				},
 				{
-					[`${chalk.green.bold('User ID')}`]: decoded.payload.user_id,
+					[`${chalk.green.bold('User ID')}`]: decoded.payload.user_id
 				}
 			);
 
@@ -57,7 +56,7 @@ class DebugToken extends Command {
 			this.exit(0);
 		} catch (error) {
 			this.error('Malformed JWT token or Stream API secret.', {
-				exit: 1,
+				exit: 1
 			});
 		}
 	}
@@ -67,14 +66,13 @@ DebugToken.flags = {
 	token: flags.string({
 		char: 't',
 		description: 'The Stream token you are trying to debug.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 DebugToken.description = 'Debugs a JWT token provided by Stream.';

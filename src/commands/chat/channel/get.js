@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelGet extends Command {
 	async run() {
@@ -15,7 +15,7 @@ class ChannelGet extends Command {
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -27,9 +27,9 @@ class ChannelGet extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
-					},
+							{ message: 'Team', value: 'team' }
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -45,15 +45,13 @@ class ChannelGet extends Command {
 				{ id: flags.channel, type: flags.type },
 				{ last_message_at: -1 },
 				{
-					subscribe: false,
+					subscribe: false
 				}
 			);
 
 			if (!channel.length) {
 				this.log(
-					`Channel ${chalk.bold(
-						flags.channel
-					)} with type ${chalk.bold(flags.type)} could not be found.`
+					`Channel ${chalk.bold(flags.channel)} with type ${chalk.bold(flags.type)} could not be found.`
 				);
 				this.exit();
 			}
@@ -63,7 +61,7 @@ class ChannelGet extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -73,13 +71,13 @@ ChannelGet.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'The channel ID you wish to retrieve.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 ChannelGet.description = 'Gets a specific channel by its ID and type.';

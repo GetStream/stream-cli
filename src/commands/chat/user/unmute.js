@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserUnmute extends Command {
 	async run() {
@@ -15,8 +15,8 @@ class UserUnmute extends Command {
 						type: 'input',
 						name: 'user',
 						message: 'What is the unique identifier for the user?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				flags.user = res.user;
@@ -35,7 +35,7 @@ class UserUnmute extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -45,14 +45,13 @@ UserUnmute.flags = {
 	user: flags.string({
 		char: 'u',
 		description: 'The unique identifier of the user to unmute.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 UserUnmute.description = 'Unmutes a user.';

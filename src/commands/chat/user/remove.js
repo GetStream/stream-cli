@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserRemove extends Command {
 	async run() {
@@ -14,10 +14,9 @@ class UserRemove extends Command {
 					{
 						type: 'input',
 						name: 'user',
-						message:
-							'What is the unique ID of the user you would like to remove?',
-						required: true,
-					},
+						message: 'What is the unique ID of the user you would like to remove?',
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -29,21 +28,16 @@ class UserRemove extends Command {
 
 			const client = await chatAuth(this);
 
-			const exists = await client.queryUsers(
-				{ id: flags.user },
-				{ id: -1 }
-			);
+			const exists = await client.queryUsers({ id: flags.user }, { id: -1 });
 
 			if (!exists.users.length) {
-				this.log(
-					`User ${flags.user} does not exist or has already been removed.`
-				);
+				this.log(`User ${flags.user} does not exist or has already been removed.`);
 				this.exit();
 			}
 
 			const remove = await client.deleteUser(flags.user, {
 				mark_messages_deleted: true,
-				hard_delete: true,
+				hard_delete: true
 			});
 
 			if (flags.json) {
@@ -56,7 +50,7 @@ class UserRemove extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -66,17 +60,15 @@ UserRemove.flags = {
 	user: flags.string({
 		char: 'm',
 		description: 'A unique ID of the user you would like to remove.',
-		required: false,
+		required: false
 	}),
 	json: flags.string({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
-UserRemove.description =
-	'Allows for deactivating a user and wiping all of their messages.';
+UserRemove.description = 'Allows for deactivating a user and wiping all of their messages.';
 
 module.exports.UserRemove = UserRemove;

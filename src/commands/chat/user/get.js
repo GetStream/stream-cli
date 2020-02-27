@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class UserGet extends Command {
 	async run() {
@@ -15,8 +15,8 @@ class UserGet extends Command {
 						type: 'input',
 						name: 'user',
 						message: 'What is the unique identifier for the user?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -27,10 +27,7 @@ class UserGet extends Command {
 			}
 
 			const client = await chatAuth(this);
-			const user = await client.queryUsers(
-				{ id: { $in: [flags.user] } },
-				{ id: -1 }
-			);
+			const user = await client.queryUsers({ id: { $in: [ flags.user ] } }, { id: -1 });
 
 			if (!user.users.length) {
 				this.log(`User ${chalk.bold(flags.user)} could not be found.`);
@@ -47,7 +44,7 @@ class UserGet extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -57,19 +54,18 @@ UserGet.flags = {
 	user: flags.string({
 		char: 'u',
 		description: 'The unique identifier of the user to get.',
-		required: false,
+		required: false
 	}),
 	presence: flags.string({
 		char: 'p',
 		description: 'Display the current status of the user.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 UserGet.description = 'Get a user by their unique ID.';

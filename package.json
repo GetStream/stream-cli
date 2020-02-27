@@ -3,7 +3,7 @@
 	"description": "Configure & manage Stream applications from the command line. 🚀",
 	"version": "0.0.58",
 	"bin": {
-		"stream": "./bin/run"
+		"stream": "./build/bin/run"
 	},
 	"engines": {
 		"node": ">=10.0.0"
@@ -35,14 +35,9 @@
 		"readme": "oclif-dev readme --multi",
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
-		"build": "./build.sh",
-		"pre-release": "git pull origin master",
-		"mid-release": "git pull origin master && yarn manifest && yarn readme && yarn lint && git add . && git pull origin master && git commit -m 'New Release' && git push origin master",
-		"post-release": "yarn build",
-		"release": "release-it"
+		"build": "babel src --out-dir build && cp -R bin build/bin"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.8.4",
 		"@oclif/command": "^1",
 		"@oclif/config": "^1",
 		"@oclif/plugin-autocomplete": "^0.1.5",
@@ -68,18 +63,23 @@
 		"numeral": "^2.0.6",
 		"rollbar": "^2.14.4",
 		"stream-chat": "1.3.3",
-		"uuid": "^3.3.3"
+		"uuid": "^7.0.1"
 	},
 	"devDependencies": {
+		"@babel/cli": "^7.8.4",
+		"@babel/core": "^7.8.6",
+		"@babel/preset-env": "^7.8.6",
 		"@oclif/dev-cli": "^1",
 		"@oclif/test": "^1",
 		"babel-eslint": "^10.1.0",
+		"babel-plugin-module-resolver": "^4.0.0",
+		"babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
 		"chai": "^4",
 		"coveralls": "^3.0.9",
 		"eslint": "^6.8",
 		"eslint-config-oclif": "^3.1",
 		"eslint-plugin-babel": "^5.3.0",
-		"husky": "^4.2.3",
+		"eslint-plugin-jsx-a11y": "^6.2.3",
 		"mocha": "^7.1.0",
 		"mocha-lcov-reporter": "^1.3.0",
 		"nyc": "^15",
@@ -90,11 +90,11 @@
 		"/bin",
 		"/npm-shrinkwrap.json",
 		"/oclif.manifest.json",
-		"/src"
+		"/build"
 	],
 	"oclif": {
 		"bin": "stream",
-		"commands": "./src/commands",
+		"commands": "./build/commands",
 		"plugins": [
 			"@oclif/plugin-help",
 			"@oclif/plugin-autocomplete",
@@ -103,11 +103,40 @@
 			"@oclif/plugin-warn-if-update-available"
 		],
 		"warn-if-update-available": {
-			"timeoutInDays": 7,
+			"timeoutInDays": 1,
 			"message": "NOTICE: <%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>!"
 		},
 		"hooks": {
-			"telemetry": "./src/utils/hooks/telemetry"
+			"telemetry": "./build/utils/hooks/telemetry"
 		}
+	},
+	"prettier": {
+		"trailingComma": "es5",
+		"tabWidth": 4,
+		"semi": true,
+		"singleQuote": true
+	},
+	"babel": {
+		"presets": [
+			[
+				"@babel/preset-env",
+				{
+					"targets": {
+						"node": "current"
+					}
+				}
+			]
+		],
+		"plugins": [
+			[
+				"module-resolver",
+				{
+					"root": [
+						"./src"
+					]
+				}
+			],
+			"transform-optional-chaining"
+		]
 	}
 }

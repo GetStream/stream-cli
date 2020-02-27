@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelShow extends Command {
 	async run() {
@@ -15,7 +15,7 @@ class ChannelShow extends Command {
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -27,9 +27,9 @@ class ChannelShow extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
-					},
+							{ message: 'Team', value: 'team' }
+						]
+					}
 				]);
 
 				for (const key in res) {
@@ -44,14 +44,12 @@ class ChannelShow extends Command {
 			const channel = client.channel(flags.type, flags.channel);
 			await channel.show();
 
-			this.log(
-				`The channel ${chalk.bold(flags.channel)} has been shown.`
-			);
+			this.log(`The channel ${chalk.bold(flags.channel)} has been shown.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -61,13 +59,13 @@ ChannelShow.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'The channel ID you wish to remove.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 ChannelShow.description = 'Unhindes (shows) a channel.';

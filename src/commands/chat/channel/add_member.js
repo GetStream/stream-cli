@@ -1,9 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
-const { credentials } = require('../../../utils/config');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelAddMember extends Command {
 	async run() {
@@ -16,7 +15,7 @@ class ChannelAddMember extends Command {
 						type: 'input',
 						name: 'channel',
 						message: 'What is the unique ID for the channel?',
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -28,15 +27,15 @@ class ChannelAddMember extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
+							{ message: 'Team', value: 'team' }
+						]
 					},
 					{
 						type: 'input',
 						name: 'user',
 						message: 'What is the unique ID of the user to add?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -51,23 +50,19 @@ class ChannelAddMember extends Command {
 			const channel = await client.channel(flags.type, flags.channel);
 
 			if (typeof channel === 'object') {
-				await channel.addMembers([flags.user]);
+				await channel.addMembers([ flags.user ]);
 
 				if (flags.json) {
 					this.log(JSON.stringify(channel));
 					this.exit();
 				}
 
-				this.log(
-					`User ${chalk.bold(flags.user)} has been added as a member.`
-				);
+				this.log(`User ${chalk.bold(flags.user)} has been added as a member.`);
 
 				this.exit();
 			} else if (!Array.isArray(channel) && !channel.length) {
 				this.log(
-					`Channel ${chalk.bold(
-						flags.channel
-					)} with type ${chalk.bold(flags.type)} could not be found.`
+					`Channel ${chalk.bold(flags.channel)} with type ${chalk.bold(flags.type)} could not be found.`
 				);
 
 				this.exit();
@@ -75,7 +70,7 @@ class ChannelAddMember extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -85,39 +80,38 @@ ChannelAddMember.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'A unique ID for the channel add the user to.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		required: false,
+		required: false
 	}),
 	name: flags.string({
 		char: 'n',
 		description: 'Name of the channel room.',
-		required: false,
+		required: false
 	}),
 	image: flags.string({
 		char: 'i',
 		description: 'URL to channel image.',
-		required: false,
+		required: false
 	}),
 	users: flags.string({
 		char: 'u',
 		description: 'Unique identifier for the user you are adding.',
-		required: false,
+		required: false
 	}),
 	data: flags.string({
 		char: 'r',
 		description: 'The role of the user you are adding.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 ChannelAddMember.description = 'Adds a member to a channel.';

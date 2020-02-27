@@ -1,7 +1,7 @@
-const { StreamChat } = require('stream-chat');
-const chalk = require('chalk');
+import { StreamChat } from 'stream-chat';
+import chalk from 'chalk';
 
-const { credentials } = require('../../utils/config');
+import { credentials } from '../../utils/config';
 
 async function chatAuth(ctx) {
 	try {
@@ -13,11 +13,9 @@ async function chatAuth(ctx) {
 		return chatClient;
 	} catch (error) {
 		ctx.error(
-			`Authentication required. Use the command ${chalk.green.bold(
-				'stream config:set'
-			)} to authenticate.`,
+			`Authentication required. Use the command ${chalk.green.bold('stream config:set')} to authenticate.`,
 			{
-				exit: 1,
+				exit: 1
 			}
 		);
 	}

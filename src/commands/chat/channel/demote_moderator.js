@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ChannelDemoteModerator extends Command {
 	async run() {
@@ -15,7 +15,7 @@ class ChannelDemoteModerator extends Command {
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -27,15 +27,15 @@ class ChannelDemoteModerator extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
+							{ message: 'Team', value: 'team' }
+						]
 					},
 					{
 						type: 'input',
 						name: 'user',
 						message: `What is the unique ID of the user to demote?`,
-						required: false,
-					},
+						required: false
+					}
 				]);
 
 				for (const key in res) {
@@ -49,20 +49,18 @@ class ChannelDemoteModerator extends Command {
 			const channel = await client.channel(flags.type, flags.channel);
 
 			const exists = await client.queryUsers({
-				id: { $in: [flags.user] },
+				id: { $in: [ flags.user ] }
 			});
 
 			if (!exists.users.length) {
 				this.log(
-					`The user ${flags.user} in channel ${chalk.bold(
-						flags.channel
-					)} (${flags.type}) does not exist.`
+					`The user ${flags.user} in channel ${chalk.bold(flags.channel)} (${flags.type}) does not exist.`
 				);
 
 				this.exit();
 			}
 
-			const demote = await channel.demoteModerators([flags.user]);
+			const demote = await channel.demoteModerators([ flags.user ]);
 
 			if (flags.json) {
 				this.log(JSON.stringify(demote));
@@ -74,7 +72,7 @@ class ChannelDemoteModerator extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -84,18 +82,18 @@ ChannelDemoteModerator.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'A unique ID for the channel you wish to create.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'Type of channel.',
-		required: false,
+		required: false
 	}),
 	user: flags.string({
 		char: 'u',
 		description: 'A unique ID for user to demote from a moderator.',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 ChannelDemoteModerator.description = 'Demotes a moderator from a channel.';

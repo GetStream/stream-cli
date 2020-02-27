@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const Table = require('cli-table');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import Table from 'cli-table';
 
-const { chatAuth } = require('../../../../utils/auth/chat-auth');
+import { chatAuth } from '../../../../utils/auth/chat-auth';
 
 class DeviceList extends Command {
 	async run() {
@@ -16,8 +16,8 @@ class DeviceList extends Command {
 						name: 'user_id',
 						hint: 'user-123',
 						message: 'What is the User ID?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in result) {
@@ -33,10 +33,10 @@ class DeviceList extends Command {
 
 			if (response.devices && response.devices.length !== 0) {
 				const table = new Table({
-					head: ['Device ID', 'Push provider'],
+					head: [ 'Device ID', 'Push provider' ]
 				});
 				for (const device of response.devices) {
-					table.push([device.id, device.push_provider]);
+					table.push([ device.id, device.push_provider ]);
 				}
 				this.log(table.toString());
 			} else {
@@ -46,7 +46,7 @@ class DeviceList extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -56,8 +56,8 @@ DeviceList.flags = {
 	user_id: flags.string({
 		char: 'u',
 		description: 'User ID',
-		required: false,
-	}),
+		required: false
+	})
 };
 
 DeviceList.description = 'Gets all devices registered for push.';

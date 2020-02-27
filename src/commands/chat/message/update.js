@@ -1,9 +1,9 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
-const { credentials } = require('../../../utils/config');
+import { chatAuth } from 'utils/auth/chat-auth';
+import { credentials } from 'utils/config';
 
 class MessageUpdate extends Command {
 	async run() {
@@ -18,14 +18,14 @@ class MessageUpdate extends Command {
 						type: 'input',
 						name: 'message',
 						message: `What is the unique identifier for the message?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'text',
 						message: 'What is the updated message?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -40,8 +40,8 @@ class MessageUpdate extends Command {
 				text: flags.text,
 				user: {
 					id: 'CLI',
-					name,
-				},
+					name
+				}
 			};
 
 			if (flags.attachments) {
@@ -52,7 +52,7 @@ class MessageUpdate extends Command {
 
 			await client.setUser({
 				id: 'CLI',
-				status: 'invisible',
+				status: 'invisible'
 			});
 
 			const update = await client.updateMessage(payload);
@@ -67,7 +67,7 @@ class MessageUpdate extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -77,25 +77,23 @@ MessageUpdate.flags = {
 	message: flags.string({
 		char: 'm',
 		description: 'The unique identifier for the message.',
-		required: false,
+		required: false
 	}),
 	text: flags.string({
 		char: 't',
 		description: 'The message you would like to send as text.',
-		required: false,
+		required: false
 	}),
 	attachments: flags.string({
 		char: 'a',
-		description:
-			'A JSON payload of attachments to send along with a message.',
-		required: false,
+		description: 'A JSON payload of attachments to send along with a message.',
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 MessageUpdate.description = 'Updates a message.';

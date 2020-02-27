@@ -1,8 +1,8 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
-const chalk = require('chalk');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
+import chalk from 'chalk';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class MessageRemove extends Command {
 	async run() {
@@ -15,8 +15,8 @@ class MessageRemove extends Command {
 						type: 'input',
 						name: 'message',
 						message: `What is the unique identifier for the message?`,
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -34,14 +34,12 @@ class MessageRemove extends Command {
 				this.exit();
 			}
 
-			this.log(
-				`The message ${chalk.bold(flags.message)} has been removed.`
-			);
+			this.log(`The message ${chalk.bold(flags.message)} has been removed.`);
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -50,16 +48,14 @@ class MessageRemove extends Command {
 MessageRemove.flags = {
 	message: flags.string({
 		char: 'message',
-		description:
-			'The unique identifier of the message you would like to remove.',
-		required: false,
+		description: 'The unique identifier of the message you would like to remove.',
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 MessageRemove.description = 'Removes a message.';

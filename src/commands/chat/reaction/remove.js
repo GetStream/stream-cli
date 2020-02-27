@@ -1,7 +1,7 @@
-const { Command, flags } = require('@oclif/command');
-const { prompt } = require('enquirer');
+import { Command, flags } from '@oclif/command';
+import { prompt } from 'enquirer';
 
-const { chatAuth } = require('../../../utils/auth/chat-auth');
+import { chatAuth } from 'utils/auth/chat-auth';
 
 class ReactionRemove extends Command {
 	async run() {
@@ -13,9 +13,8 @@ class ReactionRemove extends Command {
 					{
 						type: 'input',
 						name: 'channel',
-						message:
-							'What is the unique identifier for the channel?',
-						required: true,
+						message: 'What is the unique identifier for the channel?',
+						required: true
 					},
 					{
 						type: 'select',
@@ -27,23 +26,21 @@ class ReactionRemove extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
+							{ message: 'Team', value: 'team' }
+						]
 					},
 					{
 						type: 'input',
 						name: 'message',
-						message:
-							'What is the unique identifier for the message?',
-						required: true,
+						message: 'What is the unique identifier for the message?',
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'reaction',
-						message:
-							'What is the unique identifier for the reaction?',
-						required: true,
-					},
+						message: 'What is the unique identifier for the reaction?',
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -56,10 +53,7 @@ class ReactionRemove extends Command {
 			const client = await chatAuth(this);
 			const channel = client.channel(flags.type, flags.channel);
 
-			const reaction = await channel.deleteReaction(
-				flags.message,
-				flags.reaction
-			);
+			const reaction = await channel.deleteReaction(flags.message, flags.reaction);
 
 			if (flags.json) {
 				this.log(JSON.stringify(reaction));
@@ -71,7 +65,7 @@ class ReactionRemove extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -81,29 +75,28 @@ ReactionRemove.flags = {
 	channel: flags.string({
 		char: 'c',
 		description: 'The unique identifier for the channel.',
-		required: false,
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		required: false,
+		required: false
 	}),
 	message: flags.string({
 		char: 'c',
 		description: 'The unique identifier for the message.',
-		required: false,
+		required: false
 	}),
 	reaction: flags.string({
 		char: 'r',
 		description: 'The unique identifier for the reaction.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 ReactionRemove.description = 'Removes a reaction.';
