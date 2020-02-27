@@ -11,7 +11,7 @@ class ChannelCreate extends Command {
 		const { flags } = this.parse(ChannelCreate);
 
 		try {
-			if (!flags.channel || !flags.type || !flags.image) {
+			if (!flags.channel || !flags.type) {
 				const res = await prompt([
 					{
 						type: 'input',
