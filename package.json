@@ -103,7 +103,7 @@
 			"@oclif/plugin-warn-if-update-available"
 		],
 		"warn-if-update-available": {
-			"timeoutInDays": 7,
+			"timeoutInDays": 1,
 			"message": "NOTICE: <%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>!"
 		},
 		"hooks": {
