@@ -13,39 +13,34 @@ class MessageCreate extends Command {
 		try {
 			const { name } = await credentials(this);
 
-			if (
-				!flags.user ||
-				!flags.name ||
-				!flags.channel ||
-				!flags.type ||
-				!flags.message
-			) {
+			if (!flags.channel) {
 				const res = await prompt([
 					{
 						type: 'input',
 						name: 'user',
 						message: `What is the unique identifier for the user sending this message?`,
 						default: uuid(),
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'name',
 						message: `What is the name of the user sending this message?`,
 						default: name,
-						required: true,
+						required: true
 					},
 					{
 						type: 'input',
 						name: 'image',
 						message: `What is an absolute URL to the avatar of the user sending this message?`,
-						required: false,
+						hint: 'optional',
+						required: false
 					},
 					{
 						type: 'input',
 						name: 'channel',
 						message: `What is the unique identifier for the channel?`,
-						required: true,
+						required: true
 					},
 					{
 						type: 'select',
@@ -57,15 +52,15 @@ class MessageCreate extends Command {
 							{ message: 'Messaging', value: 'messaging' },
 							{ message: 'Gaming', value: 'gaming' },
 							{ message: 'Commerce', value: 'commerce' },
-							{ message: 'Team', value: 'team' },
-						],
+							{ message: 'Team', value: 'team' }
+						]
 					},
 					{
 						type: 'input',
 						name: 'message',
 						message: 'What is the message you would like to send?',
-						required: true,
-					},
+						required: true
+					}
 				]);
 
 				for (const key in res) {
@@ -83,8 +78,8 @@ class MessageCreate extends Command {
 				user: {
 					id: flags.user,
 					name: flags.name,
-					image: flags.image || null,
-				},
+					image: flags.image || null
+				}
 			});
 
 			if (flags.json) {
@@ -97,7 +92,7 @@ class MessageCreate extends Command {
 		} catch (error) {
 			await this.config.runHook('telemetry', {
 				ctx: this,
-				error,
+				error
 			});
 		}
 	}
@@ -107,41 +102,38 @@ MessageCreate.flags = {
 	user: flags.string({
 		char: 'u',
 		description: 'The ID of the user sending the message.',
-		required: false,
+		required: false
 	}),
 	name: flags.string({
 		char: 'n',
 		description: 'The name of the user sending the message.',
-		required: false,
+		required: false
 	}),
 	image: flags.string({
 		char: 'i',
-		description:
-			'Absolute URL for an avatar of the user sending the message.',
-		required: false,
+		description: 'Absolute URL for an avatar of the user sending the message.',
+		required: false
 	}),
 	type: flags.string({
 		char: 't',
 		description: 'The type of channel.',
-		required: false,
+		required: false
 	}),
 	channel: flags.string({
 		char: 'c',
-		description:
-			'The ID of the channel that you would like to send a message to.',
-		required: false,
+		description: 'The ID of the channel that you would like to send a message to.',
+		required: false
 	}),
 	message: flags.string({
 		char: 'm',
 		description: 'The message you would like to send as plaintext.',
-		required: false,
+		required: false
 	}),
 	json: flags.boolean({
 		char: 'j',
-		description:
-			'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false,
-	}),
+		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false
+	})
 };
 
 MessageCreate.description = 'Creates a new message.';
