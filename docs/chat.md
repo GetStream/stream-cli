@@ -13,7 +13,9 @@ Adds a member to a channel.
 * [`stream chat:channel:query`](#stream-chatchannelquery)
 * [`stream chat:channel:remove`](#stream-chatchannelremove)
 * [`stream chat:channel:show`](#stream-chatchannelshow)
+* [`stream chat:channel:type`](#stream-chatchanneltype)
 * [`stream chat:channel:update`](#stream-chatchannelupdate)
+* [`stream chat:channel:update_type`](#stream-chatchannelupdate_type)
 * [`stream chat:log`](#stream-chatlog)
 * [`stream chat:message:create`](#stream-chatmessagecreate)
 * [`stream chat:message:flag`](#stream-chatmessageflag)
@@ -72,7 +74,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: c553d1a8-7ed4-453d-b30a-b0bafa37383e] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: f9ba020d-cfde-499b-af4f-00c95c0aca26] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -190,6 +192,24 @@ OPTIONS
   -t, --type=type        Type of channel.
 ```
 
+## `stream chat:channel:type`
+
+Updates a channels type configuration.
+
+```
+USAGE
+  $ stream chat:channel:type
+
+OPTIONS
+  -c, --channel=channel          The ID of the channel you wish to update.
+  -d, --description=description  Description for the channel.
+  -i, --image=image              URL to the channel image.
+  -j, --json                     Output results in JSON. When not specified, returns output in a human friendly format.
+  -n, --name=name                Name of the channel room.
+  -r, --reason=reason            Reason for changing channel.
+  -t, --type=type                Type of channel.
+```
+
 ## `stream chat:channel:update`
 
 Updates a channel.
@@ -206,6 +226,35 @@ OPTIONS
   -n, --name=name                Name of the channel room.
   -r, --reason=reason            Reason for changing channel.
   -t, --type=type                Type of channel.
+```
+
+## `stream chat:channel:update_type`
+
+Updates a channels type configuration.
+
+```
+USAGE
+  $ stream chat:channel:update_type
+
+OPTIONS
+  -a, --automod=automod                      Enable or disable automod (enabled/disabled)
+  -a, --message_retention=message_retention  How long to retain messages (defaults to infinite)
+  -a, --reactions                            Enable or disable reactions (true/false)
+  -c, --connect_events                       Enable or disable connect events (true/false)
+  -e, --read_events=read_events              Enable or disable read events (true/false)
+
+  -j, --json                                 Output results in JSON. When not specified, returns output in a human
+                                             friendly format.
+
+  -m, --mutes                                Enable or disable mutes (true/false)
+
+  -p, --replies                              Enable or disable replies (true/false)
+
+  -s, --search                               Enable or disable search (true/false)
+
+  -t, --type=type                            Type of channel.
+
+  -y, --typing_events                        Enable or disable typing events (true/false)
 ```
 
 ## `stream chat:log`
