@@ -1,7 +1,7 @@
 {
 	"name": "getstream-cli",
 	"description": "Configure & manage Stream applications from the command line. 🚀",
-	"version": "0.0.60",
+	"version": "0.0.61",
 	"bin": {
 		"stream": "./build/bin/run"
 	},
