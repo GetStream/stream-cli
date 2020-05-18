@@ -120,8 +120,8 @@ ConfigSet.flags = {
 		description: 'API base URL for configuration.',
 		required: false
 	}),
-	mode: flags.string({
-		char: 'm',
+	environment: flags.string({
+		char: 'v',
 		description: 'Environment to run in (production or development for token and permission checking).',
 		required: false
 	}),
