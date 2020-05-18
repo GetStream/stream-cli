@@ -76,7 +76,7 @@ class ConfigSet extends Command {
 				apiSecret: flags.secret,
 				apiBaseUrl: flags.url,
 				environment: flags.environment,
-				telemetry: flags.telemetry
+				telemetry: flags.telemetry !== undefined ? flags.telemetry : true
 			});
 
 			if (flags.json) {
