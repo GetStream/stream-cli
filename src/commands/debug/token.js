@@ -32,7 +32,7 @@ class DebugToken extends Command {
 
 			if (flags.json) {
 				this.log(JSON.stringify(decoded));
-				this.exit(0);
+				return;
 			}
 
 			const table = new Table();
@@ -53,7 +53,6 @@ class DebugToken extends Command {
 			);
 
 			this.log(table.toString());
-			this.exit(0);
 		} catch (error) {
 			this.error('Malformed JWT token or Stream API secret.', {
 				exit: 1
