@@ -4,10 +4,10 @@
 
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
+> **Note**: The latest version of Node (v14.x) is required for this CLI. If you are looking for a way to manage multiple Node.js environments, please look at [nvm](https://github.com/nvm-sh/nvm).
+
 [![Coverage Status](https://coveralls.io/repos/github/GetStream/stream-cli/badge.svg?branch=master)](https://coveralls.io/github/GetStream/stream-cli?branch=master)
 [![Version](https://img.shields.io/npm/v/getstream-cli.svg)](https://npmjs.org/package/getstream-cli)
-[![Dependency Status](https://david-dm.org/getstream/stream-cli/status.svg)](https://david-dm.org/getstream/stream-cli)
-[![devDependency Status](https://david-dm.org/getstream/stream-cli/dev-status.svg)](https://david-dm.org/getstream/stream-cli?type=dev)
 [![License](https://img.shields.io/npm/l/getstream-cli.svg)](https://github.com/getstream/stream-cli/blob/master/package.json)
 
 # 🗒 Issues
