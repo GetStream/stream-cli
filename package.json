@@ -6,7 +6,7 @@
 		"stream": "./build/bin/run"
 	},
 	"engines": {
-		"node": ">=10.0.0"
+		"node": ">=14.x"
 	},
 	"main": "src/index.js",
 	"author": {
