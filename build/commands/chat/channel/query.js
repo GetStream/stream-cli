@@ -15,15 +15,15 @@ class ChannelQuery extends _command.Command {
       const filter = flags.filter ? JSON.parse(flags.filter) : {};
       const sort = flags.sort ? JSON.parse(flags.sort) : {};
       const channel = await client.queryChannels(filter, sort, {
-        state: false
+        subscribe: false
       });
 
       if (flags.json) {
-        this.log(JSON.stringify({...channel[0].data,members:channel[0].state.members}));
+        this.log(JSON.stringify(channel[0].data));
         this.exit();
       }
 
-      this.log({...channel[0].data,members:channel[0].state.members});
+      this.log(channel[0].data);
       this.exit();
     } catch (error) {
       await this.config.runHook('telemetry', {
@@ -32,6 +32,7 @@ class ChannelQuery extends _command.Command {
       });
     }
   }
+
 }
 
 ChannelQuery.flags = {

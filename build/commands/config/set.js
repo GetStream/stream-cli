@@ -79,7 +79,7 @@ class ConfigSet extends _command.Command {
         apiSecret: flags.secret,
         apiBaseUrl: flags.url,
         environment: flags.environment,
-        telemetry: flags.telemetry
+        telemetry: flags.telemetry !== undefined ? flags.telemetry : true
       });
 
       if (flags.json) {
@@ -124,8 +124,8 @@ ConfigSet.flags = {
     description: 'API base URL for configuration.',
     required: false
   }),
-  mode: _command.flags.string({
-    char: 'm',
+  environment: _command.flags.string({
+    char: 'v',
     description: 'Environment to run in (production or development for token and permission checking).',
     required: false
   }),
