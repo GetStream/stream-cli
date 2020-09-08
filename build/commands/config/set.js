@@ -62,6 +62,12 @@ class ConfigSet extends _command.Command {
           message: `Would you like to enable error tracking for debugging purposes?`,
           default: true,
           required: false
+        }, {
+          type: 'input',
+          name: 'timeout',
+          message: `Do you want to set a different timeout for requests?`,
+          default: true,
+          required: false
         }]);
 
         for (const key in res) {
@@ -79,11 +85,12 @@ class ConfigSet extends _command.Command {
         apiSecret: flags.secret,
         apiBaseUrl: flags.url,
         environment: flags.environment,
-        telemetry: flags.telemetry !== undefined ? flags.telemetry : true
+        telemetry: flags.telemetry !== undefined ? flags.telemetry : true,
+        timeout: flags.timeout ? flags.timeout : 3000
       });
 
       if (flags.json) {
-        this.log(JSON.stringify((await (0, _config.credentials)(this))));
+        this.log(JSON.stringify(await (0, _config.credentials)(this)));
         this.exit();
       }
 
@@ -132,6 +139,11 @@ ConfigSet.flags = {
   telemetry: _command.flags.boolean({
     char: 't',
     description: 'Enable error reporting for debugging purposes.',
+    required: false
+  }),
+  timeout: _command.flags.integer({
+    char: 'o',
+    description: 'Timeout for requests in ms.',
     required: false
   }),
   json: _command.flags.boolean({

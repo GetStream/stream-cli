@@ -24,11 +24,12 @@ class ConfigGet extends _command.Command {
         apiSecret,
         apiBaseUrl,
         environment,
-        telemetry
+        telemetry,
+        timeout
       } = await (0, _config.credentials)(this);
 
       if (flags.json) {
-        this.log(JSON.stringify((await (0, _config.credentials)(this))));
+        this.log(JSON.stringify(await (0, _config.credentials)(this)));
         this.exit(0);
       }
 
@@ -47,6 +48,8 @@ class ConfigGet extends _command.Command {
         [`${_chalk.default.green.bold('Environment')}`]: environment
       }, {
         [`${_chalk.default.green.bold('Telemetry')}`]: telemetry
+      }, {
+        [`${_chalk.default.green.bold('Timeout(ms)')}`]: timeout
       });
       this.log(table.toString());
       this.exit(0);

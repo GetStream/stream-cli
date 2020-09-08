@@ -9,7 +9,16 @@ class ConfigGet extends Command {
 		const { flags } = this.parse(ConfigGet);
 
 		try {
-			const { name, email, apiKey, apiSecret, apiBaseUrl, environment, telemetry } = await credentials(this);
+			const {
+				name,
+				email,
+				apiKey,
+				apiSecret,
+				apiBaseUrl,
+				environment,
+				telemetry,
+				timeout,
+			} = await credentials(this);
 
 			if (flags.json) {
 				this.log(JSON.stringify(await credentials(this)));
@@ -20,25 +29,28 @@ class ConfigGet extends Command {
 
 			table.push(
 				{
-					[`${chalk.green.bold('Name')}`]: name
+					[`${chalk.green.bold('Name')}`]: name,
 				},
 				{
-					[`${chalk.green.bold('Email')}`]: email
+					[`${chalk.green.bold('Email')}`]: email,
 				},
 				{
-					[`${chalk.green.bold('API Key')}`]: apiKey
+					[`${chalk.green.bold('API Key')}`]: apiKey,
 				},
 				{
-					[`${chalk.green.bold('API Secret')}`]: apiSecret
+					[`${chalk.green.bold('API Secret')}`]: apiSecret,
 				},
 				{
-					[`${chalk.green.bold('API Base URL')}`]: apiBaseUrl
+					[`${chalk.green.bold('API Base URL')}`]: apiBaseUrl,
 				},
 				{
-					[`${chalk.green.bold('Environment')}`]: environment
+					[`${chalk.green.bold('Environment')}`]: environment,
 				},
 				{
-					[`${chalk.green.bold('Telemetry')}`]: telemetry
+					[`${chalk.green.bold('Telemetry')}`]: telemetry,
+				},
+				{
+					[`${chalk.green.bold('Timeout(ms)')}`]: timeout,
 				}
 			);
 
@@ -46,7 +58,7 @@ class ConfigGet extends Command {
 			this.exit(0);
 		} catch (error) {
 			this.error(error || 'A Stream CLI error has occurred.', {
-				exit: 1
+				exit: 1,
 			});
 		}
 	}
@@ -55,9 +67,10 @@ class ConfigGet extends Command {
 ConfigGet.flags = {
 	json: flags.boolean({
 		char: 'j',
-		description: 'Output results in JSON. When not specified, returns output in a human friendly format.',
-		required: false
-	})
+		description:
+			'Output results in JSON. When not specified, returns output in a human friendly format.',
+		required: false,
+	}),
 };
 
 ConfigGet.description = 'Outputs your user configuration.';

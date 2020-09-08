@@ -40,7 +40,7 @@ class DebugToken extends _command.Command {
 
       if (flags.json) {
         this.log(JSON.stringify(decoded));
-        this.exit(0);
+        return;
       }
 
       const table = new _cliTable.default();
@@ -54,7 +54,6 @@ class DebugToken extends _command.Command {
         [`${_chalk.default.green.bold('User ID')}`]: decoded.payload.user_id
       });
       this.log(table.toString());
-      this.exit(0);
     } catch (error) {
       this.error('Malformed JWT token or Stream API secret.', {
         exit: 1
