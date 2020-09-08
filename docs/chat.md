@@ -74,7 +74,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: d945fd84-187a-4f36-99ee-02ee748851d3] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 0da0bfd2-8ebd-4645-8710-9cd50b5613df] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.

@@ -44,6 +44,7 @@ OPTIONS
   -j, --json                     Output results in JSON. When not specified, returns output in a human friendly format.
   -k, --key=key                  API key for configuration.
   -n, --name=name                Full name for configuration.
+  -o, --timeout=timeout          Timeout for requests in ms.
   -s, --secret=secret            API secret for configuration.
   -t, --telemetry                Enable error reporting for debugging purposes.
   -u, --url=url                  API base URL for configuration.
