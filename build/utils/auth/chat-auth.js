@@ -13,9 +13,12 @@ async function chatAuth(ctx) {
     const {
       apiKey,
       apiSecret,
-      apiBaseUrl
+      apiBaseUrl,
+      timeout
     } = await (0, _config.credentials)(ctx);
-    const chatClient = new _streamChat.StreamChat(apiKey, apiSecret);
+    const chatClient = new _streamChat.StreamChat(apiKey, apiSecret, {
+      timeout
+    });
     chatClient.setBaseURL(apiBaseUrl);
     return chatClient;
   } catch (error) {

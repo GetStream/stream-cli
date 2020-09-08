@@ -7,7 +7,7 @@ async function credentials(ctx) {
 	const config = path.join(ctx.config.configDir, 'config.json');
 
 	try {
-		if (!await fs.pathExists(config)) {
+		if (!(await fs.pathExists(config))) {
 			await fs.outputJson(config, {
 				name: '',
 				email: '',
@@ -15,13 +15,32 @@ async function credentials(ctx) {
 				apiSecret: '',
 				apiBaseUrl: 'https://chat-us-east-1.stream-io-api.com',
 				environment: 'production',
-				telemetry: true
+				telemetry: true,
+				timeout: 3000,
 			});
 		}
 
-		const { name, email, apiKey, apiSecret, apiBaseUrl, environment, telemetry } = await fs.readJson(config);
+		const {
+			name,
+			email,
+			apiKey,
+			apiSecret,
+			apiBaseUrl,
+			environment,
+			telemetry,
+			timeout,
+		} = await fs.readJson(config);
 
-		if (!name || !email || !apiKey || !apiSecret || !apiBaseUrl || !environment || !telemetry) {
+		if (
+			!name ||
+			!email ||
+			!apiKey ||
+			!apiSecret ||
+			!apiBaseUrl ||
+			!environment ||
+			!telemetry ||
+			!timeout
+		) {
 			console.warn(
 				`Credentials not found. Run the command ${chalk.bold(
 					'stream config:set'
@@ -39,11 +58,12 @@ async function credentials(ctx) {
 			apiSecret,
 			apiBaseUrl,
 			environment,
-			telemetry
+			telemetry,
+			timeout,
 		};
 	} catch (error) {
 		ctx.error(error || 'A Stream CLI error has occurred.', {
-			exit: 1
+			exit: 1,
 		});
 	}
 }

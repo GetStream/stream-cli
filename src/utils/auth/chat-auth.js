@@ -5,17 +5,21 @@ import { credentials } from '../../utils/config';
 
 async function chatAuth(ctx) {
 	try {
-		const { apiKey, apiSecret, apiBaseUrl } = await credentials(ctx);
+		const { apiKey, apiSecret, apiBaseUrl, timeout } = await credentials(
+			ctx
+		);
 
-		const chatClient = new StreamChat(apiKey, apiSecret);
+		const chatClient = new StreamChat(apiKey, apiSecret, { timeout });
 		chatClient.setBaseURL(apiBaseUrl);
 
 		return chatClient;
 	} catch (error) {
 		ctx.error(
-			`Authentication required. Use the command ${chalk.green.bold('stream config:set')} to authenticate.`,
+			`Authentication required. Use the command ${chalk.green.bold(
+				'stream config:set'
+			)} to authenticate.`,
 			{
-				exit: 1
+				exit: 1,
 			}
 		);
 	}
