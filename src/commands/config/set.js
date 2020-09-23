@@ -70,7 +70,7 @@ class ConfigSet extends Command {
 						type: 'input',
 						name: 'timeout',
 						message: `Do you want to set a different timeout for requests?`,
-						default: true,
+						default: 3000,
 						required: false,
 					},
 				]);
