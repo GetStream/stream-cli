@@ -106,7 +106,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.0.63 linux-x64 node-v14.10.0
+getstream-cli/0.0.63 linux-x64 node-v15.0.1
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
@@ -131,3 +131,11 @@ USAGE
 # 📣 Feedback
 
 If you have any suggestions or just want to let us know what you think of the Stream CLI, please send us a message at support@getstream.io or create a [GitHub Issue](https://github.com/getstream/stream-cli/issues).
+
+# 🔧 Development
+
+This project contains generated code and documentation. In order to apply changes you should run the following command:
+
+```bash
+$ yarn run generate
+```
