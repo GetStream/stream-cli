@@ -35,7 +35,8 @@
 		"readme": "oclif-dev readme --multi",
 		"test": "nyc report --reporter=text-lcov | coveralls mocha --exit --forbid-only \"test/**/*.test.js\"",
 		"lint": "yarn prettier --write --check --config ./.prettierrc \"**/*.js\" && eslint --fix ./src",
-		"build": "babel src --out-dir build && cp -R bin build/bin"
+		"build": "babel src --out-dir build && cp -R bin build/bin",
+		"generate": "yarn run build && yarn run manifest && yarn run readme"
 	},
 	"dependencies": {
 		"@oclif/command": "^1",
