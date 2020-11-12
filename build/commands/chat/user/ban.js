@@ -17,12 +17,12 @@ class UserBan extends _command.Command {
     } = this.parse(UserBan);
 
     try {
-      let type;
+      let type = flags.type;
 
-      if (!flags.type) {
-        type = await (0, _enquirer.prompt)([{
+      if (!type) {
+        let res = await (0, _enquirer.prompt)([{
           type: 'select',
-          name: 'ban',
+          name: 'type',
           message: 'Would you like to apply a global or channel ban?',
           required: true,
           choices: [{
@@ -33,11 +33,12 @@ class UserBan extends _command.Command {
             value: 'channel'
           }]
         }]);
+        type = res.type;
       }
 
-      let cid;
+      let cid = flags.cid;
 
-      if (type.ban === 'channel') {
+      if (type === 'channel' && !cid) {
         cid = await (0, _enquirer.prompt)([{
           type: 'input',
           name: 'id',
@@ -113,14 +114,16 @@ class UserBan extends _command.Command {
         payload.timeout = parseInt(flags.duration * 60, 10);
       }
 
+      payload.ip_ban = flags.ip;
       let ban;
 
-      if (type.ban === 'channel') {
+      if (type === 'channel') {
         ban = await client.channel(cid.type, cid.id).banUser(flags.user, payload);
-      }
-
-      if (type.ban === 'global') {
+      } else if (type === 'global') {
+        this.log(`Global ban`);
         ban = await client.banUser(flags.user, payload);
+      } else {
+        this.warn("invalid ban type");
       }
 
       if (flags.json) {
@@ -142,7 +145,7 @@ class UserBan extends _command.Command {
 
 UserBan.flags = {
   type: _command.flags.string({
-    char: 'u',
+    char: 't',
     description: 'Type of ban to perform (e.g. global or channel).',
     required: false
   }),
@@ -160,6 +163,11 @@ UserBan.flags = {
     char: 'd',
     description: 'Duration of timeout in minutes.',
     default: '60',
+    required: false
+  }),
+  ip: _command.flags.boolean({
+    description: 'Apply IP ban as well',
+    default: false,
     required: false
   }),
   json: _command.flags.boolean({
