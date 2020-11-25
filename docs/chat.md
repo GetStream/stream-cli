@@ -1,7 +1,7 @@
 `stream chat`
 =============
 
-Adds a member to a channel.
+Manage chat
 
 * [`stream chat:channel:add_member`](#stream-chatchanneladd_member)
 * [`stream chat:channel:create`](#stream-chatchannelcreate)
@@ -46,6 +46,9 @@ Adds a member to a channel.
 * [`stream chat:user:unflag`](#stream-chatuserunflag)
 * [`stream chat:user:unmute`](#stream-chatuserunmute)
 * [`stream chat:user:update`](#stream-chatuserupdate)
+* [`stream chat:webhook:before-message-send`](#stream-chatwebhookbefore-message-send)
+* [`stream chat:webhook:custom-commands`](#stream-chatwebhookcustom-commands)
+* [`stream chat:webhook:push`](#stream-chatwebhookpush)
 
 ## `stream chat:channel:add_member`
 
@@ -74,7 +77,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: a6782c3b-cacf-4aed-9ce5-6140c53f1eec] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: b8a6dfd7-d880-494b-a2b9-9f71c6c0125c] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -489,7 +492,7 @@ OPTIONS
 
 ## `stream chat:push:webhook`
 
-Tests webhook notifications.
+Sets push webhook URL
 
 ```
 USAGE
@@ -711,4 +714,43 @@ OPTIONS
   -i, --id=id        The unique identifier for the user.
   -m, --image=image  URL to the image of the user.
   -n, --name=name    Name of the user.
+```
+
+## `stream chat:webhook:before-message-send`
+
+Sets before message send webhook URL
+
+```
+USAGE
+  $ stream chat:webhook:before-message-send
+
+OPTIONS
+  -j, --json     Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --url=url  A fully qualified URL for webhook support.
+```
+
+## `stream chat:webhook:custom-commands`
+
+Sets custom commands webhook URL
+
+```
+USAGE
+  $ stream chat:webhook:custom-commands
+
+OPTIONS
+  -j, --json     Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --url=url  A fully qualified URL for webhook support.
+```
+
+## `stream chat:webhook:push`
+
+Sets push webhook URL
+
+```
+USAGE
+  $ stream chat:webhook:push
+
+OPTIONS
+  -j, --json     Output results in JSON. When not specified, returns output in a human friendly format.
+  -u, --url=url  A fully qualified URL for webhook support.
 ```
