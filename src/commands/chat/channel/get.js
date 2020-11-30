@@ -45,7 +45,7 @@ class ChannelGet extends Command {
 				{ id: flags.channel, type: flags.type },
 				{ last_message_at: -1 },
 				{
-					subscribe: false
+					state: true
 				}
 			);
 
@@ -56,7 +56,7 @@ class ChannelGet extends Command {
 				this.exit();
 			}
 
-			this.log(JSON.stringify(channel[0].data));
+			this.log(JSON.stringify({...channel[0].data, members: channel[0].state.members}));
 			this.exit();
 		} catch (error) {
 			await this.config.runHook('telemetry', {
