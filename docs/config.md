@@ -1,7 +1,7 @@
 `stream config`
 ===============
 
-Destroys your user configuration.
+Configure API access
 
 * [`stream config:destroy`](#stream-configdestroy)
 * [`stream config:get`](#stream-configget)
