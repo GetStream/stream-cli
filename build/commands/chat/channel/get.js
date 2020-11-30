@@ -60,7 +60,7 @@ class ChannelGet extends _command.Command {
       }, {
         last_message_at: -1
       }, {
-        subscribe: false
+        state: true
       });
 
       if (!channel.length) {
@@ -68,7 +68,9 @@ class ChannelGet extends _command.Command {
         this.exit();
       }
 
-      this.log(JSON.stringify(channel[0].data));
+      this.log(JSON.stringify({ ...channel[0].data,
+        members: channel[0].state.members
+      }));
       this.exit();
     } catch (error) {
       await this.config.runHook('telemetry', {
