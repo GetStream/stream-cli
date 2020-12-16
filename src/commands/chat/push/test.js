@@ -46,6 +46,14 @@ class PushTest extends Command {
 						hint: 'Omit for the Firebase data template configured in your app',
 						message: `What JSON data template would you like to use for Firebase?`,
 						required: false
+					},
+					{
+						type: 'input',
+						name: 'skip_devices',
+						hint: 'Set if you want to skip sending to devices',
+						message: `Do you want to skip sending to devices?`,
+						default: false,
+						required: false
 					}
 				]);
 
@@ -62,7 +70,8 @@ class PushTest extends Command {
 				messageID: flags.message_id || '',
 				apnTemplate: flags.apn_notification_template || '',
 				firebaseTemplate: flags.firebase_notification_template || '',
-				firebaseDataTemplate: flags.firebase_data_template || ''
+				firebaseDataTemplate: flags.firebase_data_template || '',
+				skipDevices: flags.skip_devices || false
 			};
 			const userID = flags.user_id || '';
 
@@ -91,6 +100,10 @@ class PushTest extends Command {
 			if (response.rendered_firebase_template) {
 				this.log(`Here is the rendered Firebase notification that will be sent to your devices:`);
 				this.log(JSON.stringify(JSON.parse(response.rendered_firebase_template), null, 4));
+			}
+			if (response.rendered_message) {
+				this.log(`Here is the rendered notification payload that will be sent to your devices:`);
+				this.log(JSON.stringify(JSON.parse(response.rendered_message), null, 4));
 			}
 
 			if (response.device_errors) {
@@ -146,6 +159,11 @@ PushTest.flags = {
 	firebase_data_template: flags.string({
 		char: 'd',
 		description: 'Firebase data template',
+		required: false
+	}),
+	skip_devices: flags.string({
+		char: 's',
+		description: 'Skip devices',
 		required: false
 	}),
 	json: flags.boolean({
