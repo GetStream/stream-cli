@@ -17,7 +17,7 @@ class ChannelPromoteModerator extends _command.Command {
     } = this.parse(ChannelPromoteModerator);
 
     try {
-      if (!flags.channel || !flags.type || !flags.image) {
+      if (!flags.channel || !flags.type || !flags.user) {
         const res = await (0, _enquirer.prompt)([{
           type: 'input',
           name: 'channel',
