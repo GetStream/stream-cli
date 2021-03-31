@@ -106,7 +106,7 @@ ChannelAddMember.flags = {
     description: 'URL to channel image.',
     required: false
   }),
-  users: _command.flags.string({
+  user: _command.flags.string({
     char: 'u',
     description: 'Unique identifier for the user you are adding.',
     required: false
