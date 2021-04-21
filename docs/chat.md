@@ -77,7 +77,7 @@ USAGE
   $ stream chat:channel:create
 
 OPTIONS
-  -c, --channel=channel  [default: e3ff4f2e-dfb7-4c5f-b54d-2b11597bda17] A unique ID for the channel you wish to create.
+  -c, --channel=channel  [default: 59b33c3d-d61f-4c8d-a1ef-f4fae082765d] A unique ID for the channel you wish to create.
   -d, --data=data        Additional data as JSON.
   -i, --image=image      URL to channel image.
   -j, --json             Output results in JSON. When not specified, returns output in a human friendly format.
@@ -124,6 +124,7 @@ USAGE
 OPTIONS
   -c, --channel=channel  The channel ID you wish to remove.
   -t, --type=type        Type of channel.
+  -u, --user=user        User ID
 ```
 
 ## `stream chat:channel:list`
@@ -193,6 +194,7 @@ USAGE
 OPTIONS
   -c, --channel=channel  The channel ID you wish to remove.
   -t, --type=type        Type of channel.
+  -u, --user=user        User ID
 ```
 
 ## `stream chat:channel:type`

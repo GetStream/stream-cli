@@ -17,8 +17,14 @@ class ChannelHide extends _command.Command {
     } = this.parse(ChannelHide);
 
     try {
-      if (!flags.channel || !flags.type) {
+      if (!flags.channel || !flags.type || !flags.user) {
         const res = await (0, _enquirer.prompt)([{
+          type: 'input',
+          name: 'user',
+          hint: 'user-123',
+          message: 'What is the ID of the user you wish to hide the channel from?',
+          required: true
+        }, {
           type: 'input',
           name: 'channel',
           message: `What is the unique identifier for the channel?`,
@@ -55,7 +61,7 @@ class ChannelHide extends _command.Command {
 
       const client = await (0, _chatAuth.chatAuth)(this);
       const channel = client.channel(flags.type, flags.channel);
-      await channel.hide();
+      await channel.hide(flags.user);
       this.log(`The channel ${_chalk.default.bold(flags.channel)} has been hidden.`);
       this.exit();
     } catch (error) {
@@ -69,6 +75,11 @@ class ChannelHide extends _command.Command {
 }
 
 ChannelHide.flags = {
+  user: _command.flags.string({
+    char: 'u',
+    description: 'User ID',
+    required: false
+  }),
   channel: _command.flags.string({
     char: 'c',
     description: 'The channel ID you wish to remove.',
