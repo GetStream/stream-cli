@@ -138,7 +138,7 @@ class Log extends _command.Command {
         channel.on(event => {
           const timestamp = _chalk.default.bold.green((0, _moment.default)(event.created_at).format(format));
 
-          const payload = `${timestamp}: ${_chalk.default.bold(event.channel.updated_by.name || event.channel.user.id)} performed event ${_chalk.default.bold(event.type)} in channel ${_chalk.default.bold(flags.channel)}.`;
+          const payload = `${timestamp}: ${_chalk.default.bold(event.user?.name || event.user?.id)} performed event ${_chalk.default.bold(event.type)} in channel ${_chalk.default.bold(flags.channel)}.`;
           this.log(payload);
         });
       } else {

@@ -106,7 +106,7 @@ $ npm install -g getstream-cli
 $ stream COMMAND
 running command...
 $ stream (-v|--version|version)
-getstream-cli/0.2.2 linux-x64 node-v14.10.0
+getstream-cli/0.2.3 linux-x64 node-v14.10.0
 $ stream --help [COMMAND]
 USAGE
   $ stream COMMAND
