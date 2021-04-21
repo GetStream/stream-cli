@@ -9,8 +9,16 @@ class ChannelShow extends Command {
 		const { flags } = this.parse(ChannelShow);
 
 		try {
-			if (!flags.channel || !flags.type) {
+			if (!flags.channel || !flags.type || !flags.user) {
 				const res = await prompt([
+					{
+						type: 'input',
+						name: 'user',
+						hint: 'user-123',
+						message:
+							'What is the ID of the user you wish to show the channel to?',
+						required: true,
+					},
 					{
 						type: 'input',
 						name: 'channel',
@@ -42,7 +50,7 @@ class ChannelShow extends Command {
 			const client = await chatAuth(this);
 
 			const channel = client.channel(flags.type, flags.channel);
-			await channel.show();
+			await channel.show(flags.user);
 
 			this.log(`The channel ${chalk.bold(flags.channel)} has been shown.`);
 			this.exit();
@@ -56,6 +64,11 @@ class ChannelShow extends Command {
 }
 
 ChannelShow.flags = {
+	user: flags.string({
+		char: 'u',
+		description: 'User ID',
+		required: false,
+	}),
 	channel: flags.string({
 		char: 'c',
 		description: 'The channel ID you wish to remove.',
