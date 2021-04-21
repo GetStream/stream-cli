@@ -146,7 +146,7 @@ class Log extends Command {
 					const timestamp = chalk.bold.green(moment(event.created_at).format(format));
 
 					const payload = `${timestamp}: ${chalk.bold(
-						event.channel.updated_by.name || event.channel.user.id
+						event.user?.name || event.user?.id
 					)} performed event ${chalk.bold(event.type)} in channel ${chalk.bold(flags.channel)}.`;
 
 					this.log(payload);
