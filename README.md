@@ -34,6 +34,10 @@ $ yarn global add getstream-cli
 $ npm install -g getstream-cli
 ```
 
+## 🚨 Warning
+
+Cli will be installed as `stream` and if you have other binaries with the same name such as `imagemagick`. Beware to update your `PATH` to search for our cli first or rename/symbolic link it.
+
 # 🚀 Getting Started
 
 In order to initialize the CLI, it's as simple as:
@@ -101,6 +105,7 @@ stream chat:channel:create --channel=$(openssl rand -hex 12) --type="messaging" 
 # 🥳‍ Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g getstream-cli
 $ stream COMMAND
@@ -112,19 +117,21 @@ USAGE
   $ stream COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # 💻 Commands
 
 <!-- commands -->
+
 # Command Topics
 
-* [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
-* [`stream chat`](docs/chat.md) - Manage chat
-* [`stream commands`](docs/commands.md) - list all the commands
-* [`stream config`](docs/config.md) - Configure API access
-* [`stream debug`](docs/debug.md) - Debugging tools
-* [`stream help`](docs/help.md) - display help for stream
+-   [`stream autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+-   [`stream chat`](docs/chat.md) - Manage chat
+-   [`stream commands`](docs/commands.md) - list all the commands
+-   [`stream config`](docs/config.md) - Configure API access
+-   [`stream debug`](docs/debug.md) - Debugging tools
+-   [`stream help`](docs/help.md) - display help for stream
 
 <!-- commandsstop -->
 
