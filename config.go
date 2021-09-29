@@ -121,8 +121,7 @@ func questions() []*survey.Question {
 		},
 		{
 			Name:     "URL",
-			Prompt:   &survey.Password{Message: "Which base URL do you want to use? Default value is our edge URL."},
-			Validate: survey.Required,
+			Prompt:   &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
 		},
 	}
 }
