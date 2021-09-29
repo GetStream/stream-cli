@@ -84,7 +84,8 @@ func newDefaultConfig() appConfig {
 }
 
 // addNewConfig adds a new app configuration.
-func addNewConfig(file io.ReadWriter, newConfig *appConfig) error {
+func addNewConfig(file *os.File, newConfig *appConfig) error {
+	file.Seek(0, io.SeekStart)
 	appsConfig := make(map[string]*appConfig)
 
 	err := yaml.NewDecoder(file).Decode(appsConfig)
@@ -96,8 +97,10 @@ func addNewConfig(file io.ReadWriter, newConfig *appConfig) error {
 		return fmt.Errorf("configuration for %q already exists", newConfig.Name)
 	}
 
-	appsConfig[newConfig.Name] = newConfig
-	err = yaml.NewEncoder(file).Encode(appsConfig)
+	newCfg := map[string]*appConfig{
+		newConfig.Name: newConfig,
+	}
+	err = yaml.NewEncoder(file).Encode(newCfg)
 	return err
 }
 
@@ -120,8 +123,8 @@ func questions() []*survey.Question {
 			Validate: survey.Required,
 		},
 		{
-			Name:     "URL",
-			Prompt:   &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
+			Name:   "URL",
+			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
 		},
 	}
 }

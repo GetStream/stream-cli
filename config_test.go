@@ -1,13 +1,18 @@
 package cli
 
 import (
-	"bytes"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestAddNewConfig(t *testing.T) {
+	tmpFile, err := os.Create("testconfig.yaml")
+	require.NoError(t, err)
+	defer os.Remove(tmpFile.Name())
+
 	tests := []struct{
 		name string
 		config func() appConfig
@@ -61,19 +66,21 @@ BestConfigEver:
 		},
 	}
 
-	var buf bytes.Buffer
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := test.config()
-			err := addNewConfig(&buf, &config)
+			err := addNewConfig(tmpFile, &config)
 
 			if test.errored {
 				require.Error(t, err)
 				return
 			}
 
+			content, err := ioutil.ReadFile(tmpFile.Name())
 			require.NoError(t, err)
-			require.Equal(t, test.expected, buf.String())
+
+			require.NoError(t, err)
+			require.Equal(t, test.expected, string(content))
 		})
 	}
 }
