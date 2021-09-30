@@ -84,3 +84,41 @@ BestConfigEver:
 		})
 	}
 }
+
+func TestRemoveConfig(t *testing.T) {
+	tmpFile, err := os.OpenFile("testconfig.yaml", os.O_RDWR|os.O_CREATE, 0644)
+	require.NoError(t, err)
+	defer os.Remove(tmpFile.Name())
+
+	config := appConfig{
+		Name: "test1",
+		AccessKey: "test1",
+		AccessSecretKey: "test1",
+		URL: defaultEdgeURL,
+	}
+	err = addNewConfig(tmpFile, &config)
+	require.NoError(t, err)
+
+	config.Name = "test2"
+	config.AccessKey = "test2"
+	config.AccessSecretKey = "test2"
+	config.URL = defaultEdgeURL
+	err = addNewConfig(tmpFile, &config)
+	require.NoError(t, err)
+
+	// remove non-existing app configuration should fail
+	err = removeConfig(tmpFile, "unknown")
+	require.Error(t, err)
+
+	err = removeConfig(tmpFile, "test1")
+	require.NoError(t, err)
+
+	expected := `test2:
+  access-key: test2
+  access-secret-key: test2
+  url: https://chat.stream-io-api.com
+`
+	content, err := ioutil.ReadFile(tmpFile.Name())
+	require.NoError(t, err)
+	require.Equal(t, expected, string(content))
+}

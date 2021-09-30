@@ -27,6 +27,7 @@ func NewRootConfigCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(newConfigCmd())
+	cmd.AddCommand(removeConfigCmd())
 
 	return cmd
 }
@@ -39,19 +40,7 @@ func newConfigCmd() *cobra.Command {
 		SilenceErrors: true,
 
 		RunE: func(_ *cobra.Command, _ []string) error {
-			d, err := os.UserHomeDir()
-			if err != nil {
-				return fmt.Errorf("cannot get user's home directory: %v", err)
-			}
-
-			err = os.Mkdir(path.Join(d, configDir), 0755)
-			if err != nil && !os.IsExist(err) {
-				return fmt.Errorf("cannot create config directory: %v", err)
-			}
-
-			filepath := path.Join(d, configDir, configFile)
-
-			f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
+			f, err := getConfigurationFile()
 			if err != nil {
 				return err
 			}
@@ -97,10 +86,93 @@ func addNewConfig(file *os.File, newConfig *appConfig) error {
 		return fmt.Errorf("configuration for %q already exists", newConfig.Name)
 	}
 
+	if newConfig.URL == "" {
+		newConfig.URL = defaultEdgeURL
+	}
+
 	newCfg := map[string]*appConfig{
 		newConfig.Name: newConfig,
 	}
 	err = yaml.NewEncoder(file).Encode(newCfg)
+	return err
+}
+
+func getConfigurationFile() (*os.File, error) {
+	d, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
+	}
+
+	err = os.Mkdir(path.Join(d, configDir), 0755)
+	if err != nil && !os.IsExist(err) {
+		return nil, fmt.Errorf("cannot create config directory: %v", err)
+	}
+
+	filepath := path.Join(d, configDir, configFile)
+	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
+}
+
+func removeConfigCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:           "remove <app>",
+		Long:          "Remove an app configuration",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+
+		RunE: func(_ *cobra.Command, args []string) error {
+			if len(args) != 1 {
+				return fmt.Errorf("remove command accepts 1 argument")
+			}
+
+			f, err := getConfigurationFile()
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			return removeConfig(f, args[0])
+		},
+	}
+
+	return cmd
+}
+
+func removeConfig(file *os.File, app string) error {
+	appsConfig := make(map[string]*appConfig)
+	file.Seek(0, io.SeekStart)
+
+	err := yaml.NewDecoder(file).Decode(appsConfig)
+	if err != nil {
+		if err == io.EOF {
+			return fmt.Errorf("config file is empty")
+		}
+		return err
+	}
+
+	var found bool
+	filteredAppsConfig := make(map[string]*appConfig, len(appsConfig))
+	for k, v := range appsConfig {
+		if k == app {
+			found = true
+			continue
+		}
+		filteredAppsConfig[k] = v
+	}
+
+	if !found {
+		return fmt.Errorf("application %q doesn't exist", app)
+	}
+
+	err = file.Truncate(0)
+	if err != nil {
+		return fmt.Errorf("cannot truncate configuration file")
+	}
+	file.Seek(0, io.SeekStart)
+
+	if len(filteredAppsConfig) == 0 {
+		return nil
+	}
+	err = yaml.NewEncoder(file).Encode(filteredAppsConfig)
 	return err
 }
 
@@ -125,6 +197,16 @@ func questions() []*survey.Question {
 		{
 			Name:   "URL",
 			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
+			Transform: func(ans interface{}) interface{} {
+				s, ok := ans.(string)
+				if !ok {
+					return defaultEdgeURL
+				}
+				if s == "" {
+					return defaultEdgeURL
+				}
+				return s
+			},
 		},
 	}
 }
