@@ -8,6 +8,7 @@ import (
 	"path"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/cheynewallace/tabby"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
@@ -19,6 +20,19 @@ const (
 	defaultEdgeURL = "https://chat.stream-io-api.com"
 )
 
+type appConfig struct {
+	Name            string `yaml:"-"`
+	AccessKey       string `yaml:"access-key"`
+	AccessSecretKey string `yaml:"access-secret-key"`
+	URL             string `yaml:"url"`
+}
+
+func newDefaultConfig() appConfig {
+	return appConfig{
+		URL: defaultEdgeURL,
+	}
+}
+
 func NewRootConfigCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "config [options] <command> <subcommand>",
@@ -28,6 +42,7 @@ func NewRootConfigCmd() *cobra.Command {
 
 	cmd.AddCommand(newConfigCmd())
 	cmd.AddCommand(removeConfigCmd())
+	cmd.AddCommand(listConfigsCmd())
 
 	return cmd
 }
@@ -59,19 +74,6 @@ func newConfigCmd() *cobra.Command {
 	return cmd
 }
 
-type appConfig struct {
-	Name            string `yaml:"-"`
-	AccessKey       string `yaml:"access-key"`
-	AccessSecretKey string `yaml:"access-secret-key"`
-	URL             string `yaml:"url"`
-}
-
-func newDefaultConfig() appConfig {
-	return appConfig{
-		URL: defaultEdgeURL,
-	}
-}
-
 // addNewConfig adds a new app configuration.
 func addNewConfig(file *os.File, newConfig *appConfig) error {
 	file.Seek(0, io.SeekStart)
@@ -95,21 +97,6 @@ func addNewConfig(file *os.File, newConfig *appConfig) error {
 	}
 	err = yaml.NewEncoder(file).Encode(newCfg)
 	return err
-}
-
-func getConfigurationFile() (*os.File, error) {
-	d, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
-	}
-
-	err = os.Mkdir(path.Join(d, configDir), 0755)
-	if err != nil && !os.IsExist(err) {
-		return nil, fmt.Errorf("cannot create config directory: %v", err)
-	}
-
-	filepath := path.Join(d, configDir, configFile)
-	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
 }
 
 func removeConfigCmd() *cobra.Command {
@@ -139,7 +126,6 @@ func removeConfigCmd() *cobra.Command {
 
 func removeConfig(file *os.File, app string) error {
 	appsConfig := make(map[string]*appConfig)
-	file.Seek(0, io.SeekStart)
 
 	err := yaml.NewDecoder(file).Decode(appsConfig)
 	if err != nil {
@@ -174,6 +160,60 @@ func removeConfig(file *os.File, app string) error {
 	}
 	err = yaml.NewEncoder(file).Encode(filteredAppsConfig)
 	return err
+}
+
+func listConfigsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:           "list",
+		Long:          "List all configuration",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+
+		RunE: func(_ *cobra.Command, args []string) error {
+			f, err := getConfigurationFile()
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			appsConfig := make(map[string]*appConfig)
+
+			err = yaml.NewDecoder(f).Decode(appsConfig)
+			if err != nil {
+				if err == io.EOF {
+					return fmt.Errorf("config file is empty")
+				}
+				return err
+			}
+
+			t := tabby.New()
+			t.AddHeader("Name", "Access Key", "Secret Key", "Region")
+
+			for k, v := range appsConfig {
+				secret := fmt.Sprintf("**************%v", v.AccessSecretKey[len(v.AccessSecretKey)-4:])
+				t.AddLine(k, v.AccessKey, secret, v.URL)
+			}
+			t.Print()
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+func getConfigurationFile() (*os.File, error) {
+	d, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
+	}
+
+	err = os.Mkdir(path.Join(d, configDir), 0755)
+	if err != nil && !os.IsExist(err) {
+		return nil, fmt.Errorf("cannot create config directory: %v", err)
+	}
+
+	filepath := path.Join(d, configDir, configFile)
+	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
 }
 
 // questions returns all questions to ask to configure an app.
