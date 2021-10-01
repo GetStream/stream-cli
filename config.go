@@ -25,6 +25,7 @@ type appConfig struct {
 	AccessKey       string `yaml:"access-key"`
 	AccessSecretKey string `yaml:"access-secret-key"`
 	URL             string `yaml:"url"`
+	Default         bool   `yaml:"default,omitempty"`
 }
 
 func newDefaultConfig() appConfig {
@@ -82,6 +83,11 @@ func addNewConfig(file *os.File, newConfig *appConfig) error {
 	err := yaml.NewDecoder(file).Decode(appsConfig)
 	if err != nil && !errors.Is(err, io.EOF) {
 		return err
+	}
+
+	// if no app configs already exist, make the new one the default
+	if len(appsConfig) == 0 {
+		newConfig.Default = true
 	}
 
 	if _, ok := appsConfig[newConfig.Name]; ok {
@@ -187,11 +193,16 @@ func listConfigsCmd() *cobra.Command {
 			}
 
 			t := tabby.New()
-			t.AddHeader("Name", "Access Key", "Secret Key", "Region")
+			t.AddHeader("", "Name", "Access Key", "Secret Key", "Region")
 
 			for k, v := range appsConfig {
+				defaultApp := ""
+				if v.Default {
+					defaultApp = "(default)"
+				}
+
 				secret := fmt.Sprintf("**************%v", v.AccessSecretKey[len(v.AccessSecretKey)-4:])
-				t.AddLine(k, v.AccessKey, secret, v.URL)
+				t.AddLine(defaultApp, k, v.AccessKey, secret, v.URL)
 			}
 			t.Print()
 			return nil
