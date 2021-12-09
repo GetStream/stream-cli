@@ -13,13 +13,12 @@ async function chatAuth(ctx) {
     const {
       apiKey,
       apiSecret,
-      apiBaseUrl,
       timeout
     } = await (0, _config.credentials)(ctx);
     const chatClient = new _streamChat.StreamChat(apiKey, apiSecret, {
       timeout
     });
-    chatClient.setBaseURL(apiBaseUrl);
+    chatClient.setBaseURL("https://chat.stream-io-api.com");
     return chatClient;
   } catch (error) {
     ctx.error(`Authentication required. Use the command ${_chalk.default.green.bold('stream config:set')} to authenticate.`, {

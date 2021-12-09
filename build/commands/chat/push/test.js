@@ -101,8 +101,8 @@ class PushTest extends _command.Command {
       }
 
       if (response.rendered_message) {
-        this.log(`Here is the rendered notification payload that will be sent to your devices:`);
-        this.log(JSON.stringify(JSON.parse(response.rendered_message), null, 4));
+        this.log(`Here is the generic rendered notification payload that will be sent to your devices:`);
+        this.log(JSON.stringify(response.rendered_message, null, 4));
       }
 
       if (response.device_errors) {

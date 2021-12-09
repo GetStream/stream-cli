@@ -105,15 +105,33 @@
 			"telemetry": "./build/utils/hooks/telemetry"
 		},
 		"topics": {
-			"chat": { "description": "Manage chat" },
-			"chat:channel": { "description": "Manage chat channels" },
-			"chat:message": { "description": "Manage chat messages" },
-			"chat:push": { "description": "Manage chat push configuration" },
-			"chat:reaction": { "description": "Manage chat reactions" },
-			"chat:user": { "description": "Manage chat users" },
-			"chat:webhook": { "description": "Manage chat webhooks" },
-			"config": { "description": "Configure API access" },
-			"debug": { "description": "Debugging tools" }
+			"chat": {
+				"description": "Manage chat"
+			},
+			"chat:channel": {
+				"description": "Manage chat channels"
+			},
+			"chat:message": {
+				"description": "Manage chat messages"
+			},
+			"chat:push": {
+				"description": "Manage chat push configuration"
+			},
+			"chat:reaction": {
+				"description": "Manage chat reactions"
+			},
+			"chat:user": {
+				"description": "Manage chat users"
+			},
+			"chat:webhook": {
+				"description": "Manage chat webhooks"
+			},
+			"config": {
+				"description": "Configure API access"
+			},
+			"debug": {
+				"description": "Debugging tools"
+			}
 		}
 	},
 	"prettier": {

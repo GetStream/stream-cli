@@ -13,7 +13,6 @@ async function credentials(ctx) {
 				email: '',
 				apiKey: '',
 				apiSecret: '',
-				apiBaseUrl: 'https://chat-us-east-1.stream-io-api.com',
 				environment: 'production',
 				telemetry: true,
 				timeout: 3000,
@@ -25,7 +24,6 @@ async function credentials(ctx) {
 			email,
 			apiKey,
 			apiSecret,
-			apiBaseUrl,
 			environment,
 			telemetry,
 			timeout,
@@ -36,7 +34,6 @@ async function credentials(ctx) {
 			!email ||
 			!apiKey ||
 			!apiSecret ||
-			!apiBaseUrl ||
 			!environment ||
 			!telemetry ||
 			!timeout
@@ -56,7 +53,6 @@ async function credentials(ctx) {
 			email,
 			apiKey,
 			apiSecret,
-			apiBaseUrl,
 			environment,
 			telemetry,
 			timeout,
