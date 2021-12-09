@@ -47,13 +47,6 @@ class ConfigSet extends Command {
 					},
 					{
 						type: 'input',
-						name: 'url',
-						message: `What is your Stream API base URL?`,
-						default: 'https://chat-us-east-1.stream-io-api.com',
-						required: false,
-					},
-					{
-						type: 'input',
 						name: 'environment',
 						message: `What environment would you like to run in?`,
 						default: 'production',
@@ -88,7 +81,6 @@ class ConfigSet extends Command {
 				email: flags.email.toLowerCase(),
 				apiKey: flags.key,
 				apiSecret: flags.secret,
-				apiBaseUrl: flags.url,
 				environment: flags.environment,
 				telemetry:
 					flags.telemetry !== undefined ? flags.telemetry : true,

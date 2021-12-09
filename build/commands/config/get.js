@@ -22,7 +22,6 @@ class ConfigGet extends _command.Command {
         email,
         apiKey,
         apiSecret,
-        apiBaseUrl,
         environment,
         telemetry,
         timeout
@@ -42,8 +41,6 @@ class ConfigGet extends _command.Command {
         [`${_chalk.default.green.bold('API Key')}`]: apiKey
       }, {
         [`${_chalk.default.green.bold('API Secret')}`]: apiSecret
-      }, {
-        [`${_chalk.default.green.bold('API Base URL')}`]: apiBaseUrl
       }, {
         [`${_chalk.default.green.bold('Environment')}`]: environment
       }, {

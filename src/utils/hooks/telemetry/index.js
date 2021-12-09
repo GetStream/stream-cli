@@ -4,7 +4,7 @@ import Rollbar from 'rollbar';
 import { credentials } from '../../config';
 
 module.exports = async ({ ctx, error }) => {
-	const { name, email, apiKey, apiSecret, apiBaseUrl, environment, telemetry } = await credentials(ctx);
+	const { name, email, apiKey, apiSecret, environment, telemetry } = await credentials(ctx);
 
 	if (telemetry === 'true') {
 		const rollbar = new Rollbar({
@@ -24,7 +24,7 @@ module.exports = async ({ ctx, error }) => {
 			api: {
 				key: apiKey,
 				secret: apiSecret,
-				url: apiBaseUrl
+				url: "https://chat.stream-io-api.com",
 			},
 			environment
 		});

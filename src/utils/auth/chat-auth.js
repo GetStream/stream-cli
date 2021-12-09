@@ -5,12 +5,12 @@ import { credentials } from '../../utils/config';
 
 async function chatAuth(ctx) {
 	try {
-		const { apiKey, apiSecret, apiBaseUrl, timeout } = await credentials(
+		const { apiKey, apiSecret, timeout } = await credentials(
 			ctx
 		);
 
 		const chatClient = new StreamChat(apiKey, apiSecret, { timeout });
-		chatClient.setBaseURL(apiBaseUrl);
+		chatClient.setBaseURL("https://chat.stream-io-api.com");
 
 		return chatClient;
 	} catch (error) {

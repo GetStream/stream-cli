@@ -17,7 +17,6 @@ module.exports = async ({
     email,
     apiKey,
     apiSecret,
-    apiBaseUrl,
     environment,
     telemetry
   } = await (0, _config.credentials)(ctx);
@@ -39,7 +38,7 @@ module.exports = async ({
       api: {
         key: apiKey,
         secret: apiSecret,
-        url: apiBaseUrl
+        url: "https://chat.stream-io-api.com"
       },
       environment
     });
