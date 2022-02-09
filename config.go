@@ -43,6 +43,7 @@ func NewRootConfigCmd() *cli.Command {
 			newConfigCmd(),
 			removeConfigCmd(),
 			listConfigsCmd(),
+			defaultConfigCmd(),
 		},
 	}
 
@@ -121,7 +122,7 @@ func removeConfigCmd() *cli.Command {
 
 		Action: func(ctx *cli.Context) error {
 			if ctx.Args().Len() != 1 {
-				return fmt.Errorf("remove command accepts 1 argument")
+				return errors.New("remove command requires 1 argument")
 			}
 
 			f, err := getConfigurationFile()
@@ -143,7 +144,7 @@ func removeConfig(file *os.File, app string) error {
 	err := yaml.NewDecoder(file).Decode(appsConfig)
 	if err != nil {
 		if err == io.EOF {
-			return fmt.Errorf("config file is empty")
+			return errors.New("config file is empty")
 		}
 		return err
 	}
@@ -164,7 +165,7 @@ func removeConfig(file *os.File, app string) error {
 
 	err = file.Truncate(0)
 	if err != nil {
-		return fmt.Errorf("cannot truncate configuration file")
+		return errors.New("cannot truncate configuration file")
 	}
 	file.Seek(0, io.SeekStart)
 
@@ -197,7 +198,7 @@ func listConfigsCmd() *cli.Command {
 			err = yaml.NewDecoder(f).Decode(appsConfig)
 			if err != nil {
 				if err == io.EOF {
-					return fmt.Errorf("config file is empty")
+					return errors.New("config file is empty")
 				}
 				return err
 			}
@@ -215,6 +216,29 @@ func listConfigsCmd() *cli.Command {
 				t.AddLine(defaultApp, k, v.AccessKey, secret, v.URL)
 			}
 			t.Print()
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+func defaultConfigCmd() *cli.Command {
+	cmd := &cli.Command{
+		Name:        "default",
+		Usage:       "Set a configuration as the default",
+		UsageText:   "stream-cli config default <name of the configuration>",
+		Description: "Set a configuration as the default, it will be used by default for all operations",
+
+		//SilenceUsage:  true,
+		//SilenceErrors: true,
+
+		Action: func(ctx *cli.Context) error {
+			if ctx.Args().Len() == 0 {
+				return errors.New("default command requires 1 argument")
+			}
+
+			panic("implement me")
 			return nil
 		},
 	}
