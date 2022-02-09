@@ -82,7 +82,6 @@ func newConfigCmd() *cli.Command {
 
 // addNewConfig adds a new app configuration.
 func addNewConfig(file *os.File, newConfig *appConfig) error {
-	file.Seek(0, io.SeekStart)
 	appsConfig := make(map[string]*appConfig)
 
 	err := yaml.NewDecoder(file).Decode(appsConfig)
