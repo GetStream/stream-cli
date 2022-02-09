@@ -9,7 +9,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cheynewallace/tabby"
-	"github.com/spf13/cobra"
+	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -34,28 +34,32 @@ func newDefaultConfig() appConfig {
 	}
 }
 
-func NewRootConfigCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:  "config [options] <command> <subcommand>",
-		Long: `Manage app configurations`,
-		Run:  func(_ *cobra.Command, _ []string) {},
+func NewRootConfigCmd() *cli.Command {
+	cmd := &cli.Command{
+		Name:        "config",
+		Usage:       "Manage app configurations",
+		Description: `Manage app configurations`,
+		Subcommands: []*cli.Command{
+			newConfigCmd(),
+			removeConfigCmd(),
+			listConfigsCmd(),
+		},
 	}
-
-	cmd.AddCommand(newConfigCmd())
-	cmd.AddCommand(removeConfigCmd())
-	cmd.AddCommand(listConfigsCmd())
 
 	return cmd
 }
 
-func newConfigCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:           "new",
-		Long:          "Create a new app configuration",
-		SilenceUsage:  true,
-		SilenceErrors: true,
+func newConfigCmd() *cli.Command {
+	cmd := &cli.Command{
+		Name:        "new",
+		Usage:       "Add a new App configuration",
+		UsageText:   "stream-cli config new",
+		Description: "Add a new App configuration which can be used on further operations",
 
-		RunE: func(_ *cobra.Command, _ []string) error {
+		//SilenceUsage:  true,
+		//SilenceErrors: true,
+
+		Action: func(ctx *cli.Context) error {
 			f, err := getConfigurationFile()
 			if err != nil {
 				return err
@@ -105,15 +109,18 @@ func addNewConfig(file *os.File, newConfig *appConfig) error {
 	return err
 }
 
-func removeConfigCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:           "remove <app>",
-		Long:          "Remove an app configuration",
-		SilenceUsage:  true,
-		SilenceErrors: true,
+func removeConfigCmd() *cli.Command {
+	cmd := &cli.Command{
+		Name:        "remove",
+		Usage:       "Remove an App configuration",
+		UsageText:   "stream-cli config remove <app to remove>",
+		Description: "Remove an App configuration. This operation is irrevocable",
 
-		RunE: func(_ *cobra.Command, args []string) error {
-			if len(args) != 1 {
+		//SilenceUsage:  true,
+		//SilenceErrors: true,
+
+		Action: func(ctx *cli.Context) error {
+			if ctx.Args().Len() != 1 {
 				return fmt.Errorf("remove command accepts 1 argument")
 			}
 
@@ -123,7 +130,7 @@ func removeConfigCmd() *cobra.Command {
 			}
 			defer f.Close()
 
-			return removeConfig(f, args[0])
+			return removeConfig(f, ctx.Args().First())
 		},
 	}
 
@@ -168,14 +175,17 @@ func removeConfig(file *os.File, app string) error {
 	return err
 }
 
-func listConfigsCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:           "list",
-		Long:          "List all configuration",
-		SilenceUsage:  true,
-		SilenceErrors: true,
+func listConfigsCmd() *cli.Command {
+	cmd := &cli.Command{
+		Name:        "list",
+		Usage:       "List all configurations",
+		UsageText:   "stream-cli config list",
+		Description: "List all app configurations",
 
-		RunE: func(_ *cobra.Command, args []string) error {
+		//SilenceUsage:  true,
+		//SilenceErrors: true,
+
+		Action: func(_ *cli.Context) error {
 			f, err := getConfigurationFile()
 			if err != nil {
 				return err

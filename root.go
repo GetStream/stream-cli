@@ -1,24 +1,18 @@
 package cli
 
 import (
-	"github.com/spf13/cobra"
+	"github.com/urfave/cli/v2"
 )
 
-var app string
-
-func NewRootCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use: "stream-cli [options] <command> <subcommand>",
-		Long: `Manage seamlessly Stream applications from the command line`,
-		//SilenceErrors: true,
-		//SilenceUsage: true,
-		Run: func(_ *cobra.Command, _ []string) {},
+func NewRootCmd() *cli.App {
+	app := &cli.App{
+		Name:        "stream-cli",
+		Usage:       "Interact with your application easily",
+		Description: "The official Stream CLI allows you to interact with your application easily",
+		Commands: []*cli.Command{
+			NewRootConfigCmd(),
+		},
 	}
 
-	cmd.PersistentFlags().StringVar(&app, "app", "", "application to interact with")
-
-	cmd.AddCommand(NewRootConfigCmd())
-
-	return cmd
+	return app
 }
-

@@ -16,6 +16,6 @@ func main() {
 
 func run() error {
 	rootCmd := cli.NewRootCmd()
-	_, err := rootCmd.ExecuteC()
+	err := rootCmd.Run(os.Args)
 	return err
 }
