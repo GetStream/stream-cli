@@ -139,13 +139,8 @@ func removeConfigCmd() *cli.Command {
 }
 
 func removeConfig(file *os.File, app string) error {
-	appsConfig := make(map[string]*appConfig)
-
-	err := yaml.NewDecoder(file).Decode(appsConfig)
+	appsConfig, err := getAppsConfiguration()
 	if err != nil {
-		if err == io.EOF {
-			return errors.New("config file is empty")
-		}
 		return err
 	}
 
@@ -187,19 +182,8 @@ func listConfigsCmd() *cli.Command {
 		//SilenceErrors: true,
 
 		Action: func(_ *cli.Context) error {
-			f, err := getConfigurationFile()
+			appsConfig, err := getAppsConfiguration()
 			if err != nil {
-				return err
-			}
-			defer f.Close()
-
-			appsConfig := make(map[string]*appConfig)
-
-			err = yaml.NewDecoder(f).Decode(appsConfig)
-			if err != nil {
-				if err == io.EOF {
-					return errors.New("config file is empty")
-				}
 				return err
 			}
 
@@ -259,6 +243,24 @@ func getConfigurationFile() (*os.File, error) {
 
 	filepath := path.Join(d, configDir, configFile)
 	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
+}
+
+func getAppsConfiguration() (map[string]*appConfig, error) {
+	f, err := getConfigurationFile()
+	if err != nil {
+		return nil, err
+	}
+
+	appsConfig := make(map[string]*appConfig)
+	err = yaml.NewDecoder(f).Decode(appsConfig)
+	if err != nil {
+		if err == io.EOF {
+			return nil, errors.New("config file is empty")
+		}
+		return nil, err
+	}
+
+	return appsConfig, nil
 }
 
 // questions returns all questions to ask to configure an app.
