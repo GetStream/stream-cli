@@ -15,7 +15,12 @@ func main() {
 }
 
 func run() error {
-	rootCmd := cli.NewRootCmd()
-	err := rootCmd.Run(os.Args)
+	config, err := cli.NewConfig()
+	if err != nil {
+		return err
+	}
+	defer config.Close()
+	rootCmd := cli.NewRootCmd(config)
+	err = rootCmd.Run(os.Args)
 	return err
 }
