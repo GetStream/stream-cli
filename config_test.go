@@ -9,7 +9,7 @@ import (
 )
 
 func getFile(t *testing.T) *os.File {
-	tmpFile, err := os.Create("testconfig.yaml")
+	tmpFile, err := os.CreateTemp("", "testconfig.yaml")
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		os.Remove(tmpFile.Name())

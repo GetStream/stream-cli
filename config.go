@@ -257,14 +257,20 @@ func questions() []*survey.Question {
 			Validate: survey.Required,
 		},
 		{
-			Name:     "accessKey",
-			Prompt:   &survey.Input{Message: "What is your access key?"},
-			Validate: survey.Required,
+			Name:   "accessKey",
+			Prompt: &survey.Input{Message: "What is your access key?"},
+			Validate: survey.ComposeValidators(
+				survey.Required,
+				survey.MinLength(10),
+				survey.MaxLength(30)),
 		},
 		{
-			Name:     "accessSecretKey",
-			Prompt:   &survey.Password{Message: "What is your access secret key?"},
-			Validate: survey.Required,
+			Name:   "accessSecretKey",
+			Prompt: &survey.Password{Message: "What is your access secret key?"},
+			Validate: survey.ComposeValidators(
+				survey.Required,
+				survey.MinLength(50),
+				survey.MaxLength(75)),
 		},
 		{
 			Name:   "URL",
