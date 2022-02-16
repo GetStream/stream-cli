@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	configDir  = ".stream-cli"
-	configFile = "config"
+	configDir  = "stream-cli"
+	configFile = "config.yml"
 
 	defaultEdgeURL = "https://chat.stream-io-api.com"
 )
@@ -133,7 +133,7 @@ type Config struct {
 }
 
 func NewConfig() (*Config, error) {
-	d, err := os.UserHomeDir()
+	d, err := os.UserConfigDir()
 	if err != nil {
 		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
 	}
