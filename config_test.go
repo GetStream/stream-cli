@@ -73,21 +73,21 @@ BestConfigEver:
 		},
 	}
 
+	file := getFile(t)
 	config := &Config{
-		file: getFile(t),
+		filepath: file.Name(),
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			conf := test.config()
-			//err := addNewConfig(tmpFile, &config)
 			err := config.Add(conf)
 			if test.errored {
 				require.Error(t, err)
 				return
 			}
 
-			content, err := ioutil.ReadFile(config.file.Name())
+			content, err := ioutil.ReadFile(file.Name())
 			require.NoError(t, err)
 
 			require.NoError(t, err)
@@ -97,7 +97,10 @@ BestConfigEver:
 }
 
 func TestRemoveConfig(t *testing.T) {
-	config := &Config{file: getFile(t)}
+	file := getFile(t)
+	config := &Config{
+		filepath: file.Name(),
+	}
 
 	err := config.Add(appConfig{
 		Name:            "test1",
@@ -127,13 +130,16 @@ func TestRemoveConfig(t *testing.T) {
     access-secret-key: test2
     url: https://chat.stream-io-api.com
 `
-	content, err := ioutil.ReadFile(config.file.Name())
+	content, err := ioutil.ReadFile(file.Name())
 	require.NoError(t, err)
 	require.Equal(t, expected, string(content))
 }
 
 func TestSetDefault(t *testing.T) {
-	config := &Config{file: getFile(t)}
+	file := getFile(t)
+	config := &Config{
+		filepath: file.Name(),
+	}
 
 	err := config.Add(appConfig{
 		Name:            "test1",
@@ -170,7 +176,7 @@ test2:
     url: https://chat.stream-io-api.com
     default: true
 `
-	content, err := ioutil.ReadFile(config.file.Name())
+	content, err := ioutil.ReadFile(file.Name())
 	require.NoError(t, err)
 	require.Equal(t, expected, string(content))
 }

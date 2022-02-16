@@ -129,7 +129,7 @@ func newDefaultConfig() appConfig {
 
 type Config struct {
 	appsConfig map[string]*appConfig
-	file       *os.File
+	filepath   string
 }
 
 func NewConfig() (*Config, error) {
@@ -144,10 +144,11 @@ func NewConfig() (*Config, error) {
 	}
 
 	filepath := path.Join(d, configDir, configFile)
-	file, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0644)
+	file, err := openFile(filepath)
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	appsConfig := make(map[string]*appConfig)
 	err = yaml.NewDecoder(file).Decode(appsConfig)
@@ -156,10 +157,13 @@ func NewConfig() (*Config, error) {
 	}
 
 	return &Config{
-		file: file,
-
+		filepath:   filepath,
 		appsConfig: appsConfig,
 	}, nil
+}
+
+func openFile(filepath string) (*os.File, error) {
+	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 }
 
 func (c *Config) Add(newConfig appConfig) error {
@@ -226,26 +230,31 @@ func (c *Config) Append(newCfg appConfig) error {
 	newAppConfig := map[string]*appConfig{
 		newCfg.Name: &newCfg,
 	}
-	return yaml.NewEncoder(c.file).Encode(newAppConfig)
+	file, err := openFile(c.filepath)
+	if err != nil {
+		return fmt.Errorf("cannot open configuration file: %w", err)
+	}
+	defer file.Close()
+	return yaml.NewEncoder(file).Encode(newAppConfig)
 }
 
 func (c *Config) Override() error {
-	err := c.file.Truncate(0)
+	file, err := openFile(c.filepath)
+	if err != nil {
+		return fmt.Errorf("cannot open configuration file: %w", err)
+	}
+	defer file.Close()
+
+	err = file.Truncate(0)
 	if err != nil {
 		return errors.New("cannot truncate configuration file")
 	}
-	c.file.Seek(0, io.SeekStart)
+	file.Seek(0, io.SeekStart)
 
 	if len(c.appsConfig) == 0 {
 		return nil
 	}
-	return yaml.NewEncoder(c.file).Encode(c.appsConfig)
-}
-
-func (c *Config) Close() {
-	if c.file != nil {
-		c.file.Close()
-	}
+	return yaml.NewEncoder(file).Encode(c.appsConfig)
 }
 
 // questions returns all questions to ask to configure an app.

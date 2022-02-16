@@ -19,7 +19,6 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	defer config.Close()
 	rootCmd := cli.NewRootCmd(config)
 	err = rootCmd.Run(os.Args)
 	return err
