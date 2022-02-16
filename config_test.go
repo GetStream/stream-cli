@@ -34,10 +34,10 @@ func TestAddNewConfig(t *testing.T) {
 				return cfg
 			},
 			expected: `BestConfig:
-  access-key: FamousKey
-  access-secret-key: TopSecret
-  url: https://chat.stream-io-api.com
-  default: true
+    access-key: FamousKey
+    access-secret-key: TopSecret
+    url: https://chat.stream-io-api.com
+    default: true
 `,
 		},
 		{
@@ -50,14 +50,14 @@ func TestAddNewConfig(t *testing.T) {
 				return cfg
 			},
 			expected: `BestConfig:
-  access-key: FamousKey
-  access-secret-key: TopSecret
-  url: https://chat.stream-io-api.com
-  default: true
+    access-key: FamousKey
+    access-secret-key: TopSecret
+    url: https://chat.stream-io-api.com
+    default: true
 BestConfigEver:
-  access-key: FamousKey
-  access-secret-key: TopSecret
-  url: https://chat.stream-io-api.com
+    access-key: FamousKey
+    access-secret-key: TopSecret
+    url: https://chat.stream-io-api.com
 `,
 		},
 		{
@@ -123,9 +123,9 @@ func TestRemoveConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	expected := `test2:
-  access-key: test2
-  access-secret-key: test2
-  url: https://chat.stream-io-api.com
+    access-key: test2
+    access-secret-key: test2
+    url: https://chat.stream-io-api.com
 `
 	content, err := ioutil.ReadFile(config.file.Name())
 	require.NoError(t, err)
@@ -161,14 +161,14 @@ func TestSetDefault(t *testing.T) {
 	require.True(t, config.appsConfig["test2"].Default)
 
 	expected := `test1:
-  access-key: test1
-  access-secret-key: test1
-  url: https://chat.stream-io-api.com
+    access-key: test1
+    access-secret-key: test1
+    url: https://chat.stream-io-api.com
 test2:
-  access-key: test2
-  access-secret-key: test2
-  url: https://chat.stream-io-api.com
-  default: true
+    access-key: test2
+    access-secret-key: test2
+    url: https://chat.stream-io-api.com
+    default: true
 `
 	content, err := ioutil.ReadFile(config.file.Name())
 	require.NoError(t, err)
