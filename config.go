@@ -162,24 +162,24 @@ func NewConfig() (*Config, error) {
 	}, nil
 }
 
-func (c *Config) Add(new appConfig) error {
+func (c *Config) Add(newConfig appConfig) error {
 	if len(c.appsConfig) == 0 {
-		new.Default = true
+		newConfig.Default = true
 	}
 
-	if _, ok := c.appsConfig[new.Name]; ok {
-		return fmt.Errorf("configuration for %q already exists", new.Name)
+	if _, ok := c.appsConfig[newConfig.Name]; ok {
+		return fmt.Errorf("configuration for %q already exists", newConfig.Name)
 	}
 
-	if new.URL == "" {
-		new.URL = defaultEdgeURL
+	if newConfig.URL == "" {
+		newConfig.URL = defaultEdgeURL
 	}
 
 	if c.appsConfig == nil {
 		c.appsConfig = make(map[string]*appConfig)
 	}
-	c.appsConfig[new.Name] = &new
-	return c.Append(new)
+	c.appsConfig[newConfig.Name] = &newConfig
+	return c.Append(newConfig)
 }
 
 func (c *Config) Remove(configName string) error {
