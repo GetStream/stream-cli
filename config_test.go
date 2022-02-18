@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -87,7 +86,7 @@ BestConfigEver:
 				return
 			}
 
-			content, err := ioutil.ReadFile(file.Name())
+			content, err := os.ReadFile(file.Name())
 			require.NoError(t, err)
 
 			require.NoError(t, err)
@@ -130,7 +129,7 @@ func TestRemoveConfig(t *testing.T) {
     access-secret-key: test2
     url: https://chat.stream-io-api.com
 `
-	content, err := ioutil.ReadFile(file.Name())
+	content, err := os.ReadFile(file.Name())
 	require.NoError(t, err)
 	require.Equal(t, expected, string(content))
 }
@@ -176,7 +175,7 @@ test2:
     url: https://chat.stream-io-api.com
     default: true
 `
-	content, err := ioutil.ReadFile(file.Name())
+	content, err := os.ReadFile(file.Name())
 	require.NoError(t, err)
 	require.Equal(t, expected, string(content))
 }
