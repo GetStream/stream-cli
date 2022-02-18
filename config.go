@@ -3,7 +3,6 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path"
 
@@ -144,15 +143,14 @@ func NewConfig() (*Config, error) {
 	}
 
 	filepath := path.Join(d, configDir, configFile)
-	file, err := openFile(filepath)
-	if err != nil {
+	b, err := os.ReadFile(filepath)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
-	defer file.Close()
 
 	appsConfig := make(map[string]*appConfig)
-	err = yaml.NewDecoder(file).Decode(appsConfig)
-	if err != nil && !errors.Is(err, io.EOF) {
+	err = yaml.Unmarshal(b, appsConfig)
+	if err != nil {
 		return nil, err
 	}
 
@@ -160,10 +158,6 @@ func NewConfig() (*Config, error) {
 		filepath:   filepath,
 		appsConfig: appsConfig,
 	}, nil
-}
-
-func openFile(filepath string) (*os.File, error) {
-	return os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 }
 
 func (c *Config) Add(newConfig appConfig) error {
@@ -183,7 +177,15 @@ func (c *Config) Add(newConfig appConfig) error {
 		c.appsConfig = make(map[string]*appConfig)
 	}
 	c.appsConfig[newConfig.Name] = &newConfig
-	return c.Append(newConfig)
+	return c.WriteToFile()
+}
+
+func (c *Config) WriteToFile() error {
+	b, err := yaml.Marshal(c.appsConfig)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(c.filepath, b, 0644)
 }
 
 func (c *Config) Remove(configName string) error {
@@ -197,7 +199,7 @@ func (c *Config) Remove(configName string) error {
 
 	delete(c.appsConfig, configName)
 
-	return c.Override()
+	return c.WriteToFile()
 }
 
 func (c *Config) SetDefault(configName string) error {
@@ -223,38 +225,7 @@ func (c *Config) SetDefault(configName string) error {
 		v.Default = false
 	}
 
-	return c.Override()
-}
-
-func (c *Config) Append(newCfg appConfig) error {
-	newAppConfig := map[string]*appConfig{
-		newCfg.Name: &newCfg,
-	}
-	file, err := openFile(c.filepath)
-	if err != nil {
-		return fmt.Errorf("cannot open configuration file: %w", err)
-	}
-	defer file.Close()
-	return yaml.NewEncoder(file).Encode(newAppConfig)
-}
-
-func (c *Config) Override() error {
-	file, err := openFile(c.filepath)
-	if err != nil {
-		return fmt.Errorf("cannot open configuration file: %w", err)
-	}
-	defer file.Close()
-
-	err = file.Truncate(0)
-	if err != nil {
-		return errors.New("cannot truncate configuration file")
-	}
-	file.Seek(0, io.SeekStart)
-
-	if len(c.appsConfig) == 0 {
-		return nil
-	}
-	return yaml.NewEncoder(file).Encode(c.appsConfig)
+	return c.WriteToFile()
 }
 
 // questions returns all questions to ask to configure an app.
