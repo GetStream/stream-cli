@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cheynewallace/tabby"
@@ -128,7 +128,7 @@ func newDefaultConfig() appConfig {
 
 type Config struct {
 	appsConfig map[string]*appConfig
-	filepath   string
+	filePath   string
 }
 
 func NewConfig() (*Config, error) {
@@ -137,13 +137,13 @@ func NewConfig() (*Config, error) {
 		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
 	}
 
-	err = os.Mkdir(path.Join(d, configDir), 0755)
+	err = os.Mkdir(filepath.Join(d, configDir), 0755)
 	if err != nil && !os.IsExist(err) {
 		return nil, fmt.Errorf("cannot create config directory: %v", err)
 	}
 
-	filepath := path.Join(d, configDir, configFile)
-	b, err := os.ReadFile(filepath)
+	fp := filepath.Join(d, configDir, configFile)
+	b, err := os.ReadFile(fp)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	return &Config{
-		filepath:   filepath,
+		filePath:   fp,
 		appsConfig: appsConfig,
 	}, nil
 }
@@ -185,7 +185,7 @@ func (c *Config) WriteToFile() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(c.filepath, b, 0644)
+	return os.WriteFile(c.filePath, b, 0644)
 }
 
 func (c *Config) Remove(configName string) error {

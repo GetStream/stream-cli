@@ -74,7 +74,7 @@ BestConfigEver:
 
 	file := getFile(t)
 	config := &Config{
-		filepath: file.Name(),
+		filePath: file.Name(),
 	}
 
 	for _, test := range tests {
@@ -98,7 +98,7 @@ BestConfigEver:
 func TestRemoveConfig(t *testing.T) {
 	file := getFile(t)
 	config := &Config{
-		filepath: file.Name(),
+		filePath: file.Name(),
 	}
 
 	err := config.Add(appConfig{
@@ -137,7 +137,7 @@ func TestRemoveConfig(t *testing.T) {
 func TestSetDefault(t *testing.T) {
 	file := getFile(t)
 	config := &Config{
-		filepath: file.Name(),
+		filePath: file.Name(),
 	}
 
 	err := config.Add(appConfig{
