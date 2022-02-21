@@ -2,6 +2,8 @@ package cli
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,9 +13,16 @@ func getFile(t *testing.T) *os.File {
 	tmpFile, err := os.CreateTemp("", "testconfig.yaml")
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		os.Remove(tmpFile.Name())
+		_ = os.Remove(tmpFile.Name())
 	})
 	return tmpFile
+}
+
+func TestNewConfig(t *testing.T) {
+	c, err := NewConfig(os.TempDir())
+	require.NoError(t, err)
+	require.True(t, strings.HasSuffix(c.filePath, filepath.Join(configDir, configFile)))
+	_ = os.RemoveAll(filepath.Join(os.TempDir(), configDir))
 }
 
 func TestAddNewConfig(t *testing.T) {

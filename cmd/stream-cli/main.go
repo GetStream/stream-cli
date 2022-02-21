@@ -15,7 +15,12 @@ func main() {
 }
 
 func run() error {
-	config, err := cli.NewConfig()
+	d, err := os.UserConfigDir()
+	if err != nil {
+		return fmt.Errorf("cannot get user's home directory: %v", err)
+	}
+
+	config, err := cli.NewConfig(d)
 	if err != nil {
 		return err
 	}

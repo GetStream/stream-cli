@@ -131,18 +131,13 @@ type Config struct {
 	filePath   string
 }
 
-func NewConfig() (*Config, error) {
-	d, err := os.UserConfigDir()
-	if err != nil {
-		return nil, fmt.Errorf("cannot get user's home directory: %v", err)
-	}
-
-	err = os.Mkdir(filepath.Join(d, configDir), 0755)
+func NewConfig(dir string) (*Config, error) {
+	err := os.Mkdir(filepath.Join(dir, configDir), 0755)
 	if err != nil && !os.IsExist(err) {
 		return nil, fmt.Errorf("cannot create config directory: %v", err)
 	}
 
-	fp := filepath.Join(d, configDir, configFile)
+	fp := filepath.Join(dir, configDir, configFile)
 	b, err := os.ReadFile(fp)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
