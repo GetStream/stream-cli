@@ -27,55 +27,57 @@ func TestNewConfig(t *testing.T) {
 
 func TestAddNewConfig(t *testing.T) {
 	tests := []struct {
-		name     string
-		config   func() appConfig
-		expected string
-		errored  bool
+		name      string
+		appConfig func() App
+		expected  string
+		errored   bool
 	}{
 		{
 			name: "add first configuration",
-			config: func() appConfig {
-				cfg := newDefaultConfig()
-				cfg.Name = "BestConfig"
-				cfg.AccessKey = "FamousKey"
-				cfg.AccessSecretKey = "TopSecret"
-				return cfg
+			appConfig: func() App {
+				app := App{URL: defaultEdgeURL}
+				app.Name = "BestConfig"
+				app.AccessKey = "FamousKey"
+				app.AccessSecretKey = "TopSecret"
+				return app
 			},
-			expected: `BestConfig:
-    access-key: FamousKey
-    access-secret-key: TopSecret
-    url: https://chat.stream-io-api.com
-    default: true
+			expected: `default: BestConfig
+apps:
+    - name: BestConfig
+      access-key: FamousKey
+      access-secret-key: TopSecret
+      url: https://chat.stream-io-api.com
 `,
 		},
 		{
 			name: "add second configuration",
-			config: func() appConfig {
-				cfg := newDefaultConfig()
-				cfg.Name = "BestConfigEver"
-				cfg.AccessKey = "FamousKey"
-				cfg.AccessSecretKey = "TopSecret"
-				return cfg
+			appConfig: func() App {
+				app := App{URL: defaultEdgeURL}
+				app.Name = "BestConfigEver"
+				app.AccessKey = "FamousKey"
+				app.AccessSecretKey = "TopSecret"
+				return app
 			},
-			expected: `BestConfig:
-    access-key: FamousKey
-    access-secret-key: TopSecret
-    url: https://chat.stream-io-api.com
-    default: true
-BestConfigEver:
-    access-key: FamousKey
-    access-secret-key: TopSecret
-    url: https://chat.stream-io-api.com
+			expected: `default: BestConfig
+apps:
+    - name: BestConfig
+      access-key: FamousKey
+      access-secret-key: TopSecret
+      url: https://chat.stream-io-api.com
+    - name: BestConfigEver
+      access-key: FamousKey
+      access-secret-key: TopSecret
+      url: https://chat.stream-io-api.com
 `,
 		},
 		{
 			name: "add already existing configuration",
-			config: func() appConfig {
-				cfg := newDefaultConfig()
-				cfg.Name = "BestConfig"
-				cfg.AccessKey = "FamousKey"
-				cfg.AccessSecretKey = "TopSecret"
-				return cfg
+			appConfig: func() App {
+				app := App{URL: defaultEdgeURL}
+				app.Name = "BestConfig"
+				app.AccessKey = "FamousKey"
+				app.AccessSecretKey = "TopSecret"
+				return app
 			},
 			errored: true,
 		},
@@ -88,8 +90,8 @@ BestConfigEver:
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			conf := test.config()
-			err := config.Add(conf)
+			newApp := test.appConfig()
+			err := config.Add(newApp)
 			if test.errored {
 				require.Error(t, err)
 				return
@@ -110,7 +112,7 @@ func TestRemoveConfig(t *testing.T) {
 		filePath: file.Name(),
 	}
 
-	err := config.Add(appConfig{
+	err := config.Add(App{
 		Name:            "test1",
 		AccessKey:       "test1",
 		AccessSecretKey: "test1",
@@ -118,7 +120,7 @@ func TestRemoveConfig(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = config.Add(appConfig{
+	err = config.Add(App{
 		Name:            "test2",
 		AccessKey:       "test2",
 		AccessSecretKey: "test2",
@@ -133,10 +135,12 @@ func TestRemoveConfig(t *testing.T) {
 	err = config.Remove("test1")
 	require.NoError(t, err)
 
-	expected := `test2:
-    access-key: test2
-    access-secret-key: test2
-    url: https://chat.stream-io-api.com
+	expected := `default: ""
+apps:
+    - name: test2
+      access-key: test2
+      access-secret-key: test2
+      url: https://chat.stream-io-api.com
 `
 	content, err := os.ReadFile(file.Name())
 	require.NoError(t, err)
@@ -149,7 +153,7 @@ func TestSetDefault(t *testing.T) {
 		filePath: file.Name(),
 	}
 
-	err := config.Add(appConfig{
+	err := config.Add(App{
 		Name:            "test1",
 		AccessKey:       "test1",
 		AccessSecretKey: "test1",
@@ -157,7 +161,7 @@ func TestSetDefault(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = config.Add(appConfig{
+	err = config.Add(App{
 		Name:            "test2",
 		AccessKey:       "test2",
 		AccessSecretKey: "test2",
@@ -165,25 +169,25 @@ func TestSetDefault(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	require.True(t, config.appsConfig["test1"].Default)
-	require.False(t, config.appsConfig["test2"].Default)
+	require.True(t, config.Default == "test1")
 
 	err = config.SetDefault("test2")
 	require.NoError(t, err)
 
-	require.False(t, config.appsConfig["test1"].Default)
-	require.True(t, config.appsConfig["test2"].Default)
+	require.True(t, config.Default == "test2")
 
-	expected := `test1:
-    access-key: test1
-    access-secret-key: test1
-    url: https://chat.stream-io-api.com
-test2:
-    access-key: test2
-    access-secret-key: test2
-    url: https://chat.stream-io-api.com
-    default: true
+	expected := `default: test2
+apps:
+    - name: test1
+      access-key: test1
+      access-secret-key: test1
+      url: https://chat.stream-io-api.com
+    - name: test2
+      access-key: test2
+      access-secret-key: test2
+      url: https://chat.stream-io-api.com
 `
+
 	content, err := os.ReadFile(file.Name())
 	require.NoError(t, err)
 	require.Equal(t, expected, string(content))

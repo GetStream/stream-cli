@@ -25,39 +25,39 @@ func NewRootConfigCmd(config *Config) *cli.Command {
 		Usage:       "Manage app configurations",
 		Description: `Manage app configurations`,
 		Subcommands: []*cli.Command{
-			newConfigCmd(config),
-			removeConfigCmd(config),
-			listConfigsCmd(config),
-			defaultConfigCmd(config),
+			newAppCmd(config),
+			removeAppCmd(config),
+			listAppsCmd(config),
+			setAppDefaultCmd(config),
 		},
 	}
 }
 
-func newConfigCmd(config *Config) *cli.Command {
+func newAppCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "new",
-		Usage:       "Add a new App configuration",
+		Usage:       "Add a new application",
 		UsageText:   "stream-cli config new",
-		Description: "Add a new App configuration which can be used on further operations",
+		Description: "Add a new application which can be used for further operations",
 
 		Action: func(ctx *cli.Context) error {
-			newConfig := newDefaultConfig()
-			err := survey.Ask(questions(), &newConfig)
+			var newAppConfig App
+			err := survey.Ask(questions(), &newAppConfig)
 			if err != nil {
 				return err
 			}
 
-			return config.Add(newConfig)
+			return config.Add(newAppConfig)
 		},
 	}
 }
 
-func removeConfigCmd(config *Config) *cli.Command {
+func removeAppCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "remove",
-		Usage:       "Remove an App configuration",
+		Usage:       "Remove an application",
 		UsageText:   "stream-cli config remove <app to remove>",
-		Description: "Remove an App configuration. This operation is irrevocable",
+		Description: "Remove an application. This operation is irrevocable",
 
 		Action: func(ctx *cli.Context) error {
 			if ctx.Args().Len() != 1 {
@@ -68,25 +68,26 @@ func removeConfigCmd(config *Config) *cli.Command {
 	}
 }
 
-func listConfigsCmd(config *Config) *cli.Command {
+func listAppsCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "list",
-		Usage:       "List all configurations",
+		Usage:       "List all applications",
 		UsageText:   "stream-cli config list",
-		Description: "List all app configurations",
+		Description: "List all applications configurations",
 
 		Action: func(_ *cli.Context) error {
 			t := tabby.New()
 			t.AddHeader("", "Name", "Access Key", "Secret Key", "Region")
 
-			for k, v := range config.appsConfig {
-				defaultApp := ""
-				if v.Default {
-					defaultApp = "(default)"
+			defaultApp := config.Default
+			for _, app := range config.Apps {
+				def := ""
+				if app.Name == defaultApp {
+					def = "(default)"
 				}
 
-				secret := fmt.Sprintf("**************%v", v.AccessSecretKey[len(v.AccessSecretKey)-4:])
-				t.AddLine(defaultApp, k, v.AccessKey, secret, v.URL)
+				secret := fmt.Sprintf("**************%v", app.AccessSecretKey[len(app.AccessSecretKey)-4:])
+				t.AddLine(def, app.Name, app.AccessKey, secret, app.URL)
 			}
 			t.Print()
 			return nil
@@ -94,12 +95,12 @@ func listConfigsCmd(config *Config) *cli.Command {
 	}
 }
 
-func defaultConfigCmd(config *Config) *cli.Command {
+func setAppDefaultCmd(config *Config) *cli.Command {
 	cmd := &cli.Command{
 		Name:        "default",
-		Usage:       "Set a configuration as the default",
-		UsageText:   "stream-cli config default <name of the configuration>",
-		Description: "Set a configuration as the default, it will be used by default for all operations",
+		Usage:       "Set an application as the default",
+		UsageText:   "stream-cli config default <name of the application>",
+		Description: "Set an application as the default, it will be used by default for all operations",
 
 		Action: func(ctx *cli.Context) error {
 			if ctx.Args().Len() != 1 {
@@ -112,115 +113,114 @@ func defaultConfigCmd(config *Config) *cli.Command {
 	return cmd
 }
 
-type appConfig struct {
-	Name            string `yaml:"-"`
+type Config struct {
+	// Default is the default configuration used for operations
+	Default string `yaml:"default"`
+	Apps    []App  `yaml:"apps"`
+
+	filePath string
+}
+
+type App struct {
+	Name            string `yaml:"name"`
 	AccessKey       string `yaml:"access-key"`
 	AccessSecretKey string `yaml:"access-secret-key"`
 	URL             string `yaml:"url"`
-	Default         bool   `yaml:"default,omitempty"`
-}
-
-func newDefaultConfig() appConfig {
-	return appConfig{
-		URL: defaultEdgeURL,
-	}
-}
-
-type Config struct {
-	appsConfig map[string]*appConfig
-	filePath   string
 }
 
 func NewConfig(dir string) (*Config, error) {
 	err := os.Mkdir(filepath.Join(dir, configDir), 0755)
 	if err != nil && !os.IsExist(err) {
-		return nil, fmt.Errorf("cannot create config directory: %v", err)
+		return nil, fmt.Errorf("cannot create configuration directory: %v", err)
 	}
 
 	fp := filepath.Join(dir, configDir, configFile)
 	b, err := os.ReadFile(fp)
+	// don't return an error if the file doesn't exist yet, it may not exist on the first run
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
 	}
 
-	appsConfig := make(map[string]*appConfig)
-	err = yaml.Unmarshal(b, appsConfig)
+	config := &Config{
+		filePath: fp,
+	}
+	err = yaml.Unmarshal(b, config)
 	if err != nil {
 		return nil, err
 	}
-
-	return &Config{
-		filePath:   fp,
-		appsConfig: appsConfig,
-	}, nil
+	return config, nil
 }
 
-func (c *Config) Add(newConfig appConfig) error {
-	if len(c.appsConfig) == 0 {
-		newConfig.Default = true
+func (c *Config) Add(newApp App) error {
+	if len(c.Apps) == 0 {
+		c.Default = newApp.Name
 	}
 
-	if _, ok := c.appsConfig[newConfig.Name]; ok {
-		return fmt.Errorf("configuration for %q already exists", newConfig.Name)
+	for _, app := range c.Apps {
+		if newApp.Name == app.Name {
+			return fmt.Errorf("application %q already exists", newApp.Name)
+		}
 	}
 
-	if newConfig.URL == "" {
-		newConfig.URL = defaultEdgeURL
+	if newApp.URL == "" {
+		newApp.URL = defaultEdgeURL
 	}
 
-	if c.appsConfig == nil {
-		c.appsConfig = make(map[string]*appConfig)
-	}
-	c.appsConfig[newConfig.Name] = &newConfig
+	c.Apps = append(c.Apps, newApp)
 	return c.WriteToFile()
 }
 
-func (c *Config) WriteToFile() error {
-	b, err := yaml.Marshal(c.appsConfig)
-	if err != nil {
-		return err
+func (c *Config) Remove(appName string) error {
+	var (
+		idx   int
+		found bool
+	)
+	for i, app := range c.Apps {
+		if appName == app.Name {
+			found = true
+			idx = i
+			break
+		}
 	}
-	return os.WriteFile(c.filePath, b, 0644)
-}
-
-func (c *Config) Remove(configName string) error {
-	if len(c.appsConfig) == 0 {
-		return errors.New("config file is empty")
+	if !found {
+		return fmt.Errorf("application %q doesn't exist", appName)
 	}
 
-	if _, ok := c.appsConfig[configName]; !ok {
-		return fmt.Errorf("application %q doesn't exist", configName)
+	if c.Default == appName {
+		c.Default = ""
 	}
 
-	delete(c.appsConfig, configName)
-
+	c.Apps = append(c.Apps[:idx], c.Apps[idx+1:]...)
 	return c.WriteToFile()
 }
 
-func (c *Config) SetDefault(configName string) error {
-	if len(c.appsConfig) == 0 {
-		return errors.New("config file is empty")
-	}
-
-	config, ok := c.appsConfig[configName]
-	if !ok {
-		return fmt.Errorf("application %q doesn't exist", configName)
-	}
-
-	if config.Default {
+func (c *Config) SetDefault(appName string) error {
+	if c.Default == appName {
 		// if already default, early return
 		return nil
 	}
 
-	for k, v := range c.appsConfig {
-		if k == configName {
-			v.Default = true
-			continue
+	var found bool
+	for _, app := range c.Apps {
+		if appName == app.Name {
+			found = true
+			break
 		}
-		v.Default = false
+	}
+	if !found {
+		return fmt.Errorf("application %q doesn't exist", appName)
 	}
 
+	c.Default = appName
 	return c.WriteToFile()
+}
+
+func (c *Config) WriteToFile() error {
+	b, err := yaml.Marshal(c)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(c.filePath, b, 0644)
 }
 
 // questions returns all questions to ask to configure an app.
