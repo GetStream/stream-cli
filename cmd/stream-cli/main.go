@@ -25,6 +25,5 @@ func run() error {
 		return err
 	}
 	rootCmd := cli.NewRootCmd(config)
-	err = rootCmd.Run(os.Args)
-	return err
+	return rootCmd.Run(os.Args)
 }
