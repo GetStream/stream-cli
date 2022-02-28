@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/cheynewallace/tabby"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -22,8 +24,8 @@ const (
 func NewRootConfigCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "config",
-		Usage:       "Manage app configurations",
-		Description: `Manage app configurations`,
+		Usage:       "Manage app configurations.",
+		Description: "Manage app configurations.",
 		Subcommands: []*cli.Command{
 			newAppCmd(config),
 			removeAppCmd(config),
@@ -41,15 +43,25 @@ func newAppCmd(config *Config) *cli.Command {
 		Description: "Add a new application which can be used for further operations",
 
 		Action: func(ctx *cli.Context) error {
-			var newAppConfig App
-			err := survey.Ask(questions(), &newAppConfig)
-			if err != nil {
-				return err
-			}
-
-			return config.Add(newAppConfig)
+			return RunQuestionnaire(config)
 		},
 	}
+}
+
+func RunQuestionnaire(config *Config) error {
+	var newAppConfig App
+	err := survey.Ask(questions(), &newAppConfig)
+	if err != nil {
+		return cli.Exit(err.Error(), 1)
+	}
+
+	err = config.Add(newAppConfig)
+	if err != nil {
+		return cli.Exit(err.Error(), 1)
+	}
+
+	PrintMessage("Successfully set credentials. 🚀")
+	return nil
 }
 
 func removeAppCmd(config *Config) *cli.Command {
@@ -149,6 +161,56 @@ func NewConfig(dir string) (*Config, error) {
 		return nil, err
 	}
 	return config, nil
+}
+
+func (c *Config) Get(name string) (*App, error) {
+	if len(c.Apps) == 0 {
+		return nil, errors.New("please configure the cli configuration first with stream-cli config new")
+	}
+
+	for _, app := range c.Apps {
+		if app.Name == name {
+			return &app, nil
+		}
+	}
+	return nil, fmt.Errorf("App not found %s. Available apps: %s", name, strings.Join(c.AppNames(), ", "))
+}
+
+func (c *Config) GetCredentials(ctx *cli.Context) (string, string, error) {
+	appName := c.Default
+	if explicit := ctx.String("app"); explicit != "" {
+		appName = explicit
+	}
+
+	a, err := c.Get(appName)
+	if err != nil {
+		return "", "", err
+	}
+
+	return a.AccessKey, a.AccessSecretKey, nil
+}
+
+func (c *Config) AppNames() []string {
+	names := make([]string, len(c.Apps))
+	for i, a := range c.Apps {
+		names[i] = a.Name
+	}
+	return names
+}
+
+func (c *Config) GetStreamClient(ctx *cli.Context) (*stream.Client, error) {
+	key, secret, err := c.GetCredentials(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := stream.NewClient(key, secret)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
 
 func (c *Config) Add(newApp App) error {
@@ -252,12 +314,11 @@ func questions() []*survey.Question {
 			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
 			Transform: func(ans interface{}) interface{} {
 				s, ok := ans.(string)
-				if !ok {
+
+				if !ok || s == "" {
 					return defaultEdgeURL
 				}
-				if s == "" {
-					return defaultEdgeURL
-				}
+
 				return s
 			},
 		},
