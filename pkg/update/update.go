@@ -1,4 +1,4 @@
-package cli
+package update
 
 import (
 	"encoding/json"
@@ -9,17 +9,20 @@ import (
 	"path/filepath"
 	"runtime"
 
+	cfg "github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/util"
+	"github.com/GetStream/stream-cli/pkg/version"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/mod/semver"
 )
 
-func NewUpdateCmd(config *Config) *cli.Command {
+func NewUpdateCmd(config *cfg.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "update",
 		Usage:       "Handles self-updates of the Stream CLI.",
 		Description: "Handles self-updates of the Stream CLI.",
 		Action: func(c *cli.Context) error {
-			current := fmtVersion()
+			current := version.FmtVersion()
 			latest, err := latestVersion()
 			if err != nil {
 				return cli.Exit(err.Error(), 1)
@@ -29,9 +32,9 @@ func NewUpdateCmd(config *Config) *cli.Command {
 				if err = updateBinary(latest); err != nil {
 					return cli.Exit(err.Error(), 1)
 				}
-				PrintHappyMessageFormatted(c, "Successfully updated Stream CLI to v%s", latest)
+				util.PrintHappyMessageFormatted(c, "Successfully updated Stream CLI to v%s", latest)
 			} else {
-				PrintHappyMessage(c, "You are already on the latest Stream CLI version.")
+				util.PrintHappyMessage(c, "You are already on the latest Stream CLI version.")
 			}
 
 			return nil

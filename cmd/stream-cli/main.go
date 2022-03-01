@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/GetStream/stream-cli"
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/root"
 )
 
 func main() {
@@ -20,10 +21,10 @@ func run() error {
 		return fmt.Errorf("cannot get user's home directory: %v", err)
 	}
 
-	config, err := cli.NewConfig(d)
+	config, err := config.NewConfig(d)
 	if err != nil {
 		return err
 	}
-	rootCmd := cli.NewRootCmd(config)
+	rootCmd := root.NewRootCmd(config)
 	return rootCmd.Run(os.Args)
 }

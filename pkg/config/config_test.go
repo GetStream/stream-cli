@@ -1,4 +1,4 @@
-package cli
+package config
 
 import (
 	"os"
@@ -21,7 +21,7 @@ func getFile(t *testing.T) *os.File {
 func TestNewConfig(t *testing.T) {
 	c, err := NewConfig(os.TempDir())
 	require.NoError(t, err)
-	require.True(t, strings.HasSuffix(c.filePath, filepath.Join(configDir, configFile)))
+	require.True(t, strings.HasSuffix(c.FilePath, filepath.Join(configDir, configFile)))
 	_ = os.RemoveAll(filepath.Join(os.TempDir(), configDir))
 }
 
@@ -85,7 +85,7 @@ apps:
 
 	file := getFile(t)
 	config := &Config{
-		filePath: file.Name(),
+		FilePath: file.Name(),
 	}
 
 	for _, test := range tests {
@@ -109,7 +109,7 @@ apps:
 func TestRemoveConfig(t *testing.T) {
 	file := getFile(t)
 	config := &Config{
-		filePath: file.Name(),
+		FilePath: file.Name(),
 	}
 
 	err := config.Add(App{
@@ -150,7 +150,7 @@ apps:
 func TestSetDefault(t *testing.T) {
 	file := getFile(t)
 	config := &Config{
-		filePath: file.Name(),
+		FilePath: file.Name(),
 	}
 
 	err := config.Add(App{
