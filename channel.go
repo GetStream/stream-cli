@@ -16,10 +16,10 @@ func NewChannelCmd(config *Config) *cli.Command {
 		Description: "Manage channels.",
 		Subcommands: []*cli.Command{
 			getChannelCmd(config),
-			newListChannelsCmd(config),
-			newCreateChannelCmd(config),
-			newDeleteChannelCmd(config),
-			newUpdateChannelCmd(config),
+			listChannelsCmd(config),
+			createChannelCmd(config),
+			deleteChannelCmd(config),
+			updateChannelCmd(config),
 		},
 	}
 }
@@ -28,16 +28,17 @@ func getChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "get",
 		Usage:       "Get a channel by channel type and channel name.",
+		UsageText:   "stream-cli channel get --type [channel-type] --name [channel-name]",
 		Description: "Get a channel by channel type and channel name.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "channel-type",
+				Name:     "type",
 				Aliases:  []string{"t"},
 				Usage:    "The type of the channel. Such as 'messaging' or 'livestream'.",
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "channel-name",
+				Name:     "name",
 				Aliases:  []string{"n"},
 				Usage:    "The name of the channel.",
 				Required: true,
@@ -49,24 +50,22 @@ func getChannelCmd(config *Config) *cli.Command {
 			},
 		},
 		Action: func(ctx *cli.Context) error {
-			r, err := getOrCreateChannel(config, ctx)
-
+			r, err := getOrCreateChannel(ctx, config)
 			if err != nil {
 				return err
 			}
 
-			t := tabby.New()
-			t.AddHeader("CID", "Member count", "Created By", "Created At", "Updated At", "Extra Data")
-			t.AddLine(r.Channel.CID,
-				r.Channel.MemberCount,
-				r.Channel.CreatedBy.ID,
-				r.Channel.CreatedAt.Format(time.RFC822),
-				r.Channel.UpdatedAt.Format(time.RFC822),
-				r.Channel.ExtraData)
-
 			if ctx.Bool("json") {
-				PrintRawJson(r)
+				PrintRawJson(ctx, r)
 			} else {
+				t := tabby.New()
+				t.AddHeader("CID", "Member count", "Created By", "Created At", "Updated At", "Custom Data")
+				t.AddLine(r.Channel.CID,
+					r.Channel.MemberCount,
+					r.Channel.CreatedBy.ID,
+					r.Channel.CreatedAt.Format(time.RFC822),
+					r.Channel.UpdatedAt.Format(time.RFC822),
+					r.Channel.ExtraData)
 				t.Print()
 			}
 
@@ -75,22 +74,21 @@ func getChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func newCreateChannelCmd(config *Config) *cli.Command {
+func createChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
-		Name:      "create",
-		Usage:     "Create a new channel or return an existing one.",
-		UsageText: "stream-cli channel create --channel-type [channel-type] --channel-name [channel-name]",
-		Description: "Creates a new channel or returns an existing one if it already exists. " +
-			"If channel name is not provided it will be generated automatically.",
+		Name:        "create",
+		Usage:       "Create a new channel or return an existing one.",
+		UsageText:   "stream-cli channel create --type [channel-type] --name [channel-name]",
+		Description: "Creates a new channel or returns an existing one if it already exists.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "channel-type",
+				Name:     "type",
 				Aliases:  []string{"t"},
 				Usage:    "The type of the channel. Such as 'messaging' or 'livestream'.",
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "channel-name",
+				Name:     "name",
 				Aliases:  []string{"n"},
 				Usage:    "The name of the channel.",
 				Required: true,
@@ -98,7 +96,7 @@ func newCreateChannelCmd(config *Config) *cli.Command {
 			&cli.StringFlag{
 				Name:     "user",
 				Aliases:  []string{"u"},
-				Usage:    "The user ID of the user who will be the creator of the channel.",
+				Usage:    "The ID of the user who will be the creator of the channel.",
 				Required: true,
 			},
 			&cli.BoolFlag{
@@ -109,16 +107,19 @@ func newCreateChannelCmd(config *Config) *cli.Command {
 		},
 
 		Action: func(ctx *cli.Context) error {
-			r, err := getOrCreateChannel(config, ctx)
-
+			r, err := getOrCreateChannel(ctx, config)
 			if err != nil {
 				return err
 			}
 
-			PrintHappyMessageFormatted("Successfully created channel [%s].", r.Channel.CID)
+			if time.Now().UTC().Unix()-r.Channel.CreatedAt.Unix() > 3 {
+				return cli.Exit("The channel exists already", 1)
+			}
+
+			PrintHappyMessageFormatted(ctx, "Successfully created channel [%s].", r.Channel.CID)
 
 			if ctx.Bool("json") {
-				PrintRawJson(r)
+				PrintRawJson(ctx, r)
 			}
 
 			return nil
@@ -126,13 +127,12 @@ func newCreateChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func getOrCreateChannel(config *Config, ctx *cli.Context) (*stream.CreateChannelResponse, error) {
-	t := ctx.String("channel-type")
-	n := ctx.String("channel-name")
+func getOrCreateChannel(ctx *cli.Context, config *Config) (*stream.CreateChannelResponse, error) {
+	t := ctx.String("type")
+	n := ctx.String("name")
 	u := ctx.String("user")
 
 	c, err := config.GetStreamClient(ctx)
-
 	if err != nil {
 		return nil, cli.Exit(err.Error(), 1)
 	}
@@ -143,7 +143,6 @@ func getOrCreateChannel(config *Config, ctx *cli.Context) (*stream.CreateChannel
 	}
 
 	r, err := c.CreateChannel(ctx.Context, t, n, u, nil)
-
 	if err != nil {
 		return nil, cli.Exit(err.Error(), 1)
 	}
@@ -151,21 +150,21 @@ func getOrCreateChannel(config *Config, ctx *cli.Context) (*stream.CreateChannel
 	return r, nil
 }
 
-func newDeleteChannelCmd(config *Config) *cli.Command {
+func deleteChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "delete",
 		Usage:       "Delete a channel.",
-		UsageText:   "stream-cli channel delete --channel-type messaging --channel-name my-team-channel --hard",
+		UsageText:   "stream-cli channel delete --type [channel-type] --name [channel-name] --hard",
 		Description: "Delete a channel.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "channel-type",
+				Name:     "type",
 				Aliases:  []string{"t"},
 				Usage:    "The type of the channel. Such as 'messaging' or 'livestream'.",
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "channel-name",
+				Name:     "name",
 				Aliases:  []string{"n"},
 				Usage:    "The name of the channel.",
 				Required: true,
@@ -173,8 +172,7 @@ func newDeleteChannelCmd(config *Config) *cli.Command {
 			&cli.BoolFlag{
 				Name: "hard",
 				// "h" alias is already used by "--help" flag, so we don't have an alias here
-				Usage:    "Hard deleted channels cannot be restored.",
-				Value:    false,
+				Usage:    "Channel will be hard deleted. This action is irrevocable.",
 				Required: false,
 			},
 			&cli.BoolFlag{
@@ -190,43 +188,42 @@ func newDeleteChannelCmd(config *Config) *cli.Command {
 			}
 
 			hard := ctx.Bool("hard")
-			cids := []string{ctx.String("channel-type") + ":" + ctx.String("channel-name")}
+			cids := []string{ctx.String("type") + ":" + ctx.String("name")}
 
 			resp, err := c.DeleteChannels(ctx.Context, cids, hard)
-
 			if err != nil {
 				return cli.Exit(err.Error(), 1)
 			}
 
 			if ctx.Bool("json") {
-				PrintRawJson(resp)
+				PrintRawJson(ctx, resp)
 			}
 
 			if resp.TaskID == "" {
-				PrintMessage("The channel is already deleted.")
+				PrintMessage(ctx, "The channel is already deleted.")
 				return nil
 			}
 
-			return WaitForAsyncCompletion(ctx.Context, c, resp.TaskID)
+			return WaitForAsyncCompletion(ctx, c, resp.TaskID, 10)
 		},
 	}
 }
 
-func newUpdateChannelCmd(config *Config) *cli.Command {
+func updateChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "update",
 		Usage:       "Update a channel.",
-		UsageText:   "stream-cli channel update --channel-type messaging --channel-name my-team-channel --properties '{\"frozen\": \"true\"}'",
+		UsageText:   "stream-cli channel update --type [channel-type] --name [channel-name] --properties '{\"frozen\": \"true\"}'",
 		Description: "Update a channel.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "channel-type",
+				Name:     "type",
 				Aliases:  []string{"t"},
 				Usage:    "The type of the channel. Such as 'messaging' or 'livestream'.",
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "channel-name",
+				Name:     "name",
 				Aliases:  []string{"n"},
 				Usage:    "The name of the channel.",
 				Required: true,
@@ -249,11 +246,14 @@ func newUpdateChannelCmd(config *Config) *cli.Command {
 				return cli.Exit(err.Error(), 1)
 			}
 
-			t := ctx.String("channel-type")
-			n := ctx.String("channel-name")
+			t := ctx.String("type")
+			n := ctx.String("name")
 			p := ctx.String("properties")
 			props := make(map[string]interface{})
-			json.Unmarshal([]byte(p), &props)
+			err = json.Unmarshal([]byte(p), &props)
+			if err != nil {
+				return cli.Exit(err.Error(), 1)
+			}
 
 			ch := c.Channel(t, n)
 			_, err = ch.Update(ctx.Context, props, nil)
@@ -261,10 +261,10 @@ func newUpdateChannelCmd(config *Config) *cli.Command {
 				return cli.Exit(err.Error(), 1)
 			}
 
-			PrintHappyMessageFormatted("Successfully updated channel [%s].", n)
+			PrintHappyMessageFormatted(ctx, "Successfully updated channel [%s].", n)
 
 			if ctx.Bool("json") {
-				PrintRawJson(ch)
+				PrintRawJson(ctx, ch)
 			}
 
 			return nil
@@ -272,15 +272,15 @@ func newUpdateChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func newListChannelsCmd(config *Config) *cli.Command {
+func listChannelsCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "list",
 		Usage:       "List all channels.",
-		UsageText:   "stream-cli channel list --channel-type messaging",
-		Description: "Update a channel.",
+		UsageText:   "stream-cli channel list --type [channel-type]",
+		Description: "List all channels.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "channel-type",
+				Name:     "type",
 				Aliases:  []string{"t"},
 				Usage:    "The type of the channel. Such as 'messaging' or 'livestream'. If not specified, it returns all channels.",
 				Required: false,
@@ -313,7 +313,7 @@ func newListChannelsCmd(config *Config) *cli.Command {
 
 			resp, err := c.QueryChannels(ctx.Context, &stream.QueryOption{
 				Filter: map[string]interface{}{
-					"type": ctx.String("channel-type"),
+					"type": ctx.String("type"),
 				},
 				Limit:  ctx.Int("limit"),
 				Offset: ctx.Int("offset"),
@@ -329,7 +329,7 @@ func newListChannelsCmd(config *Config) *cli.Command {
 			}
 
 			if ctx.Bool("json") {
-				PrintRawJson(resp)
+				PrintRawJson(ctx, resp)
 			} else {
 				t.Print()
 			}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -43,12 +42,12 @@ func newAppCmd(config *Config) *cli.Command {
 		Description: "Add a new application which can be used for further operations",
 
 		Action: func(ctx *cli.Context) error {
-			return RunQuestionnaire(config)
+			return RunQuestionnaire(ctx, config)
 		},
 	}
 }
 
-func RunQuestionnaire(config *Config) error {
+func RunQuestionnaire(ctx *cli.Context, config *Config) error {
 	var newAppConfig App
 	err := survey.Ask(questions(), &newAppConfig)
 	if err != nil {
@@ -60,7 +59,7 @@ func RunQuestionnaire(config *Config) error {
 		return cli.Exit(err.Error(), 1)
 	}
 
-	PrintMessage("Successfully set credentials. 🚀")
+	PrintMessage(ctx, "Application successfully added. 🚀")
 	return nil
 }
 
@@ -165,7 +164,7 @@ func NewConfig(dir string) (*Config, error) {
 
 func (c *Config) Get(name string) (*App, error) {
 	if len(c.Apps) == 0 {
-		return nil, errors.New("please configure the cli configuration first with stream-cli config new")
+		return nil, errors.New("no application configured, please run `stream-cli config new` to add a new one")
 	}
 
 	for _, app := range c.Apps {
@@ -173,7 +172,7 @@ func (c *Config) Get(name string) (*App, error) {
 			return &app, nil
 		}
 	}
-	return nil, fmt.Errorf("App not found %s. Available apps: %s", name, strings.Join(c.AppNames(), ", "))
+	return nil, fmt.Errorf("application %q doesn't exist", name)
 }
 
 func (c *Config) GetCredentials(ctx *cli.Context) (string, string, error) {
@@ -190,27 +189,13 @@ func (c *Config) GetCredentials(ctx *cli.Context) (string, string, error) {
 	return a.AccessKey, a.AccessSecretKey, nil
 }
 
-func (c *Config) AppNames() []string {
-	names := make([]string, len(c.Apps))
-	for i, a := range c.Apps {
-		names[i] = a.Name
-	}
-	return names
-}
-
 func (c *Config) GetStreamClient(ctx *cli.Context) (*stream.Client, error) {
 	key, secret, err := c.GetCredentials(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := stream.NewClient(key, secret)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return client, nil
+	return stream.NewClient(key, secret)
 }
 
 func (c *Config) Add(newApp App) error {
