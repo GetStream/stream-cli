@@ -50,9 +50,14 @@ func getChannelCmd(config *Config) *cli.Command {
 			},
 		},
 		Action: func(ctx *cli.Context) error {
-			r, err := getOrCreateChannel(ctx, config)
+			c, err := config.GetStreamClient(ctx)
 			if err != nil {
-				return err
+				return cli.Exit(err.Error(), 1)
+			}
+
+			r, err := c.Channel(ctx.String("type"), ctx.String("id")).Query(ctx.Context, &stream.QueryRequest{})
+			if err != nil {
+				return cli.Exit(err.Error(), 1)
 			}
 
 			if ctx.Bool("json") {
@@ -107,9 +112,14 @@ func createChannelCmd(config *Config) *cli.Command {
 		},
 
 		Action: func(ctx *cli.Context) error {
-			r, err := getOrCreateChannel(ctx, config)
+			c, err := config.GetStreamClient(ctx)
 			if err != nil {
-				return err
+				return cli.Exit(err.Error(), 1)
+			}
+
+			r, err := c.CreateChannel(ctx.Context, ctx.String("type"), ctx.String("id"), ctx.String("user"), nil)
+			if err != nil {
+				return cli.Exit(err.Error(), 1)
 			}
 
 			if time.Now().UTC().Unix()-r.Channel.CreatedAt.Unix() > 3 {
@@ -125,29 +135,6 @@ func createChannelCmd(config *Config) *cli.Command {
 			return nil
 		},
 	}
-}
-
-func getOrCreateChannel(ctx *cli.Context, config *Config) (*stream.CreateChannelResponse, error) {
-	t := ctx.String("type")
-	n := ctx.String("id")
-	u := ctx.String("user")
-
-	c, err := config.GetStreamClient(ctx)
-	if err != nil {
-		return nil, cli.Exit(err.Error(), 1)
-	}
-
-	if u == "" {
-		// This means that it's a GetChannel operation not a CreateChannel one. Let's use a dummy name then.
-		u = "stream-go-cli"
-	}
-
-	r, err := c.CreateChannel(ctx.Context, t, n, u, nil)
-	if err != nil {
-		return nil, cli.Exit(err.Error(), 1)
-	}
-
-	return r, nil
 }
 
 func deleteChannelCmd(config *Config) *cli.Command {
