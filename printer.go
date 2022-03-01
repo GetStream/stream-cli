@@ -3,29 +3,31 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/urfave/cli/v2"
 )
 
-func PrintMessage(message string) {
-	fmt.Println(" > " + message)
+func PrintMessage(ctx *cli.Context, message string) {
+	ctx.App.Writer.Write([]byte(" > " + message + "\n"))
 }
 
-func PrintMessageFormat(message string, args ...interface{}) {
-	PrintMessage(fmt.Sprintf(message, args...))
+func PrintMessageFormat(ctx *cli.Context, message string, args ...interface{}) {
+	PrintMessage(ctx, fmt.Sprintf(message, args...))
 }
 
-func PrintHappyMessage(message string) {
-	PrintMessage(message + " ✅")
+func PrintHappyMessage(ctx *cli.Context, message string) {
+	PrintMessage(ctx, message+" ✅")
 }
 
-func PrintHappyMessageFormatted(message string, args ...interface{}) {
-	PrintHappyMessage(fmt.Sprintf(message, args...))
+func PrintHappyMessageFormatted(ctx *cli.Context, message string, args ...interface{}) {
+	PrintHappyMessage(ctx, fmt.Sprintf(message, args...))
 }
 
-func PrintSadMessage(message string) {
-	PrintMessage(message + " ❌")
+func PrintSadMessage(ctx *cli.Context, message string) {
+	PrintMessage(ctx, message+" ❌")
 }
 
-func PrintRawJson(data interface{}) {
+func PrintRawJson(ctx *cli.Context, data interface{}) {
 	res, _ := json.MarshalIndent(data, "", "  ")
-	fmt.Println(string(res))
+	ctx.App.Writer.Write(res)
 }
