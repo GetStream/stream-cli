@@ -18,7 +18,7 @@ func NewRootCmd(config *Config) *cli.App {
 		ExitErrHandler: func(c *cli.Context, err error) {
 			if exitErr, ok := err.(cli.ExitCoder); ok {
 				if err.Error() != "" {
-					PrintSadMessage(err.Error())
+					PrintSadMessage(c, err.Error())
 				}
 				cli.OsExiter(exitErr.ExitCode())
 			}
@@ -34,6 +34,7 @@ func NewRootCmd(config *Config) *cli.App {
 			NewInitCmd(config),
 			NewChannelCmd(config),
 			NewUpdateCmd(config),
+			NewWatchCmd(config),
 		},
 	}
 }

@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.15
+	github.com/GetStream/stream-chat-go/v5 v5.1.0
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/stretchr/testify v1.7.0
 	github.com/urfave/cli/v2 v2.3.0
@@ -11,7 +12,6 @@ require (
 )
 
 require (
-	github.com/GetStream/stream-chat-go/v5 v5.1.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.0.0 // indirect

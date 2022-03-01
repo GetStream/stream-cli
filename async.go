@@ -1,33 +1,36 @@
 package cli
 
 import (
-	"context"
-	"errors"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
+	"github.com/urfave/cli/v2"
 )
 
-func WaitForAsyncCompletion(ctx context.Context, c *stream.Client, taskId string) error {
-	PrintMessage("Waiting for async operation to complete... ⏳")
+func WaitForAsyncCompletion(ctx *cli.Context, c *stream.Client, taskId string, timeoutSeconds int) error {
+	PrintMessage(ctx, "Task ID: "+taskId)
+	PrintMessage(ctx, "Waiting for async operation to complete... ⏳")
 
-	for i := 0; i < 20; i++ {
-		resp, err := c.GetTask(ctx, taskId)
+	for i := 0; i < timeoutSeconds; i++ {
+		resp, err := c.GetTask(ctx.Context, taskId)
 		if err != nil {
 			return err
 		}
 
 		if resp.Status == stream.TaskStatusCompleted {
-			PrintHappyMessage("Async operation completed successfully.")
+			PrintHappyMessage(ctx, "Async operation completed successfully.")
 			return nil
 		}
 
 		if i%5 == 0 {
-			PrintMessage("Still loading... ⏳")
+			PrintMessage(ctx, "Still loading... ⏳")
 		}
 
-		time.Sleep(time.Millisecond * 500)
+		time.Sleep(time.Second * 1)
 	}
 
-	return errors.New("async operation did not complete within 10 seconds")
+	PrintMessage(ctx, "Async operation did not finish it in 10 seconds. "+
+		"You'll need to continue polling with `stream-cli watch -t "+taskId+"` command.")
+
+	return nil
 }

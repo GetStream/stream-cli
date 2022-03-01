@@ -10,7 +10,7 @@ func NewInitCmd(config *Config) *cli.Command {
 		Description: "Initializes application credentials.",
 
 		Action: func(ctx *cli.Context) error {
-			return RunQuestionnaire(config)
+			return RunQuestionnaire(ctx, config)
 		},
 	}
 }

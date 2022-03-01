@@ -18,18 +18,6 @@ func NewUpdateCmd(config *Config) *cli.Command {
 		Name:        "update",
 		Usage:       "Handles self-updates of the Stream CLI.",
 		Description: "Handles self-updates of the Stream CLI.",
-		Subcommands: []*cli.Command{
-			selfUpdateCmd(config),
-		},
-	}
-}
-
-func selfUpdateCmd(config *Config) *cli.Command {
-	return &cli.Command{
-		Name:        "self",
-		Usage:       "Self-updates of the Stream CLI if there is a newer version available.",
-		UsageText:   "stream-cli update self",
-		Description: "Self-updates of the Stream CLI if there is a newer version available.",
 		Action: func(c *cli.Context) error {
 			current := fmtVersion()
 			latest, err := latestVersion()
@@ -41,9 +29,9 @@ func selfUpdateCmd(config *Config) *cli.Command {
 				if err = updateBinary(latest); err != nil {
 					return cli.Exit(err.Error(), 1)
 				}
-				PrintHappyMessageFormatted("Successfully updated Stream CLI to v%s", latest)
+				PrintHappyMessageFormatted(c, "Successfully updated Stream CLI to v%s", latest)
 			} else {
-				PrintHappyMessage("You are already on the latest Stream CLI version.")
+				PrintHappyMessage(c, "You are already on the latest Stream CLI version.")
 			}
 
 			return nil
@@ -53,7 +41,6 @@ func selfUpdateCmd(config *Config) *cli.Command {
 
 func latestVersion() (string, error) {
 	resp, err := http.DefaultClient.Get("https://api.github.com/repos/getstream/stream-cli/releases/latest")
-
 	if err != nil {
 		return "", err
 	}
