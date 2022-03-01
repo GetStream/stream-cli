@@ -3,14 +3,12 @@ package cli
 import (
 	"bytes"
 	"context"
-	"flag"
 	"math/rand"
 	"os"
 	"testing"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/stretchr/testify/require"
 	"github.com/urfave/cli/v2"
 )
 
@@ -47,8 +45,8 @@ func initApp() *cli.App {
 
 func initChannel(t *testing.T, app *cli.App) string {
 	name := randomString(10)
-	err := app.Run([]string{"", "channel", "create", "-t", "messaging", "-n", name, "-u", "userid"})
-	require.NoError(t, err)
+	c := initClient()
+	c.CreateChannel(context.Background(), "messaging", name, "userid", nil)
 	return name
 }
 
@@ -58,7 +56,7 @@ func deleteChannel(id string) {
 }
 
 func initClient() *stream.Client {
-	c, _ := initConfig().GetStreamClient(cli.NewContext(nil, &flag.FlagSet{}, nil))
+	c, _ := stream.NewClientFromEnvVars()
 	return c
 }
 
