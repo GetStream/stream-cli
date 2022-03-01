@@ -1,4 +1,4 @@
-package cli
+package config
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	stream "github.com/GetStream/stream-chat-go/v5"
+	"github.com/GetStream/stream-cli/pkg/util"
 	"github.com/cheynewallace/tabby"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -59,7 +60,7 @@ func RunQuestionnaire(ctx *cli.Context, config *Config) error {
 		return cli.Exit(err.Error(), 1)
 	}
 
-	PrintMessage(ctx, "Application successfully added. 🚀")
+	util.PrintMessage(ctx, "Application successfully added. 🚀")
 	return nil
 }
 
@@ -129,7 +130,7 @@ type Config struct {
 	Default string `yaml:"default"`
 	Apps    []App  `yaml:"apps"`
 
-	filePath string
+	FilePath string `yaml:"-"`
 }
 
 type App struct {
@@ -153,7 +154,7 @@ func NewConfig(dir string) (*Config, error) {
 	}
 
 	config := &Config{
-		filePath: fp,
+		FilePath: fp,
 	}
 	err = yaml.Unmarshal(b, config)
 	if err != nil {
@@ -267,7 +268,7 @@ func (c *Config) WriteToFile() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(c.filePath, b, 0644)
+	return os.WriteFile(c.FilePath, b, 0644)
 }
 
 // questions returns all questions to ask to configure an app.

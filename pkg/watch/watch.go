@@ -1,10 +1,12 @@
-package cli
+package watch
 
 import (
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/util"
 	"github.com/urfave/cli/v2"
 )
 
-func NewWatchCmd(config *Config) *cli.Command {
+func NewWatchCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "watch",
 		Usage:       "Waits for async operations to complete.",
@@ -29,7 +31,7 @@ func NewWatchCmd(config *Config) *cli.Command {
 				return cli.Exit(err.Error(), 1)
 			}
 
-			return WaitForAsyncCompletion(ctx, c, ctx.String("task-id"), ctx.Int("timeout"))
+			return util.WaitForAsyncCompletion(ctx, c, ctx.String("task-id"), ctx.Int("timeout"))
 		},
 	}
 }
