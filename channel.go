@@ -28,7 +28,7 @@ func getChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "get",
 		Usage:       "Get a channel by channel type and channel name.",
-		UsageText:   "stream-cli channel get --type [channel-type] --name [channel-name]",
+		UsageText:   "stream-cli channel get --type [channel-type] --id [channel-id]",
 		Description: "Get a channel by channel type and channel name.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -38,9 +38,9 @@ func getChannelCmd(config *Config) *cli.Command {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "name",
-				Aliases:  []string{"n"},
-				Usage:    "The name of the channel.",
+				Name:     "id",
+				Aliases:  []string{"i"},
+				Usage:    "The id of the channel.",
 				Required: true,
 			},
 			&cli.BoolFlag{
@@ -78,7 +78,7 @@ func createChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "create",
 		Usage:       "Create a new channel or return an existing one.",
-		UsageText:   "stream-cli channel create --type [channel-type] --name [channel-name]",
+		UsageText:   "stream-cli channel create --type [channel-type] --id [channel-id]",
 		Description: "Creates a new channel or returns an existing one if it already exists.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -88,9 +88,9 @@ func createChannelCmd(config *Config) *cli.Command {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "name",
-				Aliases:  []string{"n"},
-				Usage:    "The name of the channel.",
+				Name:     "id",
+				Aliases:  []string{"i"},
+				Usage:    "The id of the channel.",
 				Required: true,
 			},
 			&cli.StringFlag{
@@ -129,7 +129,7 @@ func createChannelCmd(config *Config) *cli.Command {
 
 func getOrCreateChannel(ctx *cli.Context, config *Config) (*stream.CreateChannelResponse, error) {
 	t := ctx.String("type")
-	n := ctx.String("name")
+	n := ctx.String("id")
 	u := ctx.String("user")
 
 	c, err := config.GetStreamClient(ctx)
@@ -154,7 +154,7 @@ func deleteChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "delete",
 		Usage:       "Delete a channel.",
-		UsageText:   "stream-cli channel delete --type [channel-type] --name [channel-name] --hard",
+		UsageText:   "stream-cli channel delete --type [channel-type] --id [channel-id] --hard",
 		Description: "Delete a channel.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -164,9 +164,9 @@ func deleteChannelCmd(config *Config) *cli.Command {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "name",
-				Aliases:  []string{"n"},
-				Usage:    "The name of the channel.",
+				Name:     "id",
+				Aliases:  []string{"i"},
+				Usage:    "The id of the channel.",
 				Required: true,
 			},
 			&cli.BoolFlag{
@@ -188,7 +188,7 @@ func deleteChannelCmd(config *Config) *cli.Command {
 			}
 
 			hard := ctx.Bool("hard")
-			cids := []string{ctx.String("type") + ":" + ctx.String("name")}
+			cids := []string{ctx.String("type") + ":" + ctx.String("id")}
 
 			resp, err := c.DeleteChannels(ctx.Context, cids, hard)
 			if err != nil {
@@ -213,7 +213,7 @@ func updateChannelCmd(config *Config) *cli.Command {
 	return &cli.Command{
 		Name:        "update",
 		Usage:       "Update a channel.",
-		UsageText:   "stream-cli channel update --type [channel-type] --name [channel-name] --properties '{\"frozen\": \"true\"}'",
+		UsageText:   "stream-cli channel update --type [channel-type] --id [channel-id] --properties '{\"frozen\": \"true\"}'",
 		Description: "Update a channel.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -223,9 +223,9 @@ func updateChannelCmd(config *Config) *cli.Command {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "name",
-				Aliases:  []string{"n"},
-				Usage:    "The name of the channel.",
+				Name:     "id",
+				Aliases:  []string{"i"},
+				Usage:    "The id of the channel.",
 				Required: true,
 			},
 			&cli.StringFlag{
@@ -247,7 +247,7 @@ func updateChannelCmd(config *Config) *cli.Command {
 			}
 
 			t := ctx.String("type")
-			n := ctx.String("name")
+			n := ctx.String("id")
 			p := ctx.String("properties")
 			props := make(map[string]interface{})
 			err = json.Unmarshal([]byte(p), &props)

@@ -31,7 +31,7 @@ func TestCreateChannelAlreadyExists(t *testing.T) {
 		deleteChannel(ch)
 	})
 	time.Sleep(4 * time.Second)
-	_ = app.Run([]string{"", "channel", "create", "-t", "messaging", "-n", ch, "-u", "userid"})
+	_ = app.Run([]string{"", "channel", "create", "-t", "messaging", "-i", ch, "-u", "userid"})
 	require.Contains(t, app.ErrWriter.(*bytes.Buffer).String(), "channel exists already")
 }
 
@@ -42,14 +42,14 @@ func TestGetChannel(t *testing.T) {
 		deleteChannel(ch)
 	})
 
-	err := app.Run([]string{"", "channel", "get", "-t", "messaging", "-n", ch})
+	err := app.Run([]string{"", "channel", "get", "-t", "messaging", "-i", ch})
 	require.NoError(t, err)
 }
 
 func TestDeleteChannel(t *testing.T) {
 	app := initApp()
 	ch := initChannel(t, app)
-	err := app.Run([]string{"", "channel", "delete", "-t", "messaging", "-n", ch, "--hard"})
+	err := app.Run([]string{"", "channel", "delete", "-t", "messaging", "-i", ch, "--hard"})
 	require.NoError(t, err)
 
 	c := initClient()
@@ -65,7 +65,7 @@ func TestUpdateChannel(t *testing.T) {
 		deleteChannel(ch)
 	})
 
-	err := app.Run([]string{"", "channel", "update", "-t", "messaging", "-n", ch, "-p", "{\"custom_property\":\"property-value\"}"})
+	err := app.Run([]string{"", "channel", "update", "-t", "messaging", "-i", ch, "-p", "{\"custom_property\":\"property-value\"}"})
 	require.NoError(t, err)
 
 	c := initClient()
