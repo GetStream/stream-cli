@@ -1,15 +1,17 @@
-package cli
+package channel
 
 import (
 	"encoding/json"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/util"
 	"github.com/cheynewallace/tabby"
 	"github.com/urfave/cli/v2"
 )
 
-func NewChannelCmd(config *Config) *cli.Command {
+func NewChannelCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "channel",
 		Usage:       "Manage channels.",
@@ -24,7 +26,7 @@ func NewChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func getChannelCmd(config *Config) *cli.Command {
+func getChannelCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "get",
 		Usage:       "Get a channel by channel type and channel name.",
@@ -61,7 +63,7 @@ func getChannelCmd(config *Config) *cli.Command {
 			}
 
 			if ctx.Bool("json") {
-				PrintRawJson(ctx, r)
+				util.PrintRawJson(ctx, r)
 			} else {
 				t := tabby.New()
 				t.AddHeader("CID", "Member count", "Created By", "Created At", "Updated At", "Custom Data")
@@ -79,7 +81,7 @@ func getChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func createChannelCmd(config *Config) *cli.Command {
+func createChannelCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "create",
 		Usage:       "Create a new channel or return an existing one.",
@@ -126,10 +128,10 @@ func createChannelCmd(config *Config) *cli.Command {
 				return cli.Exit("The channel exists already", 1)
 			}
 
-			PrintHappyMessageFormatted(ctx, "Successfully created channel [%s].", r.Channel.CID)
+			util.PrintHappyMessageFormatted(ctx, "Successfully created channel [%s].", r.Channel.CID)
 
 			if ctx.Bool("json") {
-				PrintRawJson(ctx, r)
+				util.PrintRawJson(ctx, r)
 			}
 
 			return nil
@@ -137,7 +139,7 @@ func createChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func deleteChannelCmd(config *Config) *cli.Command {
+func deleteChannelCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "delete",
 		Usage:       "Delete a channel.",
@@ -183,20 +185,20 @@ func deleteChannelCmd(config *Config) *cli.Command {
 			}
 
 			if ctx.Bool("json") {
-				PrintRawJson(ctx, resp)
+				util.PrintRawJson(ctx, resp)
 			}
 
 			if resp.TaskID == "" {
-				PrintMessage(ctx, "The channel is already deleted.")
+				util.PrintMessage(ctx, "The channel is already deleted.")
 				return nil
 			}
 
-			return WaitForAsyncCompletion(ctx, c, resp.TaskID, 10)
+			return util.WaitForAsyncCompletion(ctx, c, resp.TaskID, 10)
 		},
 	}
 }
 
-func updateChannelCmd(config *Config) *cli.Command {
+func updateChannelCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "update",
 		Usage:       "Update a channel.",
@@ -248,10 +250,10 @@ func updateChannelCmd(config *Config) *cli.Command {
 				return cli.Exit(err.Error(), 1)
 			}
 
-			PrintHappyMessageFormatted(ctx, "Successfully updated channel [%s].", n)
+			util.PrintHappyMessageFormatted(ctx, "Successfully updated channel [%s].", n)
 
 			if ctx.Bool("json") {
-				PrintRawJson(ctx, ch)
+				util.PrintRawJson(ctx, ch)
 			}
 
 			return nil
@@ -259,7 +261,7 @@ func updateChannelCmd(config *Config) *cli.Command {
 	}
 }
 
-func listChannelsCmd(config *Config) *cli.Command {
+func listChannelsCmd(config *config.Config) *cli.Command {
 	return &cli.Command{
 		Name:        "list",
 		Usage:       "List all channels.",
@@ -316,7 +318,7 @@ func listChannelsCmd(config *Config) *cli.Command {
 			}
 
 			if ctx.Bool("json") {
-				PrintRawJson(ctx, resp)
+				util.PrintRawJson(ctx, resp)
 			} else {
 				t.Print()
 			}

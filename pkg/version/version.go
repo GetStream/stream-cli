@@ -1,4 +1,4 @@
-package cli
+package version
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ const (
 	versionPatch = 0
 )
 
-func fmtVersion() string {
+func FmtVersion() string {
 	return fmt.Sprintf("%d.%d.%d",
 		versionMajor,
 		versionMinor,
