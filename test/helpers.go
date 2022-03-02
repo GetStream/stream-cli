@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"math/rand"
 	"os"
@@ -9,20 +10,33 @@ import (
 
 	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-func InitConfig() *config.Config {
-	return &config.Config{
-		Default: "app",
-		Apps: []config.App{
-			{
-				Name:            "app",
-				AccessKey:       os.Getenv("STREAM_KEY"),
-				AccessSecretKey: os.Getenv("STREAM_SECRET"),
-			},
+func prepareViperConfig() {
+	viper.Set("default", "default_app")
+	viper.Set("apps", []config.App{
+		{
+			Name:            "default_app",
+			AccessKey:       os.Getenv("STREAM_KEY"),
+			AccessSecretKey: os.Getenv("STREAM_SECRET"),
+			URL:             config.DefaultEdgeURL,
 		},
-		FilePath: "",
-	}
+	})
+}
+
+func GetRootCmdWithSubCommands(c ...*cobra.Command) *cobra.Command {
+	prepareViperConfig()
+
+	rootCmd := &cobra.Command{}
+	rootCmd.PersistentFlags().String("app", "", "app name")
+	rootCmd.AddCommand(c...)
+	rootCmd.SetIn(&bytes.Buffer{})
+	rootCmd.SetOut(&bytes.Buffer{})
+	rootCmd.SetErr(&bytes.Buffer{})
+
+	return rootCmd
 }
 
 func InitChannel(t *testing.T) string {
