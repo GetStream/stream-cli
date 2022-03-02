@@ -7,27 +7,20 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	test "github.com/GetStream/stream-cli/test"
+	"github.com/GetStream/stream-cli/test"
 	"github.com/stretchr/testify/require"
-	"github.com/urfave/cli/v2"
 )
 
-func getTestApp() *cli.App {
-	return &cli.App{
-		Commands:  []*cli.Command{NewChannelCmd(test.InitConfig())},
-		Writer:    &bytes.Buffer{},
-		ErrWriter: &bytes.Buffer{},
-		ExitErrHandler: func(context *cli.Context, err error) {
-			context.App.ErrWriter.Write([]byte(err.Error()))
-		},
-	}
-}
-
 func TestCreateChannel(t *testing.T) {
-	ch := test.InitChannel(t)
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	ch := test.RandomString(10)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
 	})
+
+	cmd.SetArgs([]string{"create-channel", "-t", "messaging", "-i", ch, "-u", "user"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
 
 	c := test.InitClient()
 	ctx := context.Background()
@@ -37,31 +30,37 @@ func TestCreateChannel(t *testing.T) {
 }
 
 func TestCreateChannelAlreadyExists(t *testing.T) {
-	app := getTestApp()
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
 	})
+
 	time.Sleep(4 * time.Second)
-	_ = app.Run([]string{"", "channel", "create", "-t", "messaging", "-i", ch, "-u", "userid"})
-	require.Contains(t, app.ErrWriter.(*bytes.Buffer).String(), "channel exists already")
+	cmd.SetArgs([]string{"create-channel", "-t", "messaging", "-i", ch, "-u", "user"})
+	_, err := cmd.ExecuteC()
+	require.Error(t, err)
+	require.Contains(t, cmd.ErrOrStderr().(*bytes.Buffer).String(), "already exists")
 }
 
 func TestGetChannel(t *testing.T) {
-	app := cli.App{Commands: []*cli.Command{NewChannelCmd(test.InitConfig())}}
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
 	})
 
-	err := app.Run([]string{"", "channel", "get", "-t", "messaging", "-i", ch})
+	cmd.SetArgs([]string{"get-channel", "-t", "messaging", "-i", ch})
+	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), ch)
 }
 
 func TestDeleteChannel(t *testing.T) {
-	app := getTestApp()
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
 	ch := test.InitChannel(t)
-	err := app.Run([]string{"", "channel", "delete", "-t", "messaging", "-i", ch, "--hard"})
+	cmd.SetArgs([]string{"delete-channel", "-t", "messaging", "-i", ch, "--hard"})
+	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 
 	c := test.InitClient()
@@ -71,13 +70,14 @@ func TestDeleteChannel(t *testing.T) {
 }
 
 func TestUpdateChannel(t *testing.T) {
-	app := getTestApp()
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
 	})
 
-	err := app.Run([]string{"", "channel", "update", "-t", "messaging", "-i", ch, "-p", "{\"custom_property\":\"property-value\"}"})
+	cmd.SetArgs([]string{"update-channel", "-t", "messaging", "-i", ch, "-p", "{\"custom_property\":\"property-value\"}"})
+	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 
 	c := test.InitClient()
@@ -88,8 +88,9 @@ func TestUpdateChannel(t *testing.T) {
 }
 
 func TestListChannel(t *testing.T) {
-	app := getTestApp()
-
-	err := app.Run([]string{"", "channel", "list", "-t", "messaging", "-l", "1"})
+	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})
+	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Member count")
 }
