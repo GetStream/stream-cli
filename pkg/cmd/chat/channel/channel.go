@@ -12,16 +12,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewChannelCmds() []*cobra.Command {
+func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
-		getChannelCmd(),
-		createChannelCmd(),
-		deleteChannelCmd(),
-		updateChannelCmd(),
-		listChannelsCmd()}
+		getCmd(),
+		createCmd(),
+		deleteCmd(),
+		updateCmd(),
+		listCmd()}
 }
 
-func getChannelCmd() *cobra.Command {
+func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-channel --type [channel-type] --id [channel-id]",
 		Short: "Returns a channel",
@@ -64,7 +64,7 @@ func getChannelCmd() *cobra.Command {
 	return cmd
 }
 
-func createChannelCmd() *cobra.Command {
+func createCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-channel --type [channel-type] --id [channel-id]",
 		Short: "Creates a channel",
@@ -104,7 +104,7 @@ func createChannelCmd() *cobra.Command {
 	return cmd
 }
 
-func deleteChannelCmd() *cobra.Command {
+func deleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-channel --type [channel-type] --id [channel-id]",
 		Short: "Deletes a channel",
@@ -143,7 +143,7 @@ func deleteChannelCmd() *cobra.Command {
 	return cmd
 }
 
-func updateChannelCmd() *cobra.Command {
+func updateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-channel --type [channel-type] --id [channel-id]",
 		Short: "Updates a channel",
@@ -183,7 +183,7 @@ func updateChannelCmd() *cobra.Command {
 	return cmd
 }
 
-func listChannelsCmd() *cobra.Command {
+func listCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-channels --type [channel-type]",
 		Short: "Lists channels",

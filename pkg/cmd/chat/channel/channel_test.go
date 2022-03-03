@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateChannel(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.RandomString(10)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
@@ -30,7 +30,7 @@ func TestCreateChannel(t *testing.T) {
 }
 
 func TestCreateChannelAlreadyExists(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
@@ -44,7 +44,7 @@ func TestCreateChannelAlreadyExists(t *testing.T) {
 }
 
 func TestGetChannel(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
@@ -57,7 +57,7 @@ func TestGetChannel(t *testing.T) {
 }
 
 func TestDeleteChannel(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.InitChannel(t)
 	cmd.SetArgs([]string{"delete-channel", "-t", "messaging", "-i", ch, "--hard"})
 	_, err := cmd.ExecuteC()
@@ -70,7 +70,7 @@ func TestDeleteChannel(t *testing.T) {
 }
 
 func TestUpdateChannel(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(ch)
@@ -88,7 +88,7 @@ func TestUpdateChannel(t *testing.T) {
 }
 
 func TestListChannel(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewChannelCmds()...)
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)

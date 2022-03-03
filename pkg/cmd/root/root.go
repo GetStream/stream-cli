@@ -21,12 +21,12 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	fl := root.PersistentFlags()
-	fl.String("app", "", "[optional] Application id to use as it's defined in the configuration file")
+	fl.String("app", "", "[optional] Application name to use as it's defined in the configuration file")
 	fl.StringVar(cfgPath, "config", "", "[optional] Explicit config file path")
 
 	root.AddCommand(
-		cfgCmd.NewRootConfigCmd(),
-		chat.NewChatRootCmd(),
+		cfgCmd.NewRootCmd(),
+		chat.NewRootCmd(),
 	)
 
 	cobra.OnInitialize(config.GetInitConfig(root, cfgPath))

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootConfigCmd() *cobra.Command {
+func NewRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config",
 		Short: "Manage app configurations",
@@ -26,6 +26,7 @@ func newAppCmd() *cobra.Command {
 		Use:   "new",
 		Short: "Add a new application",
 		Long:  "Add a new application which can be used for further operations",
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runQuestionnaire(cmd)
 		},
@@ -34,13 +35,19 @@ func newAppCmd() *cobra.Command {
 
 func removeAppCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "remove [app-name]",
-		Short: "Remove an application. This operation is irrevocable",
-		Args:  cobra.ExactArgs(1),
+		Use:   "remove [app-name-1] [app-name-2] ...",
+		Short: "Remove 1 or more application. This operation is irrevocable",
+		Args:  cobra.MinimumNArgs(1),
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			config := cfg.GetConfig(cmd)
-			return config.Remove(args[0])
+			for _, appName := range args {
+				if err := config.Remove(appName); err != nil {
+					return err
+				}
+			}
+
+			return nil
 		},
 	}
 }
@@ -53,7 +60,7 @@ func listAppsCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			w := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
 			t := tabby.NewCustom(w)
-			t.AddHeader("", "Name", "Access Key", "Secret Key", "Url")
+			t.AddHeader("", "Name", "Access Key", "Secret Key", "URL")
 
 			config := cfg.GetConfig(cmd)
 
