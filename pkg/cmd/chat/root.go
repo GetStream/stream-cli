@@ -6,14 +6,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewChatRootCmd() *cobra.Command {
+func NewRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "chat",
 		Short: "Interact with your Stream Chat application",
 	}
 
-	cmd.AddCommand(watch.NewWatchCmd())
-	cmd.AddCommand(channel.NewChannelCmds()...)
+	cmd.AddCommand(watch.NewCmd())
+	cmd.AddCommand(channel.NewCmds()...)
 
 	return cmd
 }
