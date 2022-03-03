@@ -6,24 +6,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmd() *cobra.Command {
+func NewCmds() []*cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "watch [task-id]",
-		Short: "Waits for an async task to complete",
+		Short: "Wait for an async task to complete",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			taskId := args[0]
+			taskID := args[0]
 			timeout, _ := cmd.Flags().GetInt("timeout")
 			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
 			if err != nil {
 				return err
 			}
 
-			return utils.WaitForAsyncCompletion(cmd, c, taskId, timeout)
+			return utils.WaitForAsyncCompletion(cmd, c, taskID, timeout)
 		},
 	}
 
 	cmd.Flags().IntP("timeout", "t", 30, "[optional] Timeout in seconds. Default is 30")
 
-	return cmd
+	return []*cobra.Command{cmd}
 }

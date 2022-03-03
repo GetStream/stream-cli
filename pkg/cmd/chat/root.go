@@ -12,7 +12,7 @@ func NewRootCmd() *cobra.Command {
 		Short: "Interact with your Stream Chat application",
 	}
 
-	cmd.AddCommand(watch.NewCmd())
+	cmd.AddCommand(watch.NewCmds()...)
 	cmd.AddCommand(channel.NewCmds()...)
 
 	return cmd

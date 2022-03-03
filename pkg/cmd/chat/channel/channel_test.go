@@ -87,6 +87,25 @@ func TestUpdateChannel(t *testing.T) {
 	require.Equal(t, "property-value", resp.Channel.ExtraData["custom_property"])
 }
 
+func TestUpdateChannelPartial(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"update-channel-partial", "-t", "messaging", "-i", ch, "-s", "color=blue,age=27"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+
+	c := test.InitClient()
+	ctx := context.Background()
+	resp, err := c.Channel("messaging", ch).Query(ctx, &stream.QueryRequest{Data: &stream.ChannelRequest{}})
+	require.NoError(t, err)
+	require.Equal(t, "blue", resp.Channel.ExtraData["color"])
+	require.Equal(t, "27", resp.Channel.ExtraData["age"])
+}
+
 func TestListChannel(t *testing.T) {
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})

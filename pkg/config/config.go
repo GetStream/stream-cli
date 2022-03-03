@@ -15,12 +15,12 @@ const (
 	configDir  = "stream-cli"
 	configFile = "config.yml"
 
-	DefaultEdgeURL = "https://chat.stream-io-api.com"
+	DefaultChatEdgeURL = "https://chat.stream-io-api.com"
 )
 
 type Config struct {
-	// It's so stupid but Viper uses `yaml` for deserialization into a map object
-	// and then uses `mapstructure` to deserialize into a an actual Config object.
+	// Viper uses `yaml` for serializing the object into a file.
+	// And then uses `mapstructure` to deserialize into a an actual Config object.
 
 	// Default is the default configuration used for operations
 	Default string `yaml:"default" mapstructure:"default"`
@@ -31,7 +31,7 @@ type App struct {
 	Name            string `yaml:"name" mapstructure:"name"`
 	AccessKey       string `yaml:"access-key" mapstructure:"access-key"`
 	AccessSecretKey string `yaml:"access-secret-key" mapstructure:"access-secret-key"`
-	URL             string `yaml:"url" mapstructure:"url"`
+	ChatURL         string `yaml:"chat-url" mapstructure:"chat-url"`
 }
 
 func (c *Config) Get(name string) (*App, error) {
@@ -85,8 +85,8 @@ func (c *Config) Add(newApp App) error {
 		}
 	}
 
-	if newApp.URL == "" {
-		newApp.URL = DefaultEdgeURL
+	if newApp.ChatURL == "" {
+		newApp.ChatURL = DefaultChatEdgeURL
 	}
 
 	c.Apps = append(c.Apps, newApp)
