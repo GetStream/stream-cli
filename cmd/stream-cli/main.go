@@ -4,26 +4,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/GetStream/stream-cli"
+	"github.com/GetStream/stream-cli/pkg/cmd/root"
 )
 
 func main() {
-	if err := run(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+	if err := mainRun(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
-	d, err := os.UserConfigDir()
-	if err != nil {
-		return fmt.Errorf("cannot get user's home directory: %v", err)
-	}
-
-	config, err := cli.NewConfig(d)
-	if err != nil {
-		return err
-	}
-	rootCmd := cli.NewRootCmd(config)
-	return rootCmd.Run(os.Args)
+func mainRun() error {
+	return root.NewCmd().Execute()
 }
