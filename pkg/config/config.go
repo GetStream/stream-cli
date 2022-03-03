@@ -175,7 +175,6 @@ func GetInitConfig(cmd *cobra.Command, cfgPath *string) func() {
 		}
 
 		viper.SetConfigFile(configPath)
-		viper.SetConfigType("yaml")
 
 		err := viper.ReadInConfig()
 		if err != nil && os.IsNotExist(err) {
