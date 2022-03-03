@@ -15,5 +15,5 @@ func main() {
 }
 
 func mainRun() error {
-	return root.NewRootCmd().Execute()
+	return root.NewCmd().Execute()
 }

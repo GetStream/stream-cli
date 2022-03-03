@@ -71,7 +71,7 @@ func listAppsCmd() *cobra.Command {
 				}
 
 				secret := fmt.Sprintf("**************%v", app.AccessSecretKey[len(app.AccessSecretKey)-4:])
-				t.AddLine(def, app.Name, app.AccessKey, secret, app.URL)
+				t.AddLine(def, app.Name, app.AccessKey, secret, app.ChatURL)
 			}
 			t.Print()
 			return nil
@@ -80,7 +80,7 @@ func listAppsCmd() *cobra.Command {
 }
 
 func setAppDefaultCmd() *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "default [app-name]",
 		Short: "Set an application as the default",
 		Args:  cobra.ExactArgs(1),
@@ -90,8 +90,6 @@ func setAppDefaultCmd() *cobra.Command {
 			return config.SetDefault(args[0])
 		},
 	}
-
-	return cmd
 }
 
 func runQuestionnaire(cmd *cobra.Command) error {
@@ -135,13 +133,13 @@ func questions() []*survey.Question {
 				survey.MaxLength(75)),
 		},
 		{
-			Name:   "URL",
-			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use? Default value is our edge URL."},
+			Name:   "ChatURL",
+			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use for Chat? Default value is our edge URL."},
 			Transform: func(ans interface{}) interface{} {
 				s, ok := ans.(string)
 
 				if !ok || s == "" {
-					return cfg.DefaultEdgeURL
+					return cfg.DefaultChatEdgeURL
 				}
 
 				return s

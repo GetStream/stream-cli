@@ -28,7 +28,7 @@ func TestAddNewConfig(t *testing.T) {
 		{
 			name: "add first configuration",
 			appConfig: func() App {
-				app := App{URL: DefaultEdgeURL}
+				app := App{ChatURL: DefaultChatEdgeURL}
 				app.Name = "BestConfig"
 				app.AccessKey = "FamousKey"
 				app.AccessSecretKey = "TopSecret"
@@ -46,7 +46,7 @@ default: BestConfig
 		{
 			name: "add second configuration",
 			appConfig: func() App {
-				app := App{URL: DefaultEdgeURL}
+				app := App{ChatURL: DefaultChatEdgeURL}
 				app.Name = "BestConfigEver"
 				app.AccessKey = "FamousKey"
 				app.AccessSecretKey = "TopSecret"
@@ -68,7 +68,7 @@ default: BestConfig
 		{
 			name: "add already existing configuration",
 			appConfig: func() App {
-				app := App{URL: DefaultEdgeURL}
+				app := App{ChatURL: DefaultChatEdgeURL}
 				app.Name = "BestConfig"
 				app.AccessKey = "FamousKey"
 				app.AccessSecretKey = "TopSecret"
@@ -89,9 +89,8 @@ default: BestConfig
 			if test.errored {
 				require.Error(t, err)
 				return
-			} else {
-				require.NoError(t, err)
 			}
+			require.NoError(t, err)
 
 			content, err := os.ReadFile(file.Name())
 			require.NoError(t, err)
@@ -110,7 +109,7 @@ func TestRemoveConfig(t *testing.T) {
 		Name:            "test1",
 		AccessKey:       "test1",
 		AccessSecretKey: "test1",
-		URL:             DefaultEdgeURL,
+		ChatURL:         DefaultChatEdgeURL,
 	})
 	require.NoError(t, err)
 
@@ -118,7 +117,7 @@ func TestRemoveConfig(t *testing.T) {
 		Name:            "test2",
 		AccessKey:       "test2",
 		AccessSecretKey: "test2",
-		URL:             DefaultEdgeURL,
+		ChatURL:         DefaultChatEdgeURL,
 	})
 	require.NoError(t, err)
 
@@ -151,7 +150,7 @@ func TestSetDefault(t *testing.T) {
 		Name:            "test1",
 		AccessKey:       "test1",
 		AccessSecretKey: "test1",
-		URL:             DefaultEdgeURL,
+		ChatURL:         DefaultChatEdgeURL,
 	})
 	require.NoError(t, err)
 
@@ -159,7 +158,7 @@ func TestSetDefault(t *testing.T) {
 		Name:            "test2",
 		AccessKey:       "test2",
 		AccessSecretKey: "test2",
-		URL:             DefaultEdgeURL,
+		ChatURL:         DefaultChatEdgeURL,
 	})
 	require.NoError(t, err)
 

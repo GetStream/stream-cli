@@ -21,7 +21,7 @@ func prepareViperConfig() {
 			Name:            "default_app",
 			AccessKey:       os.Getenv("STREAM_KEY"),
 			AccessSecretKey: os.Getenv("STREAM_SECRET"),
-			URL:             config.DefaultEdgeURL,
+			ChatURL:         config.DefaultChatEdgeURL,
 		},
 	})
 }

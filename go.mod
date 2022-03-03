@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.15
 	github.com/GetStream/stream-chat-go/v5 v5.1.0
+	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.0

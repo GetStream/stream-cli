@@ -12,7 +12,7 @@ var (
 	cfgPath *string = new(string)
 )
 
-func NewRootCmd() *cobra.Command {
+func NewCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:     "stream-cli <command> <subcommand> [flags]",
 		Short:   "Stream CLI",
