@@ -17,7 +17,8 @@ func NewCmds() []*cobra.Command {
 
 func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "get-app --output-format [json]",
+		Use:   "get-app --output-format [json]",
+		Short: "Get application settings",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
 			if err != nil {
@@ -37,7 +38,7 @@ func getCmd() *cobra.Command {
 					return err
 				}
 
-				indented := bytes.Buffer{}
+				var indented bytes.Buffer
 				err = json.Indent(&indented, unindented, "", "  ")
 				if err != nil {
 					return err
@@ -60,7 +61,8 @@ func getCmd() *cobra.Command {
 
 func updateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "update-app --properties [raw-json-update-propertes]",
+		Use:   "update-app --properties [raw-json-update-properties]",
+		Short: "Update application settings",
 		Example: heredoc.Doc(`
 			update-app --properties '{"multi_tenant_enabled": true, "permission_version": "v2"}'
 		`),
