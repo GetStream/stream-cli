@@ -22,3 +22,9 @@ printf "\n\n   #### Delete channel ####\n\n"
 
 printf "\n\n   #### List configs ####\n\n"
 ./stream-cli config list
+
+printf "\n\n   #### Update app settings ####\n\n"
+./stream-cli chat update-app -p '{"multi_tenant_enabled":true}'
+
+printf "\n\n   #### Get app settings ####\n\n"
+./stream-cli chat get-app
