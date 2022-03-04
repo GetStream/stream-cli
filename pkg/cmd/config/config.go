@@ -1,7 +1,9 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"net/url"
 	"text/tabwriter"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -133,8 +135,23 @@ func questions() []*survey.Question {
 				survey.MaxLength(75)),
 		},
 		{
-			Name:   "ChatURL",
-			Prompt: &survey.Input{Message: "(optional) Which base URL do you want to use for Chat? Default value is our edge URL."},
+			Name: "ChatURL",
+			Prompt: &survey.Input{
+				Message: "(optional) Which base URL do you want to use for Chat?",
+				Default: cfg.DefaultChatEdgeURL,
+			},
+			Validate: func(ans interface{}) error {
+				u, ok := ans.(string)
+				if !ok {
+					return errors.New("invalid url")
+				}
+
+				_, err := url.ParseRequestURI(u)
+				if err != nil {
+					return errors.New("invalid url format. make sure it matches <scheme>://<host>")
+				}
+				return nil
+			},
 			Transform: func(ans interface{}) interface{} {
 				s, ok := ans.(string)
 
