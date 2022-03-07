@@ -20,7 +20,7 @@ func getCmd() *cobra.Command {
 		Use:   "get-app --output-format [json]",
 		Short: "Get application settings",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -54,7 +54,7 @@ func getCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "Output format. Can be json or [see-in-next-pull-request]")
+	fl.StringP("output-format", "o", "json", "Output format. Can be json")
 
 	return cmd
 }
@@ -67,7 +67,7 @@ func updateCmd() *cobra.Command {
 			update-app --properties '{"multi_tenant_enabled": true, "permission_version": "v2"}'
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
