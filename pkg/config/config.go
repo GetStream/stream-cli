@@ -65,7 +65,7 @@ func (c *Config) getCredentials(cmd *cobra.Command) (string, string, error) {
 	return a.AccessKey, a.AccessSecretKey, nil
 }
 
-func (c *Config) GetStreamClient(cmd *cobra.Command) (*stream.Client, error) {
+func (c *Config) GetClient(cmd *cobra.Command) (*stream.Client, error) {
 	key, secret, err := c.getCredentials(cmd)
 	if err != nil {
 		return nil, err
