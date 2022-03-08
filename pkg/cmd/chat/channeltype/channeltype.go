@@ -21,7 +21,7 @@ func NewCmds() []*cobra.Command {
 
 func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-channel-type --type [channel-type] --output-format [json]",
+		Use:   "get-channel-type --type [channel-type] --output-format [json|tree]",
 		Short: "Get channel type",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -42,7 +42,7 @@ func getCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "Channel type")
-	fl.StringP("output-format", "o", "json", "Output format. Can be json")
+	fl.StringP("output-format", "o", "json", "Output format. Can be json or tree")
 	cmd.MarkFlagRequired("type")
 
 	return cmd
@@ -152,7 +152,7 @@ func updateCmd() *cobra.Command {
 
 func listCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-channel-types --type [channel-type] --output-format [json]",
+		Use:   "list-channel-types --type [channel-type] --output-format [json|tree]",
 		Short: "List channel types",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -165,12 +165,12 @@ func listCmd() *cobra.Command {
 				return err
 			}
 
-			return utils.PrintObject(cmd, resp)
+			return utils.PrintObject(cmd, resp.ChannelTypes)
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "Output format. Can be json")
+	fl.StringP("output-format", "o", "json", "Output format. Can be json or tree")
 
 	return cmd
 }
