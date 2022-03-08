@@ -29,7 +29,7 @@ func getCmd() *cobra.Command {
 		Use:   "get-channel --type [channel-type] --id [channel-id]",
 		Short: "Return a channel",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -62,7 +62,7 @@ func createCmd() *cobra.Command {
 		Use:   "create-channel --type [channel-type] --id [channel-id] --user [user-id]",
 		Short: "Create a channel",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -102,7 +102,7 @@ func deleteCmd() *cobra.Command {
 		Use:   "delete-channel --type [channel-type] --id [channel-id]",
 		Short: "Delete a channel",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -141,7 +141,7 @@ func updateCmd() *cobra.Command {
 		Use:   "update-channel --type [channel-type] --id [channel-id] --properties [raw-json-properties]",
 		Short: "Update a channel",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -186,7 +186,7 @@ func updatePartialCmd() *cobra.Command {
 			update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset color,height
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
@@ -235,7 +235,7 @@ func listCmd() *cobra.Command {
 		Use:   "list-channels --type [channel-type]",
 		Short: "List channels",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}

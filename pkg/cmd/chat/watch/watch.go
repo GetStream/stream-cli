@@ -14,7 +14,7 @@ func NewCmds() []*cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			taskID := args[0]
 			timeout, _ := cmd.Flags().GetInt("timeout")
-			c, err := config.GetConfig(cmd).GetStreamClient(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
