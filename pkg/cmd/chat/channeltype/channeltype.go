@@ -41,8 +41,8 @@ func getCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("type", "t", "", "Channel type")
-	fl.StringP("output-format", "o", "json", "Output format. Can be json or tree")
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	cmd.MarkFlagRequired("type")
 
 	return cmd
@@ -77,7 +77,7 @@ func createCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("properties", "p", "", "Raw JSON properties")
+	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
 	cmd.MarkFlagRequired("properties")
 
 	return cmd
@@ -106,7 +106,7 @@ func deleteCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("type", "t", "", "Channel type")
+	fl.StringP("type", "t", "", "[required] Channel type")
 	cmd.MarkFlagRequired("type")
 
 	return cmd
@@ -142,8 +142,8 @@ func updateCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("type", "t", "", "Channel type")
-	fl.StringP("properties", "p", "", "Raw JSON properties")
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
 	cmd.MarkFlagRequired("type")
 	cmd.MarkFlagRequired("properties")
 
@@ -170,7 +170,7 @@ func listCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "Output format. Can be json or tree")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 
 	return cmd
 }
