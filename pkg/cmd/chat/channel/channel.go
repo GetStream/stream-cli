@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
-	"text/tabwriter"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
-	"github.com/cheynewallace/tabby"
 	"github.com/spf13/cobra"
 )
 
@@ -42,15 +41,14 @@ func getCmd() *cobra.Command {
 				return err
 			}
 
-			printChannelDetails(cmd, r.Channel)
-
-			return nil
+			return utils.PrintObject(cmd, r.Channel)
 		},
 	}
 
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	cmd.MarkFlagRequired("type")
 	cmd.MarkFlagRequired("id")
 
@@ -254,34 +252,15 @@ func listCmd() *cobra.Command {
 				return err
 			}
 
-			printChannelDetails(cmd, resp.Channels...)
-
-			return nil
+			return utils.PrintObject(cmd, resp)
 		},
 	}
 
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.IntP("limit", "l", 10, "[optional] Number of channels to return. Used for pagination")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	cmd.MarkFlagRequired("type")
 
 	return cmd
-}
-
-func printChannelDetails(cmd *cobra.Command, channels ...*stream.Channel) {
-	w := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
-	t := tabby.NewCustom(w)
-	t.AddHeader("CID", "Member count", "Created By", "Last Message At", "Created At", "Updated At", "Custom Data")
-
-	for _, c := range channels {
-		t.AddLine(c.CID,
-			c.MemberCount,
-			c.CreatedBy.ID,
-			c.LastMessageAt.Format(time.RFC822),
-			c.CreatedAt.Format(time.RFC822),
-			c.UpdatedAt.Format(time.RFC822),
-			c.ExtraData)
-	}
-
-	t.Print()
 }

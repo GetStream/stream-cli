@@ -29,13 +29,12 @@ func getCmd() *cobra.Command {
 				return err
 			}
 
-			utils.PrintObject(cmd, r.App)
-			return nil
+			return utils.PrintObject(cmd, r.App)
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "Output format. Can be json or tree")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 
 	return cmd
 }
@@ -72,7 +71,7 @@ func updateCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("properties", "p", "", "Raw json properties to update")
+	fl.StringP("properties", "p", "", "[required] Raw json properties to update")
 	cmd.MarkFlagRequired("properties")
 
 	return cmd
