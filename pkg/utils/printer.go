@@ -48,6 +48,11 @@ func printUiObject(cmd *cobra.Command, object interface{}) error {
 		return err
 	}
 
+	_, ok := asMap["ratelimit"]
+	if ok {
+		delete(asMap, "ratelimit")
+	}
+
 	rootNode := &widgets.TreeNode{Nodes: []*widgets.TreeNode{}}
 	for k, v := range asMap {
 		addNodesRecursive(rootNode, k+": ", v)
