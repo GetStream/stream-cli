@@ -78,7 +78,7 @@ func createCmd() *cobra.Command {
 				return errors.New("channel already exists")
 			}
 
-			cmd.Printf("Successfully created channel [%s]", r.Channel.CID)
+			cmd.Printf("Successfully created channel [%s]\n", r.Channel.CID)
 
 			return nil
 		},
@@ -116,7 +116,7 @@ func deleteCmd() *cobra.Command {
 			}
 
 			if resp.TaskID != "" {
-				cmd.Printf("Successfully initiated channel deletion. Task id: %s", resp.TaskID)
+				cmd.Printf("Successfully initiated channel deletion. Task id: %s\n", resp.TaskID)
 			} else {
 				return errors.New("channel deletion failed")
 			}
@@ -160,7 +160,7 @@ func updateCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Successfully updated channel [%s]", chanId)
+			cmd.Printf("Successfully updated channel [%s]\n", chanId)
 			return nil
 		},
 	}
@@ -212,7 +212,7 @@ func updatePartialCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Successfully updated channel [%s]", chanId)
+			cmd.Printf("Successfully updated channel [%s]\n", chanId)
 			return nil
 		},
 	}

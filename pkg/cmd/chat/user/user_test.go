@@ -42,7 +42,7 @@ func TestDeleteUser(t *testing.T) {
 	cmd.SetArgs([]string{"delete-user", "-u", u, "--hard-delete", "--mark-messages-deleted", "--delete-conversations"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
-	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully deleted user")
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully initiated user deletion")
 }
 
 func TestQueryUser(t *testing.T) {

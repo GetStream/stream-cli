@@ -57,4 +57,4 @@ printf '\n\n   #### Query user  ####\n\n'
 ./stream-cli chat query-users --filter "{\"id\":\"$random_chars\"}"
 
 printf '\n\n   #### Delete user  ####\n\n'
-./stream-cli chat delete-user --user "$random_chars" --hard-delete
+./stream-cli chat delete-user --user "$random_chars" --hard-delete --mark-messages-deleted --delete-conversations
