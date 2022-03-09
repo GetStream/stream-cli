@@ -2,12 +2,13 @@ package user
 
 import (
 	"encoding/json"
+	"errors"
+	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cobra"
 )
 
@@ -24,22 +25,25 @@ func createTokenCmd() *cobra.Command {
 		Use:   "create-token --user [user-id] --expiration [epoch]",
 		Short: "Create a token",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, secret, err := config.GetConfig(cmd).GetCredentials(cmd)
+			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
 				return err
 			}
 
 			userID, _ := cmd.Flags().GetString("user")
 			exp, _ := cmd.Flags().GetInt("expiration")
+			iat, _ := cmd.Flags().GetInt("issued-at")
 
-			claims := jwt.MapClaims{
-				"user_id": userID,
-			}
+			expDate := time.Time{}
+			iatDate := time.Time{}
 			if exp > 0 {
-				claims["exp"] = exp
+				expDate = time.Unix(int64(exp), 0)
+			}
+			if iat > 0 {
+				iatDate = time.Unix(int64(iat), 0)
 			}
 
-			token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(secret))
+			token, err := c.CreateToken(userID, expDate, iatDate)
 			if err != nil {
 				return err
 			}
@@ -51,7 +55,8 @@ func createTokenCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("user", "u", "", "[required] Id of the user to create token for")
-	fl.IntP("expiration", "e", 0, "[optional] Expiration of the JWT in epoch seconds")
+	fl.IntP("expiration", "e", 0, "[optional] Expiration (exp) of the JWT in epoch seconds")
+	fl.IntP("issued-at", "i", 0, "[optional] Issued at (iat) of the JWT in epoch seconds")
 	cmd.MarkFlagRequired("user")
 
 	return cmd
@@ -107,24 +112,20 @@ func deleteCmd() *cobra.Command {
 			markMessagesDeleted, _ := cmd.Flags().GetBool("mark-messages-deleted")
 			deleteConversations, _ := cmd.Flags().GetBool("delete-conversations")
 
-			opts := []stream.DeleteUserOption{}
-			if hardDelete {
-				opts = append(opts, stream.DeleteUserWithHardDelete())
-			}
-			if markMessagesDeleted {
-				opts = append(opts, stream.DeleteUserWithMarkMessagesDeleted())
-			}
-			if deleteConversations {
-				opts = append(opts, stream.DeleteUserWithDeleteConversations())
-			}
-
-			_, err = c.DeleteUser(cmd.Context(), userID, opts...)
+			resp, err := c.DeleteUsers(cmd.Context(), []string{userID}, stream.DeleteUserOptions{
+				User:          getDeleteType(hardDelete),
+				Messages:      getDeleteType(markMessagesDeleted),
+				Conversations: getDeleteType(deleteConversations)})
 			if err != nil {
 				return err
 			}
 
-			cmd.Println("Successfully deleted user")
-			return nil
+			if resp.TaskID != "" {
+				cmd.Printf("Successfully initiated user deletion. Task id: %s\n", resp.TaskID)
+				return nil
+			} else {
+				return errors.New("user deletion failed")
+			}
 		},
 	}
 
@@ -136,6 +137,13 @@ func deleteCmd() *cobra.Command {
 	cmd.MarkFlagRequired("user")
 
 	return cmd
+}
+
+func getDeleteType(hardDeleteEnabled bool) stream.DeleteType {
+	if hardDeleteEnabled {
+		return stream.HardDelete
+	}
+	return stream.SoftDelete
 }
 
 func queryCmd() *cobra.Command {
