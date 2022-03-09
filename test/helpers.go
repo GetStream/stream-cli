@@ -39,6 +39,11 @@ func GetRootCmdWithSubCommands(c ...*cobra.Command) *cobra.Command {
 	return rootCmd
 }
 
+func InitClient() *stream.Client {
+	c, _ := stream.NewClientFromEnvVars()
+	return c
+}
+
 func InitChannel(t *testing.T) string {
 	name := RandomString(10)
 	c := InitClient()
@@ -51,9 +56,19 @@ func DeleteChannel(id string) {
 	_, _ = c.DeleteChannels(context.Background(), []string{"messaging:" + id}, true)
 }
 
-func InitClient() *stream.Client {
-	c, _ := stream.NewClientFromEnvVars()
-	return c
+func CreateUser() string {
+	c := InitClient()
+	id := RandomString(10)
+	_, _ = c.UpsertUser(context.Background(), &stream.User{ID: id})
+	return id
+}
+
+func DeleteUser(id string) {
+	c := InitClient()
+	_, _ = c.DeleteUser(context.Background(),
+		id,
+		stream.DeleteUserWithHardDelete(),
+		stream.DeleteUserWithDeleteConversations())
 }
 
 func RandomString(n int) string {
