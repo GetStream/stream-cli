@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 go build ./cmd/stream-cli
 
 random_chars=$(xxd -l16 -ps /dev/urandom)
@@ -23,7 +25,7 @@ printf "\n\n   #### Update channel ####\n\n"
 ./stream-cli chat update-channel --type messaging --id "$random_chars" --properties "{\"frozen\":false}"
 
 printf "\n\n   #### List channels ####\n\n"
-./stream-cli chat list-channels --type messaging --limit 5
+./stream-cli chat list-channels --type messaging --limit 1
 
 # Let's make sure this is the last command so we clean up after ourselves
 printf "\n\n   #### Delete channel ####\n\n"
@@ -44,3 +46,15 @@ printf '\n\n   #### List channel type ####\n\n'
 # Let's make sure this is the last command so we clean up after ourselves
 printf '\n\n   #### Delete channel type ####\n\n'
 ./stream-cli chat delete-channel-type --type "$random_chars"
+
+printf '\n\n   #### Upsert user  ####\n\n'
+./stream-cli chat upsert-user --properties "{\"id\":\"$random_chars\"}"
+
+printf '\n\n   #### Create token for user  ####\n\n'
+./stream-cli chat create-token --user "$random_chars"
+
+printf '\n\n   #### Query user  ####\n\n'
+./stream-cli chat query-users --filter "{\"id\":\"$random_chars\"}"
+
+printf '\n\n   #### Delete user  ####\n\n'
+./stream-cli chat delete-user --user "$random_chars" --hard-delete --mark-messages-deleted --delete-conversations
