@@ -1,12 +1,11 @@
 package app
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +16,7 @@ func NewCmds() []*cobra.Command {
 
 func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-app --output-format [json]",
+		Use:   "get-app --output-format [json|tree]",
 		Short: "Get application settings",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -30,31 +29,12 @@ func getCmd() *cobra.Command {
 				return err
 			}
 
-			format, _ := cmd.Flags().GetString("output-format")
-
-			if format == "json" {
-				unindented, err := json.Marshal(r.App)
-				if err != nil {
-					return err
-				}
-
-				var indented bytes.Buffer
-				err = json.Indent(&indented, unindented, "", "  ")
-				if err != nil {
-					return err
-				}
-
-				cmd.Println(indented.String())
-			} else {
-				return fmt.Errorf("unknown output format: %s", format)
-			}
-
-			return nil
+			return utils.PrintObject(cmd, r.App)
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "Output format. Can be json")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 
 	return cmd
 }
@@ -91,7 +71,7 @@ func updateCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("properties", "p", "", "Raw json properties to update")
+	fl.StringP("properties", "p", "", "[required] Raw json properties to update")
 	cmd.MarkFlagRequired("properties")
 
 	return cmd
