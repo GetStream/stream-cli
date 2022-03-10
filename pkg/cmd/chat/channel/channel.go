@@ -27,6 +27,13 @@ func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-channel --type [channel-type] --id [channel-id]",
 		Short: "Return a channel",
+		Example: heredoc.Doc(`
+			# Returns 'redteam' channel of 'messaging' channel type as JSON
+			$ stream-cli chat get-channel --type messaging --id redteam
+
+			# Returns 'blueteam' channel of 'messaging' channel type as a browsable tree
+			$ stream-cli chat get-channel --type messaging --id blueteam --output-format tree
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -59,6 +66,14 @@ func createCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-channel --type [channel-type] --id [channel-id] --user [user-id]",
 		Short: "Create a channel",
+		Long: heredoc.Doc(`
+			This command allows you to create a new channel. If it
+			exists already an error will be thrown.
+		`),
+		Example: heredoc.Doc(`
+			# Create a channel with id 'redteam' of type 'messaging' by 'joe'
+			$ stream-cli chat create-channel --type messaging --id redteam --user joe
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -99,6 +114,19 @@ func deleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-channel --type [channel-type] --id [channel-id]",
 		Short: "Delete a channel",
+		Long: heredoc.Doc(`
+			This command allows you to delete a channel. This operation is asynchronous
+			in the backend so a task id is returned. You need to use the watch
+			commnand to poll the results.
+		`),
+		Example: heredoc.Doc(`
+			# Delete a channel with id 'redteam' of type 'messaging'
+			$ stream-cli chat delete-channel --type messaging --id redteam
+			> Successfully initiated channel deletion. Task id: 66bbcdcd-b133-43ce-ab63-557c14d2a168
+
+			# Wait for the task to complete
+			$ stream-cli chat watch 66bbcdcd-b133-43ce-ab63-557c14d2a168
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -138,6 +166,16 @@ func updateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-channel --type [channel-type] --id [channel-id] --properties [raw-json-properties]",
 		Short: "Update a channel",
+		Long: heredoc.Doc(`
+			Updates an existing channel. The 'properties' are specified as a raw json string. The valid
+			properties are the 'ChannelRequest' object of the official documentation.
+			Such as 'team', 'frozen', 'disabled' or any custom property.
+			https://getstream.io/chat/docs/rest/#channels-updatechannel
+		`),
+		Example: heredoc.Doc(`
+			# Unfreeze a channel
+			$ stream-cli chat update-channel --type messaging --id redteam --properties "{\"frozen\":false}"
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -180,8 +218,13 @@ func updatePartialCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-channel-partial --type [channel-type] --id [channel-id] --set [key-value-pairs] --unset [property-names]",
 		Short: "Update a channel partially",
+		Long: heredoc.Doc(`
+			Updates an existing channel. The 'set' property is a comma separated list of key value pairs.
+			The 'unset' property is a comma separated list of property names.
+		`),
 		Example: heredoc.Doc(`
-			update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset color,height
+			# Freeze a channel and set 'age' to 21. At the same time, remove 'haircolor' and 'height'.
+			stream-cli chat update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset haircolor,height
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -232,6 +275,17 @@ func listCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-channels --type [channel-type]",
 		Short: "List channels",
+		Long: heredoc.Doc(`
+			List all channels of a given channel type. You can also provide
+			a limit for paginating the results.
+		`),
+		Example: heredoc.Doc(`
+			# List the top 5 'messaging' channels as a json
+			$ stream-cli chat list-channels --type messaging --limit 5
+
+			# List the top 20 'livestream' channels as a browsable tree
+			$ stream-cli chat list-channels --type livestream --limit 20 --output-format tree
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {

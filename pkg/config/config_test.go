@@ -39,7 +39,7 @@ apps:
     - name: BestConfig
       access-key: FamousKey
       access-secret-key: TopSecret
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
 default: BestConfig
 `,
 		},
@@ -57,11 +57,11 @@ apps:
     - name: BestConfig
       access-key: FamousKey
       access-secret-key: TopSecret
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
     - name: BestConfigEver
       access-key: FamousKey
       access-secret-key: TopSecret
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
 default: BestConfig
 `,
 		},
@@ -133,7 +133,7 @@ apps:
     - name: test2
       access-key: test2
       access-secret-key: test2
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
 default: ""
 `
 	content, err := os.ReadFile(file.Name())
@@ -174,11 +174,11 @@ apps:
     - name: test1
       access-key: test1
       access-secret-key: test1
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
     - name: test2
       access-key: test2
       access-secret-key: test2
-      url: https://chat.stream-io-api.com
+      chat-url: https://chat.stream-io-api.com
 default: test2
 `
 
