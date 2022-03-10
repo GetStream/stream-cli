@@ -18,6 +18,26 @@ func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-app --output-format [json|tree]",
 		Short: "Get application settings",
+		Long: heredoc.Doc(`
+			Get the application settings.
+
+			Application level settings allow you to configure settings that
+			impact all the channel types in your app.
+		`),
+		Example: heredoc.Doc(`
+			# Print the application settings in json format (default format)
+			$ stream-cli chat get-app
+
+			# Print the application settings in a browsable tree
+			$ stream-cli chat get-app --output-format tree
+
+			# Print the application settings for another application
+			$ stream-cli chat get-app --app testenvironment
+
+			# Note:
+			# Use this command to list all the available Stream applications
+			$ stream-cli config list
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -43,8 +63,18 @@ func updateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-app --properties [raw-json-update-properties]",
 		Short: "Update application settings",
+		Long: heredoc.Doc(`
+			Update the application settings.
+
+			Application level settings allow you to configure settings that
+			impact all the channel types in your app.
+
+			See https://getstream.io/chat/docs/rest/#settings-updateapp for
+			the available JSON options.
+		`),
 		Example: heredoc.Doc(`
-			update-app --properties '{"multi_tenant_enabled": true, "permission_version": "v2"}'
+			# Enable multi-tenant and update permission version to v2
+			$ stream-cli chat update-app --properties '{"multi_tenant_enabled": true, "permission_version": "v2"}'
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
