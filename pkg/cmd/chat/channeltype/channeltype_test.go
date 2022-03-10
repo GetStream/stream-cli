@@ -53,7 +53,7 @@ func TestDeleteChannelType(t *testing.T) {
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 
-	cmd.SetArgs([]string{"delete-channel-type", "-t", name})
+	cmd.SetArgs([]string{"delete-channel-type", name})
 	_, err = cmd.ExecuteC()
 	require.NoError(t, err)
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	cfg "github.com/GetStream/stream-cli/pkg/config"
+	"github.com/MakeNowJust/heredoc"
 	"github.com/cheynewallace/tabby"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +29,16 @@ func newAppCmd() *cobra.Command {
 		Use:   "new",
 		Short: "Add a new application",
 		Long:  "Add a new application which can be used for further operations",
+		Example: heredoc.Doc(`
+			# Add a new application to the CLI
+			$ stream-cli config new
+			? What is the name of your app? (eg. prod, staging, testing) testing
+			? What is your access key? abcd1234efgh456
+			? What is your access secret key? ***********************************
+			? (optional) Which base URL do you want to use for Chat? https://chat.stream-io-api.com
 
+			Application successfully added. 🚀
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runQuestionnaire(cmd)
 		},
@@ -37,10 +47,17 @@ func newAppCmd() *cobra.Command {
 
 func removeAppCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "remove [app-name-1] [app-name-2] ...",
-		Short: "Remove 1 or more application. This operation is irrevocable",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "remove [app-name-1] [app-name-2] [app-name-n]",
+		Short: "Remove one or more application.",
+		Long:  "Remove one or more application from the configuraiton file. This operation is irrevocable.",
+		Example: heredoc.Doc(`
+			# Remove a single application from the CLI
+			$ stream-cli config remove staging
 
+			# Remove multiple applications from the CLI
+			$ stream-cli config remove staging testing
+		`),
+		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			config := cfg.GetConfig(cmd)
 			for _, appName := range args {
@@ -58,7 +75,11 @@ func listAppsCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List all applications",
-
+		Long:  "List all applications which are configured in the configuration file",
+		Example: heredoc.Doc(`
+			# List all applications
+			$ stream-cli config list
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			w := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
 			t := tabby.NewCustom(w)
@@ -85,8 +106,23 @@ func setAppDefaultCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "default [app-name]",
 		Short: "Set an application as the default",
-		Args:  cobra.ExactArgs(1),
+		Long: heredoc.Doc(`
+			Set an application as the default which will be used
+			for all further operations unless specified otherwise.
+		`),
+		Example: heredoc.Doc(`
+			# Set an application as the default
+			$ stream-cli config default staging
 
+			# All underlying operations will use it if not specified otherwise
+			$ stream-cli chat get-app
+			# Prints the settings of staging app
+
+			# Specifying other apps during an operation
+			$ stream-cli chat get-app --app prod
+			# Prints the settings of prod app
+		`),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			config := cfg.GetConfig(cmd)
 			return config.SetDefault(args[0])

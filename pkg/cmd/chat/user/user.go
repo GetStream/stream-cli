@@ -22,8 +22,23 @@ func NewCmds() []*cobra.Command {
 
 func createTokenCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-token --user [user-id] --expiration [epoch]",
+		Use:   "create-token --user [user-id] --expiration [epoch] --issued-at [epoch]",
 		Short: "Create a token",
+		Long: heredoc.Doc(`
+			Stream uses JWT (JSON Web Tokens) to authenticate chat users, enabling them to login.
+			Knowing whether a user is authorized to perform certain actions is
+			managed separately via a role based permissions system.
+
+			With this command you can generate token for a specific user that can be
+			used on the frontend.
+		`),
+		Example: heredoc.Doc(`
+			# Create a JWT token for a user with id '123'. This token has no expiration.
+			$ stream-cli chat create-token --user 123
+
+			# Create a JWT for user 'joe' with 'exp' and 'iat' claim
+			$ stream-cli chat create-token --user joe --expiration 1577880000 --issued-at 1577880000
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -66,6 +81,17 @@ func upsertCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upsert-user --properties [raw-json]",
 		Short: "Upsert a user",
+		Long: heredoc.Doc(`
+			This command inserts a new or updates an existing user.
+			Stream Users require only an id to be created.
+			Any user present in the payload will have its data replaced with the new version.
+		`),
+		Example: heredoc.Doc(`
+			# Create a new user with id 'my-user-1'
+			$ stream-cli chat upsert-user --properties "{\"id\":\"my-user-1\"}"
+
+			Check the Go SDK's 'User' struct for the properties that you can use here.
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -101,6 +127,30 @@ func deleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-user --user [user-id] --hard-delete [true|false] --mark-messages-deleted [true|false] --delete-conversations [true|false]",
 		Short: "Delete a user",
+		Long: heredoc.Doc(`
+			This command deletes a user. If not flags are provided, user and messages will be soft deleted.
+			
+			There are 3 additional options that you can provide:
+
+			--hard-delete: If set to true, hard deletes everything related to this user, channels, messages and everything related to it.
+			--mark-messages-deleted: If set to true, hard deletes all messages related to this user.
+			--delete-conversations: If set to true, hard deletes all conversations related to this user.
+
+			User deletion is an async operation in the backend.
+			Once it succeeded, you'll need to use the 'watch' command to see the async task's result.
+		`),
+		Example: heredoc.Doc(`
+			# Soft delete a user with id 'my-user-1'
+			$ stream-cli chat delete-user --user my-user-1
+
+			# Hard delete a user with id 'my-user-2'
+			$ stream-cli chat delete-user --user my-user-2 --hard-delete
+			> Successfully initiated user deletion. Task id: 8d011daa-cbcd-4cba-ad16-701de599873a
+
+			# Watch the async task's result
+			$ stream-cli chat watch 8d011daa-cbcd-4cba-ad16-701de599873a
+			> Async operation completed successfully.
+		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
 			if err != nil {
@@ -131,9 +181,9 @@ func deleteCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("user", "u", "", "[required] Id of the user to delete")
-	fl.Bool("hard-delete", false, "[optional] Delete the user permanently")
-	fl.Bool("mark-messages-deleted", false, "[optional] Mark messages of the user as deleted")
-	fl.Bool("delete-conversations", false, "[optional] Delete all conversations of the user")
+	fl.Bool("hard-delete", false, "[optional] Hard delete everything related to this user")
+	fl.Bool("mark-messages-deleted", false, "[optional] Hard delete all messages related to the user")
+	fl.Bool("delete-conversations", false, "[optional] Hard delete all conversations related to the user")
 	cmd.MarkFlagRequired("user")
 
 	return cmd
@@ -150,8 +200,18 @@ func queryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "query-users --filter [raw-json] --limit [int] --output-format [json|tree]",
 		Short: "Query users",
+		Long: heredoc.Doc(`
+			This command allows you to search for users. The 'filter' flag is a raw JSON string,
+			and you can check the valid combinations in the official documentation.
+
+			https://getstream.io/chat/docs/node/query_users/?language=javascript
+		`),
 		Example: heredoc.Doc(`
-			query-users --filter '{"id": {"$eq": "user-1"}}' --limit 10 --output-format json
+			# Query for 'user-1'. The results are shown as json.
+			$ stream-cli chat query-users --filter '{"id": {"$eq": "user-1"}}'
+
+			# Query for 'user-1' and 'user-2'. The results are shown as a browsable tree.
+			$ stream-cli chat query-users --filter '{"id": {"$in": ["user-1", "user-2"]}}' --output-format tree
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
