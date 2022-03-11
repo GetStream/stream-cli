@@ -30,3 +30,11 @@ func TestUpdateApp(t *testing.T) {
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 }
+
+func TestRevokeAlTokens(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	cmd.SetArgs([]string{"revoke-all-tokens", "--before", "2000"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully revoked all tokens")
+}

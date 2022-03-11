@@ -17,7 +17,8 @@ func NewCmds() []*cobra.Command {
 		createTokenCmd(),
 		upsertCmd(),
 		deleteCmd(),
-		queryCmd()}
+		queryCmd(),
+		revokeCmd()}
 }
 
 func createTokenCmd() *cobra.Command {
@@ -55,8 +56,8 @@ func createTokenCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("user", "u", "", "[required] Id of the user to create token for")
-	fl.IntP("expiration", "e", 0, "[optional] Expiration (exp) of the JWT in epoch seconds")
-	fl.IntP("issued-at", "i", 0, "[optional] Issued at (iat) of the JWT in epoch seconds")
+	fl.IntP("expiration", "e", 0, "[optional] Expiration (exp) of the JWT in epoch timestamp")
+	fl.IntP("issued-at", "i", 0, "[optional] Issued at (iat) of the JWT in epoch timestamp")
 	cmd.MarkFlagRequired("user")
 
 	return cmd
@@ -187,6 +188,49 @@ func queryCmd() *cobra.Command {
 	fl.IntP("limit", "l", 10, "[optional] The number of users returned")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	cmd.MarkFlagRequired("filter")
+
+	return cmd
+}
+
+func revokeCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "revoke-token --user [user-id] --before [epoch]",
+		Short: "Revoke a token",
+		Long: heredoc.Doc(`
+			Revokes a token for a single user. All requests will be rejected that
+			were issued before the given epoch timestamp.
+		`),
+		Example: heredoc.Doc(`
+			# Revoke token for user 'joe' before today's date (default date)
+			$ stream-cli revoke-token --user joe
+
+			# Revoke token for user 'mike' before 2019-01-01
+			$ stream-cli revoke-token --user mike --before 1546300800
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user")
+			before, _ := cmd.Flags().GetInt64("before")
+			beforeDate := time.Unix(before, 0)
+
+			_, err = c.RevokeUserToken(cmd.Context(), userID, &beforeDate)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully revoked token for user [%s]\n", userID)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user", "u", "", "[required] Id of the user to revoke token for")
+	fl.IntP("before", "b", int(time.Now().Unix()), "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
+	cmd.MarkFlagRequired("user")
 
 	return cmd
 }
