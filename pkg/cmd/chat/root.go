@@ -12,7 +12,7 @@ import (
 func NewRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "chat",
-		Short: "Interact with your Stream Chat application",
+		Short: "Allows you to interact with your Chat applications",
 	}
 
 	cmd.AddCommand(app.NewCmds()...)

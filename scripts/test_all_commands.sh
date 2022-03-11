@@ -35,7 +35,7 @@ printf '\n\n   #### Create channel type ####\n\n'
 ./stream-cli chat create-channel-type -p "{\"name\": \"$random_chars\"}"
 
 printf '\n\n   #### Get channel type ####\n\n'
-./stream-cli chat get-channel-type --type "$random_chars"
+./stream-cli chat get-channel-type "$random_chars"
 
 printf '\n\n   #### Update channel type   ####\n\n'
 ./stream-cli chat update-channel-type --type "$random_chars" --properties "{\"quotes\":true}"
@@ -45,7 +45,7 @@ printf '\n\n   #### List channel type ####\n\n'
 
 # Let's make sure this is the last command so we clean up after ourselves
 printf '\n\n   #### Delete channel type ####\n\n'
-./stream-cli chat delete-channel-type --type "$random_chars"
+./stream-cli chat delete-channel-type "$random_chars"
 
 printf '\n\n   #### Upsert user  ####\n\n'
 ./stream-cli chat upsert-user --properties "{\"id\":\"$random_chars\"}"
