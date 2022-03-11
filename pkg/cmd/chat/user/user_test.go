@@ -56,3 +56,15 @@ func TestQueryUser(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), u)
 }
+
+func TestRevokeToken(t *testing.T) {
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteUser(u)
+	})
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	cmd.SetArgs([]string{"revoke-token", "-u", u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully revoked token")
+}
