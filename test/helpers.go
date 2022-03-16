@@ -71,6 +71,17 @@ func DeleteUser(id string) {
 		stream.DeleteUserWithDeleteConversations())
 }
 
+func CreateMessage(channelID, userID string) string {
+	c := InitClient()
+	msg, _ := c.Channel("messaging", channelID).SendMessage(context.Background(), &stream.Message{Text: RandomString(10)}, userID)
+	return msg.Message.ID
+}
+
+func DeleteMessage(id string) {
+	c := InitClient()
+	_, _ = c.HardDeleteMessage(context.Background(), id)
+}
+
 func RandomString(n int) string {
 	rand.Seed(time.Now().UnixNano())
 	bytes := make([]byte, n)

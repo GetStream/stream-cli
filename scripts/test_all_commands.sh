@@ -27,10 +27,6 @@ printf "\n\n   #### Update channel ####\n\n"
 printf "\n\n   #### List channels ####\n\n"
 ./stream-cli chat list-channels --type messaging --limit 1
 
-# Let's make sure this is the last command so we clean up after ourselves
-printf "\n\n   #### Delete channel ####\n\n"
-./stream-cli chat delete-channel --type messaging --id "$random_chars" --hard
-
 printf '\n\n   #### Create channel type ####\n\n'
 ./stream-cli chat create-channel-type -p "{\"name\": \"$random_chars\"}"
 
@@ -55,6 +51,16 @@ printf '\n\n   #### Create token for user  ####\n\n'
 
 printf '\n\n   #### Query user  ####\n\n'
 ./stream-cli chat query-users --filter "{\"id\":\"$random_chars\"}"
+
+printf '\n\n   #### Send message  ####\n\n'
+./stream-cli chat send-message -i "$random_chars" -t messaging --text text -u "$random_chars"
+
+printf '\n\n   #### Get a single message  ####\n\n'
+./stream-cli chat get-message "$random_chars"
+
+printf '\n\n   #### Cleanup process  ####\n\n'
+printf "\n\n   #### Delete channel ####\n\n"
+./stream-cli chat delete-channel --type messaging --id "$random_chars" --hard
 
 printf '\n\n   #### Delete user  ####\n\n'
 ./stream-cli chat delete-user --user "$random_chars" --hard-delete --mark-messages-deleted --delete-conversations
