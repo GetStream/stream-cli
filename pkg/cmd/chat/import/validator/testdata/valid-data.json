@@ -1,0 +1,163 @@
+[
+  {
+    "type": "user",
+    "item": {
+      "id": "user1",
+      "role": "user",
+      "teams": [
+        "teamA"
+      ]
+    }
+  },
+  {
+    "type": "user",
+    "item": {
+      "id": "user2",
+      "role": "user",
+      "teams": [
+        "teamB"
+      ]
+    }
+  },
+  {
+    "type": "user",
+    "item": {
+      "id": "user3",
+      "role": "user"
+    }
+  },
+  {
+    "type": "user",
+    "item": {
+      "id": "user4",
+      "role": "user"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "id": "channelA",
+      "type": "messaging",
+      "team": "teamA",
+      "created_by": "user1"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_id": "channelA",
+      "channel_type": "messaging",
+      "user_id": "user1"
+    }
+  },
+  {
+    "type": "message",
+    "item": {
+      "id": "message1",
+      "channel_id": "channelA",
+      "channel_type": "messaging",
+      "user": "user1",
+      "text": "hi!"
+    }
+  },
+  {
+    "type": "reaction",
+    "item": {
+      "message_id": "message1",
+      "type": "like",
+      "user_id": "user1",
+      "created_at": "2022-01-01T01:01:01Z"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "id": "channelB",
+      "type": "messaging",
+      "team": "teamB",
+      "created_by": "user2"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_id": "channelB",
+      "channel_type": "messaging",
+      "user_id": "user2"
+    }
+  },
+  {
+    "type": "message",
+    "item": {
+      "id": "message2",
+      "channel_id": "channelB",
+      "channel_type": "messaging",
+      "user": "user2",
+      "text": "hi!"
+    }
+  },
+  {
+    "type": "reaction",
+    "item": {
+      "message_id": "message2",
+      "type": "like",
+      "user_id": "user2",
+      "created_at": "2022-01-01T01:01:01Z"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "member_ids": [
+        "user3",
+        "user4"
+      ],
+      "created_by": "user3"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_member_ids": [
+        "user3",
+        "user4"
+      ],
+      "channel_type": "messaging",
+      "user_id": "user3"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_member_ids": [
+        "user3",
+        "user4"
+      ],
+      "channel_type": "messaging",
+      "user_id": "user4"
+    }
+  },
+  {
+    "type": "message",
+    "item": {
+      "id": "message3",
+      "channel_member_ids": [
+        "user3",
+        "user4"
+      ],
+      "channel_type": "messaging",
+      "user": "user3",
+      "text": "hi!"
+    }
+  },
+  {
+    "type": "reaction",
+    "item": {
+      "message_id": "message3",
+      "type": "like",
+      "user_id": "user3",
+      "created_at": "2022-01-01T01:01:01Z"
+    }
+  }
+]

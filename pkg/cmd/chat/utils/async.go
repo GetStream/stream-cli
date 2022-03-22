@@ -20,7 +20,7 @@ func WaitForAsyncCompletion(cmd *cobra.Command, c *stream.Client, taskID string,
 		}
 
 		if resp.Status == stream.TaskStatusCompleted {
-			cmd.Print("Async operation completed successfully")
+			cmd.Println("Async operation completed successfully")
 			return nil
 		}
 		if resp.Status == stream.TaskStatusFailed {
@@ -28,7 +28,7 @@ func WaitForAsyncCompletion(cmd *cobra.Command, c *stream.Client, taskID string,
 		}
 
 		if i%5 == 0 {
-			cmd.Print("Still loading... ⏳")
+			cmd.Println("Still loading... ⏳")
 		}
 
 		time.Sleep(time.Second)
