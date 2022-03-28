@@ -1,0 +1,81 @@
+[
+  {
+    "type": "user",
+    "item": {
+      "id": "userA",
+      "role": "user"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "channelA",
+      "member_ids": ["userA"],
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long",
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "id": "channelA",
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "channelA@abc",
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "channelA",
+      "created_by": ""
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "channelA",
+      "created_by": "userA",
+      "cid": "messaging:channelA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "livestream",
+      "member_ids": ["userA"],
+      "created_by": "userA"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "type": "messaging",
+      "id": "channelB",
+      "created_by": "userB"
+    }
+  }
+]
