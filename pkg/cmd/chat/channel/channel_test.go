@@ -111,5 +111,5 @@ func TestListChannel(t *testing.T) {
 	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
-	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "messaging")
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Channels")
 }
