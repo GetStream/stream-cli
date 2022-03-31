@@ -15,15 +15,15 @@ const (
 	uploadTypeImage uploadType = "image"
 )
 
-func UploadFile(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath, contentType string) (string, error) {
-	return uploadFile(c, cmd, uploadTypeFile, chType, chId, userID, filePath, contentType)
+func UploadFile(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath string) (string, error) {
+	return uploadFile(c, cmd, uploadTypeFile, chType, chId, userID, filePath)
 }
 
-func UploadImage(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath, contentType string) (string, error) {
-	return uploadFile(c, cmd, uploadTypeImage, chType, chId, userID, filePath, contentType)
+func UploadImage(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath string) (string, error) {
+	return uploadFile(c, cmd, uploadTypeImage, chType, chId, userID, filePath)
 }
 
-func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chId, userID, filePath, contentType string) (string, error) {
+func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chId, userID, filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return "", err
@@ -31,10 +31,9 @@ func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chT
 	defer file.Close()
 
 	req := stream.SendFileRequest{
-		User:        &stream.User{ID: userID},
-		FileName:    filepath.Base(file.Name()),
-		ContentType: contentType,
-		Reader:      file,
+		User:     &stream.User{ID: userID},
+		FileName: filepath.Base(file.Name()),
+		Reader:   file,
 	}
 
 	var resp *stream.SendFileResponse
