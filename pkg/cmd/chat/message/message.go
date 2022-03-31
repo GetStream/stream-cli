@@ -53,7 +53,7 @@ func sendCmd() *cobra.Command {
 				if strings.HasPrefix(attachment, "http") {
 					m.Attachments = []*stream.Attachment{{AssetURL: attachment}}
 				} else {
-					uri, err := chatUtils.UploadFile(c, cmd, chType, chId, user, attachment, "")
+					uri, err := chatUtils.UploadFile(c, cmd, chType, chId, user, attachment)
 					if err != nil {
 						return err
 					}

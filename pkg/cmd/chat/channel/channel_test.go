@@ -111,7 +111,6 @@ func TestListChannel(t *testing.T) {
 	chName := test.InitChannel(t)
 	t.Cleanup(func() {
 		test.DeleteChannel(chName)
-
 	})
 
 	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})
