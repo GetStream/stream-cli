@@ -16,14 +16,14 @@ const (
 )
 
 func UploadFile(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath, contentType string) (string, error) {
-	return uploadFileInternal(c, cmd, uploadTypeFile, chType, chId, userID, filePath, contentType)
+	return uploadFile(c, cmd, uploadTypeFile, chType, chId, userID, filePath, contentType)
 }
 
 func UploadImage(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath, contentType string) (string, error) {
-	return uploadFileInternal(c, cmd, uploadTypeImage, chType, chId, userID, filePath, contentType)
+	return uploadFile(c, cmd, uploadTypeImage, chType, chId, userID, filePath, contentType)
 }
 
-func uploadFileInternal(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chId, userID, filePath, contentType string) (string, error) {
+func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chId, userID, filePath, contentType string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return "", err
@@ -50,14 +50,4 @@ func uploadFileInternal(c *stream.Client, cmd *cobra.Command, uploadtype uploadT
 	}
 
 	return resp.File, nil
-}
-
-func DeleteFile(c *stream.Client, cmd *cobra.Command, chType, chId, fileUrl string) error {
-	_, err := c.Channel(chType, chId).DeleteFile(cmd.Context(), fileUrl)
-	return err
-}
-
-func DeleteImage(c *stream.Client, cmd *cobra.Command, chType, chId, fileUrl string) error {
-	_, err := c.Channel(chType, chId).DeleteImage(cmd.Context(), fileUrl)
-	return err
 }

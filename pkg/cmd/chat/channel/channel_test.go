@@ -108,8 +108,14 @@ func TestUpdateChannelPartial(t *testing.T) {
 
 func TestListChannel(t *testing.T) {
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	chName := test.InitChannel(t)
+	t.Cleanup(func() {
+		test.DeleteChannel(chName)
+
+	})
+
 	cmd.SetArgs([]string{"list-channels", "-t", "messaging", "-l", "1"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
-	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Channels")
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), chName)
 }
