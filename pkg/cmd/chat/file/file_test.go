@@ -65,7 +65,7 @@ func TestImageUploadAndDelete(t *testing.T) {
 		test.DeleteChannel(ch)
 	})
 
-	cmd.SetArgs([]string{"upload-image", "-t", "messaging", "-i", ch, "-u", u, "-c", "image/png", "--file", tmpfile.Name()})
+	cmd.SetArgs([]string{"upload-image", "-t", "messaging", "-i", ch, "-u", u, "--file", tmpfile.Name()})
 	_, err = cmd.ExecuteC()
 	require.NoError(t, err)
 
