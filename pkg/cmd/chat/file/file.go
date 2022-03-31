@@ -136,7 +136,7 @@ func deleteFileCmd() *cobra.Command {
 			chId, _ := cmd.Flags().GetString("channel-id")
 			fileUrl, _ := cmd.Flags().GetString("file-url")
 
-			err = utils.DeleteFile(c, cmd, chType, chId, fileUrl)
+			_, err = c.Channel(chType, chId).DeleteFile(cmd.Context(), fileUrl)
 			if err != nil {
 				return err
 			}
@@ -149,7 +149,7 @@ func deleteFileCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("channel-type", "t", "", "[required] Channel type to interact with")
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
-	fl.StringP("file-url", "u", "", "[required] Url of the file to delete")
+	fl.StringP("file-url", "u", "", "[required] URL of the file to delete")
 	cmd.MarkFlagRequired("channel-type")
 	cmd.MarkFlagRequired("channel-id")
 	cmd.MarkFlagRequired("file-url")
@@ -171,7 +171,7 @@ func deleteImageCmd() *cobra.Command {
 			chId, _ := cmd.Flags().GetString("channel-id")
 			imageUrl, _ := cmd.Flags().GetString("image-url")
 
-			err = utils.DeleteImage(c, cmd, chType, chId, imageUrl)
+			_, err = c.Channel(chType, chId).DeleteImage(cmd.Context(), imageUrl)
 			if err != nil {
 				return err
 			}
@@ -184,7 +184,7 @@ func deleteImageCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("channel-type", "t", "", "[required] Channel type to interact with")
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
-	fl.StringP("image-url", "u", "", "[required] Url of the image to delete")
+	fl.StringP("image-url", "u", "", "[required] URL of the image to delete")
 	cmd.MarkFlagRequired("channel-type")
 	cmd.MarkFlagRequired("channel-id")
 	cmd.MarkFlagRequired("image-url")
