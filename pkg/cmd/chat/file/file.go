@@ -24,7 +24,7 @@ func uploadFileCmd() *cobra.Command {
 			Stream will not block any file types from uploading, however, different
 			clients may handle different types differently or not at all.
 			You can set a more restrictive list for your application if needed.
-			The maximum file size is 20MB.
+			The maximum file size is 100MB.
 			Stream will allow any file extension. If you want to be more restrictive
 			for an application, this is can be set via API or by logging into your dashboard.
 		`),
@@ -42,9 +42,8 @@ func uploadFileCmd() *cobra.Command {
 			chId, _ := cmd.Flags().GetString("channel-id")
 			user, _ := cmd.Flags().GetString("user-id")
 			file, _ := cmd.Flags().GetString("file")
-			contentType, _ := cmd.Flags().GetString("content-type")
 
-			path, err := utils.UploadFile(c, cmd, chType, chId, user, file, contentType)
+			path, err := utils.UploadFile(c, cmd, chType, chId, user, file)
 			if err != nil {
 				return err
 			}
@@ -59,7 +58,6 @@ func uploadFileCmd() *cobra.Command {
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("user-id", "u", "", "[required] User id")
 	fl.StringP("file", "f", "", "[required] File path")
-	fl.StringP("content-type", "c", "", "[optional] Content type of the file")
 	cmd.MarkFlagRequired("channel-type")
 	cmd.MarkFlagRequired("channel-id")
 	cmd.MarkFlagRequired("user-id")
@@ -77,7 +75,7 @@ func uploadImageCmd() *cobra.Command {
 			image/webp, image/heic, image/heic-sequence, image/heif, image/heif-sequence,
 			image/svg+xml.
 			You can set a more restrictive list for your application if needed.
-			The maximum file size is 20MB.
+			The maximum file size is 100MB.
 			Stream will allow any file extension. If you want to be more restrictive
 			for an application, this is can be set via API or by logging into your dashboard.
 		`),
@@ -95,9 +93,8 @@ func uploadImageCmd() *cobra.Command {
 			chId, _ := cmd.Flags().GetString("channel-id")
 			user, _ := cmd.Flags().GetString("user-id")
 			file, _ := cmd.Flags().GetString("file")
-			contentType, _ := cmd.Flags().GetString("content-type")
 
-			path, err := utils.UploadImage(c, cmd, chType, chId, user, file, contentType)
+			path, err := utils.UploadImage(c, cmd, chType, chId, user, file)
 			if err != nil {
 				return err
 			}
@@ -112,12 +109,10 @@ func uploadImageCmd() *cobra.Command {
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("user-id", "u", "", "[required] User id")
 	fl.StringP("file", "f", "", "[required] Image file path")
-	fl.StringP("content-type", "c", "", "[required] Content type of the image")
 	cmd.MarkFlagRequired("channel-type")
 	cmd.MarkFlagRequired("channel-id")
 	cmd.MarkFlagRequired("user-id")
 	cmd.MarkFlagRequired("file")
-	cmd.MarkFlagRequired("content-type")
 
 	return cmd
 }
