@@ -238,8 +238,7 @@ func queryCmd() *cobra.Command {
 				return err
 			}
 
-			utils.PrintObject(cmd, resp)
-			return nil
+			return utils.PrintObject(cmd, resp)
 		},
 	}
 
