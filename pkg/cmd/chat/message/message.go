@@ -105,8 +105,7 @@ func getCmd() *cobra.Command {
 				return err
 			}
 
-			utils.PrintObject(cmd, msg)
-			return nil
+			return utils.PrintObject(cmd, msg)
 		},
 	}
 
@@ -139,8 +138,7 @@ func getMultipleCmd() *cobra.Command {
 				return err
 			}
 
-			utils.PrintObject(cmd, messages)
-			return nil
+			return utils.PrintObject(cmd, messages)
 		},
 	}
 
