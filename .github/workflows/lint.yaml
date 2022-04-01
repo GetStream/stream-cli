@@ -2,7 +2,7 @@ name: Lint
 
 on: [pull_request]
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
@@ -22,7 +22,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: "1.18"
+          go-version: '1.18'
 
       - name: Tidy
         run: go mod tidy -v && git diff --no-patch --exit-code || { git status;  echo 'Unchecked diff, did you forget go mod tidy again?' ; false ; };
