@@ -211,7 +211,7 @@ func getCmd() *cobra.Command {
 
 func listCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-imports --offset [int] --limit [int]--output-format [json|tree]",
+		Use:   "list-imports --offset [int] --limit [int] --output-format [json|tree]",
 		Short: "List imports",
 		Example: heredoc.Doc(`
 			# List all imports as json (default)
