@@ -1,0 +1,60 @@
+run:
+  go: '1.18'
+  deadline: 210s
+  timeout: 10m
+  skip-dirs:
+    - mocks
+    - '.*_mock'
+  skip-files:
+    - '.*_mock.go'
+    - ".*\\.pb\\.go$"
+
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - dupl
+    - errcheck
+    - forbidigo
+    - gas
+    - gci
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofumpt
+    - goimports
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - unconvert
+    - revive
+    - staticcheck
+    - unused
+    - varcheck
+
+linters-settings:
+  dupl:
+    threshold: 250
+  goconst:
+    min-len: 5
+    min-occurrences: 5
+  gocritic:
+    disabled-checks:
+      - ifElseChain
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    settings:
+      hugeParam:
+        sizeThreshold: 364
+      rangeValCopy:
+        sizeThreshold: 364
+        skipTestFuncs: true
+  gofumpt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/GetStream/stream-cli
