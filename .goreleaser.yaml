@@ -1,0 +1,59 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/stream-cli/
+    binary: stream-cli
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - '^chore'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
+  groups:
+    - title: 'New Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 10
+    - title: Other work
+      order: 999
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+  # By default goreleaser wants to add CHANGELOG, README and LICENSE to the zip package which is annoying.
+  # This is a workaround to not include them. https://github.com/goreleaser/goreleaser/issues/602
+  - files:
+    - none*
+
+brews:
+  - name: stream-cli
+    homepage: https://github.com/GetStream/stream-cli
+    tap:
+      owner: GetStream
+      name: stream-cli
