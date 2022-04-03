@@ -47,3 +47,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: ${{ env.VERSION }}
+
+      - name: Update docs
+        run: |
+          # Generate new Markdown docs
+          rm -rf ./docs/stream-cli*.md
+          go run ./cmd/gen-docs --output ./docs
+
+          # Push it to master
+          git config --global user.name 'GitHub Bot'
+          git config --global user.email 'cicd@getstream.io'
+          git add ./docs
+          git commit -m "docs(${{ env.VERSION }}): update markdown docs"
+          git push

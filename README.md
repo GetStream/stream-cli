@@ -12,19 +12,22 @@
 
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
+# 📚 Documentation
+You can find the generated documentation in the [docs](./docs/) folder.
+
 # 🗒 Issues
 
 If you're experiencing problems directly related to the CLI, please add an [issue on GitHub](https://github.com/getstream/stream-cli/issues).
 
 For other issues, submit a [support ticket](https://getstream.io/support).
 
-# 📚 Changelog
+# 📝 Changelog
 
-As with any project, things are always changing. If you're interested in seeing what's changed in the Stream CLI, the changelog for this project can be found [here](https://github.com/getstream/stream-cli/blob/master/CHANGELOG.md).
+As with any project, things are always changing. If you're interested in seeing what's changed in the Stream CLI, the changelog for this project can be found [here](./CHANGELOG.md).
 
 # 🏗 Installation
 
-The Stream CLI is written in Go and compiled into a single binary. It doesn't have any prerequisites.
+The Stream CLI is written in Go and precompiled into a single binary. It doesn't have any prerequisites.
 
 ## Download the binaries
 You can find the binaries in the [Release section](https://github.com/GetStream/stream-cli/releases) of this repository.
@@ -128,6 +131,14 @@ $ ./stream-cli --version
 stream-cli version 1.0.0
 ```
 
+# 🚀 Getting Started
+
+In order to initialize the CLI, it's as simple as:
+
+![Stream](./assets/first_config.svg)
+
+> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your organization.
+
 # 🚨 Warning
 
 We purposefully chose the executable name `stream-cli` to avoid conflict with another tool called [`imagemagick`](https://imagemagick.org/index.php) which [already has a `stream` executable](https://github.com/GetStream/stream-cli/issues/33). 
@@ -139,14 +150,6 @@ $ ln -s ~/Downloads/stream-cli /usr/local/bin/stream
 $ stream --version
 stream-cli version 1.0.0
 ```
-
-# 🚀 Getting Started
-
-In order to initialize the CLI, it's as simple as:
-
-![Stream](./assets/first_config.svg)
-
-> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your organization.
 
 # 🔨 Syntax
 
@@ -168,6 +171,13 @@ The `--help` keyword is available every step of the way. Examples:
 $ stream-cli --help
 $ stream-cli chat --help
 $ stream-cli chat get-channel --help
+```
+
+# 💬 Auto completion
+We provide autocompletion for the most popular shells (PowerShell, Bash, ZSH, Fish).
+
+```shell
+$ stream-cli completion --help
 ```
 
 # 📣 Feedback
