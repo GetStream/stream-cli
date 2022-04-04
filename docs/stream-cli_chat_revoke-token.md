@@ -26,7 +26,7 @@ $ stream-cli revoke-token --user mike --before 1546300800
 ### Options
 
 ```
-  -b, --before int    [optional] The epoch timestamp before which tokens should be revoked. Defaults to now. (default 1648998269)
+  -b, --before int    [optional] The epoch timestamp before which tokens should be revoked. Defaults to now.
   -h, --help          help for revoke-token
   -u, --user string   [required] Id of the user to revoke token for
 ```

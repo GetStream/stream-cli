@@ -131,6 +131,9 @@ func revokeAllTokensCmd() *cobra.Command {
 			}
 
 			before, _ := cmd.Flags().GetInt64("before")
+			if before == 0 {
+				before = time.Now().Unix()
+			}
 			beforeDate := time.Unix(before, 0)
 
 			_, err = c.RevokeTokens(cmd.Context(), &beforeDate)
@@ -144,7 +147,7 @@ func revokeAllTokensCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.IntP("before", "b", int(time.Now().Unix()), "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
+	fl.Int64P("before", "b", 0, "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
 
 	return cmd
 }

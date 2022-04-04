@@ -27,7 +27,7 @@ $ stream-cli chat revoke-all-tokens --before 1546300800 --app test
 ### Options
 
 ```
-  -b, --before int   [optional] The epoch timestamp before which tokens should be revoked. Defaults to now. (default 1648998269)
+  -b, --before int   [optional] The epoch timestamp before which tokens should be revoked. Defaults to now.
   -h, --help         help for revoke-all-tokens
 ```
 
