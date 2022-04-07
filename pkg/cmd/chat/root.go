@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"github.com/GetStream/stream-cli/pkg/cmd/app"
+	"github.com/GetStream/stream-cli/pkg/cmd/chat/app"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channel"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channeltype"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/device"

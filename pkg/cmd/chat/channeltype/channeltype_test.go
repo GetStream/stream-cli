@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"testing"
+	"time"
 
 	"github.com/GetStream/stream-cli/test"
 	"github.com/stretchr/testify/require"
@@ -11,7 +12,14 @@ import (
 
 func deleteChannelType(name string) {
 	c := test.InitClient()
-	_, _ = c.DeleteChannelType(context.Background(), name)
+
+	for i := 0; i < 5; i++ {
+		_, err := c.DeleteChannelType(context.Background(), name)
+		if err == nil {
+			break
+		}
+		time.Sleep(time.Second)
+	}
 }
 
 func TestCreateChannelType(t *testing.T) {

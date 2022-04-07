@@ -274,6 +274,9 @@ func revokeCmd() *cobra.Command {
 
 			userID, _ := cmd.Flags().GetString("user")
 			before, _ := cmd.Flags().GetInt64("before")
+			if before == 0 {
+				before = time.Now().Unix()
+			}
 			beforeDate := time.Unix(before, 0)
 
 			_, err = c.RevokeUserToken(cmd.Context(), userID, &beforeDate)
@@ -288,7 +291,7 @@ func revokeCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("user", "u", "", "[required] Id of the user to revoke token for")
-	fl.IntP("before", "b", int(time.Now().Unix()), "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
+	fl.Int64P("before", "b", 0, "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
 	cmd.MarkFlagRequired("user")
 
 	return cmd
