@@ -9,3 +9,5 @@ node_modules/
 stream-cli
 stream
 latest_changes.txt
+# Test coverage output
+*.out
