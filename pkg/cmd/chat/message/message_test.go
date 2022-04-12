@@ -119,3 +119,20 @@ func TestPartialUpdateMessage(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully updated message")
 }
+
+func TestFlagMessage(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	m := test.CreateMessage(ch, u)
+	t.Cleanup(func() {
+		test.DeleteMessage(m)
+		test.DeleteUser(u)
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"flag-message", "-m", m, "-u", u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully flagged message")
+}
