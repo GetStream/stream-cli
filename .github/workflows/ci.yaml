@@ -25,4 +25,6 @@ jobs:
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
           STREAM_SECRET: ${{ secrets.STREAM_SECRET }}
-        run: go test -v -race ./...
+        run: |
+          go test -coverprofile cover.out -v -race ./...
+          go tool cover -func=cover.out
