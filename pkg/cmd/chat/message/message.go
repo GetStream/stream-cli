@@ -17,7 +17,9 @@ func NewCmds() []*cobra.Command {
 		getCmd(),
 		getMultipleCmd(),
 		partialUpdateCmd(),
-		deleteCmd()}
+		deleteCmd(),
+		flagCmd(),
+	}
 }
 
 func sendCmd() *cobra.Command {
@@ -182,7 +184,6 @@ func deleteCmd() *cobra.Command {
 				_, err = c.HardDeleteMessage(cmd.Context(), args[0])
 			} else {
 				_, err = c.DeleteMessage(cmd.Context(), args[0])
-
 			}
 
 			if err != nil {
@@ -257,6 +258,46 @@ func partialUpdateCmd() *cobra.Command {
 	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
 	fl.String("unset", "", "[optional] Comma separated list of properties to unset")
 	cmd.MarkFlagRequired("message-id")
+
+	return cmd
+}
+
+func flagCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "flag-message --message-id [message-id] --user-id [user-id]",
+		Short: "Flag a message",
+		Long: heredoc.Doc(`
+			Any user is allowed to flag a message. This triggers the message.flagged webhook event
+			and adds the message to the inbox of your Stream Dashboard Chat Moderation view.
+		`),
+		Example: heredoc.Doc(`
+			# Flags a message with id 'msgid-1' by 'userid-1'
+			$ stream-cli chat flag-message --message-id msgid-1 --user-id userid-1
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			msgID, _ := cmd.Flags().GetString("message-id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.FlagMessage(cmd.Context(), msgID, userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully flagged message.")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("message-id", "m", "", "[required] Message id to flag")
+	fl.StringP("user-id", "u", "", "[required] ID of the user who flagged the message")
+	_ = cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
