@@ -84,7 +84,7 @@ func updateCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw json properties to send to the backend")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
