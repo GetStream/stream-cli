@@ -18,7 +18,15 @@ func NewCmds() []*cobra.Command {
 		upsertCmd(),
 		deleteCmd(),
 		queryCmd(),
-		revokeCmd()}
+		revokeCmd(),
+		banCmd(),
+		unbanCmd(),
+		reactivateCmd(),
+		deactivateCmd(),
+		muteCmd(),
+		unmuteCmd(),
+		flagCmd(),
+	}
 }
 
 func createTokenCmd() *cobra.Command {
@@ -166,7 +174,8 @@ func deleteCmd() *cobra.Command {
 			resp, err := c.DeleteUsers(cmd.Context(), []string{userID}, stream.DeleteUserOptions{
 				User:          getDeleteType(hardDelete),
 				Messages:      getDeleteType(markMessagesDeleted),
-				Conversations: getDeleteType(deleteConversations)})
+				Conversations: getDeleteType(deleteConversations),
+			})
 			if err != nil {
 				return err
 			}
@@ -293,6 +302,313 @@ func revokeCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] Id of the user to revoke token for")
 	fl.Int64P("before", "b", 0, "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
 	cmd.MarkFlagRequired("user")
+
+	return cmd
+}
+
+func banCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ban-user --target-user-id [user-id] --banned-by-id [user-id] --reason [reason] --expiration [expiration-in-minutes]",
+		Short: "Ban a user",
+		Long: heredoc.Doc(`
+			Users can be banned from an app entirely.
+			When a user is banned, they will not be allowed to post messages until
+			the ban is removed or expired but will be able to connect to Chat
+			and to channels as before.
+
+			Channel watchers cannot be banned.
+		`),
+		Example: heredoc.Doc(`
+			# 'admin-user-1' bans user 'joe'
+			$ stream-cli chat ban-user --target-user-id joe --banned-by admin-user-1
+
+			# 'admin-user-2' bans user 'mike' with a reason
+			$ stream-cli chat ban-user --target-user-id mike --banned-by admin-user-2 --reason "Bad behavior"
+
+			# 'admin-user-3' bans user 'jill' with a reason for 1 hour
+			$ stream-cli chat ban-user --target-user-id jill --banned-by admin-user-3 --expiration 60
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("target-user-id")
+			bannedByID, _ := cmd.Flags().GetString("banned-by-id")
+			reason, _ := cmd.Flags().GetString("reason")
+			expiration, _ := cmd.Flags().GetInt("expiration")
+
+			banOptions := []stream.BanOption{}
+			if reason != "" {
+				banOptions = append(banOptions, stream.BanWithReason(reason))
+			}
+			if expiration > 0 {
+				banOptions = append(banOptions, stream.BanWithExpiration(expiration))
+			}
+
+			_, err = c.BanUser(cmd.Context(), targetID, bannedByID, banOptions...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully banned user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("target-user-id", "t", "", "[required] ID of the user to ban")
+	fl.StringP("banned-by-id", "b", "", "[required] ID of the user who is performing the ban")
+	fl.StringP("reason", "r", "", "[optional] Reason for the ban")
+	fl.IntP("expiration", "e", 0, "[optional] Number of minutes until the ban expires. Defaults to forever.")
+	_ = cmd.MarkFlagRequired("target-user-id")
+	_ = cmd.MarkFlagRequired("banned-by-id")
+
+	return cmd
+}
+
+func unbanCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unban-user --target-user-id [user-id]",
+		Short: "Unban a user",
+		Example: heredoc.Doc(`
+			# Unban user 'joe'
+			$ stream-cli chat unban-user --target-user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("target-user-id")
+
+			_, err = c.UnBanUser(cmd.Context(), targetID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully unbanned user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("target-user-id", "t", "", "[required] ID of the user to unban")
+	_ = cmd.MarkFlagRequired("target-user-id")
+
+	return cmd
+}
+
+func reactivateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "reactivate-user --user-id [user-id] --restore-messages [true|false]",
+		Short: "Reactivate a user",
+		Long: heredoc.Doc(`
+			Deactivated users cannot connect to Stream Chat or send/receive messages.
+			This function reactivates a user.
+		`),
+		Example: heredoc.Doc(`
+			# Reactivate the user 'joe'
+			$ stream-cli chat reactivate-user --user-id joe --restore-messages true
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("user-id")
+			restore, _ := cmd.Flags().GetBool("restore-messages")
+
+			reactivateOpts := []stream.ReactivateUserOptions{}
+			if restore {
+				reactivateOpts = append(reactivateOpts, stream.ReactivateUserWithRestoreMessages())
+			}
+
+			_, err = c.ReactivateUser(cmd.Context(), targetID, reactivateOpts...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully reactivated user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] ID of the user to reactivate")
+	fl.Bool("restore-messages", false, "[optional] Restore messages for the user")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func deactivateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use: "deactivate-user --user-id [user-id] --mark-messages-deleted [true|false]",
+		Long: heredoc.Doc(`
+			Deactivated users cannot connect to Stream Chat or send/receive messages.
+			Deactivated users can be re-activated with the 'reactivate-user' command.
+		`),
+		Example: heredoc.Doc(`
+			# Deactivate the user 'joe'
+			$ stream-cli chat deactivate-user --user-id joe --mark-messages-deleted true
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("user-id")
+			markDeleted, _ := cmd.Flags().GetBool("mark-messages-deleted")
+
+			deactivateOpts := []stream.DeactivateUserOptions{}
+			if markDeleted {
+				deactivateOpts = append(deactivateOpts, stream.DeactivateUserWithMarkMessagesDeleted())
+			}
+
+			_, err = c.DeactivateUser(cmd.Context(), targetID, deactivateOpts...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully deactivated user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] ID of the user to deactivate")
+	fl.Bool("mark-messages-deleted", false, "[optional] Mark all messages from the user as deleted")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func muteCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mute-user --target-user-id [user-id] --muted-by-id [user-id] --expiration [minutes]",
+		Short: "Mute a user",
+		Long: heredoc.Doc(`
+			Any user is allowed to mute another user. Mutes are stored at the user
+			level and returned with the rest of the user information when connectUser is called.
+			A user will be muted until the user is unmuted or the mute is expired.
+		`),
+		Example: heredoc.Doc(`
+			# Mute the user 'joe' for 5 minutes
+			$ stream-cli chat mute-user --target-user-id joe --muted-by-id admin --expiration 5
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("target-user-id")
+			mutedByID, _ := cmd.Flags().GetString("muted-by-id")
+			expiration, _ := cmd.Flags().GetInt("expiration")
+
+			muteOpts := []stream.MuteOption{}
+			if expiration > 0 {
+				muteOpts = append(muteOpts, stream.MuteWithExpiration(expiration))
+			}
+
+			_, err = c.MuteUser(cmd.Context(), targetID, mutedByID, muteOpts...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully muted user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("target-user-id", "t", "", "[required] ID of the user to mute")
+	fl.StringP("muted-by-id", "b", "", "[required] ID of the user who muted the user")
+	fl.IntP("expiration", "e", 0, "[optional] Number of minutes until the mute expires")
+	_ = cmd.MarkFlagRequired("target-user-id")
+	_ = cmd.MarkFlagRequired("muted-by-id")
+
+	return cmd
+}
+
+func unmuteCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unmute-user --target-user-id [user-id] --unmuted-by-id [user-id]",
+		Short: "Unmute a user",
+		Long: heredoc.Doc(`
+			Any user is allowed to mute another user. Mutes are stored at the user
+			level and returned with the rest of the user information when connectUser is called.
+			A user will be muted until the user is unmuted or the mute is expired.
+		`),
+		Example: heredoc.Doc(`
+			# Unmute the user 'joe'
+			$ stream-cli chat unmute-user --target-user-id joe --unmuted-by-id admin
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("target-user-id")
+			mutedByID, _ := cmd.Flags().GetString("unmuted-by-id")
+
+			_, err = c.UnmuteUser(cmd.Context(), targetID, mutedByID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully unmuted user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("target-user-id", "t", "", "[required] ID of the user to unmute")
+	fl.StringP("unmuted-by-id", "b", "", "[required] ID of the user who unmuted the user")
+	_ = cmd.MarkFlagRequired("target-user-id")
+	_ = cmd.MarkFlagRequired("unmuted-by-id")
+
+	return cmd
+}
+
+func flagCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "flag-user --user-id [user-id] --flagged-by-id [user-id]",
+		Short: "Flag a user",
+		Example: heredoc.Doc(`
+			# Flag the user 'joe'
+			$ stream-cli chat flag-user --user-id joe --flagged-by-id admin
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			targetID, _ := cmd.Flags().GetString("user-id")
+			flaggedByID, _ := cmd.Flags().GetString("flagged-by-id")
+
+			_, err = c.FlagUser(cmd.Context(), targetID, flaggedByID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully flagged user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] ID of the user to flag")
+	fl.StringP("flagged-by-id", "b", "", "[required] ID of the user who flagged the user")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("flagged-by-id")
 
 	return cmd
 }
