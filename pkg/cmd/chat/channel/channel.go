@@ -20,7 +20,14 @@ func NewCmds() []*cobra.Command {
 		deleteCmd(),
 		updateCmd(),
 		updatePartialCmd(),
-		listCmd()}
+		listCmd(),
+		addMemberCmd(),
+		removeMemberCmd(),
+		promoteModeratorCmd(),
+		demoteModeratorCmd(),
+		hideCmd(),
+		showCmd(),
+	}
 }
 
 func getCmd() *cobra.Command {
@@ -315,6 +322,243 @@ func listCmd() *cobra.Command {
 	fl.IntP("limit", "l", 10, "[optional] Number of channels to return. Used for pagination")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	cmd.MarkFlagRequired("type")
+
+	return cmd
+}
+
+func addMemberCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-members --type [channel-type] --id [channel-id] [user-id-1] [user-id-2] ...",
+		Short: "Add members to a channel",
+		Example: heredoc.Doc(`
+			# Add members joe, jill and jane to 'red-team' channel
+			$ stream-cli chat add-member --type messaging --id red-team joe jill jane
+		`),
+		Args: cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+
+			_, err = c.Channel(chType, chID).AddMembers(cmd.Context(), args)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully added user(s) to channel")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func removeMemberCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-members --type [channel-type] --id [channel-id] [user-id-1] [user-id-2] ...",
+		Short: "Remove members from a channel",
+		Example: heredoc.Doc(`
+			# Remove members joe, jill and jane from 'red-team' channel
+			$ stream-cli chat remove-members --type messaging --id red-team joe jill jane
+		`),
+		Args: cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+
+			_, err = c.Channel(chType, chID).RemoveMembers(cmd.Context(), args, nil)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully removed user(s) from channel")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func promoteModeratorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "promote-moderators --type [channel-type] --id [channel-id] [user-id-1] [user-id-2] ...",
+		Short: "Promote users to channel moderator role",
+		Args:  cobra.MinimumNArgs(1),
+		Example: heredoc.Doc(`
+			# Promote 4 users to moderator
+			$ stream-cli chat promote-moderators --type messaging --id red-team joe mike jane jill
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+
+			_, err = c.Channel(chType, chID).AddModerators(cmd.Context(), args...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully promoted users to moderators")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func demoteModeratorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "demote-moderators --type [channel-type] --id [channel-id] [user-id-1] [user-id-2] ...",
+		Short: "Demote users from moderator role",
+		Args:  cobra.MinimumNArgs(1),
+		Example: heredoc.Doc(`
+			# Demote 4 users from moderator role
+			$ stream-cli chat demote-moderators --type messaging --id red-team joe mike jane jill
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+
+			_, err = c.Channel(chType, chID).DemoteModerators(cmd.Context(), args...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully demoted users from moderators")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func hideCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "hide-channel --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Hide a channel",
+		Long: heredoc.Doc(`
+			Hiding a channel will remove it from query channel requests for that
+			user until a new message is added. Please keep in mind that hiding a channel
+			is only available to members of that channel.
+			You can still retrieve the list of hidden channels using the { "hidden" : true } query parameter.
+		`),
+		Example: heredoc.Doc(`
+			# Hide a 'red-team' channel for user 'joe'
+			$ stream-cli chat hide-channel --type messaging --id red-team --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.Channel(chType, chID).Hide(cmd.Context(), userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully hid channel for " + userID + "\n")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id to hide the channel to")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+	cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func showCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-channel --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Show a channel",
+		Long: heredoc.Doc(`
+			Hiding a channel will remove it from query channel requests for that
+			user until a new message is added.
+			As opposed to this, showing a channel will add it to query channel requests for that user.
+		`),
+		Example: heredoc.Doc(`
+			# Show a 'red-team' channel for user 'joe'
+			$ stream-cli chat show-channel --type messaging --id red-team --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.Channel(chType, chID).Show(cmd.Context(), userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully shown channel for " + userID)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id to show the channel to")
+	cmd.MarkFlagRequired("type")
+	cmd.MarkFlagRequired("id")
+	cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }

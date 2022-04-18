@@ -118,3 +118,69 @@ func TestListChannel(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), chName)
 }
+
+func TestAddMembersRemoveMembers(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteUser(u)
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully added user")
+
+	cmd.SetArgs([]string{"remove-members", "-t", "messaging", "-i", ch, u})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully removed user")
+}
+
+func TestPromoteAndDemoteModerator(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteUser(u)
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, _ = cmd.ExecuteC()
+
+	cmd.SetArgs([]string{"promote-moderators", "-t", "messaging", "-i", ch, u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully promoted user")
+
+	cmd.SetArgs([]string{"demote-moderators", "-t", "messaging", "-i", ch, u})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully demoted user")
+}
+
+func TestHideAndShowChannel(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+		test.DeleteUser(u)
+	})
+
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, _ = cmd.ExecuteC()
+
+	cmd.SetArgs([]string{"hide-channel", "-t", "messaging", "-i", ch, "-u", u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully hid channel")
+
+	cmd.SetArgs([]string{"show-channel", "-t", "messaging", "-i", ch, "-u", u})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully shown channel")
+}
