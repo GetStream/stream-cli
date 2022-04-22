@@ -540,11 +540,6 @@ func unmuteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unmute-user --target-user-id [user-id] --unmuted-by-id [user-id]",
 		Short: "Unmute a user",
-		Long: heredoc.Doc(`
-			Any user is allowed to mute another user. Mutes are stored at the user
-			level and returned with the rest of the user information when connectUser is called.
-			A user will be muted until the user is unmuted or the mute is expired.
-		`),
 		Example: heredoc.Doc(`
 			# Unmute the user 'joe'
 			$ stream-cli chat unmute-user --target-user-id joe --unmuted-by-id admin
