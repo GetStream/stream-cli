@@ -36,7 +36,9 @@ func updateCmd() *cobra.Command {
 			apn_key_id
 			apn_team_id
 			apn_topic
-					
+
+			firebase_notification_template
+			firebase_apn_template
 			firebase_credentials
 					
 			huawei_app_id
@@ -112,23 +114,17 @@ func testCmd() *cobra.Command {
 			}
 
 			msgID, _ := cmd.Flags().GetString("message-id")
-			apnTemplate, _ := cmd.Flags().GetString("apn-template")
-			firebaseTemplate, _ := cmd.Flags().GetString("firebase-template")
-			firebaseDataTemplate, _ := cmd.Flags().GetString("firebase-data-template")
 			skipDevices, _ := cmd.Flags().GetBool("skip-devices")
 			pushProviderName, _ := cmd.Flags().GetString("push-provider-name")
 			pushProviderType, _ := cmd.Flags().GetString("push-provider-type")
 			userID, _ := cmd.Flags().GetString("user-id")
 
 			p := &stream_chat.CheckPushRequest{
-				MessageID:            msgID,
-				ApnTemplate:          apnTemplate,
-				FirebaseTemplate:     firebaseTemplate,
-				FirebaseDataTemplate: firebaseDataTemplate,
-				SkipDevices:          &skipDevices,
-				PushProviderName:     pushProviderName,
-				PushProviderType:     pushProviderType,
-				UserID:               userID,
+				MessageID:        msgID,
+				SkipDevices:      &skipDevices,
+				PushProviderName: pushProviderName,
+				PushProviderType: pushProviderType,
+				UserID:           userID,
 			}
 
 			resp, err := c.CheckPush(cmd.Context(), p)
@@ -142,9 +138,6 @@ func testCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.String("message-id", "", "[optional] Message id to test")
-	fl.String("apn-template", "", "[optional] APN template to send to the backend")
-	fl.String("firebase-template", "", "[optional] Firebase template to send to the backend")
-	fl.String("firebase-data-template", "", "[optional] Firebase data template to send to the backend")
 	fl.Bool("skip-devices", false, "[optional] Whether to notify devices")
 	fl.String("push-provider-name", "", "[optional] Push provider name to use")
 	fl.String("push-provider-type", "", "[optional] Push provider type to use")
