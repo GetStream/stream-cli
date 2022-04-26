@@ -12,12 +12,14 @@ import (
 
 func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
-		updateCmd(),
+		upsertCmd(),
+		deleteCmd(),
+		listCmd(),
 		testCmd(),
 	}
 }
 
-func updateCmd() *cobra.Command {
+func upsertCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upsert-pushprovider --properties [raw-json]",
 		Short: "Create or updates a push provider",
@@ -87,6 +89,71 @@ func updateCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw json properties to send to the backend")
 	_ = cmd.MarkFlagRequired("properties")
+
+	return cmd
+}
+
+func listCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list-pushproviders --output-format [json|tree]",
+		Short: "List all push providers",
+		Example: heredoc.Doc(`
+			# List all push providers
+			$ stream-cli chat list-pushproviders
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			resp, err := c.ListPushProviders(cmd.Context())
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, resp.PushProviders)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("output-format", "o", "json", "Output format. One of: json|tree")
+
+	return cmd
+}
+
+func deleteCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delete-pushprovider --push-provider-type [type] --push-provider-name [name]",
+		Short: "Delete a push provider",
+		Example: heredoc.Doc(`
+			# Delete an APN push provider
+			$ stream-cli chat delete-pushprovider --push-provider-type apn --push-provider-name staging
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			providerName, _ := cmd.Flags().GetString("push-provider-name")
+			providerType, _ := cmd.Flags().GetString("push-provider-type")
+
+			_, err = c.DeletePushProvider(cmd.Context(), providerType, providerName)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully deleted push provider.")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("push-provider-type", "t", "", "[required] Push provider type")
+	fl.StringP("push-provider-name", "n", "", "[required] Push provider name")
+	_ = cmd.MarkFlagRequired("push-provider-type")
+	_ = cmd.MarkFlagRequired("push-provider-name")
 
 	return cmd
 }
