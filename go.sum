@@ -1,7 +1,7 @@
 github.com/AlecAivazis/survey/v2 v2.2.15 h1:6UNMnk+YGegYFiPfdTOyZDIN+m08x2nGnqOn15BWcEQ=
 github.com/AlecAivazis/survey/v2 v2.2.15/go.mod h1:TH2kPCDU3Kqq7pLbnCWwZXDBjnhZtmsCle5EiYDJ2fg=
-github.com/GetStream/stream-chat-go/v5 v5.7.0 h1:KCsxAF8UqDDRDPQbIh6SUOpW20klERPEE4gKpPFkRME=
-github.com/GetStream/stream-chat-go/v5 v5.7.0/go.mod h1:ET7NyUYplNy8+tyliin6Q3kKwbd/+FHQWMAW6zucisY=
+github.com/GetStream/stream-chat-go/v5 v5.8.0 h1:HpkoZQeIdZ8qdHejKbVth6/fu5ZQXlc3P+5vxNAt+aw=
+github.com/GetStream/stream-chat-go/v5 v5.8.0/go.mod h1:ET7NyUYplNy8+tyliin6Q3kKwbd/+FHQWMAW6zucisY=
 github.com/MakeNowJust/heredoc v1.0.0 h1:cXCdzVdstXyiTqTvfqk9SDHpKNjxuom+DOlyEeQ4pzQ=
 github.com/MakeNowJust/heredoc v1.0.0/go.mod h1:mG5amYoWBHf8vpLOuehzbGGw0EHxpZZ6lCpQ4fNJ8LE=
 github.com/Netflix/go-expect v0.0.0-20180615182759-c93bf25de8e8 h1:xzYJEypr/85nBpB11F9br+3HUrpgb+fcm5iADzXXYEw=
