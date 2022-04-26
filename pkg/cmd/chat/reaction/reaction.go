@@ -12,7 +12,8 @@ func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
 		getCmd(),
 		sendCmd(),
-		deleteCmd()}
+		deleteCmd(),
+	}
 }
 
 func getCmd() *cobra.Command {
@@ -32,7 +33,7 @@ func getCmd() *cobra.Command {
 
 			msgID := args[0]
 
-			resp, err := c.Channel("", "").GetReactions(cmd.Context(), msgID, nil)
+			resp, err := c.GetReactions(cmd.Context(), msgID, nil)
 			if err != nil {
 				return err
 			}
