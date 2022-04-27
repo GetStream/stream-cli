@@ -15,15 +15,15 @@ const (
 	uploadTypeImage uploadType = "image"
 )
 
-func UploadFile(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath string) (string, error) {
-	return uploadFile(c, cmd, uploadTypeFile, chType, chId, userID, filePath)
+func UploadFile(c *stream.Client, cmd *cobra.Command, chType, chID, userID, filePath string) (string, error) {
+	return uploadFile(c, cmd, uploadTypeFile, chType, chID, userID, filePath)
 }
 
-func UploadImage(c *stream.Client, cmd *cobra.Command, chType, chId, userID, filePath string) (string, error) {
-	return uploadFile(c, cmd, uploadTypeImage, chType, chId, userID, filePath)
+func UploadImage(c *stream.Client, cmd *cobra.Command, chType, chID, userID, filePath string) (string, error) {
+	return uploadFile(c, cmd, uploadTypeImage, chType, chID, userID, filePath)
 }
 
-func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chId, userID, filePath string) (string, error) {
+func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chType, chID, userID, filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return "", err
@@ -39,9 +39,9 @@ func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chT
 	var resp *stream.SendFileResponse
 
 	if uploadtype == uploadTypeImage {
-		resp, err = c.Channel(chType, chId).SendImage(cmd.Context(), req)
+		resp, err = c.Channel(chType, chID).SendImage(cmd.Context(), req)
 	} else {
-		resp, err = c.Channel(chType, chId).SendFile(cmd.Context(), req)
+		resp, err = c.Channel(chType, chID).SendFile(cmd.Context(), req)
 	}
 
 	if err != nil {

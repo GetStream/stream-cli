@@ -8,11 +8,12 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/imports/validator"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/utils"
-	"github.com/MakeNowJust/heredoc"
-	"github.com/spf13/cobra"
 )
 
 func NewCmds() []*cobra.Command {

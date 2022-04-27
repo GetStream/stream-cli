@@ -9,30 +9,6 @@ run:
     - '.*_mock.go'
     - ".*\\.pb\\.go$"
 
-linters:
-  disable-all: true
-  enable:
-    - deadcode
-    - dupl
-    - errcheck
-    - forbidigo
-    - gas
-    - gci
-    - goconst
-    - gocritic
-    - gocyclo
-    - gofumpt
-    - goimports
-    - gosimple
-    - govet
-    - ineffassign
-    - misspell
-    - unconvert
-    - revive
-    - staticcheck
-    - unused
-    - varcheck
-
 linters-settings:
   dupl:
     threshold: 250
