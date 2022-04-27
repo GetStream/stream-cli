@@ -49,7 +49,7 @@ func removeAppCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove [app-name-1] [app-name-2] [app-name-n]",
 		Short: "Remove one or more application.",
-		Long:  "Remove one or more application from the configuraiton file. This operation is irrevocable.",
+		Long:  "Remove one or more application from the configuration file. This operation is irrevocable.",
 		Example: heredoc.Doc(`
 			# Remove a single application from the CLI
 			$ stream-cli config remove staging

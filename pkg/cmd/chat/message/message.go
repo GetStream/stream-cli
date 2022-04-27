@@ -44,7 +44,7 @@ func sendCmd() *cobra.Command {
 			}
 
 			chType, _ := cmd.Flags().GetString("channel-type")
-			chId, _ := cmd.Flags().GetString("channel-id")
+			chID, _ := cmd.Flags().GetString("channel-id")
 			user, _ := cmd.Flags().GetString("user")
 			text, _ := cmd.Flags().GetString("text")
 			attachment, _ := cmd.Flags().GetString("attachment")
@@ -55,7 +55,7 @@ func sendCmd() *cobra.Command {
 				if strings.HasPrefix(attachment, "http") {
 					m.Attachments = []*stream.Attachment{{AssetURL: attachment}}
 				} else {
-					uri, err := chatUtils.UploadFile(c, cmd, chType, chId, user, attachment)
+					uri, err := chatUtils.UploadFile(c, cmd, chType, chID, user, attachment)
 					if err != nil {
 						return err
 					}
@@ -63,7 +63,7 @@ func sendCmd() *cobra.Command {
 				}
 			}
 
-			msg, err := c.Channel(chType, chId).SendMessage(cmd.Context(), m, user)
+			msg, err := c.Channel(chType, chID).SendMessage(cmd.Context(), m, user)
 			if err != nil {
 				return err
 			}
@@ -79,10 +79,10 @@ func sendCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] User id")
 	fl.String("text", "", "[required] Text of the message")
 	fl.StringP("attachment", "a", "", "[optional] URL of the an attachment")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("user")
-	cmd.MarkFlagRequired("text")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("text")
 
 	return cmd
 }
@@ -133,9 +133,9 @@ func getMultipleCmd() *cobra.Command {
 			}
 
 			chType, _ := cmd.Flags().GetString("channel-type")
-			chId, _ := cmd.Flags().GetString("channel-id")
+			chID, _ := cmd.Flags().GetString("channel-id")
 
-			messages, err := c.Channel(chType, chId).GetMessages(cmd.Context(), args)
+			messages, err := c.Channel(chType, chID).GetMessages(cmd.Context(), args)
 			if err != nil {
 				return err
 			}
@@ -148,8 +148,8 @@ func getMultipleCmd() *cobra.Command {
 	fl.StringP("channel-type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("channel-id", "i", "", "[required] Channel id")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
 
 	return cmd
 }
@@ -219,7 +219,7 @@ func partialUpdateCmd() *cobra.Command {
 				return err
 			}
 
-			msgId, _ := cmd.Flags().GetString("message-id")
+			msgID, _ := cmd.Flags().GetString("message-id")
 			user, _ := cmd.Flags().GetString("user")
 			set, _ := cmd.Flags().GetStringToString("set")
 			unset, _ := cmd.Flags().GetString("unset")
@@ -236,7 +236,7 @@ func partialUpdateCmd() *cobra.Command {
 				}
 			}
 
-			_, err = c.PartialUpdateMessage(cmd.Context(), msgId, &stream.MessagePartialUpdateRequest{
+			_, err = c.PartialUpdateMessage(cmd.Context(), msgID, &stream.MessagePartialUpdateRequest{
 				UserID: user,
 				PartialUpdate: stream.PartialUpdate{
 					Set:   s,
@@ -257,7 +257,7 @@ func partialUpdateCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] User id")
 	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
 	fl.String("unset", "", "[optional] Comma separated list of properties to unset")
-	cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("message-id")
 
 	return cmd
 }

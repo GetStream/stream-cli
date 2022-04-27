@@ -12,9 +12,7 @@ import (
 )
 
 const (
-	configDir  = "stream-cli"
-	configFile = "config.yml"
-
+	configDir          = "stream-cli"
 	DefaultChatEdgeURL = "https://chat.stream-io-api.com"
 )
 
@@ -47,7 +45,7 @@ func (c *Config) Get(name string) (*App, error) {
 	return nil, fmt.Errorf("application %q doesn't exist", name)
 }
 
-func (c *Config) GetCredentials(cmd *cobra.Command) (string, string, error) {
+func (c *Config) GetCredentials(cmd *cobra.Command) (accessKey string, secretKey string, err error) {
 	appName := c.Default
 	explicit, err := cmd.Flags().GetString("app")
 	if err != nil {
@@ -178,7 +176,7 @@ func GetInitConfig(cmd *cobra.Command, cfgPath *string) func() {
 
 		err := viper.ReadInConfig()
 		if err != nil && os.IsNotExist(err) {
-			err = os.MkdirAll(filepath.Dir(configPath), 0755)
+			err = os.MkdirAll(filepath.Dir(configPath), 0o755)
 			if err != nil {
 				cmd.PrintErr(err)
 				os.Exit(1)
@@ -197,5 +195,4 @@ func GetInitConfig(cmd *cobra.Command, cfgPath *string) func() {
 			os.Exit(1)
 		}
 	}
-
 }

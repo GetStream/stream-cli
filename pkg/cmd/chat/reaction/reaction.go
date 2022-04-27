@@ -126,9 +126,9 @@ func deleteCmd() *cobra.Command {
 	fl.StringP("reaction-type", "r", "", "[required] The reaction type to delete")
 	fl.StringP("message-id", "m", "", "[required] The message id to delete the reaction from")
 	fl.StringP("user-id", "u", "", "[required] The user id of the user deleting the reaction")
-	cmd.MarkFlagRequired("reaction-type")
-	cmd.MarkFlagRequired("message-id")
-	cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("reaction-type")
+	_ = cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
