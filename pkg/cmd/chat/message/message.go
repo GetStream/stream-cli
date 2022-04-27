@@ -79,10 +79,10 @@ func sendCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] User id")
 	fl.String("text", "", "[required] Text of the message")
 	fl.StringP("attachment", "a", "", "[optional] URL of the an attachment")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("user")
-	cmd.MarkFlagRequired("text")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("text")
 
 	return cmd
 }
@@ -148,8 +148,8 @@ func getMultipleCmd() *cobra.Command {
 	fl.StringP("channel-type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("channel-id", "i", "", "[required] Channel id")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
 
 	return cmd
 }
@@ -257,7 +257,7 @@ func partialUpdateCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] User id")
 	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
 	fl.String("unset", "", "[optional] Comma separated list of properties to unset")
-	cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("message-id")
 
 	return cmd
 }

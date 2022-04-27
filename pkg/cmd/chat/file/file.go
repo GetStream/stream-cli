@@ -58,10 +58,10 @@ func uploadFileCmd() *cobra.Command {
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("user-id", "u", "", "[required] User id")
 	fl.StringP("file", "f", "", "[required] File path")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("user-id")
-	cmd.MarkFlagRequired("file")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("file")
 
 	return cmd
 }
@@ -109,10 +109,10 @@ func uploadImageCmd() *cobra.Command {
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("user-id", "u", "", "[required] User id")
 	fl.StringP("file", "f", "", "[required] Image file path")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("user-id")
-	cmd.MarkFlagRequired("file")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("file")
 
 	return cmd
 }
@@ -145,9 +145,9 @@ func deleteFileCmd() *cobra.Command {
 	fl.StringP("channel-type", "t", "", "[required] Channel type to interact with")
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("file-url", "u", "", "[required] URL of the file to delete")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("file-url")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("file-url")
 
 	return cmd
 }
@@ -180,9 +180,9 @@ func deleteImageCmd() *cobra.Command {
 	fl.StringP("channel-type", "t", "", "[required] Channel type to interact with")
 	fl.StringP("channel-id", "i", "", "[required] Channel id to interact with")
 	fl.StringP("image-url", "u", "", "[required] URL of the image to delete")
-	cmd.MarkFlagRequired("channel-type")
-	cmd.MarkFlagRequired("channel-id")
-	cmd.MarkFlagRequired("image-url")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
+	_ = cmd.MarkFlagRequired("image-url")
 
 	return cmd
 }

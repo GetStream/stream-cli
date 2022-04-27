@@ -12,7 +12,8 @@ func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
 		createCmd(),
 		listCmd(),
-		deleteCmd()}
+		deleteCmd(),
+	}
 }
 
 func createCmd() *cobra.Command {

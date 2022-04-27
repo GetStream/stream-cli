@@ -9,9 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	cfgPath *string = new(string)
-)
+var cfgPath *string = new(string)
 
 func NewCmd() *cobra.Command {
 	root := &cobra.Command{

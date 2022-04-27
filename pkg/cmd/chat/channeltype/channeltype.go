@@ -16,7 +16,8 @@ func NewCmds() []*cobra.Command {
 		createCmd(),
 		deleteCmd(),
 		updateCmd(),
-		listCmd()}
+		listCmd(),
+	}
 }
 
 func getCmd() *cobra.Command {
@@ -95,7 +96,7 @@ func createCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
@@ -169,8 +170,8 @@ func updateCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type")
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }

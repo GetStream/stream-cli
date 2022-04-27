@@ -188,8 +188,8 @@ default: test2
 }
 
 func getNormalizedString(s string) string {
-	noSpace := strings.Replace(s, " ", "", -1)
-	noNewLine := strings.Replace(noSpace, "\n", "", -1)
+	noSpace := strings.ReplaceAll(s, " ", "")
+	noNewLine := strings.ReplaceAll(noSpace, "\n", "")
 
 	return strings.TrimSpace(noNewLine)
 }
