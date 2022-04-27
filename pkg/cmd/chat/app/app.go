@@ -5,10 +5,11 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
-	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 )
 
 func NewCmds() []*cobra.Command {
@@ -103,7 +104,7 @@ func updateCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw json properties to update")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }

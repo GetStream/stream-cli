@@ -6,8 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/GetStream/stream-cli/test"
 	"github.com/stretchr/testify/require"
+
+	"github.com/GetStream/stream-cli/test"
 )
 
 func TestSendMessage(t *testing.T) {
@@ -33,7 +34,7 @@ func TestSendMessageWithFileAttachment(t *testing.T) {
 	tmpfile, err := ioutil.TempFile("", "*.txt")
 	require.NoError(t, err)
 
-	err = os.WriteFile(tmpfile.Name(), []byte("hello\nworld\n"), 0644)
+	err = os.WriteFile(tmpfile.Name(), []byte("hello\nworld\n"), 0o644)
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

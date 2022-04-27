@@ -6,10 +6,11 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
-	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 )
 
 func NewCmds() []*cobra.Command {
@@ -81,7 +82,7 @@ func createTokenCmd() *cobra.Command {
 	fl.StringP("user", "u", "", "[required] Id of the user to create token for")
 	fl.IntP("expiration", "e", 0, "[optional] Expiration (exp) of the JWT in epoch timestamp")
 	fl.IntP("issued-at", "i", 0, "[optional] Issued at (iat) of the JWT in epoch timestamp")
-	cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("user")
 
 	return cmd
 }
@@ -127,7 +128,7 @@ func upsertCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties of the user")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
@@ -194,7 +195,7 @@ func deleteCmd() *cobra.Command {
 	fl.Bool("hard-delete", false, "[optional] Hard delete everything related to this user")
 	fl.Bool("mark-messages-deleted", false, "[optional] Hard delete all messages related to the user")
 	fl.Bool("delete-conversations", false, "[optional] Hard delete all conversations related to the user")
-	cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("user")
 
 	return cmd
 }
@@ -255,7 +256,7 @@ func queryCmd() *cobra.Command {
 	fl.StringP("filter", "f", "{}", "[required] Filter for users")
 	fl.IntP("limit", "l", 10, "[optional] The number of users returned")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	cmd.MarkFlagRequired("filter")
+	_ = cmd.MarkFlagRequired("filter")
 
 	return cmd
 }
@@ -301,7 +302,7 @@ func revokeCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("user", "u", "", "[required] Id of the user to revoke token for")
 	fl.Int64P("before", "b", 0, "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
-	cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("user")
 
 	return cmd
 }

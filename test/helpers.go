@@ -9,9 +9,10 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/GetStream/stream-cli/pkg/config"
 )
 
 func prepareViperConfig() {
@@ -47,7 +48,7 @@ func InitClient() *stream.Client {
 func InitChannel(t *testing.T) string {
 	name := RandomString(10)
 	c := InitClient()
-	c.CreateChannel(context.Background(), "messaging", name, "userid", nil)
+	_, _ = c.CreateChannel(context.Background(), "messaging", name, "userid", nil)
 	return name
 }
 

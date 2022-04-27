@@ -1,10 +1,11 @@
 package watch
 
 import (
-	"github.com/GetStream/stream-cli/pkg/cmd/chat/utils"
-	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+
+	"github.com/GetStream/stream-cli/pkg/cmd/chat/utils"
+	"github.com/GetStream/stream-cli/pkg/config"
 )
 
 func NewCmds() []*cobra.Command {

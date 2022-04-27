@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
-	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 )
 
 func NewCmds() []*cobra.Command {
@@ -16,7 +17,8 @@ func NewCmds() []*cobra.Command {
 		createCmd(),
 		deleteCmd(),
 		updateCmd(),
-		listCmd()}
+		listCmd(),
+	}
 }
 
 func getCmd() *cobra.Command {
@@ -95,7 +97,7 @@ func createCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
@@ -154,7 +156,10 @@ func updateCmd() *cobra.Command {
 			properties, _ := cmd.Flags().GetString("properties")
 
 			props := make(map[string]interface{})
-			json.Unmarshal([]byte(properties), &props)
+			err = json.Unmarshal([]byte(properties), &props)
+			if err != nil {
+				return err
+			}
 
 			_, err = c.UpdateChannelType(cmd.Context(), ct, props)
 			if err != nil {
@@ -169,8 +174,8 @@ func updateCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type")
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
