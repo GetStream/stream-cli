@@ -71,10 +71,6 @@ func (e *ItemError) Offset() int64 {
 	return e.offset
 }
 
-func (e *ItemError) Item() rawItem {
-	return e.item
-}
-
 type WrapError struct {
 	err error
 }

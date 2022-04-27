@@ -4,7 +4,7 @@ Remove one or more application.
 
 ### Synopsis
 
-Remove one or more application from the configuraiton file. This operation is irrevocable.
+Remove one or more application from the configuration file. This operation is irrevocable.
 
 ```
 stream-cli config remove [app-name-1] [app-name-2] [app-name-n] [flags]

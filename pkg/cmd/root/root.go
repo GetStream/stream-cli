@@ -1,17 +1,16 @@
 package root
 
 import (
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+
 	"github.com/GetStream/stream-cli/pkg/cmd/chat"
 	cfgCmd "github.com/GetStream/stream-cli/pkg/cmd/config"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/version"
-	"github.com/MakeNowJust/heredoc"
-	"github.com/spf13/cobra"
 )
 
-var (
-	cfgPath *string = new(string)
-)
+var cfgPath = new(string)
 
 func NewCmd() *cobra.Command {
 	root := &cobra.Command{

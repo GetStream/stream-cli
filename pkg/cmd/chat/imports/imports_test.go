@@ -6,8 +6,9 @@ import (
 	"testing"
 
 	stream_chat "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/test"
 	"github.com/stretchr/testify/require"
+
+	"github.com/GetStream/stream-cli/test"
 )
 
 func TestValidateImport(t *testing.T) {

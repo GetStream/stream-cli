@@ -9,9 +9,10 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/GetStream/stream-cli/pkg/config"
 )
 
 func prepareViperConfig() {
@@ -47,7 +48,7 @@ func InitClient() *stream.Client {
 func InitChannel(t *testing.T) string {
 	name := RandomString(10)
 	c := InitClient()
-	c.CreateChannel(context.Background(), "messaging", name, "userid", nil)
+	_, _ = c.CreateChannel(context.Background(), "messaging", name, "userid", nil)
 	return name
 }
 
@@ -84,9 +85,9 @@ func DeleteMessage(id string) {
 
 func RandomString(n int) string {
 	rand.Seed(time.Now().UnixNano())
-	bytes := make([]byte, n)
+	b := make([]byte, n)
 	for i := 0; i < n; i++ {
-		bytes[i] = byte(65 + rand.Intn(25)) // A=65 and Z = 65+25
+		b[i] = byte(65 + rand.Intn(25)) //nolint:gosec // not a security issue
 	}
-	return string(bytes)
+	return string(b)
 }

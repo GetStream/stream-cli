@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/GetStream/stream-cli/pkg/cmd/root"
 	"github.com/spf13/cobra/doc"
 	"github.com/spf13/pflag"
+
+	"github.com/GetStream/stream-cli/pkg/cmd/root"
 )
 
 func main() {
