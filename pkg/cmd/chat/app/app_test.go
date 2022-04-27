@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/GetStream/stream-cli/test"
 	"github.com/stretchr/testify/require"
+
+	"github.com/GetStream/stream-cli/test"
 )
 
 func TestGetAppJsonFormat(t *testing.T) {

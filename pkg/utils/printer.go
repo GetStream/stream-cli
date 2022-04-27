@@ -18,15 +18,15 @@ func PrintObject(cmd *cobra.Command, object interface{}) error {
 
 	switch format {
 	case "json":
-		return printJsonObject(cmd, object)
+		return printJSONObject(cmd, object)
 	case "tree":
-		return printUiObject(cmd, object)
+		return printUIObject(cmd, object)
 	default:
 		return fmt.Errorf("unknown output format: %s", format)
 	}
 }
 
-func printJsonObject(cmd *cobra.Command, object interface{}) error {
+func printJSONObject(cmd *cobra.Command, object interface{}) error {
 	b, err := json.MarshalIndent(object, "", "  ")
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func printJsonObject(cmd *cobra.Command, object interface{}) error {
 	return nil
 }
 
-func printUiObject(cmd *cobra.Command, object interface{}) error {
+func printUIObject(cmd *cobra.Command, object interface{}) error {
 	var asMap map[string]interface{}
 	b, err := json.Marshal(object)
 	if err != nil {
@@ -63,7 +63,7 @@ func printUiObject(cmd *cobra.Command, object interface{}) error {
 	}
 	defer ui.Close()
 
-	renderUi(rootNode)
+	renderUI(rootNode)
 	return nil
 }
 
@@ -102,7 +102,7 @@ func addNodesRecursive(parentNode *widgets.TreeNode, prefix string, value interf
 	parentNode.Nodes = append(parentNode.Nodes, node)
 }
 
-func renderUi(rootNode *widgets.TreeNode) {
+func renderUI(rootNode *widgets.TreeNode) {
 	// First section: instructions
 	p := widgets.NewParagraph()
 	p.Text = `- Press [q] or [Ctrl+C] to quit

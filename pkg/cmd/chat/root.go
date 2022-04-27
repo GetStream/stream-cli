@@ -1,6 +1,8 @@
 package chat
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/app"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channel"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channeltype"
@@ -12,7 +14,6 @@ import (
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/reaction"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/user"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/watch"
-	"github.com/spf13/cobra"
 )
 
 func NewRootCmd() *cobra.Command {

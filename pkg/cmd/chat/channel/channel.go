@@ -7,10 +7,11 @@ import (
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
-	"github.com/GetStream/stream-cli/pkg/config"
-	"github.com/GetStream/stream-cli/pkg/utils"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+
+	"github.com/GetStream/stream-cli/pkg/config"
+	"github.com/GetStream/stream-cli/pkg/utils"
 )
 
 func NewCmds() []*cobra.Command {
@@ -48,9 +49,9 @@ func getCmd() *cobra.Command {
 			}
 
 			chanType, _ := cmd.Flags().GetString("type")
-			chanId, _ := cmd.Flags().GetString("id")
+			chanID, _ := cmd.Flags().GetString("id")
 
-			r, err := c.Channel(chanType, chanId).Query(cmd.Context(), &stream.QueryRequest{})
+			r, err := c.Channel(chanType, chanID).Query(cmd.Context(), &stream.QueryRequest{})
 			if err != nil {
 				return err
 			}
@@ -63,8 +64,8 @@ func getCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -88,10 +89,10 @@ func createCmd() *cobra.Command {
 			}
 
 			chanType, _ := cmd.Flags().GetString("type")
-			chanId, _ := cmd.Flags().GetString("id")
+			chanID, _ := cmd.Flags().GetString("id")
 			user, _ := cmd.Flags().GetString("user")
 
-			r, err := c.CreateChannel(cmd.Context(), chanType, chanId, user, nil)
+			r, err := c.CreateChannel(cmd.Context(), chanType, chanID, user, nil)
 			if err != nil {
 				return err
 			}
@@ -110,9 +111,9 @@ func createCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user", "u", "", "[required] User id who will be considered as the creator of the channel")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
-	cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user")
 
 	return cmd
 }
@@ -141,9 +142,9 @@ func deleteCmd() *cobra.Command {
 			}
 
 			chanType, _ := cmd.Flags().GetString("type")
-			chanId, _ := cmd.Flags().GetString("id")
+			chanID, _ := cmd.Flags().GetString("id")
 			hard, _ := cmd.Flags().GetBool("hard")
-			cids := []string{chanType + ":" + chanId}
+			cids := []string{chanType + ":" + chanID}
 
 			resp, err := c.DeleteChannels(cmd.Context(), cids, hard)
 			if err != nil {
@@ -163,8 +164,8 @@ func deleteCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.Bool("hard", false, "[optional] Channel will be hard deleted. This action is irrevocable.")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -190,7 +191,7 @@ func updateCmd() *cobra.Command {
 			}
 
 			chanType, _ := cmd.Flags().GetString("type")
-			chanId, _ := cmd.Flags().GetString("id")
+			chanID, _ := cmd.Flags().GetString("id")
 			p, _ := cmd.Flags().GetString("properties")
 
 			props := make(map[string]interface{})
@@ -199,13 +200,13 @@ func updateCmd() *cobra.Command {
 				return err
 			}
 
-			ch := c.Channel(chanType, chanId)
+			ch := c.Channel(chanType, chanID)
 			_, err = ch.Update(cmd.Context(), props, nil)
 			if err != nil {
 				return err
 			}
 
-			cmd.Printf("Successfully updated channel [%s]\n", chanId)
+			cmd.Printf("Successfully updated channel [%s]\n", chanID)
 			return nil
 		},
 	}
@@ -214,9 +215,9 @@ func updateCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("properties", "p", "", "[required] Channel properties to update")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
-	cmd.MarkFlagRequired("properties")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }
@@ -240,7 +241,7 @@ func updatePartialCmd() *cobra.Command {
 			}
 
 			chanType, _ := cmd.Flags().GetString("type")
-			chanId, _ := cmd.Flags().GetString("id")
+			chanID, _ := cmd.Flags().GetString("id")
 			set, _ := cmd.Flags().GetStringToString("set")
 			unset, _ := cmd.Flags().GetString("unset")
 
@@ -256,13 +257,13 @@ func updatePartialCmd() *cobra.Command {
 				}
 			}
 
-			ch := c.Channel(chanType, chanId)
+			ch := c.Channel(chanType, chanID)
 			_, err = ch.PartialUpdate(cmd.Context(), stream.PartialUpdate{Set: s, Unset: u})
 			if err != nil {
 				return err
 			}
 
-			cmd.Printf("Successfully updated channel [%s]\n", chanId)
+			cmd.Printf("Successfully updated channel [%s]\n", chanID)
 			return nil
 		},
 	}
@@ -272,8 +273,8 @@ func updatePartialCmd() *cobra.Command {
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
 	fl.StringP("unset", "u", "", "[optional] Comma separated list of properties to unset")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -321,7 +322,7 @@ func listCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.IntP("limit", "l", 10, "[optional] Number of channels to return. Used for pagination")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("type")
 
 	return cmd
 }
@@ -357,8 +358,8 @@ func addMemberCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -394,8 +395,8 @@ func removeMemberCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -431,8 +432,8 @@ func promoteModeratorCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -468,8 +469,8 @@ func demoteModeratorCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
@@ -512,9 +513,9 @@ func hideCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user-id", "u", "", "[required] User id to hide the channel to")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
-	cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
@@ -556,9 +557,9 @@ func showCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user-id", "u", "", "[required] User id to show the channel to")
-	cmd.MarkFlagRequired("type")
-	cmd.MarkFlagRequired("id")
-	cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
