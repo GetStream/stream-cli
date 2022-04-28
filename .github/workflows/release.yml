@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+      - main
+
+jobs:
+  Release:
+    name: 🚀 Release
+    if: github.event.pull_request.merged && startsWith(github.head_ref, 'release-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            // Getting the release version from the PR source branch
+            // Source branch looks like this: release-1.0.0
+            const version = context.payload.pull_request.head.ref.split('-')[1]
+            core.exportVariable('VERSION', version)
+
+            const get_change_log_diff = require('./scripts/get_changelog_diff.js')
+            const fs = require('fs');
+            fs.writeFileSync("latest_changes.txt", get_change_log_diff());
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.18"
+
+      - run: |
+          git tag "${{ env.VERSION }}"
+          git push --tags
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist --release-notes latest_changes.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_CURRENT_TAG: ${{ env.VERSION }}
+
+      - name: Update docs
+        run: |
+          # Generate new Markdown docs
+          rm -rf ./docs/stream-cli*.md
+          go run ./cmd/gen-docs --output ./docs
+
+          # Push it to master
+          git config --global user.name 'GitHub Bot'
+          git config --global user.email 'cicd@getstream.io'
+          git add ./docs
+          git commit -m "docs(${{ env.VERSION }}): update markdown docs"
+          git push
