@@ -50,6 +50,9 @@ jobs:
 
       - name: Update docs
         run: |
+          # Update local state, since goreleaser pushes into master
+          git pull
+
           # Generate new Markdown docs
           rm -rf ./docs/stream-cli*.md
           go run ./cmd/gen-docs --output ./docs
