@@ -8,7 +8,7 @@
 > - The installation process is easier since it doesn't have any prerequisites (such as NPM). You can just simply download the executable and run it.
 > - The name of the executable is `stream-cli` instead of `stream` to avoid conflicts with an existing tool ([imagemagick](https://github.com/GetStream/stream-cli/issues/33)). But you can rename it if you want to.
 > - The command invocation is `stream-cli chat [verb-noun] [args] [options]` instead of `stream [verb:noun] [args] [options]`. The most obvious change is using dash instead of colon. We also added the `chat` keyword to preserve domain for our other product [Feeds](https://getstream.io/activity-feeds/).
-> - The 1.0.0 Go version has a bit smaller feature set than the old NodeJS one, but we'll bring it up to par by 2022 Q2.
+> - The 1.0.0 Go version's feature set is matching the old one. But if you miss anything, feel free to open an issue.
 
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
