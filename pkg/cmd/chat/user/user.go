@@ -448,7 +448,8 @@ func reactivateCmd() *cobra.Command {
 
 func deactivateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "deactivate-user --user-id [user-id] --mark-messages-deleted [true|false]",
+		Use:   "deactivate-user --user-id [user-id] --mark-messages-deleted [true|false]",
+		Short: "Deactivate a user",
 		Long: heredoc.Doc(`
 			Deactivated users cannot connect to Stream Chat or send/receive messages.
 			Deactivated users can be re-activated with the 'reactivate-user' command.
