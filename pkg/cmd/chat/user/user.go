@@ -121,7 +121,7 @@ func upsertCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Successfully upserted user [%s]\n", "")
+			cmd.Printf("Successfully upserted user [%s]\n", props)
 			return nil
 		},
 	}
