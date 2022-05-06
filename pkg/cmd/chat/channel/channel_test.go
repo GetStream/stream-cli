@@ -19,7 +19,7 @@ func TestCreateChannel(t *testing.T) {
 		test.DeleteChannel(ch)
 	})
 
-	cmd.SetArgs([]string{"create-channel", "-t", "messaging", "-i", ch, "-u", "user"})
+	cmd.SetArgs([]string{"create-channel", "-t", "messaging", "-i", ch, "-u", "user", "-p", "{\"custom_property\":\"property-value\"}"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 
@@ -28,6 +28,7 @@ func TestCreateChannel(t *testing.T) {
 	resp, err := c.Channel("messaging", ch).Query(ctx, &stream.QueryRequest{Data: &stream.ChannelRequest{}})
 	require.NoError(t, err)
 	require.Equal(t, ch, resp.Channel.ID)
+	require.Equal(t, "property-value", resp.Channel.ExtraData["custom_property"])
 }
 
 func TestCreateChannelAlreadyExists(t *testing.T) {
