@@ -24,7 +24,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat create-channel-type](stream-cli_chat_create-channel-type.md)	 - Create channel type
 * [stream-cli chat create-device](stream-cli_chat_create-device.md)	 - Create a device
 * [stream-cli chat create-token](stream-cli_chat_create-token.md)	 - Create a token
-* [stream-cli chat deactivate-user](stream-cli_chat_deactivate-user.md)	 - 
+* [stream-cli chat deactivate-user](stream-cli_chat_deactivate-user.md)	 - Deactivate a user
 * [stream-cli chat delete-channel](stream-cli_chat_delete-channel.md)	 - Delete a channel
 * [stream-cli chat delete-channel-type](stream-cli_chat_delete-channel-type.md)	 - Delete channel type
 * [stream-cli chat delete-device](stream-cli_chat_delete-device.md)	 - Delete a device
@@ -61,6 +61,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat send-reaction](stream-cli_chat_send-reaction.md)	 - Send a reaction to a message
 * [stream-cli chat show-channel](stream-cli_chat_show-channel.md)	 - Show a channel
 * [stream-cli chat test-push](stream-cli_chat_test-push.md)	 - Test push notifications
+* [stream-cli chat translate-message](stream-cli_chat_translate-message.md)	 - Translate a message
 * [stream-cli chat unban-user](stream-cli_chat_unban-user.md)	 - Unban a user
 * [stream-cli chat unmute-user](stream-cli_chat_unmute-user.md)	 - Unmute a user
 * [stream-cli chat update-app](stream-cli_chat_update-app.md)	 - Update application settings

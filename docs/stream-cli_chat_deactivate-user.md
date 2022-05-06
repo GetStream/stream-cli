@@ -1,6 +1,6 @@
 ## stream-cli chat deactivate-user
 
-
+Deactivate a user
 
 ### Synopsis
 
