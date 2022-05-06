@@ -72,7 +72,7 @@ func getCmd() *cobra.Command {
 
 func createCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-channel --type [channel-type] --id [channel-id] --user [user-id]",
+		Use:   "create-channel --type [channel-type] --id [channel-id] --user [user-id] --properties [raw-json]",
 		Short: "Create a channel",
 		Long: heredoc.Doc(`
 			This command allows you to create a new channel. If it
@@ -81,6 +81,9 @@ func createCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			# Create a channel with id 'redteam' of type 'messaging' by 'joe'
 			$ stream-cli chat create-channel --type messaging --id redteam --user joe
+
+			# Create a channel with id 'blueteam' of type 'messaging' by 'joe' with extra data
+			$ stream-cli chat create-channel --type messaging --id blueteam --user joe --properties "{\"age\":\"28\"}"
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -91,8 +94,17 @@ func createCmd() *cobra.Command {
 			chanType, _ := cmd.Flags().GetString("type")
 			chanID, _ := cmd.Flags().GetString("id")
 			user, _ := cmd.Flags().GetString("user")
+			rawProps, _ := cmd.Flags().GetString("properties")
 
-			r, err := c.CreateChannel(cmd.Context(), chanType, chanID, user, nil)
+			var props stream.ChannelRequest
+			if rawProps != "" {
+				err := json.Unmarshal([]byte(rawProps), &props)
+				if err != nil {
+					return err
+				}
+			}
+
+			r, err := c.CreateChannel(cmd.Context(), chanType, chanID, user, &props)
 			if err != nil {
 				return err
 			}
@@ -111,6 +123,7 @@ func createCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user", "u", "", "[required] User id who will be considered as the creator of the channel")
+	fl.StringP("properties", "p", "", "[optional] JSON string of channel properties")
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user")
