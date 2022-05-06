@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/GetStream/stream-cli/compare/v1.0.0...v1.1.0) (2022-05-06)
+
+
+### Features
+
+* **channel:** extra data to create channel ([#109](https://github.com/GetStream/stream-cli/issues/109)) ([b4baeb0](https://github.com/GetStream/stream-cli/commit/b4baeb092f5a64e2f5dc7c8498e261d9c301a4f8))
+* **translate:** add translate message ([#110](https://github.com/GetStream/stream-cli/issues/110)) ([cbcbd95](https://github.com/GetStream/stream-cli/commit/cbcbd95c457836bb0ae41ae53ecd2caee5bca927))
+
+
+### Bug Fixes
+
+* **docs:** add short description to deactivateuser ([0a78806](https://github.com/GetStream/stream-cli/commit/0a78806ee8d2f8fb18753d8823ee647afbf3696d))
+* **upsert:** fix printing upsert user result ([b0dc374](https://github.com/GetStream/stream-cli/commit/b0dc374fb094ccdfed69b4190ceea7a422a1a7da))
+* **watch_cmd:** println instead of print ([4e409f1](https://github.com/GetStream/stream-cli/commit/4e409f1585bdf13ee41b8fb230491b41ff9ceb50))
+
 ## [1.0.0](https://github.com/GetStream/stream-cli/compare/v0.3.0...v1.0.0) (2022-05-03)
 
 ### 🚨 BREAKING CHANGE 🚨
