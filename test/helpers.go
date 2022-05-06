@@ -73,8 +73,12 @@ func DeleteUser(id string) {
 }
 
 func CreateMessage(channelID, userID string) string {
+	return CreateMessageWithText(channelID, userID, RandomString(10))
+}
+
+func CreateMessageWithText(channelID, userID, text string) string {
 	c := InitClient()
-	msg, _ := c.Channel("messaging", channelID).SendMessage(context.Background(), &stream.Message{Text: RandomString(10)}, userID)
+	msg, _ := c.Channel("messaging", channelID).SendMessage(context.Background(), &stream.Message{Text: text}, userID)
 	return msg.Message.ID
 }
 

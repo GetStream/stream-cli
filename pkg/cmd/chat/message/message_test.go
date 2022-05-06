@@ -137,3 +137,20 @@ func TestFlagMessage(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully flagged message")
 }
+
+func TestTranslateMessage(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	m := test.CreateMessageWithText(ch, u, "hi")
+	t.Cleanup(func() {
+		test.DeleteMessage(m)
+		test.DeleteUser(u)
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"translate-message", "-m", m, "-l", "hu"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "szia")
+}
