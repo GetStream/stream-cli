@@ -20,6 +20,7 @@ func NewCmds() []*cobra.Command {
 		partialUpdateCmd(),
 		deleteCmd(),
 		flagCmd(),
+		translateCmd(),
 	}
 }
 
@@ -299,6 +300,49 @@ func flagCmd() *cobra.Command {
 	fl.StringP("user-id", "u", "", "[required] ID of the user who flagged the message")
 	_ = cmd.MarkFlagRequired("message-id")
 	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func translateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "translate-message --message-id [message-id] --language [language] --output-format [json|tree]",
+		Short: "Translate a message",
+		Long: heredoc.Doc(`
+			Chat messages can be translated on-demand or automatically, this
+			allows users speaking different languages on the same channel.
+
+			The translate endpoint returns the translated message, updates
+			it and sends a message.updated event to all users on the channel.
+		`),
+		Example: heredoc.Doc(`
+			# Translates a message with id 'msgid-1' to English
+			$ stream-cli chat translate-message --message-id msgid-1 --language en
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			msgID, _ := cmd.Flags().GetString("message-id")
+			lang, _ := cmd.Flags().GetString("language")
+
+			resp, err := c.TranslateMessage(cmd.Context(), msgID, lang)
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, resp.Message.I18n)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("message-id", "m", "", "[required] Message id to translate")
+	fl.StringP("language", "l", "", "[required] Language to translate to")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("language")
 
 	return cmd
 }
