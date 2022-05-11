@@ -48,16 +48,32 @@ func listenCmd() *cobra.Command {
 				return err
 			}
 
+			cmd.Println("> 🚨 Warning! The WebSocket connection can be expensive so we close it down after 60 seconds.")
+			time.Sleep(2 * time.Second)
+			// Giving the user 2 seconds to read the warning message
+			// because the first heartbeat is sent super quickly and
+			// takes up the whole screen.
+
 			url := getUrl(userID, apiKey, token)
 			websocket.DefaultDialer.HandshakeTimeout = time.Second * 5
 			conn, _, err := websocket.DefaultDialer.Dial(url, nil)
 			if err != nil {
 				return err
 			}
-			cmd.Println("Successfully connected. Waiting for events...⌛️")
+			cmd.Println("> Successfully connected. Waiting for events...⌛️")
 
 			exit := make(chan os.Signal, 1)
 			signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+
+			// Since keeping connections can be expensive
+			// let's just exit after 60 seconds.
+			go func() {
+				time.Sleep(50 * time.Second)
+				cmd.Println("> Exiting in 10 seconds...")
+				time.Sleep(10 * time.Second)
+				cmd.Println("> 60 seconds passed. Exiting now.")
+				exit <- syscall.SIGINT
+			}()
 
 			go func() {
 				for {
@@ -79,7 +95,7 @@ func listenCmd() *cobra.Command {
 			}()
 
 			<-exit
-			cmd.Println("\n> Exiting")
+			cmd.Println("> Exiting")
 			return conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 		},
 	}
