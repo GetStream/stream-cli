@@ -23,7 +23,7 @@ func NewCmds() []*cobra.Command {
 
 func listenCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listen-events --user-id [user-id]",
+		Use:   "listen-events --user-id [user-id] --timeout [number]",
 		Short: "Listen to events",
 		Long: heredoc.Doc(`
 			The command opens a WebSocket connection to the backend in the name of the user
@@ -33,8 +33,15 @@ func listenCmd() *cobra.Command {
 		Example: heredoc.Doc(`
 			# Listen to events for user with id 'my-user-1'
 			$ stream-cli chat listen-events --user-id my-user-1
+
+			# Listen to events for user with id 'my-user-2' and keeping the connection open for 120 seconds
+			$ stream-cli chat listen-events --user-id my-user-1 --timeout 120
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			timeout, _ := cmd.Flags().GetInt32("timeout")
+			if timeout > 300 {
+				return fmt.Errorf("timeout cannot be greater than 300")
+			}
 			userID, _ := cmd.Flags().GetString("user-id")
 			config := config.GetConfig(cmd)
 			client, _ := config.GetClient(cmd)
@@ -48,7 +55,7 @@ func listenCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Println("> 🚨 Warning! The WebSocket connection can be expensive so we close it down after 60 seconds.")
+			cmd.Println("> 🚨 Warning! The WebSocket connection can be expensive so we close it after 60 seconds.")
 			time.Sleep(2 * time.Second)
 			// Giving the user 2 seconds to read the warning message
 			// because the first heartbeat is sent super quickly and
@@ -66,12 +73,12 @@ func listenCmd() *cobra.Command {
 			signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
 			// Since keeping connections can be expensive
-			// let's just exit after 60 seconds.
+			// let's just exit after 'timeout' seconds.
 			go func() {
-				time.Sleep(50 * time.Second)
+				time.Sleep(time.Duration(timeout-10) * time.Second)
 				cmd.Println("> Exiting in 10 seconds...")
 				time.Sleep(10 * time.Second)
-				cmd.Println("> 60 seconds passed. Exiting now.")
+				cmd.Printf("> %d seconds passed. Exiting now.\n", timeout)
 				exit <- syscall.SIGINT
 			}()
 
@@ -101,8 +108,9 @@ func listenCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("user-id", "u", "", "User ID")
-	fl.StringP("output-format", "o", "json", "Output format")
+	fl.Int32P("timeout", "t", 60, "[optional] For how many seconds do we keep the connection alive. Default is 60 seconds, max is 300.")
+	fl.StringP("user-id", "u", "", "[required] User ID")
+	fl.StringP("output-format", "o", "json", "[optional] Output format")
 	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
