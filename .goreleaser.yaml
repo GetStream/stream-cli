@@ -25,6 +25,9 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
     # By default goreleaser wants to add CHANGELOG, README and LICENSE to the zip package which is annoying.
     # This is a workaround to not include them. https://github.com/goreleaser/goreleaser/issues/602
     files:
@@ -33,6 +36,7 @@ archives:
 brews:
   - name: stream-cli
     homepage: https://github.com/GetStream/stream-cli
+    description: Manage your Stream applications easily.
     tap:
       owner: GetStream
       name: stream-cli

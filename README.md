@@ -13,7 +13,7 @@
 Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
 
 # 📚 Documentation
-You can find the generated documentation in the [docs](./docs/) folder. It's also deployed to [GitHub Pages](https://getstream.github.io/stream-cli/).
+The full documentation is deployed to [GitHub Pages](https://getstream.github.io/stream-cli/).
 
 # 🗒 Issues
 
