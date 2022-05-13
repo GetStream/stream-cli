@@ -8,6 +8,7 @@ require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/gizak/termui/v3 v3.1.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.0
