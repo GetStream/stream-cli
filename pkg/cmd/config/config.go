@@ -65,6 +65,7 @@ func removeAppCmd() *cobra.Command {
 				if err := config.Remove(appName); err != nil {
 					return err
 				}
+				cmd.Printf("[%s] application successfully removed.\n", appName)
 			}
 
 			return nil
