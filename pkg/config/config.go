@@ -47,10 +47,19 @@ func (c *Config) Get(name string) (*App, error) {
 }
 
 func (c *Config) GetCredentials(cmd *cobra.Command) (string, string, error) {
+	a, err := c.GetDefaultAppOrExplicit(cmd)
+	if err != nil {
+		return "", "", err
+	}
+
+	return a.AccessKey, a.AccessSecretKey, nil
+}
+
+func (c *Config) GetDefaultAppOrExplicit(cmd *cobra.Command) (*App, error) {
 	appName := c.Default
 	explicit, err := cmd.Flags().GetString("app")
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 	if explicit != "" {
 		appName = explicit
@@ -58,10 +67,10 @@ func (c *Config) GetCredentials(cmd *cobra.Command) (string, string, error) {
 
 	a, err := c.Get(appName)
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 
-	return a.AccessKey, a.AccessSecretKey, nil
+	return a, nil
 }
 
 func (c *Config) GetClient(cmd *cobra.Command) (*stream.Client, error) {
