@@ -130,7 +130,7 @@ In order to initialize the CLI, it's as simple as:
 
 ![Stream](../assets/first_config.svg)
 
-> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your organization.
+> Note: Your API key and secret can be found on the [Stream Dashboard](https://getstream.io/dashboard) and is specific to your application.
 
 # 📃 Use cases and examples
 
