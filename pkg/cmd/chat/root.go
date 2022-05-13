@@ -7,6 +7,7 @@ import (
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channel"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/channeltype"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/device"
+	"github.com/GetStream/stream-cli/pkg/cmd/chat/events"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/file"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/imports"
 	"github.com/GetStream/stream-cli/pkg/cmd/chat/message"
@@ -26,6 +27,7 @@ func NewRootCmd() *cobra.Command {
 	cmd.AddCommand(channel.NewCmds()...)
 	cmd.AddCommand(channeltype.NewCmds()...)
 	cmd.AddCommand(device.NewCmds()...)
+	cmd.AddCommand(events.NewCmds()...)
 	cmd.AddCommand(file.NewCmds()...)
 	cmd.AddCommand(imports.NewCmds()...)
 	cmd.AddCommand(message.NewCmds()...)
