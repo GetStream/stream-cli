@@ -44,24 +44,33 @@ func listenCmd() *cobra.Command {
 			}
 			userID, _ := cmd.Flags().GetString("user-id")
 			config := config.GetConfig(cmd)
-			client, _ := config.GetClient(cmd)
+
+			app, err := config.GetDefaultAppOrExplicit(cmd)
+			if err != nil {
+				return err
+			}
+
+			client, err := config.GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
 			token, err := client.CreateToken(userID, time.Time{})
 			if err != nil {
 				return err
 			}
 
-			apiKey, _, err := config.GetCredentials(cmd)
-			if err != nil {
-				return err
-			}
-
-			cmd.Println("> 🚨 Warning! The WebSocket connection can be expensive so we close it after 60 seconds.")
+			cmd.Printf("> 🚨 Warning! The WebSocket connection can be expensive so we close it after %d seconds.\n", timeout)
 			time.Sleep(2 * time.Second)
 			// Giving the user 2 seconds to read the warning message
 			// because the first heartbeat is sent super quickly and
 			// takes up the whole screen.
 
-			url := getUrl(userID, apiKey, token)
+			url, err := getUrl(app, userID, token)
+			if err != nil {
+				return err
+			}
+
 			websocket.DefaultDialer.HandshakeTimeout = time.Second * 5
 			conn, _, err := websocket.DefaultDialer.Dial(url, nil)
 			if err != nil {
@@ -110,14 +119,20 @@ func listenCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.Int32P("timeout", "t", 60, "[optional] For how many seconds do we keep the connection alive. Default is 60 seconds, max is 300.")
 	fl.StringP("user-id", "u", "", "[required] User ID")
-	fl.StringP("output-format", "o", "json", "[optional] Output format")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
 
-func getUrl(userID, apiKey, token string) string {
-	u, _ := url.Parse("wss://chat.stream-io-api.com/connect")
+func getUrl(app *config.App, userID, token string) (string, error) {
+	u, err := url.Parse(app.ChatURL)
+	if err != nil {
+		return "", err
+	}
+
+	u.Scheme = "wss"
+	u.Path = "connect"
 
 	payload := map[string]any{
 		"user_id":      userID,
@@ -127,11 +142,11 @@ func getUrl(userID, apiKey, token string) string {
 
 	params := url.Values{}
 	params.Add("json", string(b))
-	params.Add("api_key", apiKey)
+	params.Add("api_key", app.AccessKey)
 	params.Add("authorization", token)
 	params.Add("stream-auth-type", "jwt")
 	params.Add("X-Stream-Client", fmt.Sprintf("stream-cli-%s", version.FmtVersion()))
 	u.RawQuery = params.Encode()
 
-	return u.String()
+	return u.String(), nil
 }
