@@ -7,18 +7,13 @@ Stream CLI Imports
 Stream CLI allows you to manage your Stream Chat Imports easily and validate your imports quickly before uploading them
 for processing.
 
-### Prerequisites
-
-Before starting, make sure you have created a Stream app in the dashboard
-and [configured the stream-cli](stream-cli_config.md).
-
 ### Validation
 
 To import data into your Stream app, you'll need to provide a valid import file. The file needs to be structured as a
 list of JSON objects, representing each item to be imported.
 
-Here's an example of a valid import file:
-
+<details>
+<summary>Here's an example of a valid import file</summary>
 ```json
 [
   {
@@ -87,9 +82,12 @@ Here's an example of a valid import file:
   }
 ]
 ```
+</details>
 
 Before processing this file, we'll need to ensure it is valid. We can do this by using the validate-import command.
 
+<details>
+<summary>`validate-import` example</summary>
 ```shell
 $ stream-cli chat validate-import my-data.json                                                                                                                                                                                                                           9:33:17
 {
@@ -103,6 +101,7 @@ $ stream-cli chat validate-import my-data.json                                  
   "Errors": null
 }
 ```
+</details>
 
 The lack of Errors here tells us this file is valid. Additionally, the output tells us the number of each item type.
 However, there are several reasons why an import file might be invalid. They can be divided into validation errors and
@@ -143,6 +142,8 @@ referenced user roles and channel types have to exist before importing.
 
 Once the import file is valid, the file can be uploaded to be scheduled for import:
 
+<details>
+<summary>`upload-import` example</summary>
 ```shell
 $ stream-cli chat upload-import my-data.json                                                                                                                                                                                                                            10:14:36
 {
@@ -157,6 +158,7 @@ $ stream-cli chat upload-import my-data.json                                    
   "size": 1230
 }
 ```
+</details>
 
 #### Import modes
 
@@ -164,6 +166,8 @@ By default, the `mode` is set to `upsert`. This means that every item will be ei
 the item as it appears in the import file. Uploads can be created with `mode` set to `insert`, to insert only and ignore
 pre-existing items.
 
+<details>
+<summary>import modes example</summary>
 ```shell
 $ stream-cli chat upload-import valid-data.json --mode insert                                                                                                                                                                                                              11:02:44
 {
@@ -178,6 +182,7 @@ $ stream-cli chat upload-import valid-data.json --mode insert                   
   "size": 1230
 }
 ```
+</details>
 
 Using import modes can be helpful when migrating to Stream Chat using a dual-write approach. 
 One could do an initial import using `mode` set to `upsert`, which imports everything as is. 
@@ -189,6 +194,8 @@ Once an import has been created, you can monitor its status using the `get-impor
 
 `get-import` accepts an option `--watch` flag, which will periodically poll the import status.
 
+<details>
+<summary>`get-import` example</summary>
 ```shell
 $ stream-cli chat get-import f0077dab-84f3-48f1-9292-2bf1b48fd6f0  --watch                                                                                                                                                                                                 13:50:09
 {
@@ -210,9 +217,12 @@ $ stream-cli chat get-import f0077dab-84f3-48f1-9292-2bf1b48fd6f0  --watch      
   }
 }
 ```
+</details>
 
 `list-imports` will return an imports list and accepts a `limit` and `offset` parameter.
 
+<details>
+<summary>`list-imports` example</summary>
 ```shell
 $ stream-cli chat list-imports                                                                                                                                                                                                                                       130 ↵ 13:51:07
 [
@@ -240,3 +250,4 @@ $ stream-cli chat list-imports                                                  
   }
 ]
 ```
+</details>
