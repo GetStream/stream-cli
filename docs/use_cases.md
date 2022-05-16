@@ -105,6 +105,8 @@ $ stream-cli chat upload-import data.json --mode insert
 ```
 - [**upload-import** docs](./stream-cli_chat_upload-import.md)
 
+- [Imports how-to](./stream-cli_chat_imports.md)
+
 ## GDPR
 
 Delete users:
