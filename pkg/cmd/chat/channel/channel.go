@@ -22,7 +22,7 @@ func NewCmds() []*cobra.Command {
 		updateCmd(),
 		updatePartialCmd(),
 		listCmd(),
-		addMemberCmd(),
+		addMembersCmd(),
 		removeMemberCmd(),
 		promoteModeratorCmd(),
 		demoteModeratorCmd(),
@@ -340,13 +340,13 @@ func listCmd() *cobra.Command {
 	return cmd
 }
 
-func addMemberCmd() *cobra.Command {
+func addMembersCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-members --type [channel-type] --id [channel-id] [user-id-1] [user-id-2] ...",
 		Short: "Add members to a channel",
 		Example: heredoc.Doc(`
 			# Add members joe, jill and jane to 'red-team' channel
-			$ stream-cli chat add-member --type messaging --id red-team joe jill jane
+			$ stream-cli chat add-members --type messaging --id red-team joe jill jane
 		`),
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
