@@ -162,14 +162,14 @@ func uploadCmd() *cobra.Command {
 
 func getCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "get-import [import-id] --output-format [json|tree]",
+		Use:   "get-import [import-id] --output-format [json|tree] --watch",
 		Short: "Get import",
 		Example: heredoc.Doc(`
 			# Returns an import and prints it as JSON
 			$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
 
-			# Returns an import and prints it as a browsable tree
-			$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --output-format tree
+			# Returns an import and prints it as JSON, and wait for it to complete
+			$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -187,7 +187,7 @@ func getCmd() *cobra.Command {
 					return err
 				}
 
-				err = utils.PrintObject(cmd, resp)
+				err = utils.PrintObject(cmd, resp.ImportTask)
 				if err != nil {
 					return err
 				}
