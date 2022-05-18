@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/GetStream/stream-cli/compare/v1.1.0...v1.2.0) (2022-05-18)
+
+
+### Features
+
+* add eventlistener ([#112](https://github.com/GetStream/stream-cli/issues/112)) ([cf7b430](https://github.com/GetStream/stream-cli/commit/cf7b430737cdd0c120f32d29ddd29d50596ed1fa))
+
+
+### Bug Fixes
+
+* **import:** dont print ratelimit ([#116](https://github.com/GetStream/stream-cli/issues/116)) ([6fda694](https://github.com/GetStream/stream-cli/commit/6fda694dacbc291cac3955110da1c4e5f1d6913d))
+
 ## [1.1.0](https://github.com/GetStream/stream-cli/compare/v1.0.0...v1.1.0) (2022-05-06)
 
 
