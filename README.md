@@ -34,19 +34,17 @@ You can find the binaries in the [Release section](https://github.com/GetStream/
 
 
 <details><summary>One liners for downloading the executable</summary>
-<p>
 
-<details><summary><strong>MacOS</strong></summary>
-<p>
+<details markdown="1"><summary><strong>MacOS</strong></summary>
 
-## **ARM**
+## **ARM** <!-- omit in toc -->
 ```shell
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_arm  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
 $ tar -xvf stream-cli.tar.gz
 ```
 
-## **Intel**
+## **Intel** <!-- omit in toc -->
 ```shell
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_x86  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
@@ -58,20 +56,18 @@ You can either put it to your $PATH or set up a symbolic link:
 $ ln -s $PWD/stream-cli /usr/local/bin/stream-cli
 ```
 
-</p>
 </details>
 
-<details><summary><strong>Linux</strong></summary>
-<p>
+<details markdown="1"><summary><strong>Linux</strong></summary>
 
-## **ARM**
+## **ARM** <!-- omit in toc -->
 ```shell
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Linux_arm64  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
 $ tar -xvf stream-cli.tar.gz
 ```
 
-## **Intel**
+## **Intel** <!-- omit in toc -->
 ```shell
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Linux_x86  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
@@ -83,32 +79,28 @@ You can either put it to your $PATH or set up a symbolic link:
 $ ln -s $PWD/stream-cli /usr/local/bin/stream-cli
 ```
 
-</p>
 </details>
-<details><summary><strong>Windows</strong></summary>
-<p>
+<details markdown="1"><summary><strong>Windows</strong></summary>
 
-## **ARM**
+## **ARM** <!-- omit in toc -->
 ```powershell
 > $latestRelease = Invoke-WebRequest "https://api.github.com/repos/GetStream/stream-cli/releases/latest"
 > $json = $latestRelease.Content | ConvertFrom-Json
 > $url = $json.assets | ? { $_.name -match "Windows_arm" } | select -expand browser_download_url
-> Invoke-WebRequest -Uri $url -OutFile "stream-cli.tar.gz"
-> tar -xvzf ".\stream-cli.tar.gz"
+> Invoke-WebRequest -Uri $url -OutFile "stream-cli.zip"
+> Expand-Archive -Path ".\stream-cli.zip"
 ```
 
-## **Intel**
+## **Intel** <!-- omit in toc -->
 ```powershell
 > $latestRelease = Invoke-WebRequest "https://api.github.com/repos/GetStream/stream-cli/releases/latest"
 > $json = $latestRelease.Content | ConvertFrom-Json
 > $url = $json.assets | ? { $_.name -match "Windows_x86" } | select -expand browser_download_url
-> Invoke-WebRequest -Uri $url -OutFile "stream-cli.tar.gz"
-> tar -xvzf ".\stream-cli.tar.gz"
+> Invoke-WebRequest -Uri $url -OutFile "stream-cli.zip"
+> Expand-Archive -Path ".\stream-cli.zip"
 ```
 
-</p>
 </details>
-</p>
 </details>
 
 
