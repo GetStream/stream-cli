@@ -124,7 +124,7 @@ In order to initialize the CLI, it's as simple as:
 
 # 📃 Use cases and examples
 
-A couple of example use cases can be found [here](./use_cases.md).
+A couple of example use cases can be found [here](./use_cases.md). We've also created a separate documentation [for the import feature](./stream-cli_chat_imports.md).
 
 # 🚨 Warning
 
