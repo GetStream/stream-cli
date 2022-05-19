@@ -34,6 +34,9 @@ You can find the binaries in the [Release section](https://github.com/GetStream/
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_arm  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
 $ tar -xvf stream-cli.tar.gz
+
+# We don't sign our binaries today, so we need to explicitly trust it.
+$ xattr -d com.apple.quarantine stream-cli
 ```
 
 ## **Intel** <!-- omit in toc -->
@@ -41,6 +44,9 @@ $ tar -xvf stream-cli.tar.gz
 $ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_x86  | cut -d '"' -f 4 | sed '1d')
 $ curl -L $URL -o stream-cli.tar.gz
 $ tar -xvf stream-cli.tar.gz
+
+# We don't sign our binaries today, so we need to explicitly trust it.
+$ xattr -d com.apple.quarantine stream-cli
 ```
 
 You can either put it to your $PATH or set up a symbolic link:
