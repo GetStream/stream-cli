@@ -299,6 +299,8 @@ func listCmd() *cobra.Command {
 		Long: heredoc.Doc(`
 			List all channels of a given channel type. You can also provide
 			a limit for paginating the results.
+
+			Stuff here and there for testing.
 		`),
 		Example: heredoc.Doc(`
 			# List the top 5 'messaging' channels as a json
