@@ -23,85 +23,17 @@ The generated CLI documentation is available [here](./stream-cli.md) - you can l
 The Stream CLI is written in Go and precompiled into a single binary. It doesn't have any prerequisites.
 
 ## Download the binaries
-You can find the binaries in the [Release section](https://github.com/GetStream/stream-cli/releases) of this repository.
+You can find the binaries in the [Release section](https://github.com/GetStream/stream-cli/releases) of the repository. We also wrote a short script to download them and put it to your $PATH.
 
-<details><summary>One liners for downloading the executable</summary>
-
-<details markdown="1"><summary><strong>MacOS</strong></summary>
-
-## **ARM** <!-- omit in toc -->
+### Bash (MacOS and Linux) <!-- omit in toc -->
 ```shell
-$ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_arm  | cut -d '"' -f 4 | sed '1d')
-$ curl -L $URL -o stream-cli.tar.gz
-$ tar -xvf stream-cli.tar.gz
-
-# We don't sign our binaries today, so we need to explicitly trust it.
-$ xattr -d com.apple.quarantine stream-cli
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/GetStream/stream-cli/master/install/install.sh)"
 ```
 
-## **Intel** <!-- omit in toc -->
-```shell
-$ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Darwin_x86  | cut -d '"' -f 4 | sed '1d')
-$ curl -L $URL -o stream-cli.tar.gz
-$ tar -xvf stream-cli.tar.gz
-
-# We don't sign our binaries today, so we need to explicitly trust it.
-$ xattr -d com.apple.quarantine stream-cli
-```
-
-You can either put it to your $PATH or set up a symbolic link:
-```shell
-$ ln -s $PWD/stream-cli /usr/local/bin/stream-cli
-```
-
-</details>
-
-<details markdown="1"><summary><strong>Linux</strong></summary>
-
-## **ARM** <!-- omit in toc -->
-```shell
-$ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Linux_arm64  | cut -d '"' -f 4 | sed '1d')
-$ curl -L $URL -o stream-cli.tar.gz
-$ tar -xvf stream-cli.tar.gz
-```
-
-## **Intel** <!-- omit in toc -->
-```shell
-$ export URL=$(curl -s https://api.github.com/repos/GetStream/stream-cli/releases/latest | grep Linux_x86  | cut -d '"' -f 4 | sed '1d')
-$ curl -L $URL -o stream-cli.tar.gz
-$ tar -xvf stream-cli.tar.gz
-```
-
-You can either put it to your $PATH or set up a symbolic link:
-```shell
-$ ln -s $PWD/stream-cli /usr/local/bin/stream-cli
-```
-
-</details>
-<details markdown="1"><summary><strong>Windows</strong></summary>
-
-## **ARM** <!-- omit in toc -->
+### PowerShell (Windows) <!-- omit in toc -->
 ```powershell
-> $latestRelease = Invoke-WebRequest "https://api.github.com/repos/GetStream/stream-cli/releases/latest"
-> $json = $latestRelease.Content | ConvertFrom-Json
-> $url = $json.assets | ? { $_.name -match "Windows_arm" } | select -expand browser_download_url
-> Invoke-WebRequest -Uri $url -OutFile "stream-cli.zip"
-> Expand-Archive -Path ".\stream-cli.zip"
+$ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/GetStream/stream-cli/master/install/install.ps1" -OutFile "install.ps1"; powershell.exe -ExecutionPolicy Bypass -File ./install.ps1
 ```
-
-## **Intel** <!-- omit in toc -->
-```powershell
-> $latestRelease = Invoke-WebRequest "https://api.github.com/repos/GetStream/stream-cli/releases/latest"
-> $json = $latestRelease.Content | ConvertFrom-Json
-> $url = $json.assets | ? { $_.name -match "Windows_x86" } | select -expand browser_download_url
-> Invoke-WebRequest -Uri $url -OutFile "stream-cli.zip"
-> Expand-Archive -Path ".\stream-cli.zip"
-```
-
-</details>
-</details>
-
-
 ## Homebrew
 
 For MacOS users, it's also available via Homebrew:
@@ -130,7 +62,7 @@ In order to initialize the CLI, it's as simple as:
 
 # 📃 Use cases and examples
 
-A couple of example use cases can be found [here](./use_cases.md). We've also created a separate documentation [for the import feature](./stream-cli_chat_imports.md).
+A couple of example use cases can be found [here](./use_cases.md). We've also created a separate documentation [for the import feature](./imports.md).
 
 # 🚨 Warning
 
