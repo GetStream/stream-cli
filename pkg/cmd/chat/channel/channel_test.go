@@ -164,6 +164,24 @@ func TestPromoteAndDemoteModerator(t *testing.T) {
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully demoted user")
 }
 
+func TestAssignRole(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteUser(u)
+		test.DeleteChannel(ch)
+	})
+
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, _ = cmd.ExecuteC()
+
+	cmd.SetArgs([]string{"assign-role", "-t", "messaging", "-i", ch, "-u", u, "-r", "channel_moderator"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully assigned role")
+}
+
 func TestHideAndShowChannel(t *testing.T) {
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
 	ch := test.InitChannel(t)
