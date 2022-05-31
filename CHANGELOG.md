@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/GetStream/stream-cli/compare/v1.2.0...v1.3.0) (2022-05-31)
+
+
+### Features
+
+* add deleteusers and assingnroles commands ([#123](https://github.com/GetStream/stream-cli/issues/123)) ([a83f4ad](https://github.com/GetStream/stream-cli/commit/a83f4ad735386467aa47562fda1b661a386528ec))
+* **install:** add install script ([#122](https://github.com/GetStream/stream-cli/issues/122)) ([b69402d](https://github.com/GetStream/stream-cli/commit/b69402de2876f81d0cbba3cac3a621b5dd944ee5))
+
 ## [1.2.0](https://github.com/GetStream/stream-cli/compare/v1.1.0...v1.2.0) (2022-05-18)
 
 
