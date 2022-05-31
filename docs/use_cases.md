@@ -111,9 +111,9 @@ $ stream-cli chat upload-import data.json --mode insert
 
 Delete users:
 ```shell
-$ stream-cli chat delete-user --user my-user-1 --hard-delete
+$ stream-cli chat delete-users joe jill
 ```
-- [**delete-user** docs](./stream-cli_chat_delete-user.md)
+- [**delete-users** docs](./stream-cli_chat_delete-users.md)
 
 Delete channel:
 ```shell

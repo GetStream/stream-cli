@@ -46,6 +46,17 @@ func TestDeleteUser(t *testing.T) {
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully initiated user deletion")
 }
 
+func TestDeleteMultipleUsers(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	u1 := test.CreateUser()
+	u2 := test.CreateUser()
+
+	cmd.SetArgs([]string{"delete-users", "--hard-delete-users", "--hard-delete-messages", "--hard-delete-conversations", u1, u2})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully initiated user deletion")
+}
+
 func TestQueryUser(t *testing.T) {
 	u := test.CreateUser()
 	t.Cleanup(func() {

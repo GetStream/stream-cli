@@ -26,6 +26,7 @@ func NewCmds() []*cobra.Command {
 		removeMemberCmd(),
 		promoteModeratorCmd(),
 		demoteModeratorCmd(),
+		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
 	}
@@ -484,6 +485,49 @@ func demoteModeratorCmd() *cobra.Command {
 	fl.StringP("id", "i", "", "[required] Channel id")
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func assignRoleCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "assign-role --type [channel-type] --id [channel-id] --user-id [user-id] --role [channel-role-name]",
+		Short: "Assign a role to a user",
+		Example: heredoc.Doc(`
+			# Assign 'channel_moderator' role to user 'joe'
+			$ stream-cli chat assign-role --type messaging --id red-team --user-id joe --role channel_moderator
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("type")
+			chID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+			role, _ := cmd.Flags().GetString("role")
+			assignments := []*stream.RoleAssignment{{ChannelRole: role, UserID: userID}}
+
+			_, err = c.Channel(chType, chID).AssignRole(cmd.Context(), assignments, nil)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully assigned role [%s] to [%s].\n", role, userID)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id to assign a role to")
+	fl.StringP("role", "r", "", "[required] Channel role name to assign")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("role")
 
 	return cmd
 }
