@@ -1,6 +1,8 @@
 package root
 
 import (
+	"os"
+
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 
@@ -40,6 +42,8 @@ func NewCmd() *cobra.Command {
 	)
 
 	cobra.OnInitialize(config.GetInitConfig(root, cfgPath))
+
+	root.SetOut(os.Stdout)
 
 	return root
 }
