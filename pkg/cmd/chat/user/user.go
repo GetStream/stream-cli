@@ -183,7 +183,7 @@ func updatePartialCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("user-id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "i", "", "[required] Channel ID")
 	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
 	fl.StringP("unset", "u", "", "[optional] Comma separated list of properties to unset")
 	_ = cmd.MarkFlagRequired("user-id")
