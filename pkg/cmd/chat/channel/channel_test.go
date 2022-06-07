@@ -105,7 +105,7 @@ func TestUpdateChannelPartial(t *testing.T) {
 	resp, err := c.Channel("messaging", ch).Query(ctx, &stream.QueryRequest{Data: &stream.ChannelRequest{}})
 	require.NoError(t, err)
 	require.Equal(t, "blue", resp.Channel.ExtraData["color"])
-	require.Equal(t, "27", resp.Channel.ExtraData["age"])
+	require.Equal(t, 27., resp.Channel.ExtraData["age"])
 }
 
 func TestListChannel(t *testing.T) {
