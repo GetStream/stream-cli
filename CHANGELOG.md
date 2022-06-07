@@ -2,8 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/GetStream/stream-cli/compare/v1.3.0...v1.3.1) (2022-06-07)
+
+### Bug Fixes
+
+* write to stdout for json ([#128](https://github.com/GetStream/stream-cli/issues/128))
+
 ## [1.3.0](https://github.com/GetStream/stream-cli/compare/v1.2.0...v1.3.0) (2022-05-31)
 
+### Features
+
+* add an install script ([#122](https://github.com/GetStream/stream-cli/issues/122))
+
+### Bug Fixes
+
+* docs: add command for trustful binary in darwin ([#121](https://github.com/GetStream/stream-cli/issues/121))
+* docs: fix import docs ([#120](https://github.com/GetStream/stream-cli/issues/120))
+* docs: fix gh pages formatting ([#119](https://github.com/GetStream/stream-cli/issues/119))
 
 ### Features
 
@@ -40,7 +55,7 @@ All notable changes to this project will be documented in this file. See [standa
 ## [1.0.0](https://github.com/GetStream/stream-cli/compare/v0.3.0...v1.0.0) (2022-05-03)
 
 ### 🚨 BREAKING CHANGE 🚨
-This is the first version where we rewrote the CLI from NodeJS to Go. It 
+This is the first version where we rewrote the CLI from NodeJS to Go. It
 has every feature that the previous had but the interface is a bit different.
 You can find the documentation in the [docs](./docs/) folder.
 
