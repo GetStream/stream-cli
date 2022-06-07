@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -17,6 +18,7 @@ func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
 		createTokenCmd(),
 		upsertCmd(),
+		updatePartialCmd(),
 		deleteCmd(),
 		deleteMultipleCmd(),
 		queryCmd(),
@@ -80,7 +82,7 @@ func createTokenCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("user", "u", "", "[required] Id of the user to create token for")
+	fl.StringP("user", "u", "", "[required] ID of the user to create token for")
 	fl.IntP("expiration", "e", 0, "[optional] Expiration (exp) of the JWT in epoch timestamp")
 	fl.IntP("issued-at", "i", 0, "[optional] Issued at (iat) of the JWT in epoch timestamp")
 	_ = cmd.MarkFlagRequired("user")
@@ -130,6 +132,60 @@ func upsertCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("properties", "p", "", "[required] Raw JSON properties of the user")
 	_ = cmd.MarkFlagRequired("properties")
+
+	return cmd
+}
+
+func updatePartialCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-user-partial --user [user-id] --set [raw-json] --unset [property-names]",
+		Short: "Partially update a user",
+		Long: heredoc.Doc(`
+			Updates an existing user. The 'set' property is a comma separated list of key value pairs.
+			The 'unset' property is a comma separated list of property names.
+		`),
+		Example: heredoc.Doc(`
+			# Set a user's role to 'admin' and set 'age' to 21. At the same time, remove 'haircolor' and 'height'.
+			$ stream-cli chat update-user-partial --user-id my-user-1 --set '{"role":"admin","age":21}' --unset haircolor,height
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userId, _ := cmd.Flags().GetString("user-id")
+			set, _ := cmd.Flags().GetString("set")
+			unset, _ := cmd.Flags().GetString("unset")
+
+			s := make(map[string]interface{})
+			err = json.Unmarshal([]byte(set), &s)
+			if err != nil {
+				return err
+			}
+
+			u := make([]string, 0)
+			for _, v := range strings.Split(unset, ",") {
+				if v != "" {
+					u = append(u, strings.TrimSpace(v))
+				}
+			}
+
+			_, err = c.PartialUpdateUser(cmd.Context(), stream.PartialUserUpdate{ID: userId, Set: s, Unset: u})
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully updated user [%s]\n", userId)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "i", "", "[required] Channel ID")
+	fl.StringP("set", "s", "", "[optional] Raw JSON of key-value pairs to set")
+	fl.StringP("unset", "u", "", "[optional] Comma separated list of properties to unset")
+	_ = cmd.MarkFlagRequired("user-id")
 
 	return cmd
 }
@@ -195,7 +251,7 @@ func deleteCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("user", "u", "", "[required] Id of the user to delete")
+	fl.StringP("user", "u", "", "[required] ID of the user to delete")
 	fl.Bool("hard-delete", false, "[optional] Hard delete everything related to this user")
 	fl.Bool("mark-messages-deleted", false, "[optional] Hard delete all messages related to the user")
 	fl.Bool("delete-conversations", false, "[optional] Hard delete all conversations related to the user")
@@ -376,7 +432,7 @@ func revokeCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("user", "u", "", "[required] Id of the user to revoke token for")
+	fl.StringP("user", "u", "", "[required] ID of the user to revoke token for")
 	fl.Int64P("before", "b", 0, "[optional] The epoch timestamp before which tokens should be revoked. Defaults to now.")
 	_ = cmd.MarkFlagRequired("user")
 

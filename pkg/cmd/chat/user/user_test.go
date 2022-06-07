@@ -37,6 +37,18 @@ func TestUpsertUser(t *testing.T) {
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully upserted user")
 }
 
+func TestUpdateUserPartial(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	userId := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteUser(userId)
+	})
+
+	cmd.SetArgs([]string{"update-user-partial", "-i", userId, "-s", "{\"color\":\"blue\",\"age\":27}"})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+}
+
 func TestDeleteUser(t *testing.T) {
 	u := test.CreateUser()
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
