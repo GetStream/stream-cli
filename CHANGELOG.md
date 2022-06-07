@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/GetStream/stream-cli/compare/v1.3.1...v1.3.2) (2022-06-07)
+
+
+### Bug Fixes
+
+* brew update ([#131](https://github.com/GetStream/stream-cli/issues/131)) ([762a23a](https://github.com/GetStream/stream-cli/commit/762a23a8cebdbf4a2f375aea7654e6d727d7d8f3))
+
 ### [1.3.1](https://github.com/GetStream/stream-cli/compare/v1.3.0...v1.3.1) (2022-06-07)
 
 ### Bug Fixes
