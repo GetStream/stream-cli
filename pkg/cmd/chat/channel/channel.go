@@ -246,7 +246,7 @@ func updatePartialCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# Freeze a channel and set 'age' to 21. At the same time, remove 'haircolor' and 'height'.
-			stream-cli chat update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset haircolor,height
+			$ stream-cli chat update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset haircolor,height
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
