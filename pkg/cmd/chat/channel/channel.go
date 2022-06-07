@@ -3,7 +3,6 @@ package channel
 import (
 	"encoding/json"
 	"errors"
-	"strings"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -254,26 +253,16 @@ func updatePartialCmd() *cobra.Command {
 				return err
 			}
 
-			chanType, _ := cmd.Flags().GetString("type")
-			chanID, _ := cmd.Flags().GetString("id")
-			set, _ := cmd.Flags().GetString("set")
-			unset, _ := cmd.Flags().GetString("unset")
-
-			s := make(map[string]interface{})
-			err = json.Unmarshal([]byte(set), &s)
+			flags := cmd.Flags()
+			chanType, _ := flags.GetString("type")
+			chanID, _ := flags.GetString("id")
+			update, err := utils.GetPartialUpdateParam(flags)
 			if err != nil {
 				return err
 			}
 
-			u := make([]string, 0)
-			for _, v := range strings.Split(unset, ",") {
-				if v != "" {
-					u = append(u, strings.TrimSpace(v))
-				}
-			}
-
 			ch := c.Channel(chanType, chanID)
-			_, err = ch.PartialUpdate(cmd.Context(), stream.PartialUpdate{Set: s, Unset: u})
+			_, err = ch.PartialUpdate(cmd.Context(), update)
 			if err != nil {
 				return err
 			}

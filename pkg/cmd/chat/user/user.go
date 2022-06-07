@@ -3,7 +3,6 @@ package user
 import (
 	"encoding/json"
 	"errors"
-	"strings"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -154,29 +153,18 @@ func updatePartialCmd() *cobra.Command {
 				return err
 			}
 
-			userId, _ := cmd.Flags().GetString("user-id")
-			set, _ := cmd.Flags().GetString("set")
-			unset, _ := cmd.Flags().GetString("unset")
-
-			s := make(map[string]interface{})
-			err = json.Unmarshal([]byte(set), &s)
+			userID, _ := cmd.Flags().GetString("user-id")
+			update, err := utils.GetPartialUpdateParam(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			u := make([]string, 0)
-			for _, v := range strings.Split(unset, ",") {
-				if v != "" {
-					u = append(u, strings.TrimSpace(v))
-				}
-			}
-
-			_, err = c.PartialUpdateUser(cmd.Context(), stream.PartialUserUpdate{ID: userId, Set: s, Unset: u})
+			_, err = c.PartialUpdateUser(cmd.Context(), stream.PartialUserUpdate{ID: userID, Set: update.Set, Unset: update.Unset})
 			if err != nil {
 				return err
 			}
 
-			cmd.Printf("Successfully updated user [%s]\n", userId)
+			cmd.Printf("Successfully updated user [%s]\n", userID)
 			return nil
 		},
 	}
@@ -198,7 +186,7 @@ func deleteCmd() *cobra.Command {
 			DEPRECATED: Use 'delete-users' instead.
 
 			This command deletes a user. If not flags are provided, user and messages will be soft deleted.
-			
+
 			There are 3 additional options that you can provide:
 
 			--hard-delete: If set to true, hard deletes everything related to this user, channels, messages and everything related to it.

@@ -115,7 +115,7 @@ func TestPartialUpdateMessage(t *testing.T) {
 		test.DeleteChannel(ch)
 	})
 
-	cmd.SetArgs([]string{"update-message-partial", "-m", m, "--user", u, "--set", "age=15"})
+	cmd.SetArgs([]string{"update-message-partial", "-m", m, "--user", u, "--set", `{"age":15}`})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully updated message")

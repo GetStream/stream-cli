@@ -41,7 +41,10 @@ func GetRootCmdWithSubCommands(c ...*cobra.Command) *cobra.Command {
 }
 
 func InitClient() *stream.Client {
-	c, _ := stream.NewClientFromEnvVars()
+	c, err := stream.NewClientFromEnvVars()
+	if err != nil {
+		panic(err)
+	}
 	return c
 }
 
