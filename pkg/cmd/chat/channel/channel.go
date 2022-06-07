@@ -238,7 +238,7 @@ func updateCmd() *cobra.Command {
 
 func updatePartialCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-channel-partial --type [channel-type] --id [channel-id] --set [key-value-pairs] --unset [property-names]",
+		Use:   "update-channel-partial --type [channel-type] --id [channel-id] --set [raw-json] --unset [property-names]",
 		Short: "Update a channel partially",
 		Long: heredoc.Doc(`
 			Updates an existing channel. The 'set' property is a comma separated list of key value pairs.
@@ -246,7 +246,7 @@ func updatePartialCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# Freeze a channel and set 'age' to 21. At the same time, remove 'haircolor' and 'height'.
-			$ stream-cli chat update-channel-partial --type messaging --id channel1 --set frozen=true,age=21 --unset haircolor,height
+			$ stream-cli chat update-channel-partial --type messaging --id channel1 --set '{"frozen":true,"age":21}' --unset haircolor,height
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -256,12 +256,13 @@ func updatePartialCmd() *cobra.Command {
 
 			chanType, _ := cmd.Flags().GetString("type")
 			chanID, _ := cmd.Flags().GetString("id")
-			set, _ := cmd.Flags().GetStringToString("set")
+			set, _ := cmd.Flags().GetString("set")
 			unset, _ := cmd.Flags().GetString("unset")
 
-			s := make(map[string]interface{}, len(set))
-			for k, v := range set {
-				s[k] = v
+			s := make(map[string]interface{})
+			err = json.Unmarshal([]byte(set), &s)
+			if err != nil {
+				return err
 			}
 
 			u := make([]string, 0)
@@ -285,7 +286,7 @@ func updatePartialCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
-	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
+	fl.StringP("set", "s", "", "[optional] Raw JSON of key-value pairs to set")
 	fl.StringP("unset", "u", "", "[optional] Comma separated list of properties to unset")
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")

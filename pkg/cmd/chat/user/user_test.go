@@ -44,7 +44,7 @@ func TestUpdateUserPartial(t *testing.T) {
 		test.DeleteUser(userId)
 	})
 
-	cmd.SetArgs([]string{"update-user-partial", "-i", userId, "-s", "color=blue,age=27"})
+	cmd.SetArgs([]string{"update-user-partial", "-i", userId, "-s", "{\"color\":\"blue\",\"age\":27}"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 }

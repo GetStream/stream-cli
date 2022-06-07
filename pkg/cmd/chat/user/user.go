@@ -138,7 +138,7 @@ func upsertCmd() *cobra.Command {
 
 func updatePartialCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-user-partial --user [user-id] --set [key-value-pairs] --unset [property-names]",
+		Use:   "update-user-partial --user [user-id] --set [raw-json] --unset [property-names]",
 		Short: "Partially update a user",
 		Long: heredoc.Doc(`
 			Updates an existing user. The 'set' property is a comma separated list of key value pairs.
@@ -146,9 +146,7 @@ func updatePartialCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# Set a user's role to 'admin' and set 'age' to 21. At the same time, remove 'haircolor' and 'height'.
-			$ stream-cli chat update-user-partial --user-id my-user-1 --set role=admin,age=21 --unset haircolor,height
-
-			Check the Go SDK's 'User' struct for the properties that you can use here.
+			$ stream-cli chat update-user-partial --user-id my-user-1 --set '{"role":"admin","age":21}' --unset haircolor,height
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -157,12 +155,13 @@ func updatePartialCmd() *cobra.Command {
 			}
 
 			userId, _ := cmd.Flags().GetString("user-id")
-			set, _ := cmd.Flags().GetStringToString("set")
+			set, _ := cmd.Flags().GetString("set")
 			unset, _ := cmd.Flags().GetString("unset")
 
-			s := make(map[string]interface{}, len(set))
-			for k, v := range set {
-				s[k] = v
+			s := make(map[string]interface{})
+			err = json.Unmarshal([]byte(set), &s)
+			if err != nil {
+				return err
 			}
 
 			u := make([]string, 0)
@@ -184,7 +183,7 @@ func updatePartialCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("user-id", "i", "", "[required] Channel ID")
-	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
+	fl.StringP("set", "s", "", "[optional] Raw JSON of key-value pairs to set")
 	fl.StringP("unset", "u", "", "[optional] Comma separated list of properties to unset")
 	_ = cmd.MarkFlagRequired("user-id")
 

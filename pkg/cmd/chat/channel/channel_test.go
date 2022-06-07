@@ -96,7 +96,7 @@ func TestUpdateChannelPartial(t *testing.T) {
 		test.DeleteChannel(ch)
 	})
 
-	cmd.SetArgs([]string{"update-channel-partial", "-t", "messaging", "-i", ch, "-s", "color=blue,age=27"})
+	cmd.SetArgs([]string{"update-channel-partial", "-t", "messaging", "-i", ch, "-s", "{\"color\":\"blue\",\"age\":27}"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 
