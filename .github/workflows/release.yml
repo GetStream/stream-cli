@@ -52,19 +52,22 @@ jobs:
           GORELEASER_CURRENT_TAG: ${{ env.VERSION }}
 
       - name: Update docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Update local state, since goreleaser pushes into master
           git pull
 
+          git config --global user.name 'GitHub Bot'
+          git config --global user.email 'cicd@getstream.io'
+          git checkout -q -b "docs-${{ env.VERSION }}"
+
           # Generate new Markdown docs
           rm -rf ./docs/stream-cli*.md
           go run ./cmd/gen-docs --output ./docs
-
-          # Push it to master
-          git config --global user.name 'GitHub Bot'
-          git config --global user.email 'cicd@getstream.io'
           git add ./docs
           git commit -m "docs(${{ env.VERSION }}): update markdown docs"
-          git checkout -b "docs-${{ env.VERSION }}}"
-          git push --set-upstream origin docs-${{ env.VERSION }}
+          git push -q -u origin "docs-${{ env.VERSION }}"
+
+          # Push to docs branch
           gh pr create -t "docs(${{ env.VERSION }}): update markdown docs"
