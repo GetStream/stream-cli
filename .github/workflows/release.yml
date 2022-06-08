@@ -66,5 +66,5 @@ jobs:
           git add ./docs
           git commit -m "docs(${{ env.VERSION }}): update markdown docs"
           git checkout -b "docs-${{ env.VERSION }}}"
-          git push
+          git push -set-upstream origin docs-${{ env.VERSION }}
           gh pr create -t "docs(${{ env.VERSION }}): update markdown docs"
