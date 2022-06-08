@@ -15,7 +15,7 @@ func GetJSONParam(f *pflag.FlagSet, name string) (map[string]any, error) {
 	}
 
 	var result map[string]any
-	err := json.Unmarshal([]byte(data), &result)
+	err = json.Unmarshal([]byte(data), &result)
 	return result, err
 }
 
