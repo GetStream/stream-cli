@@ -65,4 +65,4 @@ jobs:
           git config --global user.email 'cicd@getstream.io'
           git add ./docs
           git commit -m "docs(${{ env.VERSION }}): update markdown docs"
-          git push
+          git push https://${{ secrets.RELEASE_TOKEN }}@github.com/GetStream/stream-cli.git
