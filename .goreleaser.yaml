@@ -40,4 +40,3 @@ brews:
     tap:
       owner: GetStream
       name: stream-cli
-      branch: homebrew
