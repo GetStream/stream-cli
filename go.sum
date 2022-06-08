@@ -40,8 +40,8 @@ github.com/AlecAivazis/survey/v2 v2.3.4 h1:pchTU9rsLUSvWEl2Aq9Pv3k0IE2fkqtGxazsk
 github.com/AlecAivazis/survey/v2 v2.3.4/go.mod h1:hrV6Y/kQCLhIZXGcriDCUBtB3wnN7156gMXJ3+b23xM=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/GetStream/stream-chat-go/v5 v5.8.0 h1:HpkoZQeIdZ8qdHejKbVth6/fu5ZQXlc3P+5vxNAt+aw=
-github.com/GetStream/stream-chat-go/v5 v5.8.0/go.mod h1:ET7NyUYplNy8+tyliin6Q3kKwbd/+FHQWMAW6zucisY=
+github.com/GetStream/stream-chat-go/v5 v5.8.1 h1:nO3pfa4p4o6KEZOAXaaII3bhdrMrfT2zs6VduchuJws=
+github.com/GetStream/stream-chat-go/v5 v5.8.1/go.mod h1:ET7NyUYplNy8+tyliin6Q3kKwbd/+FHQWMAW6zucisY=
 github.com/MakeNowJust/heredoc v1.0.0 h1:cXCdzVdstXyiTqTvfqk9SDHpKNjxuom+DOlyEeQ4pzQ=
 github.com/MakeNowJust/heredoc v1.0.0/go.mod h1:mG5amYoWBHf8vpLOuehzbGGw0EHxpZZ6lCpQ4fNJ8LE=
 github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2 h1:+vx7roKuyA63nhn5WAunQHLTznkw5W8b1Xc0dNjp83s=

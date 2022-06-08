@@ -114,7 +114,7 @@ func revokeAllTokensCmd() *cobra.Command {
 		Use:   "revoke-all-tokens --before [epoch]",
 		Short: "Revoke all tokens",
 		Long: heredoc.Doc(`
-			This command revokes ALL tokens for all users of an application. 
+			This command revokes ALL tokens for all users of an application.
 			This should be used with caution as it will expire every user’s token,
 			regardless of whether the token has an iat claim.
 		`),
