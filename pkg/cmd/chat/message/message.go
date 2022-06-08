@@ -164,7 +164,7 @@ func deleteCmd() *cobra.Command {
 			You can delete a message by calling DeleteMessage and including a message
 			with an ID. Messages can be soft deleted or hard deleted. Unless specified
 			via the hard parameter, messages are soft deleted. Be aware that deleting
-			a message doesn't delete its attachments. 
+			a message doesn't delete its attachments.
 		`),
 		Example: heredoc.Doc(`
 			# Soft deletes a message with id 'msgid-1'
@@ -205,7 +205,7 @@ func deleteCmd() *cobra.Command {
 
 func partialUpdateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-message-partial --message-id [message-id] --user [user-id] --set [key-value-pairs] --unset [property-names]",
+		Use:   "update-message-partial --message-id [message-id] --user [user-id] --set [raw-json] --unset [property-names]",
 		Short: "Partially update a message",
 		Long: heredoc.Doc(`
 			A partial update can be used to set and unset specific fields when it
@@ -213,7 +213,7 @@ func partialUpdateCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# Partially updates a message with id 'msgid-1'. Updates a custom field and removes the silent flag.
-			$ stream-cli chat update-message-partial -message-id msgid-1 --set importance=low --unset silent
+			$ stream-cli chat update-message-partial -message-id msgid-1 --set '{"importance": "low"}' --unset silent
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
@@ -223,27 +223,14 @@ func partialUpdateCmd() *cobra.Command {
 
 			msgId, _ := cmd.Flags().GetString("message-id")
 			user, _ := cmd.Flags().GetString("user")
-			set, _ := cmd.Flags().GetStringToString("set")
-			unset, _ := cmd.Flags().GetString("unset")
-
-			s := make(map[string]interface{}, len(set))
-			for k, v := range set {
-				s[k] = v
-			}
-
-			u := make([]string, 0)
-			for _, v := range strings.Split(unset, ",") {
-				if v != "" {
-					u = append(u, strings.TrimSpace(v))
-				}
+			update, err := utils.GetPartialUpdateParam(cmd.Flags())
+			if err != nil {
+				return err
 			}
 
 			_, err = c.PartialUpdateMessage(cmd.Context(), msgId, &stream.MessagePartialUpdateRequest{
-				UserID: user,
-				PartialUpdate: stream.PartialUpdate{
-					Set:   s,
-					Unset: u,
-				},
+				UserID:        user,
+				PartialUpdate: update,
 			})
 			if err != nil {
 				return err
@@ -257,7 +244,7 @@ func partialUpdateCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("message-id", "m", "", "[required] Message id")
 	fl.StringP("user", "u", "", "[required] User id")
-	fl.StringToStringP("set", "s", map[string]string{}, "[optional] Comma-separated key-value pairs to set")
+	fl.StringP("set", "s", "", "[optional] Raw JSON of key-value pairs to set")
 	fl.String("unset", "", "[optional] Comma separated list of properties to unset")
 	_ = cmd.MarkFlagRequired("message-id")
 
