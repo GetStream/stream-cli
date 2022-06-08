@@ -15,10 +15,8 @@ func GetJSONParam(f *pflag.FlagSet, name string) (map[string]any, error) {
 	}
 
 	var result map[string]any
-	if err := json.Unmarshal([]byte(data), &result); err != nil {
-		return nil, err
-	}
-	return result, nil
+	err := json.Unmarshal([]byte(data), &result)
+	return result, err
 }
 
 func GetStringSliceParam(f *pflag.FlagSet, name string) ([]string, error) {
