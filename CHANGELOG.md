@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/GetStream/stream-cli/compare/v1.4.0...v1.4.1) (2022-06-08)
+
+
+### Bug Fixes
+
+* **release:** improve publishing ([cf9de14](https://github.com/GetStream/stream-cli/commit/cf9de14a2202ba9a6f6ce2ae2b5fec226c98cc8b))
+* **release:** improve publishing and get marshal ([#135](https://github.com/GetStream/stream-cli/issues/135)) ([0d3625e](https://github.com/GetStream/stream-cli/commit/0d3625e4f78470d6a3f0b2f78c3870adf15b0441))
+
 ## [1.4.0](https://github.com/GetStream/stream-cli/compare/v1.3.2...v1.4.0) (2022-06-08)
 
 
