@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/GetStream/stream-cli/compare/v1.3.2...v1.4.0) (2022-06-08)
+
+
+### Features
+
+* add update-user-partial command ([#129](https://github.com/GetStream/stream-cli/issues/129)) ([9c37604](https://github.com/GetStream/stream-cli/commit/9c3760453cc162c53b209a416af66a4d9fd45c9b))
+
+
+### Bug Fixes
+
+* **message:** update partial as channel/user ([#133](https://github.com/GetStream/stream-cli/issues/133)) ([8e5dca3](https://github.com/GetStream/stream-cli/commit/8e5dca3e211105c6557c280b8364ee4c54c97c62))
+
 ### [1.3.2](https://github.com/GetStream/stream-cli/compare/v1.3.1...v1.3.2) (2022-06-07)
 
 
