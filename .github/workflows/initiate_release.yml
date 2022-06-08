@@ -28,7 +28,7 @@ jobs:
           git push -q -u origin "release-$VERSION"
 
       - name: Get changelog diff
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             const get_change_log_diff = require('./scripts/get_changelog_diff.js')
