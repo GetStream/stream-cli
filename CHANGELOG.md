@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.6](https://github.com/GetStream/stream-cli/compare/v1.4.5...v1.4.6) (2022-06-08)
+
+
+### Bug Fixes
+
+* **version:** bump ([4e354e2](https://github.com/GetStream/stream-cli/commit/4e354e255aeaa279f0e95acd4af5ccba777a7193))
+
 ### [1.4.5](https://github.com/GetStream/stream-cli/compare/v1.4.4...v1.4.5) (2022-06-08)
 
 
