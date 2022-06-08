@@ -34,7 +34,7 @@ func upsertCmd() *cobra.Command {
 			description
 			disabled_at
 			disabled_reason
-					
+
 			apn_auth_key
 			apn_key_id
 			apn_team_id
@@ -43,10 +43,10 @@ func upsertCmd() *cobra.Command {
 			firebase_notification_template
 			firebase_apn_template
 			firebase_credentials
-					
+
 			huawei_app_id
 			huawei_app_secret
-					
+
 			xiaomi_package_name
 			xiaomi_app_secret
 		`,

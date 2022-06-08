@@ -11,3 +11,4 @@ stream
 latest_changes.txt
 # Test coverage output
 *.out
+vendor/

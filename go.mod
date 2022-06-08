@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
-	github.com/GetStream/stream-chat-go/v5 v5.8.0
+	github.com/GetStream/stream-chat-go/v5 v5.8.1
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/gizak/termui/v3 v3.1.0
