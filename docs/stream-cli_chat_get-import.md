@@ -3,7 +3,7 @@
 Get import
 
 ```
-stream-cli chat get-import [import-id] --output-format [json|tree] [flags]
+stream-cli chat get-import [import-id] --output-format [json|tree] --watch [flags]
 ```
 
 ### Examples
@@ -12,8 +12,8 @@ stream-cli chat get-import [import-id] --output-format [json|tree] [flags]
 # Returns an import and prints it as JSON
 $ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
 
-# Returns an import and prints it as a browsable tree
-$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --output-format tree
+# Returns an import and prints it as JSON, and wait for it to complete
+$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 
 ```
 

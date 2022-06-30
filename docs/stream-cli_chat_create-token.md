@@ -33,7 +33,7 @@ $ stream-cli chat create-token --user joe --expiration 1577880000 --issued-at 15
   -e, --expiration int   [optional] Expiration (exp) of the JWT in epoch timestamp
   -h, --help             help for create-token
   -i, --issued-at int    [optional] Issued at (iat) of the JWT in epoch timestamp
-  -u, --user string      [required] Id of the user to create token for
+  -u, --user string      [required] ID of the user to create token for
 ```
 
 ### Options inherited from parent commands

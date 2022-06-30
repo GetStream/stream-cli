@@ -16,7 +16,7 @@ stream-cli chat watch [task-id] [flags]
 
 ```
 # Delete user and watching it complete
-$ stream-cli chat delete-user --user "my-user-1"
+$ stream-cli chat delete-users "my-user-1"
 > Successfully initiated user deletion. Task id: 7586fa0d-dc8d-4f6f-be2d-f952d0e26167
 
 # Waiting for the task to complete

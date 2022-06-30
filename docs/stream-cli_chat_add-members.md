@@ -10,7 +10,7 @@ stream-cli chat add-members --type [channel-type] --id [channel-id] [user-id-1] 
 
 ```
 # Add members joe, jill and jane to 'red-team' channel
-$ stream-cli chat add-member --type messaging --id red-team joe jill jane
+$ stream-cli chat add-members --type messaging --id red-team joe jill jane
 
 ```
 
