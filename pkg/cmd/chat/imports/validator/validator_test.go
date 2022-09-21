@@ -17,11 +17,11 @@ func TestValidator_Validate(t *testing.T) {
 		want     *Results
 	}{
 		{name: "Valid data", filename: "valid-data.json", want: &Results{
-			Stats:  map[string]int{"channels": 3, "members": 4, "messages": 3, "reactions": 3, "users": 4},
+			Stats:  map[string]int{"channels": 3, "devices": 2, "members": 4, "messages": 3, "reactions": 3, "users": 4},
 			Errors: nil,
 		}},
 		{name: "Invalid users", filename: "invalid-users.json", want: &Results{
-			Stats: map[string]int{"channels": 0, "members": 0, "messages": 0, "reactions": 0, "users": 1},
+			Stats: map[string]int{"channels": 0, "devices": 0, "members": 0, "messages": 0, "reactions": 0, "users": 1},
 			Errors: []error{
 				errors.New(`validation error: user.id required`),
 				errors.New(`validation error: user.id max length exceeded (255)`),
@@ -32,7 +32,7 @@ func TestValidator_Validate(t *testing.T) {
 			},
 		}},
 		{name: "Invalid channels", filename: "invalid-channels.json", want: &Results{
-			Stats: map[string]int{"channels": 2, "members": 0, "messages": 0, "reactions": 0, "users": 1},
+			Stats: map[string]int{"channels": 2, "devices": 0, "members": 0, "messages": 0, "reactions": 0, "users": 1},
 			Errors: []error{
 				errors.New(`validation error: either channel.id or channel.member_ids required`),
 				errors.New(`validation error: either channel.id or channel.member_ids required`),
@@ -49,7 +49,7 @@ func TestValidator_Validate(t *testing.T) {
 			},
 		}},
 		{name: "Invalid members", filename: "invalid-members.json", want: &Results{
-			Stats: map[string]int{"channels": 4, "members": 5, "messages": 0, "reactions": 0, "users": 3},
+			Stats: map[string]int{"channels": 4, "devices": 0, "members": 5, "messages": 0, "reactions": 0, "users": 3},
 			Errors: []error{
 				errors.New(`validation error: member.user_id required`),
 				errors.New(`validation error: member.channel_type required`),
@@ -63,7 +63,7 @@ func TestValidator_Validate(t *testing.T) {
 			},
 		}},
 		{name: "Invalid messages", filename: "invalid-messages.json", want: &Results{
-			Stats: map[string]int{"channels": 2, "members": 2, "messages": 0, "reactions": 0, "users": 1},
+			Stats: map[string]int{"channels": 2, "devices": 0, "members": 2, "messages": 0, "reactions": 0, "users": 1},
 			Errors: []error{
 				errors.New(`validation error: message.id max length exceeded (255)`),
 				errors.New(`validation error: message.channel_type required`),
@@ -75,6 +75,18 @@ func TestValidator_Validate(t *testing.T) {
 				errors.New(`reference error: channel ":channelA" doesn't exist`),
 				errors.New(`reference error: distinct channel with type "messaging" and members:[] doesn't exist`),
 				errors.New(`reference error: user "" doesn't exist (message_id messageA)`),
+			},
+		}},
+		{name: "Invalid devices", filename: "invalid-devices.json", want: &Results{
+			Stats: map[string]int{"channels": 0, "devices": 2, "members": 0, "messages": 0, "reactions": 0, "users": 1},
+			Errors: []error{
+				errors.New(`validation error: device.id max length exceeded (255)`),
+				errors.New(`validation error: device.id required`),
+				errors.New(`validation error: device.user_id required`),
+				errors.New(`validation error: device.push_provider_type invalid, available options are: firebase,huawei,apn,xiaomi`),
+				errors.New(`validation error: device.created_at required`),
+				errors.New(`duplicate device id:duplicate`),
+				errors.New(`reference error: device.user_id "userB" doesn't exist`),
 			},
 		}},
 	}

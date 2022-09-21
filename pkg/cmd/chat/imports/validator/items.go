@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	streamchat "github.com/GetStream/stream-chat-go/v5"
 )
 
 var (
@@ -35,6 +37,8 @@ func newItem(rawItem *rawItem) (Item, error) {
 		return newMessageItem(rawItem.Item)
 	case "reaction":
 		return newReactionItem(rawItem.Item)
+	case "device":
+		return newDeviceItem(rawItem.Item)
 	default:
 		return nil, fmt.Errorf("invalid item type %q", rawItem.Type)
 	}
@@ -88,14 +92,20 @@ func newUserItem(itemBody json.RawMessage) (*userItem, error) {
 }
 
 type userItem struct {
-	ID        string    `json:"id"`
-	Role      string    `json:"role"`
-	Invisible bool      `json:"invisible"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	DeletedAt time.Time `json:"deleted_at"`
-	Teams     []string  `json:"teams"`
-	Custom    extraFields
+	ID                string           `json:"id"`
+	Role              string           `json:"role"`
+	Invisible         bool             `json:"invisible"`
+	CreatedAt         time.Time        `json:"created_at"`
+	UpdatedAt         time.Time        `json:"updated_at"`
+	DeletedAt         time.Time        `json:"deleted_at"`
+	Teams             []string         `json:"teams"`
+	PushNotifications pushNotification `json:"push_notifications"`
+	Custom            extraFields
+}
+
+type pushNotification struct {
+	Disabled      bool       `json:"disabled"`
+	DisabledUntil *time.Time `json:"disabled_until"`
 }
 
 func (u *userItem) validateFields() error {
@@ -126,6 +136,78 @@ func (u *userItem) index(idx *index) error {
 func (u *userItem) validateReferences(idx *index) error {
 	if !idx.roleExist(u.Role) {
 		return fmt.Errorf("user.role %q doesn't exist (user %q)", u.Role, u.ID)
+	}
+	return nil
+}
+
+type deviceItem struct {
+	ID               string    `json:"id"`
+	UserID           string    `json:"user_id"`
+	CreatedAt        time.Time `json:"created_at"`
+	Disabled         bool      `json:"disabled"`
+	DisabledReason   string    `json:"disabled_reason"`
+	PushProviderType string    `json:"push_provider_type"`
+	PushProviderName string    `json:"push_provider_name"`
+}
+
+func newDeviceItem(itemBody json.RawMessage) (*deviceItem, error) {
+	var device deviceItem
+	if err := unmarshalItem(itemBody, &device); err != nil {
+		return nil, err
+	}
+	return &device, nil
+}
+
+var pushProviders = []string{
+	streamchat.PushProviderFirebase,
+	streamchat.PushProviderHuawei,
+	streamchat.PushProviderAPNS,
+	streamchat.PushProviderXiaomi,
+}
+
+func (d *deviceItem) validateFields() error {
+	if d.ID == "" {
+		return errors.New("device.id required")
+	}
+	if len(d.ID) > 255 {
+		return errors.New("device.id max length exceeded (255)")
+	}
+
+	if d.UserID == "" {
+		return errors.New("device.user_id required")
+	}
+	if len(d.UserID) > 255 {
+		return errors.New("device.user_id max length exceeded (255)")
+	}
+
+	if d.CreatedAt.IsZero() {
+		return errors.New("device.created_at required")
+	}
+
+	if d.PushProviderType == "" {
+		return errors.New("device.push_provider_type required")
+	}
+	var found bool
+	for _, p := range pushProviders {
+		if d.PushProviderType == p {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("device.push_provider_type invalid, available options are: %s", strings.Join(pushProviders, ","))
+	}
+
+	return nil
+}
+
+func (d *deviceItem) index(i *index) error {
+	return i.addDevice(d.ID)
+}
+
+func (d *deviceItem) validateReferences(i *index) error {
+	if d.UserID != "" && !i.userExist(d.UserID) {
+		return fmt.Errorf("device.user_id %q doesn't exist", d.UserID)
 	}
 	return nil
 }

@@ -186,7 +186,7 @@ func questions() []*survey.Question {
 
 				_, err := url.ParseRequestURI(u)
 				if err != nil {
-					return errors.New("invalid url format. make sure it matches <scheme>://<host>")
+					return errors.New("invalid url format make sure it matches <scheme>://<host>")
 				}
 				return nil
 			},
