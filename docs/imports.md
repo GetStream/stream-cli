@@ -34,7 +34,11 @@ list of JSON objects, representing each item to be imported.
       "role": "user",
       "teams": [
         "A-team"
-      ]
+      ],
+      "push_notifications": {
+        "disabled": true,
+        "disabled_reason": "doesn't want to be disturbed"
+      }
     }
   },
   {
@@ -79,6 +83,15 @@ list of JSON objects, representing each item to be imported.
       "type": "like",
       "user_id": "murdock",
       "created_at": "2022-01-01T01:01:01Z"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "deviceID",
+      "user_id": "hannibal",
+      "created_at": "2022-01-01T01:01:01Z",
+      "push_provider_type": "firebase"
     }
   }
 ]

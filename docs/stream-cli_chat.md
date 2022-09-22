@@ -19,6 +19,7 @@ Allows you to interact with your Chat applications
 
 * [stream-cli](stream-cli.md)	 - Stream CLI
 * [stream-cli chat add-members](stream-cli_chat_add-members.md)	 - Add members to a channel
+* [stream-cli chat assign-role](stream-cli_chat_assign-role.md)	 - Assign a role to a user
 * [stream-cli chat ban-user](stream-cli_chat_ban-user.md)	 - Ban a user
 * [stream-cli chat create-channel](stream-cli_chat_create-channel.md)	 - Create a channel
 * [stream-cli chat create-channel-type](stream-cli_chat_create-channel-type.md)	 - Create channel type
@@ -33,7 +34,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat delete-message](stream-cli_chat_delete-message.md)	 - Delete a message
 * [stream-cli chat delete-pushprovider](stream-cli_chat_delete-pushprovider.md)	 - Delete a push provider
 * [stream-cli chat delete-reaction](stream-cli_chat_delete-reaction.md)	 - Delete a reaction from a message
-* [stream-cli chat delete-user](stream-cli_chat_delete-user.md)	 - Delete a user
+* [stream-cli chat delete-users](stream-cli_chat_delete-users.md)	 - Delete multiple users
 * [stream-cli chat demote-moderators](stream-cli_chat_demote-moderators.md)	 - Demote users from moderator role
 * [stream-cli chat flag-message](stream-cli_chat_flag-message.md)	 - Flag a message
 * [stream-cli chat flag-user](stream-cli_chat_flag-user.md)	 - Flag a user
@@ -50,6 +51,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat list-devices](stream-cli_chat_list-devices.md)	 - List devices
 * [stream-cli chat list-imports](stream-cli_chat_list-imports.md)	 - List imports
 * [stream-cli chat list-pushproviders](stream-cli_chat_list-pushproviders.md)	 - List all push providers
+* [stream-cli chat listen-events](stream-cli_chat_listen-events.md)	 - Listen to events
 * [stream-cli chat mute-user](stream-cli_chat_mute-user.md)	 - Mute a user
 * [stream-cli chat promote-moderators](stream-cli_chat_promote-moderators.md)	 - Promote users to channel moderator role
 * [stream-cli chat query-users](stream-cli_chat_query-users.md)	 - Query users
@@ -69,6 +71,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat update-channel-partial](stream-cli_chat_update-channel-partial.md)	 - Update a channel partially
 * [stream-cli chat update-channel-type](stream-cli_chat_update-channel-type.md)	 - Update channel type
 * [stream-cli chat update-message-partial](stream-cli_chat_update-message-partial.md)	 - Partially update a message
+* [stream-cli chat update-user-partial](stream-cli_chat_update-user-partial.md)	 - Partially update a user
 * [stream-cli chat upload-file](stream-cli_chat_upload-file.md)	 - Upload a file
 * [stream-cli chat upload-image](stream-cli_chat_upload-image.md)	 - Upload an image
 * [stream-cli chat upload-import](stream-cli_chat_upload-import.md)	 - Upload an import
