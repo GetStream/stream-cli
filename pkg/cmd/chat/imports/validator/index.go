@@ -67,6 +67,9 @@ type index struct {
 
 	// reactions
 	reactionPKs map[Bits256]struct{}
+
+	// devices
+	devicePKs map[Bits256]struct{}
 }
 
 func newIndex(roles map[string]*streamchat.Role, channelTypes map[string]*streamchat.ChannelType) *index {
@@ -84,6 +87,7 @@ func newIndex(roles map[string]*streamchat.Role, channelTypes map[string]*stream
 		messagePKsWithReaction: make(map[Bits256]struct{}),
 		messagePKsReplies:      make(map[Bits256]struct{}),
 		reactionPKs:            make(map[Bits256]struct{}),
+		devicePKs:              make(map[Bits256]struct{}),
 	}
 }
 
@@ -94,6 +98,7 @@ func (i *index) stats() map[string]int {
 		"members":   len(i.memberPKs),
 		"messages":  len(i.messagePKs),
 		"reactions": len(i.reactionPKs),
+		"devices":   len(i.devicePKs),
 	}
 }
 
@@ -300,5 +305,25 @@ func (i *index) addReaction(messageID, reactionType, userID string) error {
 	messagePK := getMessagePK(messageID)
 	i.messagePKsWithReaction[messagePK] = struct{}{}
 
+	return nil
+}
+
+func getDevicePK(deviceID string) Bits256 {
+	return hashValues(deviceID)
+}
+
+func (i *index) deviceExist(deviceID string) bool {
+	pk := getDevicePK(deviceID)
+	_, ok := i.devicePKs[pk]
+	return ok
+}
+
+func (i *index) addDevice(deviceID string) error {
+	if i.deviceExist(deviceID) {
+		return fmt.Errorf("duplicate device id:%s", deviceID)
+	}
+
+	pk := getDevicePK(deviceID)
+	i.devicePKs[pk] = struct{}{}
 	return nil
 }

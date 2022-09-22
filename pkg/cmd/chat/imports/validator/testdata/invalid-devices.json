@@ -1,0 +1,86 @@
+[
+  {
+    "type": "user",
+    "item": {
+      "id": "userA",
+      "role": "user"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long-id-too-long",
+      "user_id": "userA",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "firebase"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "123",
+      "user_id": "userB",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "firebase"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "user_id": "userA",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "firebase"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "no user ID",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "firebase"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "123",
+      "user_id": "userA",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "unknown_provider"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "123",
+      "user_id": "userA",
+      "disabled": false,
+      "push_provider_type": "unknown_provider"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "duplicate",
+      "user_id": "userA",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "apn"
+    }
+  },
+  {
+    "type": "device",
+    "item": {
+      "id": "duplicate",
+      "user_id": "userA",
+      "created_at": "2022-01-01T01:01:01Z",
+      "disabled": false,
+      "push_provider_type": "xiaomi"
+    }
+  }
+]

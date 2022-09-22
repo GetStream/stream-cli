@@ -46,15 +46,6 @@ func (c *Config) Get(name string) (*App, error) {
 	return nil, fmt.Errorf("application %q doesn't exist", name)
 }
 
-func (c *Config) GetCredentials(cmd *cobra.Command) (string, string, error) {
-	a, err := c.GetDefaultAppOrExplicit(cmd)
-	if err != nil {
-		return "", "", err
-	}
-
-	return a.AccessKey, a.AccessSecretKey, nil
-}
-
 func (c *Config) GetDefaultAppOrExplicit(cmd *cobra.Command) (*App, error) {
 	appName := c.Default
 	explicit, err := cmd.Flags().GetString("app")
@@ -74,12 +65,19 @@ func (c *Config) GetDefaultAppOrExplicit(cmd *cobra.Command) (*App, error) {
 }
 
 func (c *Config) GetClient(cmd *cobra.Command) (*stream.Client, error) {
-	key, secret, err := c.GetCredentials(cmd)
+	a, err := c.GetDefaultAppOrExplicit(cmd)
 	if err != nil {
 		return nil, err
 	}
 
-	return stream.NewClient(key, secret)
+	client, err := stream.NewClient(a.AccessKey, a.AccessSecretKey)
+	if err != nil {
+		return nil, err
+	}
+	if a.ChatURL != DefaultChatEdgeURL {
+		client.BaseURL = a.ChatURL
+	}
+	return client, nil
 }
 
 func (c *Config) Add(newApp App) error {
