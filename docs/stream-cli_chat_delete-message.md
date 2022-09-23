@@ -7,7 +7,7 @@ Delete a message
 You can delete a message by calling DeleteMessage and including a message
 with an ID. Messages can be soft deleted or hard deleted. Unless specified
 via the hard parameter, messages are soft deleted. Be aware that deleting
-a message doesn't delete its attachments. 
+a message doesn't delete its attachments.
 
 
 ```
