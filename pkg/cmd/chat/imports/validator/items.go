@@ -97,7 +97,8 @@ type userItem struct {
 	Invisible         bool             `json:"invisible"`
 	CreatedAt         time.Time        `json:"created_at"`
 	UpdatedAt         time.Time        `json:"updated_at"`
-	DeletedAt         time.Time        `json:"deleted_at"`
+	DeletedAt         *time.Time       `json:"deleted_at"`
+	DeactivatedAt     *time.Time       `json:"deactivated_at"`
 	Teams             []string         `json:"teams"`
 	PushNotifications pushNotification `json:"push_notifications"`
 	Custom            extraFields
