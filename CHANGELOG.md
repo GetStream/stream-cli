@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/GetStream/stream-cli/compare/v1.4.6...v1.5.0) (2022-09-23)
+
+
+### Features
+
+* add devices validation for import ([#144](https://github.com/GetStream/stream-cli/issues/144)) ([4ab96e7](https://github.com/GetStream/stream-cli/commit/4ab96e7c48ee4421a1766393aa73b24b8d233c9d))
+* add deactivated_at support into user import ([#147](https://github.com/GetStream/stream-cli/issues/147)) ([fbe96232](https://github.com/GetStream/stream-cli/commit/fbe96232e86bbafd6d5c83953dad1071c1e5ffbc))
+
+
 ### [1.4.6](https://github.com/GetStream/stream-cli/compare/v1.4.5...v1.4.6) (2022-06-08)
 
 

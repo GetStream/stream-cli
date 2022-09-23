@@ -70,4 +70,4 @@ jobs:
           git push -q -u origin "docs-${{ env.VERSION }}"
 
           # Push to docs branch
-          gh pr create -t "docs(${{ env.VERSION }}): update markdown docs"
+          gh pr create --fill -t "docs(${{ env.VERSION }}): update markdown docs"
