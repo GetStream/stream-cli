@@ -5,20 +5,20 @@
 class StreamCli < Formula
   desc "Manage your Stream applications easily."
   homepage "https://github.com/GetStream/stream-cli"
-  version "1.4.6"
+  version "1.5.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/GetStream/stream-cli/releases/download/v1.4.6/stream-cli_Darwin_x86_64.tar.gz"
-      sha256 "dc32a48e8a8da617cf0ecb973a128355a806d814a8d5089bfd37fa9706bbe21b"
+      url "https://github.com/GetStream/stream-cli/releases/download/v1.5.0/stream-cli_Darwin_x86_64.tar.gz"
+      sha256 "692d947c887bd064da589662aacd88016faa2dbb8f0cd24bdbe2f9da2b316084"
 
       def install
         bin.install "stream-cli"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/GetStream/stream-cli/releases/download/v1.4.6/stream-cli_Darwin_arm64.tar.gz"
-      sha256 "547283afe5d601abd6bb567572a796b98a1b3246908a541afa0ddf71b7b41bda"
+      url "https://github.com/GetStream/stream-cli/releases/download/v1.5.0/stream-cli_Darwin_arm64.tar.gz"
+      sha256 "f46d911ed3a694c65b67a813d7f204e8d6cad2396350972d936e692ad7676dad"
 
       def install
         bin.install "stream-cli"
@@ -28,16 +28,16 @@ class StreamCli < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/GetStream/stream-cli/releases/download/v1.4.6/stream-cli_Linux_x86_64.tar.gz"
-      sha256 "9c39c586809c6250d7490bfbc72df25bda13af41fd1b321a5813b3ba58ac9516"
+      url "https://github.com/GetStream/stream-cli/releases/download/v1.5.0/stream-cli_Linux_x86_64.tar.gz"
+      sha256 "632756fdae58b50c0c5e43e62f255581e95de68571ecc6b732129cf1cb6611e9"
 
       def install
         bin.install "stream-cli"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/GetStream/stream-cli/releases/download/v1.4.6/stream-cli_Linux_arm64.tar.gz"
-      sha256 "f1b9b493f6f14b812ea00fa97b6653e2fc3806f042afb1f9075332a500e2c2e3"
+      url "https://github.com/GetStream/stream-cli/releases/download/v1.5.0/stream-cli_Linux_arm64.tar.gz"
+      sha256 "01a6d9fa8c1836f4bf594716db35cb2128256ac754254992178a9d4330e4bf40"
 
       def install
         bin.install "stream-cli"
