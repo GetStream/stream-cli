@@ -99,7 +99,10 @@ type userItem struct {
 	UpdatedAt         time.Time        `json:"updated_at"`
 	DeletedAt         *time.Time       `json:"deleted_at"`
 	DeactivatedAt     *time.Time       `json:"deactivated_at"`
+	Language          string           `json:"language"`
 	Teams             []string         `json:"teams"`
+	ChannelMutes      []string         `json:"channel_mutes"`
+	UserMutes         []string         `json:"user_mutes"`
 	PushNotifications pushNotification `json:"push_notifications"`
 	Custom            extraFields
 }
@@ -138,7 +141,35 @@ func (u *userItem) validateReferences(idx *index) error {
 	if !idx.roleExist(u.Role) {
 		return fmt.Errorf("user.role %q doesn't exist (user %q)", u.Role, u.ID)
 	}
+
+	if len(u.ChannelMutes) > 0 {
+		for _, ch := range u.ChannelMutes {
+			typ, id, err := splitChannelCID(ch)
+			if err != nil {
+				return err
+			}
+			if !idx.channelExist(typ, id) {
+				return fmt.Errorf("muted channel %q by user %q doesn't exist", ch, u.ID)
+			}
+		}
+	}
+	if len(u.UserMutes) > 0 {
+		for _, mutedUserID := range u.UserMutes {
+			if !idx.userExist(mutedUserID) {
+				return fmt.Errorf("muted user %q by user %q doesn't exist", mutedUserID, u.ID)
+			}
+		}
+	}
 	return nil
+}
+
+// splitChannelCID returns channel type and channel ID from channel CID
+func splitChannelCID(cid string) (string, string, error) {
+	s := strings.Split(cid, ":")
+	if len(s) != 2 {
+		return "", "", fmt.Errorf(`channel %q should have the following format "type:id"`, cid)
+	}
+	return s[0], s[1], nil
 }
 
 type deviceItem struct {

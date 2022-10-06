@@ -48,6 +48,18 @@ func TestValidator_Validate(t *testing.T) {
 				errors.New(`validation error: distinct channel: ["userA"] is missing members: ["userA"]. Please include all members as separate member entries`),
 			},
 		}},
+		{name: "Invalid channel mutes", filename: "invalid-channel-mutes.json", want: &Results{
+			Stats: map[string]int{"channels": 2, "devices": 0, "members": 0, "messages": 0, "reactions": 0, "users": 2},
+			Errors: []error{
+				errors.New(`reference error: muted channel "messaging:456" by user "user1" doesn't exist`),
+			},
+		}},
+		{name: "Invalid user mutes", filename: "invalid-user-mutes.json", want: &Results{
+			Stats: map[string]int{"channels": 0, "devices": 0, "members": 0, "messages": 0, "reactions": 0, "users": 2},
+			Errors: []error{
+				errors.New(`reference error: muted user "missing_user" by user "user1" doesn't exist`),
+			},
+		}},
 		{name: "Invalid members", filename: "invalid-members.json", want: &Results{
 			Stats: map[string]int{"channels": 4, "devices": 0, "members": 5, "messages": 0, "reactions": 0, "users": 3},
 			Errors: []error{

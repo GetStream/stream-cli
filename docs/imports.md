@@ -24,6 +24,9 @@ list of JSON objects, representing each item to be imported.
       "role": "user",
       "teams": [
         "A-team"
+      ],
+      "channel_mutes": [
+        "messaging:HQ"
       ]
     }
   },
@@ -38,7 +41,10 @@ list of JSON objects, representing each item to be imported.
       "push_notifications": {
         "disabled": true,
         "disabled_reason": "doesn't want to be disturbed"
-      }
+      },
+      "user_mutes": [
+        "hannibal"
+      ]
     }
   },
   {
