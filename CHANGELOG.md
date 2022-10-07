@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/GetStream/stream-cli/compare/v1.5.0...v1.6.0) (2022-10-06)
+
+
+### Features
+
+
+* add channel mutes and user mutes ([#148](https://github.com/GetStream/stream-cli/issues/148)) ([2d4dede](https://github.com/GetStream/stream-cli/commit/2d4dededc925e9870c8844bbc501adf752abaefc))
+
+
 ## [1.5.0](https://github.com/GetStream/stream-cli/compare/v1.4.6...v1.5.0) (2022-09-23)
 
 
