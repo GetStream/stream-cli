@@ -17,8 +17,9 @@ $ stream-cli chat validate-import data.json
 ### Options
 
 ```
-  -h, --help                   help for validate-import
-  -o, --output-format string   [optional] Output format. Can be json or tree (default "json")
+  -h, --help                    help for validate-import
+      --lighter-validation-id   [optional] allows to pass ! in channel ID
+  -o, --output-format string    [optional] Output format. Can be json or tree (default "json")
 ```
 
 ### Options inherited from parent commands
