@@ -15,9 +15,15 @@ func TestValidator_Validate(t *testing.T) {
 		name     string
 		filename string
 		want     *Results
+
+		lighterChanIDValidation bool
 	}{
 		{name: "Valid data", filename: "valid-data.json", want: &Results{
 			Stats:  map[string]int{"channels": 3, "devices": 2, "members": 4, "messages": 3, "reactions": 3, "users": 4},
+			Errors: nil,
+		}},
+		{name: "Valid channels with lighter channel ID validation", filename: "valid-channels-with-light.json", lighterChanIDValidation: true, want: &Results{
+			Stats:  map[string]int{"channels": 2, "devices": 0, "members": 2, "messages": 1, "reactions": 0, "users": 2},
 			Errors: nil,
 		}},
 		{name: "Invalid users", filename: "invalid-users.json", want: &Results{
@@ -38,7 +44,7 @@ func TestValidator_Validate(t *testing.T) {
 				errors.New(`validation error: either channel.id or channel.member_ids required`),
 				errors.New(`validation error: channel.id max length exceeded (64)`),
 				errors.New(`validation error: channel.type required`),
-				errors.New(`validation error: channel.id invalid ("^[\w-]*$" allowed)`),
+				errors.New(`validation error: channel.id "channelA@abc" invalid ("^[\w-]*$" allowed)`),
 				errors.New(`validation error: channel.created_by required`),
 				errors.New(`validation error: channel.cid is a reserved field`),
 				errors.New(`reference error: channel.type "" doesn't exist (channel ":channelA")`),
@@ -108,12 +114,16 @@ func TestValidator_Validate(t *testing.T) {
 			require.NoError(t, err)
 			defer f.Close()
 
-			v := New(f, []*stream.Role{{Name: "user"}}, map[string]*stream.ChannelType{"messaging": nil})
+			var options []Options
+			if tt.lighterChanIDValidation {
+				options = append(options, LighterValidationChannelID())
+			}
+			v := New(f, []*stream.Role{{Name: "user"}}, map[string]*stream.ChannelType{"messaging": nil}, options...)
 
 			got := v.Validate()
 
 			require.Equal(t, tt.want.Stats, got.Stats)
-			require.Equal(t, len(tt.want.Errors), len(got.Errors))
+			require.Equal(t, len(tt.want.Errors), len(got.Errors), got.Errors)
 			for i := range tt.want.Errors {
 				require.Equal(t, tt.want.Errors[i].Error(), got.Errors[i].Error(), fmt.Sprintf(`errors #%d doesn't match`, i))
 			}
