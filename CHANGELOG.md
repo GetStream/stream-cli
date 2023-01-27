@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/GetStream/stream-cli/compare/v1.6.0...v1.7.0) (2023-01-27)
+
+
+### Features
+
+* add flag to allow exclamation mark in channel ID ([#151](https://github.com/GetStream/stream-cli/issues/151)) ([85ef9a1](https://github.com/GetStream/stream-cli/commit/85ef9a10692bf1736c5243181e4343ffef05bcac))
+
 ## [1.6.0](https://github.com/GetStream/stream-cli/compare/v1.5.0...v1.6.0) (2022-10-06)
 
 
