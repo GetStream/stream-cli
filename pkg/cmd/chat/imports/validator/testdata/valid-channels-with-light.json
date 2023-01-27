@@ -1,0 +1,58 @@
+[
+  {
+    "type": "user",
+    "item": {
+      "id": "user1",
+      "role": "user"
+    }
+  },
+  {
+    "type": "user",
+    "item": {
+      "id": "user2",
+      "role": "user"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "id": "channelA",
+      "type": "messaging",
+      "created_by": "user1"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_id": "channelA",
+      "channel_type": "messaging",
+      "user_id": "user1"
+    }
+  },
+  {
+    "type": "channel",
+    "item": {
+      "id": "!members-channelB",
+      "type": "messaging",
+      "created_by": "user2"
+    }
+  },
+  {
+    "type": "member",
+    "item": {
+      "channel_id": "!members-channelB",
+      "channel_type": "messaging",
+      "user_id": "user2"
+    }
+  },
+  {
+    "type": "message",
+    "item": {
+      "id": "message2",
+      "channel_id": "!members-channelB",
+      "channel_type": "messaging",
+      "user": "user2",
+      "text": "hi!"
+    }
+  }
+]

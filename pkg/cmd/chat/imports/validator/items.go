@@ -14,8 +14,10 @@ import (
 )
 
 var (
+	// validChannelIDRe regex differs if lighter-validation-id flag is given
+	validChannelIDRe *regexp.Regexp
+
 	validUserIDRe       = regexp.MustCompile(`^[@\w-]*$`)
-	validChannelIDRe    = regexp.MustCompile(`^[\w-]*$`)
 	validReactionTypeRe = regexp.MustCompile(`^[\w-+:.]*$`)
 )
 
@@ -278,7 +280,7 @@ func (c *channelItem) validateFields() error {
 	}
 
 	if !validChannelIDRe.MatchString(c.ID) {
-		return fmt.Errorf(`channel.id invalid ("%s" allowed)`, validChannelIDRe)
+		return fmt.Errorf(`channel.id %q invalid ("%s" allowed)`, c.ID, validChannelIDRe)
 	}
 
 	if c.Type == "" {

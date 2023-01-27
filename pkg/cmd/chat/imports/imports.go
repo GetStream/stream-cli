@@ -25,24 +25,28 @@ func NewCmds() []*cobra.Command {
 	}
 }
 
-func validateFile(ctx context.Context, c *stream.Client, filename string) (*validator.Results, error) {
+func validateFile(cmd *cobra.Command, c *stream.Client, filename string) (*validator.Results, error) {
 	reader, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer reader.Close()
 
-	rolesResp, err := c.Permissions().ListRoles(ctx)
+	rolesResp, err := c.Permissions().ListRoles(cmd.Context())
 	if err != nil {
 		return nil, err
 	}
 
-	channelTypesResp, err := c.ListChannelTypes(ctx)
+	channelTypesResp, err := c.ListChannelTypes(cmd.Context())
 	if err != nil {
 		return nil, err
 	}
 
-	return validator.New(reader, rolesResp.Roles, channelTypesResp.ChannelTypes).Validate(), nil
+	var options []validator.Options
+	if light, _ := cmd.Flags().GetBool("lighter-validation-id"); light {
+		options = append(options, validator.LighterValidationChannelID())
+	}
+	return validator.New(reader, rolesResp.Roles, channelTypesResp.ChannelTypes, options...).Validate(), nil
 }
 
 func validateCmd() *cobra.Command {
@@ -60,7 +64,7 @@ func validateCmd() *cobra.Command {
 				return err
 			}
 
-			results, err := validateFile(cmd.Context(), c, args[0])
+			results, err := validateFile(cmd, c, args[0])
 			if err != nil {
 				return err
 			}
@@ -71,6 +75,7 @@ func validateCmd() *cobra.Command {
 
 	fl := cmd.Flags()
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	fl.Bool("lighter-validation-id", false, "[optional] allows to pass ! in channel ID")
 
 	return cmd
 }
@@ -123,7 +128,7 @@ func uploadCmd() *cobra.Command {
 
 			filename := args[0]
 
-			results, err := validateFile(cmd.Context(), c, filename)
+			results, err := validateFile(cmd, c, filename)
 			if err != nil {
 				return err
 			}
@@ -156,6 +161,7 @@ func uploadCmd() *cobra.Command {
 	fl := cmd.Flags()
 	fl.StringP("mode", "m", "upsert", "[optional] Import mode. Canbe upsert or insert")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	fl.Bool("lighter-validation-id", false, "[optional] allows to pass ! in channel ID")
 
 	return cmd
 }

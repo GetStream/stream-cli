@@ -2,6 +2,7 @@ package validator
 
 import (
 	"io"
+	"regexp"
 
 	streamchat "github.com/GetStream/stream-chat-go/v5"
 )
@@ -22,15 +23,39 @@ func newResults(stats map[string]int, errs *multiError) *Results {
 	}
 }
 
+type Options func(*option)
+
+type option struct {
+	lighterValidationChannelID bool
+}
+
+func LighterValidationChannelID() Options {
+	return func(o *option) {
+		o.lighterValidationChannelID = true
+	}
+}
+
 type Validator struct {
 	decoder *Decoder
 	index   *index
 }
 
-func New(r io.ReadSeeker, roles []*streamchat.Role, channelTypes channelTypeMap) *Validator {
+func New(r io.ReadSeeker, roles []*streamchat.Role, channelTypes channelTypeMap, options ...Options) *Validator {
 	roleMap := make(roleMap, len(roles))
 	for _, role := range roles {
 		roleMap[role.Name] = role
+	}
+
+	opt := &option{}
+	for _, o := range options {
+		o(opt)
+	}
+
+	if opt.lighterValidationChannelID {
+		// allows to pass ! in channel ID
+		validChannelIDRe = regexp.MustCompile(`^[\w!-]*$`)
+	} else {
+		validChannelIDRe = regexp.MustCompile(`^[\w-]*$`)
 	}
 
 	return &Validator{
