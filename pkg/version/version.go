@@ -6,8 +6,8 @@ import (
 
 const (
 	versionMajor = 1
-	versionMinor = 5
-	versionPatch = 0
+	versionMinor = 7
+	versionPatch = 1
 )
 
 func FmtVersion() string {
