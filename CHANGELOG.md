@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 * check if message.parent_id exists ([#156](https://github.com/GetStream/stream-cli/issues/156)) ([2dda3c4](https://github.com/GetStream/stream-cli/commit/2dda3c46954bef6b6232620be75ba816a3b1afb2))
 
+### [1.7.1](https://github.com/GetStream/stream-cli/compare/v1.7.0...v1.7.1) (2023-08-01)
+
+
+### Bug Fixes
+
+* check if message.parent_id exists ([#156](https://github.com/GetStream/stream-cli/issues/156)) ([2dda3c4](https://github.com/GetStream/stream-cli/commit/2dda3c46954bef6b6232620be75ba816a3b1afb2))
+
 ## [1.7.0](https://github.com/GetStream/stream-cli/compare/v1.6.0...v1.7.0) (2023-01-27)
 
 
