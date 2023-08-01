@@ -519,6 +519,9 @@ func (m *messageItem) validateReferences(idx *index) error {
 		if idx.isReply(m.ParentID) {
 			return errors.New("only one level thread is supported")
 		}
+		if !idx.messageExist(m.ParentID) {
+			return fmt.Errorf("message parent_id %q doesn't exist", m.ParentID)
+		}
 	}
 	channelID, isDistinct := getChannelID(m.ChannelID, m.ChannelMemberIDs)
 	if !idx.channelExist(m.ChannelType, channelID) {

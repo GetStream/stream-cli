@@ -81,7 +81,7 @@ func TestValidator_Validate(t *testing.T) {
 			},
 		}},
 		{name: "Invalid messages", filename: "invalid-messages.json", want: &Results{
-			Stats: map[string]int{"channels": 2, "devices": 0, "members": 2, "messages": 0, "reactions": 0, "users": 1},
+			Stats: map[string]int{"channels": 2, "devices": 0, "members": 2, "messages": 1, "reactions": 0, "users": 1},
 			Errors: []error{
 				errors.New(`validation error: message.id max length exceeded (255)`),
 				errors.New(`validation error: message.channel_type required`),
@@ -93,6 +93,7 @@ func TestValidator_Validate(t *testing.T) {
 				errors.New(`reference error: channel ":channelA" doesn't exist`),
 				errors.New(`reference error: distinct channel with type "messaging" and members:[] doesn't exist`),
 				errors.New(`reference error: user "" doesn't exist (message_id messageA)`),
+				errors.New(`reference error: message parent_id "parentID" doesn't exist`),
 			},
 		}},
 		{name: "Invalid devices", filename: "invalid-devices.json", want: &Results{
