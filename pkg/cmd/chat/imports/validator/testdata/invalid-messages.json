@@ -93,6 +93,17 @@
     }
   },
   {
+    "type": "message",
+    "item": {
+      "id": "thread",
+      "channel_type": "messaging",
+      "channel_id": "channelA",
+      "user": "userA",
+      "text": "reply!",
+      "parent_id": "parentID"
+    }
+  },
+  {
     "type": "channel",
     "item": {
       "type": "messaging",
