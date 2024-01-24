@@ -1,6 +1,6 @@
 NAME = stream-cli
 
-GOLANGCI_VERSION = 1.49.0
+GOLANGCI_VERSION = 1.55.2
 GOLANGCI = .bin/golangci/$(GOLANGCI_VERSION)/golangci-lint
 $(GOLANGCI):
 	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(dir $(GOLANGCI)) v$(GOLANGCI_VERSION)
@@ -17,5 +17,6 @@ $(NAME):
 build:
 	@go build ./cmd/$(NAME)
 
+.PHONY: test
 test:
 	@go test -v ./...

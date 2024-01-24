@@ -14,12 +14,10 @@ jobs:
     name: 👷 Test & Build
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
         with:
-          go-version: "1.19"
-
-      - uses: actions/checkout@v2
+          go-version-file: 'go.mod'
 
       - name: Test
         env:
