@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"image"
 	"image/png"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -19,7 +18,7 @@ func TestFileUploadAndDelete(t *testing.T) {
 	ch := test.InitChannel(t)
 	u := test.CreateUser()
 
-	tmpfile, err := ioutil.TempFile("", "*.txt")
+	tmpfile, err := os.CreateTemp("", "*.txt")
 	require.NoError(t, err)
 
 	err = os.WriteFile(tmpfile.Name(), []byte("hello\nworld\n"), 0o644)
@@ -52,7 +51,7 @@ func TestImageUploadAndDelete(t *testing.T) {
 	ch := test.InitChannel(t)
 	u := test.CreateUser()
 
-	tmpfile, err := ioutil.TempFile("", "*.png")
+	tmpfile, err := os.CreateTemp("", "*.png")
 	require.NoError(t, err)
 
 	m := image.NewRGBA(image.Rect(0, 0, 1, 1))

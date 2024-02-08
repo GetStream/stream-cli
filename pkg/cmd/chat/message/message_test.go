@@ -2,7 +2,6 @@ package message
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -31,7 +30,7 @@ func TestSendMessageWithFileAttachment(t *testing.T) {
 	ch := test.InitChannel(t)
 	u := test.CreateUser()
 
-	tmpfile, err := ioutil.TempFile("", "*.txt")
+	tmpfile, err := os.CreateTemp("", "*.txt")
 	require.NoError(t, err)
 
 	err = os.WriteFile(tmpfile.Name(), []byte("hello\nworld\n"), 0o644)
