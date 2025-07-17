@@ -1,0 +1,132 @@
+{
+  "users": [
+    {
+      "id": "user:123",
+      "role": "user",
+      "custom": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      }
+    },
+    {
+      "id": "user:456",
+      "role": "user",
+      "custom": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      }
+    }
+  ],
+  "feeds": [
+    {
+      "group_id": "group_123",
+      "id": "feed_456",
+      "fid": "fid_789",
+      "name": "Tech Enthusiasts",
+      "description": "A group for technology lovers to share insights and news.",
+      "custom": {
+        "category": "Technology",
+        "region": "Global",
+        "is_featured": true
+      },
+      "filter_tags": [
+        "tech",
+        "gadgets",
+        "news"
+      ],
+      "visibility": "public",
+      "created_at": 1752741108550693000,
+      "updated_at": 1752741108550693000,
+      "deleted_at": null
+    },
+    {
+      "group_id": "group_456",
+      "id": "feed_789",
+      "fid": "fid_012",
+      "name": "Design Community",
+      "description": "A community for designers to share their work.",
+      "custom": {
+        "category": "Design",
+        "region": "Global"
+      },
+      "filter_tags": [
+        "design",
+        "art",
+        "creativity"
+      ],
+      "visibility": "public",
+      "created_at": 1752741108550693000,
+      "updated_at": 1752741108550693000,
+      "deleted_at": null
+    }
+  ],
+  "activities": [
+    {
+      "id": "19a8aa2b-1e71-447c-9338-556ced2cd7a1",
+      "type": "post",
+      "feeds": [
+        "user:user-w6p05o"
+      ],
+      "visibility": "public",
+      "created_at": 1752741103506159000,
+      "updated_at": 1752741108550693000,
+      "attachments": [],
+      "mentioned_users": [],
+      "custom": {
+        "foo": "bar"
+      },
+      "text": "Hello world!",
+      "search_data": {},
+      "filter_tags": [],
+      "interest_tags": []
+    },
+    {
+      "id": "29b9bb3c-2f82-558d-0449-667dfe3de8b2",
+      "type": "comment",
+      "feeds": [
+        "user:user-w6p05o"
+      ],
+      "visibility": "public",
+      "created_at": 1752741103506159000,
+      "updated_at": 1752741108550693000,
+      "attachments": [],
+      "mentioned_users": [],
+      "custom": {},
+      "text": "Great post!",
+      "search_data": {},
+      "filter_tags": [],
+      "interest_tags": []
+    }
+  ],
+  "follows": [
+    {
+      "id": "user:456",
+      "role": "user",
+      "custom": {}
+    }
+  ],
+  "members": [
+    {
+      "user_id": "user:123",
+      "feed": "feed:456",
+      "custom": {},
+      "role": "member"
+    }
+  ],
+  "comments": [
+    {
+      "id": "user:123",
+      "role": "user",
+      "custom": {}
+    }
+  ],
+  "reactions": [
+    {
+      "activity_id": "activity:1",
+      "comment_id": "comment:1",
+      "type": "like",
+      "user_id": "user:456",
+      "custom": {}
+    }
+  ]
+} 

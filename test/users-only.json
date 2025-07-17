@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": "user:123",
+      "role": "user",
+      "custom": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      }
+    },
+    {
+      "id": "user:456",
+      "role": "admin",
+      "custom": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      }
+    }
+  ]
+} 
