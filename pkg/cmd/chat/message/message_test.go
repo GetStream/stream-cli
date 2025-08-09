@@ -2,7 +2,9 @@ package message
 
 import (
 	"bytes"
+	"context"
 	"os"
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -152,4 +154,51 @@ func TestTranslateMessage(t *testing.T) {
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "szia")
+}
+
+func TestUpdateMessage(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+		test.DeleteUser(u)
+	})
+
+	// Step 1: Send original message
+	cmd.SetArgs([]string{
+		"send-message",
+		"-t", "messaging",
+		"-i", ch,
+		"-u", u,
+		"--text", "Original message",
+	})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+
+	// Extract message ID from stdout
+	out := cmd.OutOrStdout().(*bytes.Buffer).String()
+	re := regexp.MustCompile(`Message id: \[(.+?)]`)
+	matches := re.FindStringSubmatch(out)
+	require.Len(t, matches, 2)
+	msgID := matches[1]
+
+	// Step 2: Update the message
+	cmd.SetArgs([]string{
+		"update-message",
+		"--message-id", msgID,
+		"--user", u,
+		"--text", "Updated message text",
+	})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully updated message.")
+
+	// Step 3: Fetch and verify the update
+	client := test.InitClient()
+	ctx := context.Background()
+	resp, err := client.GetMessage(ctx, msgID)
+	require.NoError(t, err)
+	require.Equal(t, "Updated message text", resp.Message.Text)
 }
