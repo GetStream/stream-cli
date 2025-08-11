@@ -70,6 +70,7 @@ Allows you to interact with your Chat applications
 * [stream-cli chat update-channel](stream-cli_chat_update-channel.md)	 - Update a channel
 * [stream-cli chat update-channel-partial](stream-cli_chat_update-channel-partial.md)	 - Update a channel partially
 * [stream-cli chat update-channel-type](stream-cli_chat_update-channel-type.md)	 - Update channel type
+* [stream-cli chat update-message](stream-cli_chat_update-message.md)	 - Update an existing message
 * [stream-cli chat update-message-partial](stream-cli_chat_update-message-partial.md)	 - Partially update a message
 * [stream-cli chat update-user-partial](stream-cli_chat_update-user-partial.md)	 - Partially update a user
 * [stream-cli chat upload-file](stream-cli_chat_upload-file.md)	 - Upload a file
