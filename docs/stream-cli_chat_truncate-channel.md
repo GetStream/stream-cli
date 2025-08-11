@@ -1,6 +1,14 @@
 ## stream-cli chat truncate-channel
 
-Truncate a channel by removing all messages but keeping the channel metadata and members.
+Truncate a channel
+
+### Synopsis
+
+Truncates a channel by removing all messages but keeping the channel metadata and members.
+
+Optional flags allow you to perform a hard delete, add a system message, skip push notifications, 
+and define the truncating user ID (for server-side calls).
+
 
 ```
 stream-cli chat truncate-channel --type [channel-type] --id [channel-id] [flags]
@@ -13,20 +21,21 @@ stream-cli chat truncate-channel --type [channel-type] --id [channel-id] [flags]
 $ stream-cli chat truncate-channel --type messaging --id general
 
 # Truncate with hard delete and system message
-$ stream-cli chat truncate-channel --type messaging --id general --hard --message "Channel reset" --message-user-id system-user
+$ stream-cli chat truncate-channel --type messaging --id general --hard --message "Channel reset" --user-id system-user
+
 ```
 
 ### Options
 
 ```
-  -h, --help                   help for truncate-channel
-  -i, --id string              [required] Channel ID
-      --user-id string         [optional] User ID who performs the truncation
-      --message string         [optional] System message to include in truncation (requires --message-user-id)
-      --message-user-id string [optional] User id for the message to include in truncation (required if --message is set)
-      --hard                   [optional] Permanently delete messages instead of hiding them
-      --skip-push               [optional] Skip push notifications
-  -t, --type string            [required] Channel type such as 'messaging'
+      --hard                     [optional] Permanently delete messages instead of hiding them
+  -h, --help                     help for truncate-channel
+  -i, --id string                [required] Channel ID
+      --message string           [optional] System message to include in truncation (requires --message-user-id)
+      --message-user-id string   [optional] User id for the message to include in truncation (required if --message is set)
+      --skip-push                [optional] Skip push notifications
+  -t, --type string              [required] Channel type such as 'messaging'
+      --user-id string           [optional] User ID who performs the truncation
 ```
 
 ### Options inherited from parent commands
