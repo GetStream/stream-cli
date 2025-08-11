@@ -1,4 +1,4 @@
-## `stream-cli chat list-members`
+## stream-cli chat list-members
 
 List members of a channel
 
@@ -6,13 +6,13 @@ List members of a channel
 
 List and paginate members of a channel using the Stream Chat API.
 
-This command supports optional filters, offset/limit for pagination, and sort fields (e.g. `user_id`, `created_at`).
+This command supports optional filters, offset/limit for pagination,
+and sort fields (e.g. "user_id", "created_at").
+
 
 ```
 stream-cli chat list-members --type [channel-type] --id [channel-id] [flags]
 ```
-
----
 
 ### Examples
 
@@ -28,34 +28,30 @@ $ stream-cli chat list-members --type messaging --id red-team --offset 10 --limi
 
 # Sort members by user_id ascending
 $ stream-cli chat list-members --type messaging --id red-team --sort user_id:1
-```
 
----
+```
 
 ### Options
 
 ```
-  -f, --filter string          [optional] JSON string to filter members
+      --filter string          [optional] JSON string to filter members
   -h, --help                   help for list-members
   -i, --id string              [required] Channel ID
-      --limit int              [optional] Pagination limit (default 10)
+      --limit int              [optional] Pagination limit (default 10) (default 10)
       --offset int             [optional] Pagination offset (default 0)
+  -o, --output-format string   [optional] Output format. Can be json or tree (default "json")
       --sort string            [optional] Sorting field and direction (e.g., user_id:1 or created_at:-1)
   -t, --type string            [required] Channel type such as 'messaging' or 'livestream'
-  -o, --output-format string   [optional] Output format. Can be json or tree (default "json")
 ```
-
----
 
 ### Options inherited from parent commands
 
 ```
-      --app string        [optional] Application name to use as it's defined in the configuration file
-      --config string     [optional] Explicit config file path
+      --app string      [optional] Application name to use as it's defined in the configuration file
+      --config string   [optional] Explicit config file path
 ```
-
----
 
 ### SEE ALSO
 
-* [stream-cli chat](stream-cli_chat.md) – Allows you to interact with your Chat applications
+* [stream-cli chat](stream-cli_chat.md)	 - Allows you to interact with your Chat applications
+
