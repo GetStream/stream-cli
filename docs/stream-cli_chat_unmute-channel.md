@@ -2,28 +2,30 @@
 
 Unmute a channel for a user
 
-```
-stream-cli chat unmute-channel --type [channel-type] --id [channel-id] --user-id [user-id] [flags]
-```
-
 ### Synopsis
 
 Unmutes a previously muted channel for a specific user.
+
+
+```
+stream-cli chat unmute-channel --type [channel-type] --id [channel-id] --user-id [user-id] [flags]
+```
 
 ### Examples
 
 ```
 # Unmute the 'redteam' channel for user 'john'
 $ stream-cli chat unmute-channel --type messaging --id redteam --user-id john
+
 ```
 
 ### Options
 
 ```
-  -t, --type string        [required] Channel type such as 'messaging'
-  -i, --id string          [required] Channel ID
-  -u, --user-id string     [required] User ID
-  -h, --help               help for unmute-channel
+  -h, --help             help for unmute-channel
+  -i, --id string        [required] Channel ID
+  -t, --type string      [required] Channel type such as 'messaging'
+  -u, --user-id string   [required] User ID
 ```
 
 ### Options inherited from parent commands
@@ -36,3 +38,4 @@ $ stream-cli chat unmute-channel --type messaging --id redteam --user-id john
 ### SEE ALSO
 
 * [stream-cli chat](stream-cli_chat.md)	 - Allows you to interact with your Chat applications
+
