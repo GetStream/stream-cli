@@ -1,109 +1,137 @@
-package main
+package rawrecording
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-type MuxAVArgs struct {
-	UserID    string
-	SessionID string
-	TrackID   string
-	Media     string // "user", "display", or "both" (default)
-}
+func muxAVCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mux-av",
+		Short: "Mux audio and video tracks into a single file",
+		Long: heredoc.Doc(`
+			Mux audio and video tracks into a single file.
 
-type MuxAudioVideoProcess struct {
-	logger *getstream.DefaultLogger
-}
+			This command combines audio and video tracks from the same
+			user/session into a single playable file.
 
-func NewMuxAudioVideoProcess(logger *getstream.DefaultLogger) *MuxAudioVideoProcess {
-	return &MuxAudioVideoProcess{logger: logger}
-}
+			Filters are mutually exclusive: you can only specify one of
+			--user-id, --session-id, or --track-id at a time.
 
-func (p *MuxAudioVideoProcess) runMuxAV(args []string, globalArgs *GlobalArgs) {
-	printHelpIfAsked(args, p.printUsage)
+			Media filtering:
+			  --media user     Only mux user camera audio/video pairs
+			  --media display  Only mux display sharing audio/video pairs
+			  --media both     Mux both types (default)
+		`),
+		Example: heredoc.Doc(`
+			# Mux all tracks
+			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out
 
-	// Parse command-specific flags
-	fs := flag.NewFlagSet("mux-av", flag.ExitOnError)
-	muxAVArgs := &MuxAVArgs{}
-	fs.StringVar(&muxAVArgs.UserID, "userId", "", "Specify a userId (empty for all)")
-	fs.StringVar(&muxAVArgs.SessionID, "sessionId", "", "Specify a sessionId (empty for all)")
-	fs.StringVar(&muxAVArgs.TrackID, "trackId", "", "Specify a trackId (empty for all)")
-	fs.StringVar(&muxAVArgs.Media, "media", "both", "Filter by media type: 'user', 'display', or 'both'")
+			# Mux tracks for specific user
+			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --user-id user123
 
-	if err := fs.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing flags: %v\n", err)
-		os.Exit(1)
+			# Mux only user camera tracks
+			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --media user
+
+			# Mux only display sharing tracks
+			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --media display
+		`),
+		RunE: runMuxAV,
 	}
+
+	fl := cmd.Flags()
+	fl.String("user-id", "", "Filter by user ID")
+	fl.String("session-id", "", "Filter by session ID")
+	fl.String("track-id", "", "Filter by track ID")
+	fl.String("media", "both", "Filter by media type: 'user', 'display', or 'both'")
+
+	// Register completions
+	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
+	_ = cmd.RegisterFlagCompletionFunc("media", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"user", "display", "both"}, cobra.ShellCompDirectiveNoFileComp
+	})
+
+	return cmd
+}
+
+func runMuxAV(cmd *cobra.Command, args []string) error {
+	globalArgs, err := getGlobalArgs(cmd)
+	if err != nil {
+		return err
+	}
+
+	// Validate global args (output is required for mux-av)
+	if err := validateGlobalArgs(globalArgs, true); err != nil {
+		return err
+	}
+
+	userID, _ := cmd.Flags().GetString("user-id")
+	sessionID, _ := cmd.Flags().GetString("session-id")
+	trackID, _ := cmd.Flags().GetString("track-id")
+	media, _ := cmd.Flags().GetString("media")
 
 	// Validate input arguments against actual recording data
-	metadata, err := validateInputArgs(globalArgs, muxAVArgs.UserID, muxAVArgs.SessionID, muxAVArgs.TrackID)
+	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
-	p.logger.Info("Starting mux-av command")
+	logger := setupLogger(globalArgs.Verbose)
+	logger.Info("Starting mux-av command")
 
-	// Display hierarchy information for user clarity
-	fmt.Printf("Mux audio and video command with hierarchical filtering:\n")
-	fmt.Printf("  Input file: %s\n", globalArgs.InputFile)
-	fmt.Printf("  Output directory: %s\n", globalArgs.Output)
-	fmt.Printf("  User ID filter: %s\n", muxAVArgs.UserID)
-	fmt.Printf("  Session ID filter: %s\n", muxAVArgs.SessionID)
-	fmt.Printf("  Track ID filter: %s\n", muxAVArgs.TrackID)
-	fmt.Printf("  Media filter: %s\n", muxAVArgs.Media)
+	// Print banner
+	cmd.Println("Mux audio and video command with hierarchical filtering:")
+	cmd.Printf("  Input file: %s\n", globalArgs.InputFile)
+	cmd.Printf("  Output directory: %s\n", globalArgs.Output)
+	cmd.Printf("  User ID filter: %s\n", userID)
+	cmd.Printf("  Session ID filter: %s\n", sessionID)
+	cmd.Printf("  Track ID filter: %s\n", trackID)
+	cmd.Printf("  Media filter: %s\n", media)
 
-	if muxAVArgs.TrackID != "" {
-		fmt.Printf("  → Processing specific track '%s'\n", muxAVArgs.TrackID)
-	} else if muxAVArgs.SessionID != "" {
-		fmt.Printf("  → Processing all tracks for session '%s'\n", muxAVArgs.SessionID)
-	} else if muxAVArgs.UserID != "" {
-		fmt.Printf("  → Processing all tracks for user '%s'\n", muxAVArgs.UserID)
+	if trackID != "" {
+		cmd.Printf("  -> Processing specific track '%s'\n", trackID)
+	} else if sessionID != "" {
+		cmd.Printf("  -> Processing all tracks for session '%s'\n", sessionID)
+	} else if userID != "" {
+		cmd.Printf("  -> Processing all tracks for user '%s'\n", userID)
 	} else {
-		fmt.Printf("  → Processing all tracks (no filters)\n")
+		cmd.Println("  -> Processing all tracks (no filters)")
 	}
 
-	// Extract and mux audio/video tracks
-	if err := p.muxAudioVideoTracks(globalArgs, muxAVArgs, metadata, p.logger); err != nil {
-		p.logger.Error("Failed to mux audio/video tracks: %v", err)
-		os.Exit(1)
+	// Prepare working directory
+	workDir, cleanup, err := prepareWorkDir(globalArgs, logger)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	globalArgs.WorkDir = workDir
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(globalArgs.Output, 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	p.logger.Info("Mux audio and video command completed successfully")
-}
-
-func (p *MuxAudioVideoProcess) printUsage() {
-	fmt.Printf("Usage: raw-tools [global options] mux-av [options]\n")
-	fmt.Printf("\nMux audio and video tracks into a single file\n")
-	fmt.Printf("\nOptions:\n")
-	fmt.Printf("  --userId STRING    Filter by user ID (mutually exclusive with --sessionId/--trackId)\n")
-	fmt.Printf("  --sessionId STRING Filter by session ID (mutually exclusive with --userId/--trackId)\n")
-	fmt.Printf("  --trackId STRING   Filter by track ID (mutually exclusive with --userId/--sessionId)\n")
-	fmt.Printf("  --media STRING     Filter by media type: 'user', 'display', or 'both' (default: \"both\")\n")
-	fmt.Printf("\nMedia Filtering:\n")
-	fmt.Printf("  --media user     Only mux user camera audio/video pairs\n")
-	fmt.Printf("  --media display  Only mux display sharing audio/video pairs\n")
-	fmt.Printf("  --media both     Mux both types, but ensure consistent pairing (default)\n")
-}
-
-func (p *MuxAudioVideoProcess) muxAudioVideoTracks(globalArgs *GlobalArgs, muxAVArgs *MuxAVArgs, metadata *processing.RecordingMetadata, logger *getstream.DefaultLogger) error {
-	muxer := processing.NewAudioVideoMuxer(p.logger)
-	if e := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
+	// Mux audio/video tracks
+	muxer := processing.NewAudioVideoMuxer(logger)
+	if err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
 		WorkDir:     globalArgs.WorkDir,
 		OutputDir:   globalArgs.Output,
-		UserID:      muxAVArgs.UserID,
-		SessionID:   muxAVArgs.SessionID,
-		TrackID:     muxAVArgs.TrackID,
-		Media:       muxAVArgs.Media,
+		UserID:      userID,
+		SessionID:   sessionID,
+		TrackID:     trackID,
+		Media:       media,
 		WithExtract: true,
 		WithCleanup: false,
-	}, metadata, logger); e != nil {
-		return e
+	}, metadata, logger); err != nil {
+		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
+
+	logger.Info("Mux audio and video command completed successfully")
 	return nil
 }

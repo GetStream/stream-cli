@@ -1,114 +1,130 @@
-package main
+package rawrecording
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-type ExtractVideoArgs struct {
-	UserID    string
-	SessionID string
-	TrackID   string
-	FillGaps  bool
-}
+func extractVideoCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "extract-video",
+		Short: "Generate playable video files from raw recording tracks",
+		Long: heredoc.Doc(`
+			Generate playable video files from raw recording tracks.
 
-type ExtractVideoProcess struct {
-	logger *getstream.DefaultLogger
-}
+			Supports formats: webm, mp4, and others.
 
-func NewExtractVideoProcess(logger *getstream.DefaultLogger) *ExtractVideoProcess {
-	return &ExtractVideoProcess{logger: logger}
-}
+			Filters are mutually exclusive: you can only specify one of
+			--user-id, --session-id, or --track-id at a time.
+		`),
+		Example: heredoc.Doc(`
+			# Extract video for all users (no filters)
+			$ stream-cli video raw-recording extract-video --input-file recording.zip --output ./out
 
-func (p *ExtractVideoProcess) runExtractVideo(args []string, globalArgs *GlobalArgs) {
-	printHelpIfAsked(args, p.printUsage)
+			# Extract video for specific user (all their tracks)
+			$ stream-cli video raw-recording extract-video --input-file recording.zip --output ./out --user-id user123
 
-	// Parse command-specific flags
-	fs := flag.NewFlagSet("extract-video", flag.ExitOnError)
-	extractVideoArgs := &ExtractVideoArgs{}
-	fs.StringVar(&extractVideoArgs.UserID, "userId", "", "Specify a userId (empty for all)")
-	fs.StringVar(&extractVideoArgs.SessionID, "sessionId", "", "Specify a sessionId (empty for all)")
-	fs.StringVar(&extractVideoArgs.TrackID, "trackId", "", "Specify a trackId (empty for all)")
-	fs.BoolVar(&extractVideoArgs.FillGaps, "fill_gaps", true, "Fill with black frame when track was muted (default true)")
+			# Extract video for specific session
+			$ stream-cli video raw-recording extract-video --input-file recording.zip --output ./out --session-id session456
 
-	if err := fs.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing flags: %v\n", err)
-		os.Exit(1)
+			# Extract a specific track
+			$ stream-cli video raw-recording extract-video --input-file recording.zip --output ./out --track-id track1
+		`),
+		RunE: runExtractVideo,
 	}
+
+	fl := cmd.Flags()
+	fl.String("user-id", "", "Filter by user ID")
+	fl.String("session-id", "", "Filter by session ID")
+	fl.String("track-id", "", "Filter by track ID")
+	fl.Bool("fill-gaps", true, "Fill with black frame when track was muted")
+
+	// Register completions
+	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
+
+	return cmd
+}
+
+func runExtractVideo(cmd *cobra.Command, args []string) error {
+	globalArgs, err := getGlobalArgs(cmd)
+	if err != nil {
+		return err
+	}
+
+	// Validate global args (output is required for extract-video)
+	if err := validateGlobalArgs(globalArgs, true); err != nil {
+		return err
+	}
+
+	userID, _ := cmd.Flags().GetString("user-id")
+	sessionID, _ := cmd.Flags().GetString("session-id")
+	trackID, _ := cmd.Flags().GetString("track-id")
+	fillGaps, _ := cmd.Flags().GetBool("fill-gaps")
 
 	// Validate input arguments against actual recording data
-	metadata, err := validateInputArgs(globalArgs, extractVideoArgs.UserID, extractVideoArgs.SessionID, extractVideoArgs.TrackID)
+	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
-	p.logger.Info("Starting extract-video command")
-	p.printBanner(globalArgs, extractVideoArgs)
+	logger := setupLogger(globalArgs.Verbose)
+	logger.Info("Starting extract-video command")
+
+	// Print banner
+	printExtractVideoBanner(cmd, globalArgs, userID, sessionID, trackID, fillGaps)
+
+	// Prepare working directory
+	workDir, cleanup, err := prepareWorkDir(globalArgs, logger)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	globalArgs.WorkDir = workDir
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(globalArgs.Output, 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
+	}
 
 	// Extract video tracks
-	if e := extractVideoTracks(globalArgs, extractVideoArgs, metadata, p.logger); e != nil {
-		p.logger.Error("Failed to extract video tracks: %v", e)
-		os.Exit(1)
+	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, userID, sessionID, trackID, metadata, "video", "both", fillGaps, false, logger); err != nil {
+		return fmt.Errorf("failed to extract video tracks: %w", err)
 	}
 
-	p.logger.Info("Extract video command completed successfully")
+	logger.Info("Extract video command completed successfully")
+	return nil
 }
 
-func (p *ExtractVideoProcess) printBanner(globalArgs *GlobalArgs, extractVideoArgs *ExtractVideoArgs) {
-	fmt.Printf("Extract video command with mutually exclusive filtering:\n")
+func printExtractVideoBanner(cmd *cobra.Command, globalArgs *GlobalArgs, userID, sessionID, trackID string, fillGaps bool) {
+	cmd.Println("Extract video command with mutually exclusive filtering:")
 	if globalArgs.InputFile != "" {
-		fmt.Printf("  Input file: %s\n", globalArgs.InputFile)
+		cmd.Printf("  Input file: %s\n", globalArgs.InputFile)
 	}
 	if globalArgs.InputDir != "" {
-		fmt.Printf("  Input directory: %s\n", globalArgs.InputDir)
+		cmd.Printf("  Input directory: %s\n", globalArgs.InputDir)
 	}
 	if globalArgs.InputS3 != "" {
-		fmt.Printf("  Input S3: %s\n", globalArgs.InputS3)
+		cmd.Printf("  Input S3: %s\n", globalArgs.InputS3)
 	}
-	fmt.Printf("  Output directory: %s\n", globalArgs.Output)
-	fmt.Printf("  User ID filter: %s\n", extractVideoArgs.UserID)
-	fmt.Printf("  Session ID filter: %s\n", extractVideoArgs.SessionID)
-	fmt.Printf("  Track ID filter: %s\n", extractVideoArgs.TrackID)
+	cmd.Printf("  Output directory: %s\n", globalArgs.Output)
+	cmd.Printf("  User ID filter: %s\n", userID)
+	cmd.Printf("  Session ID filter: %s\n", sessionID)
+	cmd.Printf("  Track ID filter: %s\n", trackID)
 
-	if extractVideoArgs.TrackID != "" {
-		fmt.Printf("  → Processing specific track '%s'\n", extractVideoArgs.TrackID)
-	} else if extractVideoArgs.SessionID != "" {
-		fmt.Printf("  → Processing all video tracks for session '%s'\n", extractVideoArgs.SessionID)
-	} else if extractVideoArgs.UserID != "" {
-		fmt.Printf("  → Processing all video tracks for user '%s'\n", extractVideoArgs.UserID)
+	if trackID != "" {
+		cmd.Printf("  -> Processing specific track '%s'\n", trackID)
+	} else if sessionID != "" {
+		cmd.Printf("  -> Processing all video tracks for session '%s'\n", sessionID)
+	} else if userID != "" {
+		cmd.Printf("  -> Processing all video tracks for user '%s'\n", userID)
 	} else {
-		fmt.Printf("  → Processing all video tracks (no filters)\n")
+		cmd.Println("  -> Processing all video tracks (no filters)")
 	}
-	fmt.Printf("  Fill gaps: %t\n", extractVideoArgs.FillGaps)
-}
-
-func (p *ExtractVideoProcess) printUsage() {
-	fmt.Fprintf(os.Stderr, "Usage: raw-tools [global options] extract-video [command options]\n\n")
-	fmt.Fprintf(os.Stderr, "Generate playable video files from raw recording tracks.\n")
-	fmt.Fprintf(os.Stderr, "Supports formats: webm, mp4, and others.\n\n")
-	fmt.Fprintf(os.Stderr, "Command Options (Mutually Exclusive Filters):\n")
-	fmt.Fprintf(os.Stderr, "  --userId <id>          Filter by user ID\n")
-	fmt.Fprintf(os.Stderr, "  --sessionId <id>       Filter by session ID\n")
-	fmt.Fprintf(os.Stderr, "  --trackId <id>         Filter by track ID\n")
-	fmt.Fprintf(os.Stderr, "                         (specify at most one of the above)\n")
-	fmt.Fprintf(os.Stderr, "  --fill_gaps            Fill with black frames when muted\n\n")
-	fmt.Fprintf(os.Stderr, "Examples:\n")
-	fmt.Fprintf(os.Stderr, "  # Extract video for all users (no filters)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-video\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract video for specific user (all their tracks)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-video --userId user123\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract video for specific session (all users in that session)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-video --sessionId session456\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract a specific track\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-video --trackId track1\n\n")
-	fmt.Fprintf(os.Stderr, "Global Options: Use 'raw-tools --help' to see global options.\n")
-}
-
-func extractVideoTracks(globalArgs *GlobalArgs, extractVideoArgs *ExtractVideoArgs, metadata *processing.RecordingMetadata, logger *getstream.DefaultLogger) error {
-	return processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, extractVideoArgs.UserID, extractVideoArgs.SessionID, extractVideoArgs.TrackID, metadata, "video", "both", extractVideoArgs.FillGaps, false, logger)
+	cmd.Printf("  Fill gaps: %t\n", fillGaps)
 }

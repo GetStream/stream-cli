@@ -1,105 +1,125 @@
-package main
+package rawrecording
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-type ProcessAllArgs struct {
-	UserID    string
-	SessionID string
-	TrackID   string
-}
+func processAllCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "process-all",
+		Short: "Process audio, video, and mux (all-in-one)",
+		Long: heredoc.Doc(`
+			Process audio, video, and mux them into combined files (all-in-one workflow).
 
-type ProcessAllProcess struct {
-	logger *getstream.DefaultLogger
-}
+			Outputs 3 files per session: audio WebM, video WebM, and muxed WebM.
+			Gap filling is always enabled for seamless playback.
 
-func NewProcessAllProcess(logger *getstream.DefaultLogger) *ProcessAllProcess {
-	return &ProcessAllProcess{logger: logger}
-}
+			Filters are mutually exclusive: you can only specify one of
+			--user-id, --session-id, or --track-id at a time.
 
-func (p *ProcessAllProcess) runProcessAll(args []string, globalArgs *GlobalArgs) {
-	printHelpIfAsked(args, p.printUsage)
+			Output files per session:
+			  audio_{userId}_{sessionId}_{trackId}.webm    - Audio-only file
+			  video_{userId}_{sessionId}_{trackId}.webm    - Video-only file
+			  muxed_{userId}_{sessionId}_{trackId}.webm    - Combined audio+video file
+		`),
+		Example: heredoc.Doc(`
+			# Process all tracks
+			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out
 
-	// Parse command-specific flags
-	fs := flag.NewFlagSet("process-all", flag.ExitOnError)
-	processAllArgs := &ProcessAllArgs{}
-	fs.StringVar(&processAllArgs.UserID, "userId", "", "Specify a userId (empty for all)")
-	fs.StringVar(&processAllArgs.SessionID, "sessionId", "", "Specify a sessionId (empty for all)")
-	fs.StringVar(&processAllArgs.TrackID, "trackId", "", "Specify a trackId (empty for all)")
+			# Process tracks for specific user
+			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out --user-id user123
 
-	if err := fs.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing flags: %v\n", err)
-		os.Exit(1)
+			# Process tracks for specific session
+			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out --session-id session456
+		`),
+		RunE: runProcessAll,
 	}
+
+	fl := cmd.Flags()
+	fl.String("user-id", "", "Filter by user ID")
+	fl.String("session-id", "", "Filter by session ID")
+	fl.String("track-id", "", "Filter by track ID")
+
+	// Register completions
+	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
+
+	return cmd
+}
+
+func runProcessAll(cmd *cobra.Command, args []string) error {
+	globalArgs, err := getGlobalArgs(cmd)
+	if err != nil {
+		return err
+	}
+
+	// Validate global args (output is required for process-all)
+	if err := validateGlobalArgs(globalArgs, true); err != nil {
+		return err
+	}
+
+	userID, _ := cmd.Flags().GetString("user-id")
+	sessionID, _ := cmd.Flags().GetString("session-id")
+	trackID, _ := cmd.Flags().GetString("track-id")
 
 	// Validate input arguments against actual recording data
-	metadata, err := validateInputArgs(globalArgs, processAllArgs.UserID, processAllArgs.SessionID, processAllArgs.TrackID)
+	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
-	p.logger.Info("Starting process-all command")
+	logger := setupLogger(globalArgs.Verbose)
+	logger.Info("Starting process-all command")
 
-	// Display hierarchy information for user clarity
-	fmt.Printf("Process-all command (audio + video + mux) with hierarchical filtering:\n")
-	fmt.Printf("  Input file: %s\n", globalArgs.InputFile)
-	fmt.Printf("  Output directory: %s\n", globalArgs.Output)
-	fmt.Printf("  User ID filter: %s\n", processAllArgs.UserID)
-	fmt.Printf("  Session ID filter: %s\n", processAllArgs.SessionID)
-	fmt.Printf("  Track ID filter: %s\n", processAllArgs.TrackID)
-	fmt.Printf("  Gap filling: always enabled\n")
+	// Print banner
+	cmd.Println("Process-all command (audio + video + mux) with hierarchical filtering:")
+	cmd.Printf("  Input file: %s\n", globalArgs.InputFile)
+	cmd.Printf("  Output directory: %s\n", globalArgs.Output)
+	cmd.Printf("  User ID filter: %s\n", userID)
+	cmd.Printf("  Session ID filter: %s\n", sessionID)
+	cmd.Printf("  Track ID filter: %s\n", trackID)
+	cmd.Println("  Gap filling: always enabled")
 
-	if processAllArgs.TrackID != "" {
-		fmt.Printf("  → Processing specific track '%s'\n", processAllArgs.TrackID)
-	} else if processAllArgs.SessionID != "" {
-		fmt.Printf("  → Processing all tracks for session '%s'\n", processAllArgs.SessionID)
-	} else if processAllArgs.UserID != "" {
-		fmt.Printf("  → Processing all tracks for user '%s'\n", processAllArgs.UserID)
+	if trackID != "" {
+		cmd.Printf("  -> Processing specific track '%s'\n", trackID)
+	} else if sessionID != "" {
+		cmd.Printf("  -> Processing all tracks for session '%s'\n", sessionID)
+	} else if userID != "" {
+		cmd.Printf("  -> Processing all tracks for user '%s'\n", userID)
 	} else {
-		fmt.Printf("  → Processing all tracks (no filters)\n")
+		cmd.Println("  -> Processing all tracks (no filters)")
 	}
 
-	// Process all tracks and mux them
-	if err := p.processAllTracks(globalArgs, processAllArgs, metadata, p.logger); err != nil {
-		p.logger.Error("Failed to process and mux tracks: %v", err)
-		os.Exit(1)
+	// Prepare working directory
+	workDir, cleanup, err := prepareWorkDir(globalArgs, logger)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	globalArgs.WorkDir = workDir
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(globalArgs.Output, 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	p.logger.Info("Process-all command completed successfully")
-}
-
-func (p *ProcessAllProcess) printUsage() {
-	fmt.Printf("Usage: process-all [OPTIONS]\n")
-	fmt.Printf("\nProcess audio, video, and mux them into combined files (all-in-one workflow)\n")
-	fmt.Printf("Outputs 3 files per session: audio WebM, video WebM, and muxed WebM\n")
-	fmt.Printf("Gap filling is always enabled for seamless playback.\n")
-	fmt.Printf("\nOptions:\n")
-	fmt.Printf("  --userId STRING    Specify a userId or * for all (default: \"*\")\n")
-	fmt.Printf("  --sessionId STRING Specify a sessionId or * for all (default: \"*\")\n")
-	fmt.Printf("  --trackId STRING   Specify a trackId or * for all (default: \"*\")\n")
-	fmt.Printf("\nOutput files per session:\n")
-	fmt.Printf("  audio_{userId}_{sessionId}_{trackId}.webm    - Audio-only file\n")
-	fmt.Printf("  video_{userId}_{sessionId}_{trackId}.webm    - Video-only file\n")
-	fmt.Printf("  muxed_{userId}_{sessionId}_{trackId}.webm    - Combined audio+video file\n")
-}
-
-func (p *ProcessAllProcess) processAllTracks(globalArgs *GlobalArgs, processAllArgs *ProcessAllArgs, metadata *processing.RecordingMetadata, logger *getstream.DefaultLogger) error {
-
-	if e := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "audio", "both", true, true, logger); e != nil {
-		return e
+	// Extract audio tracks
+	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "audio", "both", true, true, logger); err != nil {
+		return fmt.Errorf("failed to extract audio tracks: %w", err)
 	}
 
-	if e := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "video", "both", true, true, logger); e != nil {
-		return e
+	// Extract video tracks
+	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "video", "both", true, true, logger); err != nil {
+		return fmt.Errorf("failed to extract video tracks: %w", err)
 	}
 
+	// Mix all audio tracks
 	mixer := processing.NewAudioMixer(logger)
 	mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
 		WorkDir:         globalArgs.WorkDir,
@@ -109,8 +129,9 @@ func (p *ProcessAllProcess) processAllTracks(globalArgs *GlobalArgs, processAllA
 		WithCleanup:     false,
 	}, metadata, logger)
 
-	muxer := processing.NewAudioVideoMuxer(p.logger)
-	if e := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
+	// Mux audio/video tracks
+	muxer := processing.NewAudioVideoMuxer(logger)
+	if err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
 		WorkDir:     globalArgs.WorkDir,
 		OutputDir:   globalArgs.Output,
 		UserID:      "",
@@ -119,9 +140,10 @@ func (p *ProcessAllProcess) processAllTracks(globalArgs *GlobalArgs, processAllA
 		Media:       "",
 		WithExtract: false,
 		WithCleanup: false,
-	}, metadata, logger); e != nil {
-		return e
+	}, metadata, logger); err != nil {
+		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
 
+	logger.Info("Process-all command completed successfully")
 	return nil
 }

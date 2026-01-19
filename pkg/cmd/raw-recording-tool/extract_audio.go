@@ -1,116 +1,133 @@
-package main
+package rawrecording
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-type ExtractAudioArgs struct {
-	UserID    string
-	SessionID string
-	TrackID   string
-	FillGaps  bool
-	FixDtx    bool
-}
+func extractAudioCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "extract-audio",
+		Short: "Generate playable audio files from raw recording tracks",
+		Long: heredoc.Doc(`
+			Generate playable audio files from raw recording tracks.
 
-type ExtractAudioProcess struct {
-	logger *getstream.DefaultLogger
-}
+			Supports formats: webm, mp3, and others.
 
-func NewExtractAudioProcess(logger *getstream.DefaultLogger) *ExtractAudioProcess {
-	return &ExtractAudioProcess{logger: logger}
-}
+			Filters are mutually exclusive: you can only specify one of
+			--user-id, --session-id, or --track-id at a time.
+		`),
+		Example: heredoc.Doc(`
+			# Extract audio for all users (no filters)
+			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out
 
-func (p *ExtractAudioProcess) runExtractAudio(args []string, globalArgs *GlobalArgs) {
-	printHelpIfAsked(args, p.printUsage)
+			# Extract audio for specific user (all their tracks)
+			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --user-id user123
 
-	// Parse command-specific flags
-	fs := flag.NewFlagSet("extract-audio", flag.ExitOnError)
-	extractAudioArgs := &ExtractAudioArgs{}
-	fs.StringVar(&extractAudioArgs.UserID, "userId", "", "Specify a userId (empty for all)")
-	fs.StringVar(&extractAudioArgs.SessionID, "sessionId", "", "Specify a sessionId (empty for all)")
-	fs.StringVar(&extractAudioArgs.TrackID, "trackId", "", "Specify a trackId (empty for all)")
-	fs.BoolVar(&extractAudioArgs.FillGaps, "fill_gaps", true, "Fill with silence when track was muted (default true)")
-	fs.BoolVar(&extractAudioArgs.FixDtx, "fix_dtx", true, "Fix DTX shrink audio (default true)")
+			# Extract audio for specific session
+			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --session-id session456
 
-	if err := fs.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing flags: %v\n", err)
-		os.Exit(1)
+			# Extract a specific track
+			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --track-id track1
+		`),
+		RunE: runExtractAudio,
 	}
+
+	fl := cmd.Flags()
+	fl.String("user-id", "", "Filter by user ID")
+	fl.String("session-id", "", "Filter by session ID")
+	fl.String("track-id", "", "Filter by track ID")
+	fl.Bool("fill-gaps", true, "Fill with silence when track was muted")
+	fl.Bool("fix-dtx", true, "Fix DTX shrink audio")
+
+	// Register completions
+	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
+
+	return cmd
+}
+
+func runExtractAudio(cmd *cobra.Command, args []string) error {
+	globalArgs, err := getGlobalArgs(cmd)
+	if err != nil {
+		return err
+	}
+
+	// Validate global args (output is required for extract-audio)
+	if err := validateGlobalArgs(globalArgs, true); err != nil {
+		return err
+	}
+
+	userID, _ := cmd.Flags().GetString("user-id")
+	sessionID, _ := cmd.Flags().GetString("session-id")
+	trackID, _ := cmd.Flags().GetString("track-id")
+	fillGaps, _ := cmd.Flags().GetBool("fill-gaps")
+	fixDtx, _ := cmd.Flags().GetBool("fix-dtx")
 
 	// Validate input arguments against actual recording data
-	metadata, err := validateInputArgs(globalArgs, extractAudioArgs.UserID, extractAudioArgs.SessionID, extractAudioArgs.TrackID)
+	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
-	p.logger.Info("Starting extract-audio command")
-	p.printBanner(globalArgs, extractAudioArgs)
+	logger := setupLogger(globalArgs.Verbose)
+	logger.Info("Starting extract-audio command")
 
-	// Implement extract audio functionality
-	if e := extractAudioTracks(globalArgs, extractAudioArgs, metadata, p.logger); e != nil {
-		p.logger.Error("Failed to extract audio: %v", e)
+	// Print banner
+	printExtractAudioBanner(cmd, globalArgs, userID, sessionID, trackID, fillGaps, fixDtx)
+
+	// Prepare working directory
+	workDir, cleanup, err := prepareWorkDir(globalArgs, logger)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	globalArgs.WorkDir = workDir
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(globalArgs.Output, 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	p.logger.Info("Extract audio command completed")
+	// Extract audio tracks
+	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, userID, sessionID, trackID, metadata, "audio", "both", fillGaps, fixDtx, logger); err != nil {
+		return fmt.Errorf("failed to extract audio: %w", err)
+	}
+
+	logger.Info("Extract audio command completed")
+	return nil
 }
 
-func (p *ExtractAudioProcess) printBanner(globalArgs *GlobalArgs, extractAudioArgs *ExtractAudioArgs) {
-	fmt.Printf("Extract audio command with mutually exclusive filtering:\n")
+func printExtractAudioBanner(cmd *cobra.Command, globalArgs *GlobalArgs, userID, sessionID, trackID string, fillGaps, fixDtx bool) {
+	cmd.Println("Extract audio command with mutually exclusive filtering:")
 	if globalArgs.InputFile != "" {
-		fmt.Printf("  Input file: %s\n", globalArgs.InputFile)
+		cmd.Printf("  Input file: %s\n", globalArgs.InputFile)
 	}
 	if globalArgs.InputDir != "" {
-		fmt.Printf("  Input directory: %s\n", globalArgs.InputDir)
+		cmd.Printf("  Input directory: %s\n", globalArgs.InputDir)
 	}
 	if globalArgs.InputS3 != "" {
-		fmt.Printf("  Input S3: %s\n", globalArgs.InputS3)
+		cmd.Printf("  Input S3: %s\n", globalArgs.InputS3)
 	}
-	fmt.Printf("  Output directory: %s\n", globalArgs.Output)
-	fmt.Printf("  User ID filter: %s\n", extractAudioArgs.UserID)
-	fmt.Printf("  Session ID filter: %s\n", extractAudioArgs.SessionID)
-	fmt.Printf("  Track ID filter: %s\n", extractAudioArgs.TrackID)
+	cmd.Printf("  Output directory: %s\n", globalArgs.Output)
+	cmd.Printf("  User ID filter: %s\n", userID)
+	cmd.Printf("  Session ID filter: %s\n", sessionID)
+	cmd.Printf("  Track ID filter: %s\n", trackID)
 
-	if extractAudioArgs.TrackID != "" {
-		fmt.Printf("  → Processing specific track '%s'\n", extractAudioArgs.TrackID)
-	} else if extractAudioArgs.SessionID != "" {
-		fmt.Printf("  → Processing all audio tracks for session '%s'\n", extractAudioArgs.SessionID)
-	} else if extractAudioArgs.UserID != "" {
-		fmt.Printf("  → Processing all audio tracks for user '%s'\n", extractAudioArgs.UserID)
+	if trackID != "" {
+		cmd.Printf("  -> Processing specific track '%s'\n", trackID)
+	} else if sessionID != "" {
+		cmd.Printf("  -> Processing all audio tracks for session '%s'\n", sessionID)
+	} else if userID != "" {
+		cmd.Printf("  -> Processing all audio tracks for user '%s'\n", userID)
 	} else {
-		fmt.Printf("  → Processing all audio tracks (no filters)\n")
+		cmd.Println("  -> Processing all audio tracks (no filters)")
 	}
-	fmt.Printf("  Fill gaps: %t\n", extractAudioArgs.FillGaps)
-	fmt.Printf("  Fix DTX: %t\n", extractAudioArgs.FixDtx)
-}
-
-func (p *ExtractAudioProcess) printUsage() {
-	fmt.Fprintf(os.Stderr, "Usage: raw-tools [global options] extract-audio [command options]\n\n")
-	fmt.Fprintf(os.Stderr, "Generate playable audio files from raw recording tracks.\n")
-	fmt.Fprintf(os.Stderr, "Supports formats: webm, mp3, and others.\n\n")
-	fmt.Fprintf(os.Stderr, "Command Options (Mutually Exclusive Filters):\n")
-	fmt.Fprintf(os.Stderr, "  --userId <id>          Filter by user ID\n")
-	fmt.Fprintf(os.Stderr, "  --sessionId <id>       Filter by session ID\n")
-	fmt.Fprintf(os.Stderr, "  --trackId <id>         Filter by track ID\n")
-	fmt.Fprintf(os.Stderr, "                         (specify at most one of the above)\n")
-	fmt.Fprintf(os.Stderr, "  --fill_gaps            Fix DTX shrink audio, fill with silence when muted\n\n")
-	fmt.Fprintf(os.Stderr, "Examples:\n")
-	fmt.Fprintf(os.Stderr, "  # Extract audio for all users (no filters)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-audio\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract audio for specific user (all their tracks)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-audio --userId user123\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract audio for specific session (all users in that session)\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-audio --sessionId session456\n\n")
-	fmt.Fprintf(os.Stderr, "  # Extract a specific track\n")
-	fmt.Fprintf(os.Stderr, "  raw-tools --inputFile recording.zip --output ./out extract-audio --trackId track1\n\n")
-	fmt.Fprintf(os.Stderr, "Global Options: Use 'raw-tools --help' to see global options.\n")
-}
-
-func extractAudioTracks(globalArgs *GlobalArgs, extractAudioArgs *ExtractAudioArgs, metadata *processing.RecordingMetadata, logger *getstream.DefaultLogger) error {
-	return processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, extractAudioArgs.UserID, extractAudioArgs.SessionID, extractAudioArgs.TrackID, metadata, "audio", "both", extractAudioArgs.FillGaps, extractAudioArgs.FixDtx, logger)
+	cmd.Printf("  Fill gaps: %t\n", fillGaps)
+	cmd.Printf("  Fix DTX: %t\n", fixDtx)
 }

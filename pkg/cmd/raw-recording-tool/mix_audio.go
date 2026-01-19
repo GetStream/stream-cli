@@ -1,54 +1,72 @@
-package main
+package rawrecording
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-// MixAudioArgs represents the arguments for the mix-audio command
-type MixAudioArgs struct {
-	IncludeScreenShare bool
+func mixAudioCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mix-audio",
+		Short: "Mix multiple audio tracks into one file",
+		Long: heredoc.Doc(`
+			Mix all audio tracks from multiple users/sessions into a single audio file
+			with proper timing synchronization (like a conference call recording).
+
+			Creates 'mixed_audio.webm' - a single audio file containing all mixed tracks
+			with proper timing synchronization based on the original recording timeline.
+		`),
+		Example: heredoc.Doc(`
+			# Mix all audio tracks from all users and sessions
+			$ stream-cli video raw-recording mix-audio --input-file recording.zip --output ./out
+
+			# Mix with verbose logging
+			$ stream-cli video raw-recording mix-audio --input-file recording.zip --output ./out --verbose
+		`),
+		RunE: runMixAudio,
+	}
+
+	return cmd
 }
 
-type MixAudioProcess struct {
-	logger *getstream.DefaultLogger
-}
+func runMixAudio(cmd *cobra.Command, args []string) error {
+	globalArgs, err := getGlobalArgs(cmd)
+	if err != nil {
+		return err
+	}
 
-func NewMixAudioProcess(logger *getstream.DefaultLogger) *MixAudioProcess {
-	return &MixAudioProcess{logger: logger}
-}
-
-// runMixAudio handles the mix-audio command
-func (p *MixAudioProcess) runMixAudio(args []string, globalArgs *GlobalArgs) {
-	printHelpIfAsked(args, p.printUsage)
-
-	mixAudioArgs := &MixAudioArgs{
-		IncludeScreenShare: false,
+	// Validate global args (output is required for mix-audio)
+	if err := validateGlobalArgs(globalArgs, true); err != nil {
+		return err
 	}
 
 	// Validate input arguments against actual recording data
 	metadata, err := validateInputArgs(globalArgs, "", "", "")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("validation error: %w", err)
 	}
 
-	p.logger.Info("Starting mix-audio command")
+	logger := setupLogger(globalArgs.Verbose)
+	logger.Info("Starting mix-audio command")
 
-	// Execute the mix-audio operation
-	if e := p.mixAllAudioTracks(globalArgs, mixAudioArgs, metadata, p.logger); e != nil {
-		p.logger.Error("Mix-audio failed: %v", e)
-		os.Exit(1)
+	// Prepare working directory
+	workDir, cleanup, err := prepareWorkDir(globalArgs, logger)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+	globalArgs.WorkDir = workDir
+
+	// Create output directory if it doesn't exist
+	if err := os.MkdirAll(globalArgs.Output, 0755); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	p.logger.Info("Mix-audio command completed successfully")
-}
-
-// mixAllAudioTracks orchestrates the entire audio mixing workflow using existing extraction logic
-func (p *MixAudioProcess) mixAllAudioTracks(globalArgs *GlobalArgs, mixAudioArgs *MixAudioArgs, metadata *processing.RecordingMetadata, logger *getstream.DefaultLogger) error {
+	// Mix all audio tracks
 	mixer := processing.NewAudioMixer(logger)
 	mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
 		WorkDir:         globalArgs.WorkDir,
@@ -57,34 +75,7 @@ func (p *MixAudioProcess) mixAllAudioTracks(globalArgs *GlobalArgs, mixAudioArgs
 		WithExtract:     true,
 		WithCleanup:     false,
 	}, metadata, logger)
-	return nil
-}
 
-// printMixAudioUsage prints the usage information for the mix-audio command
-func (p *MixAudioProcess) printUsage() {
-	fmt.Println("Usage: raw-tools [global-options] mix-audio [options]")
-	fmt.Println()
-	fmt.Println("Mix all audio tracks from multiple users/sessions into a single audio file")
-	fmt.Println("with proper timing synchronization (like a conference call recording).")
-	fmt.Println()
-	fmt.Println("Options:")
-	fmt.Println("  --userId <id>        Filter by user ID (* for all users, default: *)")
-	fmt.Println("  --sessionId <id>     Filter by session ID (* for all sessions, default: *)")
-	fmt.Println("  --trackId <id>       Filter by track ID (* for all tracks, default: *)")
-	fmt.Println("  --no-fill-gaps       Don't fill gaps with silence (not recommended for mixing)")
-	fmt.Println("  -h, --help           Show this help message")
-	fmt.Println()
-	fmt.Println("Examples:")
-	fmt.Println("  # Mix all audio tracks from all users and sessions")
-	fmt.Println("  raw-tools --inputFile recording.tar.gz --output /tmp/mixed mix-audio")
-	fmt.Println()
-	fmt.Println("  # Mix audio tracks from a specific user")
-	fmt.Println("  raw-tools --inputFile recording.tar.gz --output /tmp/mixed mix-audio --userId user123")
-	fmt.Println()
-	fmt.Println("  # Mix audio tracks from a specific session")
-	fmt.Println("  raw-tools --inputFile recording.tar.gz --output /tmp/mixed mix-audio --sessionId session456")
-	fmt.Println()
-	fmt.Println("Output:")
-	fmt.Println("  Creates 'mixed_audio.webm' - a single audio file containing all mixed tracks")
-	fmt.Println("  with proper timing synchronization based on the original recording timeline.")
+	logger.Info("Mix-audio command completed successfully")
+	return nil
 }
