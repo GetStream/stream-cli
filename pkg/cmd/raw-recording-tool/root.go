@@ -46,11 +46,11 @@ func NewRootCmd() *cobra.Command {
 
 	// Persistent flags (global options available to all subcommands)
 	pf := cmd.PersistentFlags()
-	pf.String("input-file", "", "Raw recording zip file path")
-	pf.String("input-dir", "", "Raw recording directory path")
-	pf.String("input-s3", "", "Raw recording S3 path")
-	pf.String("output", "", "Output directory")
-	pf.Bool("verbose", false, "Enable verbose logging")
+	pf.String(FlagInputFile, "", DescInputFile)
+	pf.String(FlagInputDir, "", DescInputDir)
+	pf.String(FlagInputS3, "", DescInputS3)
+	pf.String(FlagOutput, "", DescOutput)
+	pf.Bool(FlagVerbose, false, DescVerbose)
 
 	// Add subcommands
 	cmd.AddCommand(
@@ -67,11 +67,11 @@ func NewRootCmd() *cobra.Command {
 
 // getGlobalArgs extracts global arguments from cobra command flags
 func getGlobalArgs(cmd *cobra.Command) (*GlobalArgs, error) {
-	inputFile, _ := cmd.Flags().GetString("input-file")
-	inputDir, _ := cmd.Flags().GetString("input-dir")
-	inputS3, _ := cmd.Flags().GetString("input-s3")
-	output, _ := cmd.Flags().GetString("output")
-	verbose, _ := cmd.Flags().GetBool("verbose")
+	inputFile, _ := cmd.Flags().GetString(FlagInputFile)
+	inputDir, _ := cmd.Flags().GetString(FlagInputDir)
+	inputS3, _ := cmd.Flags().GetString(FlagInputS3)
+	output, _ := cmd.Flags().GetString(FlagOutput)
+	verbose, _ := cmd.Flags().GetBool(FlagVerbose)
 
 	return &GlobalArgs{
 		InputFile: inputFile,
@@ -85,7 +85,7 @@ func getGlobalArgs(cmd *cobra.Command) (*GlobalArgs, error) {
 // validateGlobalArgs validates global arguments
 func validateGlobalArgs(globalArgs *GlobalArgs, requireOutput bool) error {
 	if globalArgs.InputFile == "" && globalArgs.InputDir == "" && globalArgs.InputS3 == "" {
-		return fmt.Errorf("either --input-file or --input-dir or --input-s3 must be specified")
+		return fmt.Errorf("either --%s or --%s or --%s must be specified", FlagInputFile, FlagInputDir, FlagInputS3)
 	}
 
 	num := 0
@@ -99,11 +99,11 @@ func validateGlobalArgs(globalArgs *GlobalArgs, requireOutput bool) error {
 		num++
 	}
 	if num > 1 {
-		return fmt.Errorf("--input-file, --input-dir and --input-s3 are exclusive, only one is allowed")
+		return fmt.Errorf("--%s, --%s and --%s are exclusive, only one is allowed", FlagInputFile, FlagInputDir, FlagInputS3)
 	}
 
 	if requireOutput && globalArgs.Output == "" {
-		return fmt.Errorf("--output directory must be specified")
+		return fmt.Errorf("--%s directory must be specified", FlagOutput)
 	}
 
 	return nil
@@ -125,7 +125,7 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 
 	// Ensure filters are mutually exclusive
 	if filtersCount > 1 {
-		return nil, fmt.Errorf("only one filter can be specified at a time: --user-id, --session-id, and --track-id are mutually exclusive")
+		return nil, fmt.Errorf("only one filter can be specified at a time: --%s, --%s, and --%s are mutually exclusive", FlagUserID, FlagSessionID, FlagTrackID)
 	}
 
 	var inputPath string
@@ -160,7 +160,7 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("track-id '%s' not found in recording. Use 'list-tracks --format tracks' to see available track IDs", trackID)
+			return nil, fmt.Errorf("%s '%s' not found in recording. Use 'list-tracks --%s tracks' to see available track IDs", FlagTrackID, trackID, FlagFormat)
 		}
 	} else if sessionID != "" {
 		found := false
@@ -171,7 +171,7 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("session-id '%s' not found in recording. Use 'list-tracks --format sessions' to see available session IDs", sessionID)
+			return nil, fmt.Errorf("%s '%s' not found in recording. Use 'list-tracks --%s sessions' to see available session IDs", FlagSessionID, sessionID, FlagFormat)
 		}
 	} else if userID != "" {
 		found := false
@@ -182,7 +182,7 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 			}
 		}
 		if !found {
-			return nil, fmt.Errorf("user-id '%s' not found in recording. Use 'list-tracks --format users' to see available user IDs", userID)
+			return nil, fmt.Errorf("%s '%s' not found in recording. Use 'list-tracks --%s users' to see available user IDs", FlagUserID, userID, FlagFormat)
 		}
 	}
 
@@ -217,8 +217,8 @@ func prepareWorkDir(globalArgs *GlobalArgs, logger *getstream.DefaultLogger) (st
 
 // completeUserIDs provides completion for user IDs
 func completeUserIDs(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	inputFile, _ := cmd.Flags().GetString("input-file")
-	inputDir, _ := cmd.Flags().GetString("input-dir")
+	inputFile, _ := cmd.Flags().GetString(FlagInputFile)
+	inputDir, _ := cmd.Flags().GetString(FlagInputDir)
 
 	inputPath := inputFile
 	if inputPath == "" {
@@ -240,8 +240,8 @@ func completeUserIDs(cmd *cobra.Command, args []string, toComplete string) ([]st
 
 // completeSessionIDs provides completion for session IDs
 func completeSessionIDs(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	inputFile, _ := cmd.Flags().GetString("input-file")
-	inputDir, _ := cmd.Flags().GetString("input-dir")
+	inputFile, _ := cmd.Flags().GetString(FlagInputFile)
+	inputDir, _ := cmd.Flags().GetString(FlagInputDir)
 
 	inputPath := inputFile
 	if inputPath == "" {
@@ -263,8 +263,8 @@ func completeSessionIDs(cmd *cobra.Command, args []string, toComplete string) ([
 
 // completeTrackIDs provides completion for track IDs
 func completeTrackIDs(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	inputFile, _ := cmd.Flags().GetString("input-file")
-	inputDir, _ := cmd.Flags().GetString("input-dir")
+	inputFile, _ := cmd.Flags().GetString(FlagInputFile)
+	inputDir, _ := cmd.Flags().GetString(FlagInputDir)
 
 	inputPath := inputFile
 	if inputPath == "" {

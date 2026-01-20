@@ -44,17 +44,17 @@ func muxAVCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.String("user-id", "", "Filter by user ID")
-	fl.String("session-id", "", "Filter by session ID")
-	fl.String("track-id", "", "Filter by track ID")
-	fl.String("media", "both", "Filter by media type: 'user', 'display', or 'both'")
+	fl.String(FlagUserID, "", DescUserID)
+	fl.String(FlagSessionID, "", DescSessionID)
+	fl.String(FlagTrackID, "", DescTrackID)
+	fl.String(FlagMedia, DefaultMedia, DescMedia)
 
 	// Register completions
-	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
-	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
-	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
-	_ = cmd.RegisterFlagCompletionFunc("media", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return []string{"user", "display", "both"}, cobra.ShellCompDirectiveNoFileComp
+	_ = cmd.RegisterFlagCompletionFunc(FlagUserID, completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagSessionID, completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagTrackID, completeTrackIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagMedia, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{MediaUser, MediaDisplay, MediaBoth}, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	return cmd
@@ -71,10 +71,10 @@ func runMuxAV(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	userID, _ := cmd.Flags().GetString("user-id")
-	sessionID, _ := cmd.Flags().GetString("session-id")
-	trackID, _ := cmd.Flags().GetString("track-id")
-	media, _ := cmd.Flags().GetString("media")
+	userID, _ := cmd.Flags().GetString(FlagUserID)
+	sessionID, _ := cmd.Flags().GetString(FlagSessionID)
+	trackID, _ := cmd.Flags().GetString(FlagTrackID)
+	media, _ := cmd.Flags().GetString(FlagMedia)
 
 	// Validate input arguments against actual recording data
 	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)

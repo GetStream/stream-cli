@@ -38,15 +38,15 @@ func extractVideoCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.String("user-id", "", "Filter by user ID")
-	fl.String("session-id", "", "Filter by session ID")
-	fl.String("track-id", "", "Filter by track ID")
-	fl.Bool("fill-gaps", true, "Fill with black frame when track was muted")
+	fl.String(FlagUserID, "", DescUserID)
+	fl.String(FlagSessionID, "", DescSessionID)
+	fl.String(FlagTrackID, "", DescTrackID)
+	fl.Bool(FlagFillGaps, true, DescFillGapsVideo)
 
 	// Register completions
-	_ = cmd.RegisterFlagCompletionFunc("user-id", completeUserIDs)
-	_ = cmd.RegisterFlagCompletionFunc("session-id", completeSessionIDs)
-	_ = cmd.RegisterFlagCompletionFunc("track-id", completeTrackIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagUserID, completeUserIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagSessionID, completeSessionIDs)
+	_ = cmd.RegisterFlagCompletionFunc(FlagTrackID, completeTrackIDs)
 
 	return cmd
 }
@@ -62,10 +62,10 @@ func runExtractVideo(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	userID, _ := cmd.Flags().GetString("user-id")
-	sessionID, _ := cmd.Flags().GetString("session-id")
-	trackID, _ := cmd.Flags().GetString("track-id")
-	fillGaps, _ := cmd.Flags().GetBool("fill-gaps")
+	userID, _ := cmd.Flags().GetString(FlagUserID)
+	sessionID, _ := cmd.Flags().GetString(FlagSessionID)
+	trackID, _ := cmd.Flags().GetString(FlagTrackID)
+	fillGaps, _ := cmd.Flags().GetBool(FlagFillGaps)
 
 	// Validate input arguments against actual recording data
 	metadata, err := validateInputArgs(globalArgs, userID, sessionID, trackID)

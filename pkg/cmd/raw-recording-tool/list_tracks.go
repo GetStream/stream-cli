@@ -40,9 +40,9 @@ func listTracksCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.String("format", "table", "Output format: table, json, users, sessions, tracks, completion")
-	fl.String("track-type", "", "Filter by track type: audio, video")
-	fl.String("completion-type", "tracks", "For completion format: users, sessions, tracks")
+	fl.String(FlagFormat, DefaultFormat, DescFormat)
+	fl.String(FlagTrackType, "", DescTrackType)
+	fl.String(FlagCompletionType, DefaultCompletionType, DescCompletionType)
 
 	return cmd
 }
@@ -58,9 +58,9 @@ func runListTracks(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	format, _ := cmd.Flags().GetString("format")
-	trackType, _ := cmd.Flags().GetString("track-type")
-	completionType, _ := cmd.Flags().GetString("completion-type")
+	format, _ := cmd.Flags().GetString(FlagFormat)
+	trackType, _ := cmd.Flags().GetString(FlagTrackType)
+	completionType, _ := cmd.Flags().GetString(FlagCompletionType)
 
 	logger := setupLogger(globalArgs.Verbose)
 	logger.Info("Starting list-tracks command")
