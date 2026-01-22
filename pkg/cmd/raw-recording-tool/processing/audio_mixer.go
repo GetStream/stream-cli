@@ -2,90 +2,133 @@ package processing
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
-
-	"github.com/GetStream/getstream-go/v3"
+	"slices"
 )
+
+const (
+	FormatMp3     = "mp3"
+	FormatWeba    = "weba"
+	FormatWebm    = "webm"
+	FormatMka     = "mka"
+	FormatMkv     = "mkv"
+	DefaultFormat = FormatMkv
+)
+
+var supportedFormats = [5]string{FormatMp3, FormatWeba, FormatWebm, FormatMka, FormatMkv}
 
 type AudioMixerConfig struct {
 	WorkDir         string
 	OutputDir       string
+	Format          string
 	WithScreenshare bool
-	WithExtract     bool
-	WithCleanup     bool
+
+	WithExtract bool
+	WithCleanup bool
 }
 
 type AudioMixer struct {
-	logger *getstream.DefaultLogger
+	logger *ProcessingLogger
 }
 
-func NewAudioMixer(logger *getstream.DefaultLogger) *AudioMixer {
+func NewAudioMixer(logger *ProcessingLogger) *AudioMixer {
 	return &AudioMixer{logger: logger}
 }
 
 // MixAllAudioTracks orchestrates the entire audio mixing workflow using existing extraction logic
-func (p *AudioMixer) MixAllAudioTracks(config *AudioMixerConfig, metadata *RecordingMetadata, logger *getstream.DefaultLogger) error {
+func (p *AudioMixer) MixAllAudioTracks(config *AudioMixerConfig, metadata *RecordingMetadata) (*string, error) {
+	p.overrideConfig(config)
+
 	// Step 1: Extract all matching audio tracks using existing ExtractTracks function
-	logger.Info("Step 1/2: Extracting all matching audio tracks...")
+	p.logger.Info("Extracting all matching audio tracks...")
 
 	if config.WithExtract {
-		mediaFilter := "user"
-		if config.WithScreenshare {
-			mediaFilter = "both"
+		mediaType := ""
+		if !config.WithScreenshare {
+			mediaType = "user"
 		}
 
-		if err := ExtractTracks(config.WorkDir, config.OutputDir, "", "", "", metadata, "audio", mediaFilter, true, true, logger); err != nil {
-			return fmt.Errorf("failed to extract audio tracks: %w", err)
+		cfg := &TrackExtractorConfig{
+			WorkDir:   config.WorkDir,
+			OutputDir: config.OutputDir,
+			UserID:    "",
+			SessionID: "",
+			TrackID:   "",
+			TrackKind: trackKindAudio,
+			MediaType: mediaType,
+			FillDtx:   true,
+			FillGap:   true,
+
+			Cleanup: config.WithCleanup,
+		}
+
+		extractor := NewTrackExtractor(p.logger)
+		if _, err := extractor.ExtractTracks(cfg, metadata); err != nil {
+			return nil, fmt.Errorf("failed to extract audio tracks: %w", err)
 		}
 	}
 
-	fileOffsetMap := p.offset(metadata, config.WithScreenshare, logger)
-	if len(fileOffsetMap) == 0 {
-		return fmt.Errorf("no audio files were extracted - check your filter criteria")
+	fileOffsets := p.offset(metadata, config.WithScreenshare)
+	if len(fileOffsets) == 0 {
+		p.logger.Warn("No audio tracks found")
+		return nil, nil
 	}
 
-	logger.Info("Found %d extracted audio files to mix", len(fileOffsetMap))
-
-	// Step 3: Mix all discovered audio files using existing webm.mixAudioFiles
-	outputFile := filepath.Join(config.OutputDir, "mixed_audio.webm")
-
-	err := mixAudioFiles(outputFile, fileOffsetMap, logger)
-	if err != nil {
-		return fmt.Errorf("failed to mix audio files: %w", err)
-	}
-
-	logger.Info("Successfully created mixed audio file: %s", outputFile)
+	p.logger.Info("Found %d extracted audio files to mix", len(fileOffsets))
 
 	//// Clean up individual audio files (optional)
-	//for _, audioFile := range audioFiles {
-	//	if err := os.Remove(audioFile.FilePath); err != nil {
-	//		logger.Warn("Failed to clean up temporary file %s: %v", audioFile.FilePath, err)
-	//	}
-	//}
+	if config.WithCleanup {
+		defer func(offsets *[]*FileOffset) {
+			for _, fileOffset := range *offsets {
+				p.logger.Info("Cleaning up temporary file: %s", fileOffset.Name)
+				if err := os.Remove(fileOffset.Name); err != nil {
+					p.logger.Warn("Failed to clean up temporary file %s: %v", fileOffset.Name, err)
+				}
+			}
+		}(&fileOffsets)
+	}
 
-	return nil
+	// Step 3: Mix all discovered audio files using existing webm.mixAudioFiles
+	outputFile := p.buildFilename(config, metadata)
+
+	err := runFFmpegCommand(generateMixAudioFilesArguments(outputFile, config.Format, fileOffsets), p.logger)
+	if err != nil {
+		return nil, fmt.Errorf("failed to mix audio files: %w", err)
+	}
+
+	p.logger.Info("Successfully created mixed audio file: %s", outputFile)
+
+	return &outputFile, nil
 }
 
-func (p *AudioMixer) offset(metadata *RecordingMetadata, withScreenshare bool, logger *getstream.DefaultLogger) []*FileOffset {
+func (p *AudioMixer) overrideConfig(config *AudioMixerConfig) {
+	if !slices.Contains(supportedFormats[:], config.Format) {
+		p.logger.Warn("Audio format %s not supported, fallback to default %s", config.Format, DefaultFormat)
+		config.Format = DefaultFormat
+	}
+}
+
+func (p *AudioMixer) offset(metadata *RecordingMetadata, withScreenshare bool) []*FileOffset {
 	var offsets []*FileOffset
 	var firstTrack *TrackInfo
 	for _, t := range metadata.Tracks {
-		if t.TrackType == "audio" && (!t.IsScreenshare || withScreenshare) {
+		if t.TrackKind == trackKindAudio && (!t.IsScreenshare || withScreenshare) {
 			if firstTrack == nil {
 				firstTrack = t
 				offsets = append(offsets, &FileOffset{
-					Name:   t.ConcatenatedContainerPath,
+					Name:   t.ConcatenatedTrackFileInfo.Name,
 					Offset: 0, // Will be sorted later and rearranged
 				})
 			} else {
-				offset, err := calculateSyncOffsetFromFiles(t, firstTrack, logger)
+				offset, err := calculateSyncOffsetFromFiles(t, firstTrack)
 				if err != nil {
-					logger.Warn("Failed to calculate sync offset for audio tracks: %v", err)
+					p.logger.Warn("Failed to calculate sync offset for audio tracks: %v", err)
 					continue
 				}
 
 				offsets = append(offsets, &FileOffset{
-					Name:   t.ConcatenatedContainerPath,
+					Name:   t.ConcatenatedTrackFileInfo.Name,
 					Offset: offset,
 				})
 			}
@@ -93,4 +136,9 @@ func (p *AudioMixer) offset(metadata *RecordingMetadata, withScreenshare bool, l
 	}
 
 	return offsets
+}
+
+func (p *AudioMixer) buildFilename(config *AudioMixerConfig, metadata *RecordingMetadata) string {
+	tr := metadata.Tracks[0]
+	return filepath.Join(config.OutputDir, fmt.Sprintf("composite_%s_%s_%s_%d.%s", tr.CallType, tr.CallID, trackKindAudio, tr.CallStartTime.UTC().UnixMilli(), config.Format))
 }

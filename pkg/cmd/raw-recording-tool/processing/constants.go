@@ -1,15 +1,16 @@
 package processing
 
 const (
-	RtpDump       = "rtpdump"
-	SuffixRtpDump = "." + RtpDump
+	trackKindAudio = "audio"
+	trackKindVideo = "video"
 
-	Sdp       = "sdp"
-	SuffixSdp = "." + Sdp
+	mediaTypeUser    = "user"
+	mediaTypeDisplay = "display"
+	mediaTypeBoth    = "both"
 
-	Webm       = "webm"
-	SuffixWebm = "." + Webm
+	suffixRtpDump = ".rtpdump"
+	suffixSdp     = ".sdp"
 
-	Mp4       = "mp4"
-	SuffixMp4 = "." + Mp4
+	mkvExtension = "mkv"
+	mkvSuffix    = "." + mkvExtension
 )

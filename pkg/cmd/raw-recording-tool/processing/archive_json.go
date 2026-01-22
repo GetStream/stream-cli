@@ -1,8 +1,14 @@
 package processing
 
+import "time"
+
 type SessionTimingMetadata struct {
-	ParticipantID string `json:"participant_id"`
-	UserSessionID string `json:"user_session_id"`
+	CallType      string    `json:"call_type"`
+	CallID        string    `json:"call_id"`
+	CallSessionID string    `json:"call_session_id"`
+	CallStartTime time.Time `json:"call_start_time"`
+	ParticipantID string    `json:"participant_id"`
+	UserSessionID string    `json:"user_session_id"`
 	Segments      struct {
 		Audio []*SegmentMetadata `json:"audio"`
 		Video []*SegmentMetadata `json:"video"`
@@ -27,4 +33,12 @@ type SegmentMetadata struct {
 	FirstRtcpNtpTimestamp int64  `json:"first_rtcp_ntp_timestamp,omitempty"`
 	LastRtcpRtpTimestamp  uint32 `json:"last_rtcp_rtp_timestamp,omitempty"`
 	LastRtcpNtpTimestamp  int64  `json:"last_rtcp_ntp_timestamp,omitempty"`
+
+	FirstKeyFrameOffsetMs *int64                 `json:"first_key_frame_offset_ms,omitempty"`
+	MaxFrameDimension     *SegmentFrameDimension `json:"max_frame_dimension,omitempty"`
+}
+
+type SegmentFrameDimension struct {
+	Width  uint32 `json:"width,omitempty"`
+	Height uint32 `json:"height,omitempty"`
 }

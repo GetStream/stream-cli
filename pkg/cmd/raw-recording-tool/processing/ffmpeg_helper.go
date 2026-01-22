@@ -2,49 +2,29 @@ package processing
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"sort"
 	"strings"
-
-	"github.com/GetStream/getstream-go/v3"
+	"time"
 )
-
-const TmpDir = "/tmp"
 
 type FileOffset struct {
 	Name   string
 	Offset int64
 }
 
-func concatFile(outputPath string, files []string, logger *getstream.DefaultLogger) error {
-	// Write to a temporary file
-	tmpFile, err := os.CreateTemp(TmpDir, "concat_*.txt")
-	if err != nil {
-		return err
-	}
-	defer func() {
-		tmpFile.Close()
-		//		_ = os.Remove(concatFile.Name())
-	}()
-
-	for _, file := range files {
-		if _, err := tmpFile.WriteString(fmt.Sprintf("file '%s'\n", file)); err != nil {
-			return err
-		}
-	}
-
-	args := []string{}
+func generateConcatFileArguments(outputPath, concatPath string) ([]string, error) {
+	args := defaultArgs()
 	args = append(args, "-f", "concat")
 	args = append(args, "-safe", "0")
-	args = append(args, "-i", tmpFile.Name())
+	args = append(args, "-i", concatPath)
 	args = append(args, "-c", "copy")
-	args = append(args, outputPath)
-	return runFFMEPGCpmmand(args, logger)
+	args = append(args, "-y", outputPath)
+	return args, nil
 }
 
-func muxFiles(fileName string, audioFile string, videoFile string, offsetMs float64, logger *getstream.DefaultLogger) error {
-	args := []string{}
+func generateMuxFilesArguments(fileName string, audioFile string, videoFile string, offsetMs float64) []string {
+	args := defaultArgs()
 
 	// Apply offset using itsoffset
 	// If offset is positive (video ahead), delay audio
@@ -70,16 +50,14 @@ func muxFiles(fileName string, audioFile string, videoFile string, offsetMs floa
 	args = append(args, "-map", "0:a")
 	args = append(args, "-map", "1:v")
 	args = append(args, "-c", "copy")
-	args = append(args, fileName)
-
-	return runFFMEPGCpmmand(args, logger)
+	args = append(args, "-y", fileName)
+	return args
 }
 
-func mixAudioFiles(fileName string, files []*FileOffset, logger *getstream.DefaultLogger) error {
-	var args []string
-
+func generateMixAudioFilesArguments(fileName, format string, files []*FileOffset) []string {
 	var filterParts []string
 	var mixParts []string
+	args := defaultArgs()
 
 	sort.Slice(files, func(i, j int) bool {
 		return files[i].Offset < files[j].Offset
@@ -89,88 +67,140 @@ func mixAudioFiles(fileName string, files []*FileOffset, logger *getstream.Defau
 	for i, fo := range files {
 		args = append(args, "-i", fo.Name)
 
-		if i == 0 {
-			offsetToAdd = -fo.Offset
-		}
-		offset := fo.Offset + offsetToAdd
+		if len(files) > 1 {
+			if i == 0 {
+				offsetToAdd = -fo.Offset
+			}
+			offset := fo.Offset + offsetToAdd
 
-		if offset > 0 {
-			// for stereo: offset|offset
-			label := fmt.Sprintf("a%d", i)
-			filterParts = append(filterParts,
-				fmt.Sprintf("[%d:a]adelay=%d|%d[%s]", i, offset, offset, label))
-			mixParts = append(mixParts, fmt.Sprintf("[%s]", label))
-		} else {
-			mixParts = append(mixParts, fmt.Sprintf("[%d:a]", i))
+			if offset > 0 {
+				// for stereo: offset|offset
+				label := fmt.Sprintf("a%d", i)
+				filterParts = append(filterParts,
+					fmt.Sprintf("[%d:a]adelay=%d|%d[%s]", i, offset, offset, label))
+				mixParts = append(mixParts, fmt.Sprintf("[%s]", label))
+			} else {
+				mixParts = append(mixParts, fmt.Sprintf("[%d:a]", i))
+			}
 		}
 	}
 
-	// Build amix filter
-	filter := strings.Join(filterParts, "; ")
-	if filter != "" {
-		filter += "; "
-	}
-	filter += strings.Join(mixParts, "") +
-		fmt.Sprintf("amix=inputs=%d:normalize=0", len(files))
+	if len(files) > 1 {
+		// Build amix filter
+		filter := strings.Join(filterParts, "; ")
+		if filter != "" {
+			filter += "; "
+		}
+		filter += strings.Join(mixParts, "") +
+			fmt.Sprintf("amix=inputs=%d:normalize=0", len(files))
 
-	args = append(args, "-filter_complex", filter)
-	args = append(args, "-c:a", "libopus")
-	args = append(args, "-b:a", "128k")
-	args = append(args, fileName)
+		args = append(args, "-filter_complex", filter)
+	}
+
+	audioLib := audioLibForExtension(format)
+	mkvAudioLib := audioLibForExtension(FormatMkv)
+	// Copy is enough in case of webm, weba, mka, mkv when len == 1
+	if audioLib != mkvAudioLib || len(files) > 1 {
+		args = append(args, "-c:a", audioLibForExtension(format))
+		args = append(args, "-b:a", "128k")
+	} else {
+		args = append(args, "-c", "copy")
+	}
+
+	if format == FormatWeba {
+		args = append(args, "-f", "webm")
+	}
+
+	args = append(args, "-y", fileName)
 
 	fmt.Println(strings.Join(args, " "))
-
-	return runFFMEPGCpmmand(args, logger)
+	return args
 }
 
-func generateSilence(fileName string, duration float64, logger *getstream.DefaultLogger) error {
-	args := []string{}
+func audioLibForExtension(str string) string {
+	switch str {
+	case FormatMp3:
+		return "libmp3lame"
+	case FormatWeba, FormatWebm, FormatMkv, FormatMka:
+		return "libopus"
+	default:
+		return "libopus"
+	}
+}
+
+func generateSilenceArguments(fileName string, duration float64) []string {
+	args := defaultArgs()
 	args = append(args, "-f", "lavfi")
 	args = append(args, "-t", fmt.Sprintf("%.3f", duration))
 	args = append(args, "-i", "anullsrc=cl=stereo:r=48000")
 	args = append(args, "-c:a", "libopus")
 	args = append(args, "-b:a", "32k")
-	args = append(args, fileName)
-
-	return runFFMEPGCpmmand(args, logger)
+	args = append(args, "-y", fileName)
+	return args
 }
 
-func generateBlackVideo(fileName, mimeType string, duration float64, width, height, frameRate int, logger *getstream.DefaultLogger) error {
-	var codecLib string
-	switch strings.ToLower(mimeType) {
-	case "video/vp8":
-		codecLib = "libvpx-vp9"
-	case "video/vp9":
-		codecLib = "libvpx-vp9"
-	case "video/h264":
-		codecLib = "libh264"
-	case "video/av1":
-		codecLib = "libav1"
-	}
-
-	args := []string{}
+func generateBlackVideoArguments(fileName, mimeType string, duration float64, width, height, frameRate int) []string {
+	args := defaultArgs()
 	args = append(args, "-f", "lavfi")
 	args = append(args, "-t", fmt.Sprintf("%.3f", duration))
 	args = append(args, "-i", fmt.Sprintf("color=c=black:s=%dx%d:r=%d", width, height, frameRate))
-	args = append(args, "-c:v", codecLib)
-	args = append(args, "-b:v", "1M")
-	args = append(args, fileName)
+	args = append(args, "-c:v", videoLibForMimeType(mimeType))
 
-	return runFFMEPGCpmmand(args, logger)
+	if strings.ToLower(mimeType) == "video/h264" {
+		args = append(args, "-preset", "ultrafast")
+	} else {
+		args = append(args, "-b:v", "0")
+		args = append(args, "-cpu-used", "8")
+	}
+
+	args = append(args, "-crf", "45")
+	args = append(args, "-y", fileName)
+	return args
 }
 
-func runFFMEPGCpmmand(args []string, logger *getstream.DefaultLogger) error {
+func videoLibForMimeType(str string) string {
+	switch strings.ToLower(str) {
+	case "video/vp8":
+		return "libvpx"
+	case "video/vp9":
+		return "libvpx-vp9"
+	case "video/h264":
+		return "libx264"
+	case "video/av1":
+		return "libaom-av1"
+	default:
+		return "libvpx"
+	}
+}
+
+func outputFormatForMimeType(str string) (extension, suffix string) {
+	extension = mkvExtension
+	suffix = mkvSuffix
+	return
+}
+
+func defaultArgs() []string {
+	var args []string
+	args = append(args, "-hide_banner")
+	args = append(args, "-threads", "1")
+	args = append(args, "-filter_threads", "1")
+	return args
+}
+
+func runFFmpegCommand(args []string, logger *ProcessingLogger) error {
+	startAt := time.Now()
 	cmd := exec.Command("ffmpeg", args...)
 
 	// Capture output for debugging
 	output, err := cmd.CombinedOutput()
+	logger.Infof("FFmpeg process pid<%d> with args: %s", cmd.Process.Pid, args)
+	logger.Infof("FFmpeg process pid<%d> output:\n%s", cmd.Process.Pid, string(output))
+
 	if err != nil {
-		logger.Error("FFmpeg command failed: %v", err)
-		logger.Error("FFmpeg output: %s", string(output))
-		return fmt.Errorf("ffmpeg command failed: %w", err)
+		logger.Errorf("FFmpeg process pid<%d> failed: %v", cmd.Process.Pid, err)
+		return fmt.Errorf("FFmpeg process pid<%d> failed in %s: %w", cmd.Process.Pid, time.Now().Sub(startAt).Round(time.Millisecond), err)
 	}
 
-	logger.Info("Successfully ran ffmpeg: %s", args)
-	logger.Debug("FFmpeg output: %s", string(output))
+	logger.Infof("FFmpeg process pid<%d> ended successfully in %s", cmd.Process.Pid, time.Now().Sub(startAt).Round(time.Millisecond))
 	return nil
 }

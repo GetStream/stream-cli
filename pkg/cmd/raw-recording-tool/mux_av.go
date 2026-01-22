@@ -119,16 +119,16 @@ func runMuxAV(cmd *cobra.Command, args []string) error {
 
 	// Mux audio/video tracks
 	muxer := processing.NewAudioVideoMuxer(logger)
-	if err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
+	if _, err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
 		WorkDir:     globalArgs.WorkDir,
 		OutputDir:   globalArgs.Output,
 		UserID:      userID,
 		SessionID:   sessionID,
 		TrackID:     trackID,
-		Media:       media,
+		MediaType:   media,
 		WithExtract: true,
 		WithCleanup: false,
-	}, metadata, logger); err != nil {
+	}, metadata); err != nil {
 		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
 

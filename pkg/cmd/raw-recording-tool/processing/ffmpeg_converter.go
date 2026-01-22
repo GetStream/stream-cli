@@ -15,13 +15,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GetStream/getstream-go/v3"
 	"github.com/pion/rtcp"
 	"github.com/pion/rtp"
 )
 
-type CursorWebmRecorder struct {
-	logger     *getstream.DefaultLogger
+type FfmpegConverter struct {
+	logger     *ProcessingLogger
 	outputPath string
 	conn       *net.UDPConn
 	ffmpegCmd  *exec.Cmd
@@ -29,39 +28,37 @@ type CursorWebmRecorder struct {
 	mu         sync.Mutex
 	ctx        context.Context
 	cancel     context.CancelFunc
+	sdpFile    *os.File
 
 	// Parsed from FFmpeg output: "Duration: N/A, start: <value>, bitrate: N/A"
 	startOffsetMs  int64
 	hasStartOffset bool
 }
 
-func NewCursorWebmRecorder(outputPath, sdpContent string, logger *getstream.DefaultLogger) (*CursorWebmRecorder, error) {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	r := &CursorWebmRecorder{
+func NewFfmpegConverter(outputPath, sdpContent string, logger *ProcessingLogger) (*FfmpegConverter, error) {
+	r := &FfmpegConverter{
 		logger:     logger,
 		outputPath: outputPath,
-		ctx:        ctx,
-		cancel:     cancel,
 	}
 
 	// Set up UDP connections
 	port := rand.Intn(10000) + 10000
 	if err := r.setupConnections(port); err != nil {
-		cancel()
 		return nil, err
 	}
 
 	// Start FFmpeg with codec detection
 	if err := r.startFFmpeg(outputPath, sdpContent, port); err != nil {
-		cancel()
+		r.conn.Close()
 		return nil, err
 	}
+
+	time.Sleep(2 * time.Second) // Wait for udp socket opened
 
 	return r, nil
 }
 
-func (r *CursorWebmRecorder) setupConnections(port int) error {
+func (r *FfmpegConverter) setupConnections(port int) error {
 	// Setup connection
 	addr, err := net.ResolveUDPAddr("udp", "127.0.0.1:"+strconv.Itoa(port))
 	if err != nil {
@@ -73,86 +70,38 @@ func (r *CursorWebmRecorder) setupConnections(port int) error {
 	}
 	r.conn = conn
 
-	if e := r.conn.SetWriteBuffer(2048); e != nil {
-		r.logger.Error("Failed to set UDP write buffer: %v", e)
+	if e := r.conn.SetWriteBuffer(2 * 1024); e != nil {
+		r.logger.Errorf("Failed to set UDP write buffer: %v", e)
 	}
-	if e := r.conn.SetReadBuffer(2048); e != nil {
-		r.logger.Error("Failed to set UDP read buffer: %v", e)
+	if e := r.conn.SetReadBuffer(10 * 1024); e != nil {
+		r.logger.Errorf("Failed to set UDP read buffer: %v", e)
 	}
 
 	return nil
 }
 
-func (r *CursorWebmRecorder) startFFmpeg(outputFilePath, sdpContent string, port int) error {
+func (r *FfmpegConverter) startFFmpeg(outputFilePath, sdpContent string, port int) error {
 
 	// Write SDP to a temporary file
 	sdpFile, err := os.CreateTemp("", "cursor_webm_*.sdp")
 	if err != nil {
 		return err
 	}
+	r.sdpFile = sdpFile
 
 	updatedSdp := replaceSDP(sdpContent, port)
-	r.logger.Info("Using Sdp:\n%s\n", updatedSdp)
+	r.logger.Infof("Using Sdp:\n%s\n", updatedSdp)
 
-	if _, err := sdpFile.WriteString(updatedSdp); err != nil {
-		sdpFile.Close()
-		return err
+	if _, e := r.sdpFile.WriteString(updatedSdp); e != nil {
+		r.sdpFile.Close()
+		return e
 	}
-	sdpFile.Close()
+	r.sdpFile.Close()
 
 	// Build FFmpeg command with optimized settings for single track recording
-	args := []string{
-		"-threads", "1",
-		//		"-loglevel", "debug",
-		"-protocol_whitelist", "file,udp,rtp",
-		"-buffer_size", "425984",
-		"-max_delay", "150000",
-		"-reorder_queue_size", "0",
-		"-i", sdpFile.Name(),
-	}
+	args := r.generateArgs(sdpFile.Name(), outputFilePath)
 
-	//switch strings.ToLower(mimeType) {
-	//case "audio/opus":
-	//	// For other codecs, use direct copy
-	args = append(args, "-c", "copy")
-	//default:
-	//	// For other codecs, use direct copy
-	//	args = append(args, "-c", "copy")
-	//}
-	//if isVP9 {
-	//	// For VP9, avoid direct copy and use re-encoding with error resilience
-	//	// This works around FFmpeg's experimental VP9 RTP support issues
-	//	r.logger.Info("Detected VP9 codec, applying workarounds...")
-	//	args = append(args,
-	//		"-c:v", "libvpx-vp9",
-	//		//			"-error_resilience", "aggressive",
-	//		"-err_detect", "ignore_err",
-	//		"-fflags", "+genpts+igndts",
-	//		"-avoid_negative_ts", "make_zero",
-	//		// VP9-specific quality settings to handle corrupted frames
-	//		"-crf", "30",
-	//		"-row-mt", "1",
-	//		"-frame-parallel", "1",
-	//	)
-	//} else if strings.Contains(strings.ToUpper(sdpContent), "AV1") {
-	//	args = append(args,
-	//		"-c:v", "libaom-av1",
-	//		"-cpu-used", "8",
-	//		"-usage", "realtime",
-	//	)
-	//} else if strings.Contains(strings.ToUpper(sdpContent), "OPUS") {
-	//	args = append(args, "-fflags", "+genpts", "-use_wallclock_as_timestamps", "0", "-c:a", "copy")
-	//} else {
-	//	// For other codecs, use direct copy
-	//	args = append(args, "-c", "copy")
-	//}
-
-	args = append(args,
-		"-y",
-		outputFilePath,
-	)
-
-	r.logger.Info("FFMpeg pipeline: %s", strings.Join(args, " ")) // Skip debug args for display
+	r.logger.Infof("FFMpeg pipeline: %s", strings.Join(args, " ")) // Skip debug args for display
 
 	r.ffmpegCmd = exec.Command("ffmpeg", args...)
 
@@ -178,24 +127,39 @@ func (r *CursorWebmRecorder) startFFmpeg(outputFilePath, sdpContent string, port
 	go r.scanFFmpegOutput(stderrPipe, true)
 
 	// Start FFmpeg process
-	if err := r.ffmpegCmd.Start(); err != nil {
-		return err
+	if e := r.ffmpegCmd.Start(); e != nil {
+		return e
 	}
 
 	return nil
 }
 
+func (r *FfmpegConverter) generateArgs(sdp, output string) []string {
+	// Build FFmpeg command with optimized settings for single track recording
+	var args []string
+	args = append(args, "-hide_banner")
+	args = append(args, "-threads", "1")
+	args = append(args, "-protocol_whitelist", "file,udp,rtp")
+	args = append(args, "-buffer_size", "10000000")
+	args = append(args, "-max_delay", "1000000")
+	args = append(args, "-reorder_queue_size", "0")
+	args = append(args, "-i", sdp)
+	args = append(args, "-c", "copy")
+	args = append(args, "-y", output)
+	return args
+}
+
 // scanFFmpegOutput reads lines from FFmpeg output, mirrors to console, and extracts start offset.
-func (r *CursorWebmRecorder) scanFFmpegOutput(reader io.Reader, isStderr bool) {
+func (r *FfmpegConverter) scanFFmpegOutput(reader io.Reader, isStderr bool) {
 	scanner := bufio.NewScanner(reader)
 	re := regexp.MustCompile(`\bstart:\s*([0-9]+(?:\.[0-9]+)?)`)
 	for scanner.Scan() {
 		line := scanner.Text()
 		// Mirror output
 		if isStderr {
-			fmt.Fprintln(os.Stderr, line)
+			_, _ = fmt.Fprintln(os.Stderr, line)
 		} else {
-			fmt.Fprintln(os.Stdout, line)
+			_, _ = fmt.Fprintln(os.Stdout, line)
 		}
 
 		// Try to extract the start value from those lines  "Duration: N/A, start: 0.000000, bitrate: N/A"
@@ -208,7 +172,7 @@ func (r *CursorWebmRecorder) scanFFmpegOutput(reader io.Reader, isStderr bool) {
 				if !r.hasStartOffset {
 					r.startOffsetMs = int64(v * 1000)
 					r.hasStartOffset = true
-					r.logger.Info("Detected FFmpeg start offset: %.6f seconds", v)
+					r.logger.Infof("Detected FFmpeg start offset: %d ms", r.startOffsetMs)
 				}
 				r.mu.Unlock()
 			}
@@ -218,13 +182,13 @@ func (r *CursorWebmRecorder) scanFFmpegOutput(reader io.Reader, isStderr bool) {
 }
 
 // StartOffset returns the parsed FFmpeg start offset in seconds and whether it was found.
-func (r *CursorWebmRecorder) StartOffset() (int64, bool) {
+func (r *FfmpegConverter) StartOffset() (int64, bool) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	return r.startOffsetMs, r.hasStartOffset
 }
 
-func (r *CursorWebmRecorder) OnRTP(packet *rtp.Packet) error {
+func (r *FfmpegConverter) OnRTP(packet *rtp.Packet) error {
 	// Marshal RTP packet
 	buf, err := packet.Marshal()
 	if err != nil {
@@ -234,24 +198,22 @@ func (r *CursorWebmRecorder) OnRTP(packet *rtp.Packet) error {
 	return r.PushRtpBuf(buf)
 }
 
-func (r *CursorWebmRecorder) PushRtpBuf(buf []byte) error {
+func (r *FfmpegConverter) PushRtpBuf(buf []byte) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	// Send RTP packet over UDP
 	if r.conn != nil {
-		r.conn.SetWriteDeadline(time.Now().Add(1000 * time.Microsecond))
 		_, err := r.conn.Write(buf)
 		if err != nil {
-			//	return err)
-			//}
-			r.logger.Info("Wrote packet to %s - %v", r.conn.LocalAddr().String(), err)
+			r.logger.Warnf("Failed to write RTP packet: %v", err)
 		}
+		return err
 	}
 	return nil
 }
 
-func (r *CursorWebmRecorder) Close() error {
+func (r *FfmpegConverter) Close() error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -260,9 +222,9 @@ func (r *CursorWebmRecorder) Close() error {
 		r.cancel()
 	}
 
-	r.logger.Info("Closing UPD connection...")
+	r.logger.Infof("Closing UPD connection and wait for FFMpeg termination...")
 
-	// Close UDP connection by sending arbitrary RtcpBye (Ffmpeg is no able to end correctly)
+	// Close UDP connection by sending arbitrary RtcpBye (Ffmpeg is now able to end correctly)
 	if r.conn != nil {
 		buf, _ := rtcp.Goodbye{
 			Sources: []uint32{1}, // fixed ssrc is ok
@@ -273,30 +235,8 @@ func (r *CursorWebmRecorder) Close() error {
 		r.conn = nil
 	}
 
-	r.logger.Info("UDP Connection closed...")
-
-	time.Sleep(5 * time.Second)
-
-	r.logger.Info("After sleep...")
-
-	// Gracefully stop FFmpeg
+	// Gracefully wait for FFmpeg termination
 	if r.ffmpegCmd != nil && r.ffmpegCmd.Process != nil {
-
-		// ✅ Gracefully stop FFmpeg by sending 'q' to stdin
-		//fmt.Println("Sending 'q' to FFmpeg...")
-		//_, _ = r.stdin.Write([]byte("q\n"))
-		//r.stdin.Close()
-
-		// Send interrupt signal to FFmpeg process
-		r.logger.Info("Sending SIGTERM...")
-
-		//if err := r.ffmpegCmd.Process.Signal(os.Interrupt); err != nil {
-		//	// If interrupt fails, force kill
-		//	r.ffmpegCmd.Process.Kill()
-		//} else {
-
-		r.logger.Info("Waiting for SIGTERM...")
-
 		// Wait for graceful exit with timeout
 		done := make(chan error, 1)
 		go func() {
@@ -304,15 +244,22 @@ func (r *CursorWebmRecorder) Close() error {
 		}()
 
 		select {
-		case <-time.After(10 * time.Second):
-			r.logger.Info("Wait timetout for SIGTERM...")
+		case <-time.After(5 * time.Second):
+			r.logger.Warnf("FFMpeg Process termination timeout...")
 
 			// Timeout, force kill
-			r.ffmpegCmd.Process.Kill()
+			if e := r.ffmpegCmd.Process.Kill(); e != nil {
+				r.logger.Errorf("FFMpeg Process errored while killing: %v", e)
+			}
 		case <-done:
-			r.logger.Info("Process exited succesfully SIGTERM...")
-			// Process exited gracefully
+			r.logger.Infof("FFMpeg Process exited succesfully...")
 		}
+	}
+
+	// Clean up temporary SDP file
+	if r.sdpFile != nil {
+		_ = os.Remove(r.sdpFile.Name())
+		r.sdpFile = nil
 	}
 
 	return nil

@@ -8,13 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/GetStream/getstream-go/v3"
 )
 
 // extractToTempDir extracts archive to temp directory or returns the directory path
 // Returns: (workingDir, cleanupFunc, error)
-func ExtractToTempDir(inputPath string, logger *getstream.DefaultLogger) (string, func(), error) {
+func ExtractToTempDir(inputPath string, logger *ProcessingLogger) (string, func(), error) {
 	// If it's already a directory, just return it
 	if stat, err := os.Stat(inputPath); err == nil && stat.IsDir() {
 		logger.Debug("Input is already a directory: %s", inputPath)
@@ -48,7 +46,7 @@ func ExtractToTempDir(inputPath string, logger *getstream.DefaultLogger) (string
 }
 
 // extractTarGzToDir extracts a tar.gz file to the specified directory
-func extractTarGzToDir(tarGzPath, destDir string, logger *getstream.DefaultLogger) error {
+func extractTarGzToDir(tarGzPath, destDir string, logger *ProcessingLogger) error {
 	file, err := os.Open(tarGzPath)
 	if err != nil {
 		return fmt.Errorf("failed to open tar.gz file: %w", err)

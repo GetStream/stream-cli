@@ -110,12 +110,33 @@ func runProcessAll(cmd *cobra.Command, args []string) error {
 	}
 
 	// Extract audio tracks
-	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "audio", "both", true, true, logger); err != nil {
+	extractor := processing.NewTrackExtractor(logger)
+	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
+		WorkDir:   globalArgs.WorkDir,
+		OutputDir: globalArgs.Output,
+		UserID:    "",
+		SessionID: "",
+		TrackID:   "",
+		TrackKind: TrackTypeAudio,
+		MediaType: "both",
+		FillGap:   true,
+		FillDtx:   true,
+	}, metadata); err != nil {
 		return fmt.Errorf("failed to extract audio tracks: %w", err)
 	}
 
 	// Extract video tracks
-	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, "", "", "", metadata, "video", "both", true, true, logger); err != nil {
+	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
+		WorkDir:   globalArgs.WorkDir,
+		OutputDir: globalArgs.Output,
+		UserID:    "",
+		SessionID: "",
+		TrackID:   "",
+		TrackKind: TrackTypeVideo,
+		MediaType: "both",
+		FillGap:   true,
+		FillDtx:   true,
+	}, metadata); err != nil {
 		return fmt.Errorf("failed to extract video tracks: %w", err)
 	}
 
@@ -127,20 +148,20 @@ func runProcessAll(cmd *cobra.Command, args []string) error {
 		WithScreenshare: false,
 		WithExtract:     false,
 		WithCleanup:     false,
-	}, metadata, logger)
+	}, metadata)
 
 	// Mux audio/video tracks
 	muxer := processing.NewAudioVideoMuxer(logger)
-	if err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
+	if _, err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
 		WorkDir:     globalArgs.WorkDir,
 		OutputDir:   globalArgs.Output,
 		UserID:      "",
 		SessionID:   "",
 		TrackID:     "",
-		Media:       "",
+		MediaType:   "",
 		WithExtract: false,
 		WithCleanup: false,
-	}, metadata, logger); err != nil {
+	}, metadata); err != nil {
 		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
 

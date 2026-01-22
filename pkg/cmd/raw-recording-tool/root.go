@@ -190,18 +190,18 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 }
 
 // setupLogger creates a logger with the specified verbosity
-func setupLogger(verbose bool) *getstream.DefaultLogger {
+func setupLogger(verbose bool) *processing.ProcessingLogger {
 	var level getstream.LogLevel
 	if verbose {
 		level = getstream.LogLevelDebug
 	} else {
 		level = getstream.LogLevelInfo
 	}
-	return getstream.NewDefaultLogger(os.Stderr, "", log.LstdFlags, level)
+	return processing.NewRawToolLogger(getstream.NewDefaultLogger(os.Stderr, "", log.LstdFlags, level))
 }
 
 // prepareWorkDir extracts the recording to a temp directory and returns the working directory
-func prepareWorkDir(globalArgs *GlobalArgs, logger *getstream.DefaultLogger) (string, func(), error) {
+func prepareWorkDir(globalArgs *GlobalArgs, logger *processing.ProcessingLogger) (string, func(), error) {
 	path := globalArgs.InputFile
 	if path == "" {
 		path = globalArgs.InputDir

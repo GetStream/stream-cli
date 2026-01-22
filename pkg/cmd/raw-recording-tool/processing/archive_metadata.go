@@ -10,22 +10,28 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"github.com/GetStream/getstream-go/v3"
+	"time"
 )
 
 // TrackInfo represents a single track with its metadata (deduplicated across segments)
 type TrackInfo struct {
-	UserID        string         `json:"userId"`        // participant_id from timing metadata
-	SessionID     string         `json:"sessionId"`     // user_session_id from timing metadata
-	TrackID       string         `json:"trackId"`       // track_id from segment
-	TrackType     string         `json:"trackType"`     // "audio" or "video" (cleaned from TRACK_TYPE_*)
-	IsScreenshare bool           `json:"isScreenshare"` // true if this is a screenshare track
-	Codec         string         `json:"codec"`         // codec info
-	SegmentCount  int            `json:"segmentCount"`  // number of segments for this track
-	Segments      []*SegmentInfo `json:"segments"`      // list of filenames (for JSON output only)
+	CallType       string         `json:"callType"`       // call_type from timing metadata
+	CallID         string         `json:"callId"`         // call_id from timing metadata
+	CallSessionID  string         `json:"callSessionId"`  // call_session_id from timing metadata
+	CallStartTime  time.Time      `json:"callStartTime"`  // call_start_time from timing metadata
+	UserID         string         `json:"userId"`         // participant_id from timing metadata
+	SessionID      string         `json:"sessionId"`      // user_session_id from timing metadata
+	TrackID        string         `json:"trackId"`        // track_id from segment
+	TrackType      string         `json:"trackType"`      // track_type from segment
+	TrackKind      string         `json:"trackKind"`      // "audio" or "video" (cleaned from TRACK_TYPE_*)
+	IsScreenshare  bool           `json:"isScreenshare"`  // true if this is a screenshare track
+	Codec          string         `json:"codec"`          // codec info
+	SegmentCount   int            `json:"segmentCount"`   // number of segments for this track
+	TrackStartTime time.Time      `json:"trackStartTime"` // first_rtp_unix_timestamp from segment
+	TrackEndTime   time.Time      `json:"trackEndTime"`   // last_rtp_unix_timestamp from segment
+	Segments       []*SegmentInfo `json:"segments"`       // list of filenames (for JSON output only)
 
-	ConcatenatedContainerPath string
+	ConcatenatedTrackFileInfo *TrackFileInfo
 }
 
 type SegmentInfo struct {
@@ -35,7 +41,13 @@ type SegmentInfo struct {
 	SdpPath       string
 	ContainerPath string
 	ContainerExt  string
-	FFMpegOffset  int64
+}
+
+type TrackFileInfo struct {
+	Name              string
+	StartAt           time.Time
+	EndAt             time.Time
+	MaxFrameDimension SegmentFrameDimension
 }
 
 // RecordingMetadata contains all tracks and session information
@@ -47,11 +59,11 @@ type RecordingMetadata struct {
 
 // MetadataParser handles parsing of raw recording files
 type MetadataParser struct {
-	logger *getstream.DefaultLogger
+	logger *ProcessingLogger
 }
 
 // NewMetadataParser creates a new metadata parser
-func NewMetadataParser(logger *getstream.DefaultLogger) *MetadataParser {
+func NewMetadataParser(logger *ProcessingLogger) *MetadataParser {
 	return &MetadataParser{
 		logger: logger,
 	}
@@ -197,27 +209,42 @@ func (p *MetadataParser) parseTimingMetadataFile(data []byte) ([]*TrackInfo, err
 	// Use a map to deduplicate tracks by unique key
 	trackMap := make(map[string]*TrackInfo)
 
-	processSegment := func(segment *SegmentMetadata, trackType string) {
+	processSegment := func(segment *SegmentMetadata, trackKind string) {
 		key := fmt.Sprintf("%s|%s|%s|%s",
 			sessionMetadata.ParticipantID,
 			sessionMetadata.UserSessionID,
 			segment.TrackID,
-			trackType)
+			trackKind)
 
 		if existingTrack, exists := trackMap[key]; exists {
 			existingTrack.Segments = append(existingTrack.Segments, &SegmentInfo{metadata: segment})
 			existingTrack.SegmentCount++
+
+			ts, te := time.UnixMilli(segment.FirstRtpUnixTimestamp), time.UnixMilli(segment.LastRtpUnixTimestamp)
+			if ts.Before(existingTrack.TrackStartTime) {
+				existingTrack.TrackStartTime = ts
+			}
+			if te.After(existingTrack.TrackEndTime) {
+				existingTrack.TrackEndTime = te
+			}
 		} else {
 			// Create new track
 			track := &TrackInfo{
-				UserID:        sessionMetadata.ParticipantID,
-				SessionID:     sessionMetadata.UserSessionID,
-				TrackID:       segment.TrackID,
-				TrackType:     p.cleanTrackType(segment.TrackType),
-				IsScreenshare: p.isScreenshareTrack(segment.TrackType),
-				Codec:         segment.Codec,
-				SegmentCount:  1,
-				Segments:      []*SegmentInfo{{metadata: segment}},
+				CallType:       sessionMetadata.CallType,
+				CallID:         sessionMetadata.CallID,
+				CallSessionID:  sessionMetadata.CallSessionID,
+				CallStartTime:  sessionMetadata.CallStartTime,
+				UserID:         sessionMetadata.ParticipantID,
+				SessionID:      sessionMetadata.UserSessionID,
+				TrackID:        segment.TrackID,
+				TrackType:      segment.TrackType,
+				TrackKind:      p.cleanTrackType(segment.TrackType),
+				IsScreenshare:  p.isScreenshareTrack(segment.TrackType),
+				Codec:          segment.Codec,
+				SegmentCount:   1,
+				TrackStartTime: time.UnixMilli(segment.FirstRtpUnixTimestamp),
+				TrackEndTime:   time.UnixMilli(segment.LastRtpUnixTimestamp),
+				Segments:       []*SegmentInfo{{metadata: segment}},
 			}
 			trackMap[key] = track
 		}
@@ -254,9 +281,9 @@ func (p *MetadataParser) isScreenshareTrack(trackType string) bool {
 func (p *MetadataParser) cleanTrackType(trackType string) string {
 	switch trackType {
 	case "TRACK_TYPE_AUDIO", "TRACK_TYPE_SCREEN_SHARE_AUDIO":
-		return "audio"
+		return trackKindAudio
 	case "TRACK_TYPE_VIDEO", "TRACK_TYPE_SCREEN_SHARE":
-		return "video"
+		return trackKindVideo
 	default:
 		return strings.ToLower(trackType)
 	}
@@ -298,20 +325,20 @@ func (p *MetadataParser) extractUniqueSessions(tracks []*TrackInfo) []string {
 // Only one filter (userID, sessionID, or trackID) can be specified at a time
 // Empty values are ignored, specific values must match
 // If all are empty, all tracks are returned
-func FilterTracks(tracks []*TrackInfo, userID, sessionID, trackID, trackType, mediaFilter string) []*TrackInfo {
+func FilterTracks(tracks []*TrackInfo, userID, sessionID, trackID, trackKind, mediaType string) []*TrackInfo {
 	filtered := make([]*TrackInfo, 0)
 
 	for _, track := range tracks {
-		if trackType != "" && track.TrackType != trackType {
-			continue // Skip tracks with wrong TrackType
+		if trackKind != "" && track.TrackKind != trackKind {
+			continue // Skip tracks with wrong trackKind
 		}
 
 		// Apply media type filtering if specified
-		if mediaFilter != "" && mediaFilter != "both" {
-			if mediaFilter == "user" && track.IsScreenshare {
+		if mediaType != "" && mediaType != mediaTypeBoth {
+			if mediaType == mediaTypeUser && track.IsScreenshare {
 				continue // Skip display tracks when only user requested
 			}
-			if mediaFilter == "display" && !track.IsScreenshare {
+			if mediaType == mediaTypeDisplay && !track.IsScreenshare {
 				continue // Skip user tracks when only display requested
 			}
 		}

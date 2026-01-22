@@ -95,7 +95,18 @@ func runExtractAudio(cmd *cobra.Command, args []string) error {
 	}
 
 	// Extract audio tracks
-	if err := processing.ExtractTracks(globalArgs.WorkDir, globalArgs.Output, userID, sessionID, trackID, metadata, "audio", "both", fillGaps, fixDtx, logger); err != nil {
+	extractor := processing.NewTrackExtractor(logger)
+	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
+		WorkDir:   globalArgs.WorkDir,
+		OutputDir: globalArgs.Output,
+		UserID:    userID,
+		SessionID: sessionID,
+		TrackID:   trackID,
+		TrackKind: TrackTypeAudio,
+		MediaType: "both",
+		FillGap:   fillGaps,
+		FillDtx:   fixDtx,
+	}, metadata); err != nil {
 		return fmt.Errorf("failed to extract audio: %w", err)
 	}
 

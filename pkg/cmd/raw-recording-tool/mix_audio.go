@@ -74,7 +74,7 @@ func runMixAudio(cmd *cobra.Command, args []string) error {
 		WithScreenshare: false,
 		WithExtract:     true,
 		WithCleanup:     false,
-	}, metadata, logger)
+	}, metadata)
 
 	logger.Info("Mix-audio command completed successfully")
 	return nil
