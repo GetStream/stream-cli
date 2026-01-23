@@ -1,6 +1,7 @@
 package rawrecording
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -65,14 +66,10 @@ func runListTracks(cmd *cobra.Command, args []string) error {
 	logger := setupLogger(globalArgs.Verbose)
 	logger.Info("Starting list-tracks command")
 
-	// Parse the recording metadata using efficient metadata-only approach
-	var inputPath string
-	if globalArgs.InputFile != "" {
-		inputPath = globalArgs.InputFile
-	} else if globalArgs.InputDir != "" {
-		inputPath = globalArgs.InputDir
-	} else {
-		return fmt.Errorf("S3 input not implemented yet")
+	// Resolve input path (download from S3 if needed)
+	inputPath, err := resolveInputPath(context.Background(), globalArgs)
+	if err != nil {
+		return err
 	}
 
 	parser := processing.NewMetadataParser(logger)

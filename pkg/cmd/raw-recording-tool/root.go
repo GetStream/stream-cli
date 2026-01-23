@@ -1,6 +1,7 @@
 package rawrecording
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -19,7 +20,11 @@ type GlobalArgs struct {
 	InputS3   string
 	Output    string
 	Verbose   bool
+	CacheDir  string
 	WorkDir   string
+
+	// resolvedInputPath is the local path to the input (after S3 download if needed)
+	resolvedInputPath string
 }
 
 func NewRootCmd() *cobra.Command {
@@ -51,6 +56,7 @@ func NewRootCmd() *cobra.Command {
 	pf.String(FlagInputS3, "", DescInputS3)
 	pf.String(FlagOutput, "", DescOutput)
 	pf.Bool(FlagVerbose, false, DescVerbose)
+	pf.String(FlagCacheDir, "", DescCacheDir)
 
 	// Add subcommands
 	cmd.AddCommand(
@@ -72,6 +78,12 @@ func getGlobalArgs(cmd *cobra.Command) (*GlobalArgs, error) {
 	inputS3, _ := cmd.Flags().GetString(FlagInputS3)
 	output, _ := cmd.Flags().GetString(FlagOutput)
 	verbose, _ := cmd.Flags().GetBool(FlagVerbose)
+	cacheDir, _ := cmd.Flags().GetString(FlagCacheDir)
+
+	// Use default cache directory if not specified
+	if cacheDir == "" {
+		cacheDir = GetDefaultCacheDir()
+	}
 
 	return &GlobalArgs{
 		InputFile: inputFile,
@@ -79,6 +91,7 @@ func getGlobalArgs(cmd *cobra.Command) (*GlobalArgs, error) {
 		InputS3:   inputS3,
 		Output:    output,
 		Verbose:   verbose,
+		CacheDir:  cacheDir,
 	}, nil
 }
 
@@ -109,6 +122,36 @@ func validateGlobalArgs(globalArgs *GlobalArgs, requireOutput bool) error {
 	return nil
 }
 
+// resolveInputPath resolves the input to a local path, downloading from S3 if necessary
+func resolveInputPath(ctx context.Context, globalArgs *GlobalArgs) (string, error) {
+	// If already resolved, return cached path
+	if globalArgs.resolvedInputPath != "" {
+		return globalArgs.resolvedInputPath, nil
+	}
+
+	var inputPath string
+
+	if globalArgs.InputFile != "" {
+		inputPath = globalArgs.InputFile
+	} else if globalArgs.InputDir != "" {
+		inputPath = globalArgs.InputDir
+	} else if globalArgs.InputS3 != "" {
+		// Download from S3 (with caching)
+		downloader := NewS3Downloader(globalArgs.CacheDir, globalArgs.Verbose)
+		downloadedPath, err := downloader.Download(ctx, globalArgs.InputS3)
+		if err != nil {
+			return "", fmt.Errorf("failed to download from S3: %w", err)
+		}
+		inputPath = downloadedPath
+	} else {
+		return "", fmt.Errorf("no input specified")
+	}
+
+	// Cache the resolved path
+	globalArgs.resolvedInputPath = inputPath
+	return inputPath, nil
+}
+
 // validateInputArgs validates input arguments using mutually exclusive logic
 func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string) (*processing.RecordingMetadata, error) {
 	// Count how many filters are specified
@@ -128,13 +171,10 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 		return nil, fmt.Errorf("only one filter can be specified at a time: --%s, --%s, and --%s are mutually exclusive", FlagUserID, FlagSessionID, FlagTrackID)
 	}
 
-	var inputPath string
-	if globalArgs.InputFile != "" {
-		inputPath = globalArgs.InputFile
-	} else if globalArgs.InputDir != "" {
-		inputPath = globalArgs.InputDir
-	} else {
-		return nil, fmt.Errorf("S3 input not implemented yet")
+	// Resolve input path (download from S3 if needed)
+	inputPath, err := resolveInputPath(context.Background(), globalArgs)
+	if err != nil {
+		return nil, err
 	}
 
 	// Parse metadata to validate the single specified argument
@@ -202,9 +242,10 @@ func setupLogger(verbose bool) *processing.ProcessingLogger {
 
 // prepareWorkDir extracts the recording to a temp directory and returns the working directory
 func prepareWorkDir(globalArgs *GlobalArgs, logger *processing.ProcessingLogger) (string, func(), error) {
-	path := globalArgs.InputFile
-	if path == "" {
-		path = globalArgs.InputDir
+	// Resolve input path (download from S3 if needed)
+	path, err := resolveInputPath(context.Background(), globalArgs)
+	if err != nil {
+		return "", nil, err
 	}
 
 	workingDir, cleanup, err := processing.ExtractToTempDir(path, logger)

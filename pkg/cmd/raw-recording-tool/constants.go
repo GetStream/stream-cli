@@ -7,6 +7,7 @@ const (
 	FlagInputS3   = "input-s3"
 	FlagOutput    = "output"
 	FlagVerbose   = "verbose"
+	FlagCacheDir  = "cache-dir"
 )
 
 // Flag names for filter flags (used across multiple commands)
@@ -34,9 +35,10 @@ const (
 const (
 	DescInputFile = "Raw recording zip file path"
 	DescInputDir  = "Raw recording directory path"
-	DescInputS3   = "Raw recording S3 path"
+	DescInputS3   = "Raw recording S3 URL (s3://bucket/path or presigned HTTPS URL)"
 	DescOutput    = "Output directory"
 	DescVerbose   = "Enable verbose logging"
+	DescCacheDir  = "Cache directory for S3 downloads"
 )
 
 // Flag descriptions for filter flags
@@ -66,6 +68,7 @@ const (
 	DefaultFormat         = "table"
 	DefaultCompletionType = "tracks"
 	DefaultMedia          = "both"
+	DefaultCacheSubdir    = "stream-cli/raw-recordings"
 )
 
 // Media type values
