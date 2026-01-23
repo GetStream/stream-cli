@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	s3manager "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
@@ -149,6 +150,40 @@ func parseS3URL(inputURL string) (bucket, key string, err error) {
 	return parts[0], parts[1], nil
 }
 
+// getS3ClientForBucket creates an S3 client configured for the bucket's region
+func (d *S3Downloader) getS3ClientForBucket(ctx context.Context, bucket string) (*s3.Client, error) {
+	// First, load the default config
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+	}
+
+	// Create a client to detect the bucket region
+	client := s3.NewFromConfig(cfg)
+
+	// Get the actual bucket region
+	region, err := s3manager.GetBucketRegion(ctx, client, bucket)
+	if err != nil {
+		// If we can't detect the region, return the default client
+		if d.verbose {
+			fmt.Printf("Warning: could not detect bucket region, using default: %v\n", err)
+		}
+		return client, nil
+	}
+
+	if d.verbose {
+		fmt.Printf("Detected bucket region: %s\n", region)
+	}
+
+	// Reload config with the correct region
+	cfg, err = config.LoadDefaultConfig(ctx, config.WithRegion(region))
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config with region %s: %w", region, err)
+	}
+
+	return s3.NewFromConfig(cfg), nil
+}
+
 // isCacheValid checks if the cached file is still valid
 func (d *S3Downloader) isCacheValid(ctx context.Context, inputURL, cachedFilePath, metadataPath string) bool {
 	// Check if cached file exists
@@ -193,12 +228,11 @@ func (d *S3Downloader) getS3ETag(ctx context.Context, inputURL string) (string, 
 		return "", err
 	}
 
-	cfg, err := config.LoadDefaultConfig(ctx)
+	client, err := d.getS3ClientForBucket(ctx, bucket)
 	if err != nil {
-		return "", fmt.Errorf("failed to load AWS config: %w", err)
+		return "", err
 	}
 
-	client := s3.NewFromConfig(cfg)
 	result, err := client.HeadObject(ctx, &s3.HeadObjectInput{
 		Bucket: &bucket,
 		Key:    &key,
@@ -240,12 +274,11 @@ func (d *S3Downloader) downloadFromS3(ctx context.Context, inputURL, destPath st
 		return "", err
 	}
 
-	cfg, err := config.LoadDefaultConfig(ctx)
+	client, err := d.getS3ClientForBucket(ctx, bucket)
 	if err != nil {
-		return "", fmt.Errorf("failed to load AWS config: %w", err)
+		return "", err
 	}
 
-	client := s3.NewFromConfig(cfg)
 	result, err := client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
 		Key:    &key,
