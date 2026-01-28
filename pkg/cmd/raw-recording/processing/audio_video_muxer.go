@@ -46,7 +46,7 @@ func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, met
 		extractor := NewTrackExtractor(p.logger)
 
 		// Extract tracks with gap filling enabled
-		p.logger.Info("Extracting tracks with gap filling...")
+		p.logger.Infof("Extracting tracks with gap filling...")
 		_, err := extractor.ExtractTracks(cfg, metadata)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract audio tracks: %w", err)
@@ -60,7 +60,7 @@ func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, met
 		// logger.Infof("Muxing %d user audio/video pairs", len(userAudio))
 		info, err := p.muxTrackPairs(audioTrack, videoTrack, config)
 		if err != nil {
-			p.logger.Error("Failed to mux user tracks: %v", err)
+			p.logger.Errorf("Failed to mux user tracks: %v", err)
 		}
 		infos = append(infos, info)
 	}
@@ -116,7 +116,7 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 	// Calculate sync offset using segment timing information
 	offset, err := calculateSyncOffsetFromFiles(audio, video)
 	if err != nil {
-		p.logger.Warn("Failed to calculate sync offset, using 0: %v", err)
+		p.logger.Warnf("Failed to calculate sync offset, using 0: %v", err)
 		offset = 0
 	}
 
@@ -127,7 +127,7 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 	videoFile := video.ConcatenatedTrackFileInfo.Name
 
 	// Mux the audio and video files
-	p.logger.Debug("Muxing %s + %s → %s (offset: %dms)",
+	p.logger.Debugf("Muxing %s + %s → %s (offset: %dms)",
 		filepath.Base(audioFile), filepath.Base(videoFile), filepath.Base(outputFile), offset)
 
 	err = runFFmpegCommand(generateMuxFilesArguments(outputFile, audioFile, videoFile, float64(offset)), p.logger)
@@ -136,15 +136,15 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 		return nil, err
 	}
 
-	p.logger.Info("Successfully created muxed file: %s", outputFile)
+	p.logger.Infof("Successfully created muxed file: %s", outputFile)
 
 	// Clean up individual track files to avoid clutter
 	if config.WithCleanup {
 		defer func() {
 			for _, file := range []string{audioFile, videoFile} {
-				p.logger.Info("Cleaning up temporary file: %s", file)
+				p.logger.Infof("Cleaning up temporary file: %s", file)
 				if err := os.Remove(file); err != nil {
-					p.logger.Warn("Failed to clean up temporary file %s: %v", file, err)
+					p.logger.Warnf("Failed to clean up temporary file %s: %v", file, err)
 				}
 			}
 		}()
@@ -155,6 +155,8 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 		StartAt:           p.getTime(audio.ConcatenatedTrackFileInfo.StartAt, video.ConcatenatedTrackFileInfo.StartAt, true),
 		EndAt:             p.getTime(audio.ConcatenatedTrackFileInfo.EndAt, video.ConcatenatedTrackFileInfo.EndAt, false),
 		MaxFrameDimension: video.ConcatenatedTrackFileInfo.MaxFrameDimension,
+		AudioTrack:        audio,
+		VideoTrack:        video,
 	}, nil
 }
 

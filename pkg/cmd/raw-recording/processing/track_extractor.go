@@ -46,11 +46,11 @@ func (p *TrackExtractor) ExtractTracks(config *TrackExtractorConfig, metadata *R
 	// Extract and convert each track
 	var infos []*TrackFileInfo
 	for i, track := range filteredTracks {
-		p.logger.Debugf("Processing %s track %d/%d: %s", config.TrackKind, i+1, len(filteredTracks), track.TrackID)
+		p.logger.Debugf("Processing %s track %d/%d: %s", track.TrackKind, i+1, len(filteredTracks), track.TrackID)
 
 		info, err := p.extractSingleTrackWithOptions(config, track)
 		if err != nil {
-			p.logger.Errorf("Failed to extract %s track %s: %v", config.TrackKind, track.TrackID, err)
+			p.logger.Errorf("Failed to extract %s track %s: %v", track.TrackKind, track.TrackID, err)
 			continue
 		}
 		if info != nil {
@@ -186,11 +186,21 @@ func (p *TrackExtractor) processSegmentsWithGapFilling(config *TrackExtractorCon
 		ts = track.Segments[0].metadata.FirstRtpUnixTimestamp
 		te = track.Segments[len(track.Segments)-1].metadata.LastRtpUnixTimestamp
 	}
+
+	var audioTrack, videoTrack *TrackInfo
+	switch track.TrackKind {
+	case trackKindAudio:
+		audioTrack = track
+	case trackKindVideo:
+		videoTrack = track
+	}
 	return &TrackFileInfo{
 		Name:              finalPath,
 		StartAt:           time.UnixMilli(ts),
 		EndAt:             time.UnixMilli(te),
 		MaxFrameDimension: p.getMaxFrameDimension(track),
+		AudioTrack:        audioTrack,
+		VideoTrack:        videoTrack,
 	}, nil
 }
 

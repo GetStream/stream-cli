@@ -48,6 +48,8 @@ type TrackFileInfo struct {
 	StartAt           time.Time
 	EndAt             time.Time
 	MaxFrameDimension SegmentFrameDimension
+	AudioTrack        *TrackInfo
+	VideoTrack        *TrackInfo
 }
 
 // RecordingMetadata contains all tracks and session information
@@ -100,17 +102,17 @@ func (p *MetadataParser) parseDirectory(dirPath string) (*RecordingMetadata, err
 		}
 
 		if !info.IsDir() && strings.HasSuffix(strings.ToLower(info.Name()), "_timing_metadata.json") {
-			p.logger.Debug("Processing metadata file: %s", path)
+			p.logger.Debugf("Processing metadata file: %s", path)
 
 			data, err := os.ReadFile(path)
 			if err != nil {
-				p.logger.Warn("Failed to read metadata file %s: %v", path, err)
+				p.logger.Warnf("Failed to read metadata file %s: %v", path, err)
 				return nil
 			}
 
 			tracks, err := p.parseTimingMetadataFile(data)
 			if err != nil {
-				p.logger.Warn("Failed to parse metadata file %s: %v", path, err)
+				p.logger.Warnf("Failed to parse metadata file %s: %v", path, err)
 				return nil
 			}
 
@@ -119,7 +121,6 @@ func (p *MetadataParser) parseDirectory(dirPath string) (*RecordingMetadata, err
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to process directory: %w", err)
 	}
@@ -134,7 +135,7 @@ func (p *MetadataParser) parseDirectory(dirPath string) (*RecordingMetadata, err
 // parseMetadataOnlyFromTarGz efficiently extracts only timing metadata from tar.gz files
 // This is optimized for list-tracks - only reads JSON files, skips all .rtpdump/.sdp files
 func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*RecordingMetadata, error) {
-	p.logger.Debug("Reading metadata directly from tar.gz (efficient mode): %s", tarGzPath)
+	p.logger.Debugf("Reading metadata directly from tar.gz (efficient mode): %s", tarGzPath)
 
 	file, err := os.Open(tarGzPath)
 	if err != nil {
@@ -169,17 +170,17 @@ func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*Recordin
 
 		// Only process timing metadata JSON files (skip all .rtpdump/.sdp files)
 		if strings.HasSuffix(strings.ToLower(header.Name), "_timing_metadata.json") {
-			p.logger.Debug("Processing metadata file: %s", header.Name)
+			p.logger.Debugf("Processing metadata file: %s", header.Name)
 
 			data, err := io.ReadAll(tarReader)
 			if err != nil {
-				p.logger.Warn("Failed to read metadata file %s: %v", header.Name, err)
+				p.logger.Warnf("Failed to read metadata file %s: %v", header.Name, err)
 				continue
 			}
 
 			tracks, err := p.parseTimingMetadataFile(data)
 			if err != nil {
-				p.logger.Warn("Failed to parse metadata file %s: %v", header.Name, err)
+				p.logger.Warnf("Failed to parse metadata file %s: %v", header.Name, err)
 				continue
 			}
 
@@ -189,7 +190,7 @@ func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*Recordin
 		// Skip all other files (.rtpdump, .sdp, etc.) - huge efficiency gain!
 	}
 
-	p.logger.Debug("Efficiently read %d metadata files from archive (skipped all media data files)", filesRead)
+	p.logger.Debugf("Efficiently read %d metadata files from archive (skipped all media data files)", filesRead)
 
 	// Extract unique user IDs and sessions
 	metadata.UserIDs = p.extractUniqueUserIDs(metadata.Tracks)
