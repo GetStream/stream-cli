@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording-tool/processing"
+	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording/processing"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 )
