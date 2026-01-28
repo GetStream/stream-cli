@@ -16,26 +16,27 @@ func processAllCmd() *cobra.Command {
 		Long: heredoc.Doc(`
 			Process audio, video, and mux them into combined files (all-in-one workflow).
 
-			Outputs 3 files per session: audio WebM, video WebM, and muxed WebM.
-			Gap filling is always enabled for seamless playback.
+			Outputs multiple MKV files: individual audio/video tracks, muxed A/V, and mixed audio.
+			Gap filling and DTX fix are always enabled for seamless playback and proper A/V sync.
 
 			Filters are mutually exclusive: you can only specify one of
 			--user-id, --session-id, or --track-id at a time.
 
-			Output files per session:
-			  audio_{userId}_{sessionId}_{trackId}.webm    - Audio-only file
-			  video_{userId}_{sessionId}_{trackId}.webm    - Video-only file
-			  muxed_{userId}_{sessionId}_{trackId}.webm    - Combined audio+video file
+			Output files:
+			  individual_{callType}_{callId}_{userId}_{sessionId}_audio_only_{timestamp}.mkv
+			  individual_{callType}_{callId}_{userId}_{sessionId}_video_only_{timestamp}.mkv
+			  individual_{callType}_{callId}_{userId}_{sessionId}_audio_video_{timestamp}.mkv
+			  composite_{callType}_{callId}_audio_{timestamp}.mkv
 		`),
 		Example: heredoc.Doc(`
 			# Process all tracks
-			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out
+			$ stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out
 
 			# Process tracks for specific user
-			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out --user-id user123
+			$ stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out --user-id user123
 
 			# Process tracks for specific session
-			$ stream-cli video raw-recording process-all --input-file recording.zip --output ./out --session-id session456
+			$ stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out --session-id session456
 		`),
 		RunE: runProcessAll,
 	}

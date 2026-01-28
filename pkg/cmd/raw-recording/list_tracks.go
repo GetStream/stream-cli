@@ -26,16 +26,16 @@ func listTracksCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# List all tracks in table format
-			$ stream-cli video raw-recording list-tracks --input-file recording.zip
+			$ stream-cli video raw-recording list-tracks --input-file recording.tar.gz
 
 			# Get JSON output for programmatic use
-			$ stream-cli video raw-recording list-tracks --input-file recording.zip --format json
+			$ stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format json
 
 			# Get user IDs only
-			$ stream-cli video raw-recording list-tracks --input-file recording.zip --format users
+			$ stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format users
 
 			# Filter by track type
-			$ stream-cli video raw-recording list-tracks --input-file recording.zip --track-type audio
+			$ stream-cli video raw-recording list-tracks --input-file recording.tar.gz --track-type audio
 		`),
 		RunE: runListTracks,
 	}

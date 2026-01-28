@@ -33,8 +33,8 @@ const (
 
 // Flag descriptions for global/persistent flags
 const (
-	DescInputFile = "Raw recording zip file path"
-	DescInputDir  = "Raw recording directory path"
+	DescInputFile = "Raw recording tar.gz archive path"
+	DescInputDir  = "Raw recording extracted directory path"
 	DescInputS3   = "Raw recording S3 URL (s3://bucket/path or presigned HTTPS URL)"
 	DescOutput    = "Output directory"
 	DescVerbose   = "Enable verbose logging"
@@ -52,7 +52,7 @@ const (
 const (
 	DescFillGapsAudio = "Fill with silence when track was muted"
 	DescFillGapsVideo = "Fill with black frame when track was muted"
-	DescFixDtx        = "Fix DTX shrink audio"
+	DescFixDtx        = "Restore original audio duration by filling DTX silence gaps (required for A/V sync)"
 	DescMedia         = "Filter by media type: 'user', 'display', or 'both'"
 )
 

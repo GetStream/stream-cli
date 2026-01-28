@@ -39,13 +39,13 @@ func NewRootCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# List all tracks in a recording
-			$ stream-cli video raw-recording list-tracks --input-file recording.zip
+			$ stream-cli video raw-recording list-tracks --input-file recording.tar.gz
 
 			# Extract audio tracks for a specific user
-			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --user-id user123
+			$ stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --user-id user123
 
 			# Mux audio and video tracks
-			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out
+			$ stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out
 		`),
 	}
 

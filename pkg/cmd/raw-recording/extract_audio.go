@@ -16,23 +16,23 @@ func extractAudioCmd() *cobra.Command {
 		Long: heredoc.Doc(`
 			Generate playable audio files from raw recording tracks.
 
-			Supports formats: webm, mp3, and others.
+			Output format: MKV container with Opus audio codec.
 
 			Filters are mutually exclusive: you can only specify one of
 			--user-id, --session-id, or --track-id at a time.
 		`),
 		Example: heredoc.Doc(`
 			# Extract audio for all users (no filters)
-			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out
+			$ stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out
 
 			# Extract audio for specific user (all their tracks)
-			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --user-id user123
+			$ stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --user-id user123
 
 			# Extract audio for specific session
-			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --session-id session456
+			$ stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --session-id session456
 
 			# Extract a specific track
-			$ stream-cli video raw-recording extract-audio --input-file recording.zip --output ./out --track-id track1
+			$ stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --track-id track1
 		`),
 		RunE: runExtractAudio,
 	}

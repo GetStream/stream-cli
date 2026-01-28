@@ -17,15 +17,17 @@ func mixAudioCmd() *cobra.Command {
 			Mix all audio tracks from multiple users/sessions into a single audio file
 			with proper timing synchronization (like a conference call recording).
 
-			Creates 'mixed_audio.webm' - a single audio file containing all mixed tracks
-			with proper timing synchronization based on the original recording timeline.
+			Creates a composite audio file (MKV format by default) containing all mixed
+			tracks with proper timing synchronization based on the original recording timeline.
+
+			Output: composite_{callType}_{callId}_audio_{timestamp}.mkv
 		`),
 		Example: heredoc.Doc(`
 			# Mix all audio tracks from all users and sessions
-			$ stream-cli video raw-recording mix-audio --input-file recording.zip --output ./out
+			$ stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output ./out
 
 			# Mix with verbose logging
-			$ stream-cli video raw-recording mix-audio --input-file recording.zip --output ./out --verbose
+			$ stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output ./out --verbose
 		`),
 		RunE: runMixAudio,
 	}

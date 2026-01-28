@@ -29,16 +29,16 @@ func muxAVCmd() *cobra.Command {
 		`),
 		Example: heredoc.Doc(`
 			# Mux all tracks
-			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out
+			$ stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out
 
 			# Mux tracks for specific user
-			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --user-id user123
+			$ stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --user-id user123
 
 			# Mux only user camera tracks
-			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --media user
+			$ stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --media user
 
 			# Mux only display sharing tracks
-			$ stream-cli video raw-recording mux-av --input-file recording.zip --output ./out --media display
+			$ stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --media display
 		`),
 		RunE: runMuxAV,
 	}
