@@ -1,6 +1,6 @@
-# Raw-Tools CLI
+# Raw Recording CLI
 
-Post-processing tools for raw video call recordings with intelligent completion, validation, and advanced audio/video processing.
+Post-processing tools for Stream Video raw call recordings. Extract, process, and combine audio/video tracks from raw recording archives.
 
 ## Features
 
@@ -9,420 +9,289 @@ Post-processing tools for raw video call recordings with intelligent completion,
 - **Validation**: Automatic validation of user inputs against available data
 - **Multiple Formats**: Support for different output formats (table, JSON, completion)
 - **Advanced Processing**: Extract, mux, mix and process audio/video with gap filling
-- **Hybrid Architecture**: Optimized performance for different use cases
+- **S3 Support**: Download recordings directly from S3 or presigned URLs with caching
 
 ## Commands
 
-### `list-tracks` - Discovery & Completion Hub
+### `list-tracks` - Discovery & Exploration
 
-The `list-tracks` command serves as both a discovery tool and completion engine for other commands.
+The `list-tracks` command shows all tracks in a recording with their metadata.
 
 ```bash
-# Basic usage - see all tracks in table format (no --output needed)
-raw-tools --inputFile recording.tar.gz list-tracks
+# List all tracks in table format
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz
 
 # Get JSON output for programmatic use
-raw-tools --inputFile recording.tar.gz list-tracks --format json
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format json
 
-# Get completion-friendly lists
-raw-tools --inputFile recording.tar.gz list-tracks --format users
-raw-tools --inputFile recording.tar.gz list-tracks --format sessions
-raw-tools --inputFile recording.tar.gz list-tracks --format tracks
+# Get user IDs only
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format users
+
+# Get session IDs only
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format sessions
+
+# Get track IDs only
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz --format tracks
+
+# Filter by track type
+stream-cli video raw-recording list-tracks --input-file recording.tar.gz --track-type audio
 ```
 
 **Options:**
 - `--format <format>` - Output format: `table` (default), `json`, `users`, `sessions`, `tracks`, `completion`
-- `--trackType <type>` - Filter by track type: `audio`, `video` (optional)
-- `-h, --help` - Show help message
+- `--track-type <type>` - Filter by track type: `audio`, `video`
 
 **Output Formats:**
 - `table` - Human-readable table with screenshare detection (default)
 - `json` - Full metadata in JSON format for scripting
 - `users` - List of user IDs only (for shell scripts)
-- `sessions` - List of session IDs only (for automation)  
+- `sessions` - List of session IDs only (for automation)
 - `tracks` - List of track IDs only (for filtering)
-- `completion` - Shell completion format
 
 ### `extract-audio` - Extract Audio Tracks
 
-Extract and convert individual audio tracks from raw recordings to WebM format.
+Extract and convert audio tracks from raw recordings to playable MKV format.
 
 ```bash
 # Extract audio for all users
-raw-tools --inputFile recording.zip --output ./output extract-audio
+stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out
 
-# Extract audio for specific user with gap filling
-raw-tools --inputFile recording.zip --output ./output extract-audio --userId user123 --fill_gaps
+# Extract audio for specific user
+stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --user-id user123
 
 # Extract audio for specific session
-raw-tools --inputFile recording.zip --output ./output extract-audio --sessionId session456
+stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --session-id session456
 
-# Extract specific track only
-raw-tools --inputFile recording.zip --output ./output extract-audio --trackId track789
+# Extract a specific track
+stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --track-id track789
+
+# Disable gap filling
+stream-cli video raw-recording extract-audio --input-file recording.tar.gz --output ./out --fill-gaps=false
 ```
 
 **Options:**
-- `--userId <id>` - Filter by user ID (returns all tracks for that user)
-- `--sessionId <id>` - Filter by session ID (returns all tracks for that session)
-- `--trackId <id>` - Filter by track ID (returns only that specific track)
-- **Note**: These filters are mutually exclusive - only one can be specified at a time
-- `--fill_gaps` - Fill temporal gaps between segments with silence (recommended for playback)
-- `-h, --help` - Show help message
+- `--user-id <id>` - Filter by user ID (all tracks for that user)
+- `--session-id <id>` - Filter by session ID (all tracks for that session)
+- `--track-id <id>` - Filter by track ID (specific track only)
+- `--fill-gaps` - Fill temporal gaps with silence when track was muted (default: true)
+- `--fix-dtx` - Fix DTX (Discontinuous Transmission) shrink audio (default: true)
 
-**Mutually Exclusive Filtering:**
-- Only one filter can be specified at a time: `--userId`, `--sessionId`, or `--trackId`
-- `--trackId` returns exactly one track (the specified track)
-- `--sessionId` returns all tracks for that session (multiple tracks possible)  
-- `--userId` returns all tracks for that user (multiple tracks possible)
-- If no filter is specified, all tracks are processed
+**Note**: Filters are mutually exclusive - only one of `--user-id`, `--session-id`, or `--track-id` can be specified at a time.
 
 ### `extract-video` - Extract Video Tracks
 
-Extract and convert individual video tracks from raw recordings to WebM format.
+Extract and convert video tracks from raw recordings to playable MKV format.
 
 ```bash
 # Extract video for all users
-raw-tools --inputFile recording.zip --output ./output extract-video
+stream-cli video raw-recording extract-video --input-file recording.tar.gz --output ./out
 
-# Extract video for specific user with black frame filling
-raw-tools --inputFile recording.zip --output ./output extract-video --userId user123 --fill_gaps
+# Extract video for specific user
+stream-cli video raw-recording extract-video --input-file recording.tar.gz --output ./out --user-id user123
 
-# Extract screenshare video only
-raw-tools --inputFile recording.zip --output ./output extract-video --userId user456 --fill_gaps
+# Extract video for specific session
+stream-cli video raw-recording extract-video --input-file recording.tar.gz --output ./out --session-id session456
+
+# Extract a specific track
+stream-cli video raw-recording extract-video --input-file recording.tar.gz --output ./out --track-id track789
+
+# Disable gap filling
+stream-cli video raw-recording extract-video --input-file recording.tar.gz --output ./out --fill-gaps=false
 ```
 
 **Options:**
-- `--userId <id>` - Filter by user ID (returns all tracks for that user)  
-- `--sessionId <id>` - Filter by session ID (returns all tracks for that session)
-- `--trackId <id>` - Filter by track ID (returns only that specific track)
-- **Note**: These filters are mutually exclusive - only one can be specified at a time
-- `--fill_gaps` - Fill temporal gaps between segments with black frames (recommended for playback)
-- `-h, --help` - Show help message
+- `--user-id <id>` - Filter by user ID (all tracks for that user)
+- `--session-id <id>` - Filter by session ID (all tracks for that session)
+- `--track-id <id>` - Filter by track ID (specific track only)
+- `--fill-gaps` - Fill temporal gaps with black frames when track was muted (default: true)
 
-**Video Processing:**
-- Supports regular camera video and screenshare video
-- Automatically detects and preserves video codec (VP8, VP9, H264, AV1)
-- Gap filling generates black frames matching original video dimensions and framerate
+**Note**: Filters are mutually exclusive - only one of `--user-id`, `--session-id`, or `--track-id` can be specified at a time.
 
-### `mux-av` - Mux Audio/Video
+### `mux-av` - Combine Audio and Video
 
-Combine individual audio and video tracks with proper synchronization and timing offsets.
+Combine audio and video tracks into synchronized files.
 
 ```bash
-# Mux audio/video for all users
-raw-tools --inputFile recording.zip --output ./output mux-av
+# Mux all tracks
+stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out
 
-# Mux for specific user with proper sync
-raw-tools --inputFile recording.zip --output ./output mux-av --userId user123
+# Mux tracks for specific user
+stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --user-id user123
 
-# Mux for specific session
-raw-tools --inputFile recording.zip --output ./output mux-av --sessionId session456
+# Mux only user camera tracks (not screenshare)
+stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --media user
 
-# Mux specific tracks with precise control
-raw-tools --inputFile recording.zip --output ./output mux-av --userId user123 --sessionId session456
+# Mux only display/screenshare tracks
+stream-cli video raw-recording mux-av --input-file recording.tar.gz --output ./out --media display
 ```
 
 **Options:**
-- `--userId <id>` - Filter by user ID (returns all tracks for that user)
-- `--sessionId <id>` - Filter by session ID (returns all tracks for that session)
-- `--trackId <id>` - Filter by track ID (returns only that specific track)
-- **Note**: These filters are mutually exclusive - only one can be specified at a time
-- `--media <type>` - Filter by media type: `user` (camera/microphone), `display` (screen sharing), or `both` (default)
-- `-h, --help` - Show help message
+- `--user-id <id>` - Filter by user ID
+- `--session-id <id>` - Filter by session ID
+- `--track-id <id>` - Filter by track ID
+- `--media <type>` - Filter by media type: `user` (camera/microphone), `display` (screenshare), or `both` (default)
 
-**Features:**
-- Automatic timing synchronization between audio and video using RTCP timestamps
-- Gap filling for seamless playback (always enabled for muxing)
-- Single combined WebM output per user/session combination
-- Intelligent offset calculation for perfect A/V sync
-- Supports all video codecs (VP8, VP9, H264, AV1) with Opus audio
-- Media type filtering ensures consistent pairing (user camera ↔ user microphone, display sharing ↔ display audio)
-
-**Media Type Examples:**
-```bash
-# Mux only user camera/microphone tracks
-raw-tools --inputFile recording.zip --output ./output mux-av --userId user123 --media user
-
-# Mux only display sharing tracks  
-raw-tools --inputFile recording.zip --output ./output mux-av --userId user123 --media display
-
-# Mux both types with proper pairing (default)
-raw-tools --inputFile recording.zip --output ./output mux-av --userId user123 --media both
-```
+**Note**: Filters are mutually exclusive.
 
 ### `mix-audio` - Mix Multiple Audio Tracks
 
-Mix audio from multiple users/sessions into a single synchronized audio file, perfect for conference call reconstruction.
+Mix audio from multiple users/sessions into a single synchronized audio file.
 
 ```bash
-# Mix audio from all users (full conference call)
-raw-tools --inputFile recording.zip --output ./output mix-audio
+# Mix all audio tracks from all users
+stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output ./out
 
-# Mix audio from specific user across all sessions
-raw-tools --inputFile recording.zip --output ./output mix-audio --userId user123
-
-# Mix audio from specific session (all users in that session)
-raw-tools --inputFile recording.zip --output ./output mix-audio --sessionId session456
-
-# Mix specific tracks with fine control
-raw-tools --inputFile recording.zip --output ./output mix-audio --userId user123 --sessionId session456
+# Mix with verbose logging
+stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output ./out --verbose
 ```
 
-**Options:**
-- `--userId <id>` - Filter by user ID (returns all tracks for that user)
-- `--sessionId <id>` - Filter by session ID (returns all tracks for that session)
-- `--trackId <id>` - Filter by track ID (returns only that specific track)
-- **Note**: These filters are mutually exclusive - only one can be specified at a time
-- `--no-fill-gaps` - Disable gap filling (not recommended for mixing, gaps enabled by default)
-- `-h, --help` - Show help message
-
-**Perfect for:**
-- Conference call audio reconstruction with proper timing
-- Multi-participant audio analysis and review
-- Creating complete session audio timelines
-- Audio synchronization testing and validation
-- Podcast-style recordings from video calls
-
-**Advanced Mixing:**
-- Uses FFmpeg adelay and amix filters for professional-quality mixing
-- Automatic timing offset calculation based on segment metadata
-- Gap filling with silence maintains temporal relationships
-- Output: Single `mixed_audio.webm` file with all tracks properly synchronized
+Creates `composite_{callType}_{callId}_audio_{timestamp}.mkv` with all tracks properly synchronized based on original timing.
 
 ### `process-all` - Complete Workflow
 
-Execute audio extraction, video extraction, and muxing in a single command - the all-in-one solution.
+Execute audio extraction, video extraction, and muxing in a single command.
 
 ```bash
-# Process everything for all users
-raw-tools --inputFile recording.zip --output ./output process-all
+# Process all tracks
+stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out
 
-# Process everything for specific user
-raw-tools --inputFile recording.zip --output ./output process-all --userId user123
+# Process tracks for specific user
+stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out --user-id user123
 
-# Process specific session with all participants
-raw-tools --inputFile recording.zip --output ./output process-all --sessionId session456
-
-# Process specific tracks with full workflow
-raw-tools --inputFile recording.zip --output ./output process-all --userId user123 --sessionId session456
+# Process tracks for specific session
+stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./out --session-id session456
 ```
 
 **Options:**
-- `--userId <id>` - Filter by user ID (returns all tracks for that user)
-- `--sessionId <id>` - Filter by session ID (returns all tracks for that session)
-- `--trackId <id>` - Filter by track ID (returns only that specific track)
-- **Note**: These filters are mutually exclusive - only one can be specified at a time
-- `-h, --help` - Show help message
+- `--user-id <id>` - Filter by user ID
+- `--session-id <id>` - Filter by session ID
+- `--track-id <id>` - Filter by track ID
 
-**Workflow Steps:**
-1. **Audio Extraction** - Extracts all matching audio tracks with gap filling enabled
-2. **Video Extraction** - Extracts all matching video tracks with gap filling enabled  
-3. **Audio/Video Muxing** - Combines corresponding audio and video tracks with sync
+**Output files:**
+- `individual_{callType}_{callId}_{userId}_{sessionId}_audio_only_{timestamp}.mkv` - Audio-only files
+- `individual_{callType}_{callId}_{userId}_{sessionId}_video_only_{timestamp}.mkv` - Video-only files
+- `individual_{callType}_{callId}_{userId}_{sessionId}_audio_video_{timestamp}.mkv` - Combined audio+video files
+- `composite_{callType}_{callId}_audio_{timestamp}.mkv` - Mixed audio from all participants
 
-**Outputs:**
-- Individual audio tracks (WebM format): `audio_userId_sessionId_trackId.webm`
-- Individual video tracks (WebM format): `video_userId_sessionId_trackId.webm`
-- Combined audio/video files (WebM format): `muxed_userId_sessionId_combined.webm`
-- All files include gap filling for seamless playback
-- Perfect for bulk processing and automated workflows
+## Global Options
 
-## Completion Workflow Architecture
+These options are available for all commands:
 
-### 1. Discovery Phase
-```bash
-# First, explore what's in your recording
-raw-tools --inputFile recording.zip list-tracks
+- `--input-file <path>` - Path to raw recording tar.gz archive
+- `--input-dir <path>` - Path to extracted raw recording directory
+- `--input-s3 <url>` - S3 URL (`s3://bucket/path`) or presigned HTTPS URL
+- `--output <path>` - Output directory (required for most commands)
+- `--verbose` - Enable verbose logging
+- `--cache-dir <path>` - Cache directory for S3 downloads
 
-# Example output with screenshare detection:
-# USER ID              SESSION ID           TRACK ID             TYPE    SCREENSHARE  CODEC           SEGMENTS
-# -------------------- -------------------- -------------------- ------- ------------ --------------- --------
-# user_abc123         session_xyz789       track_001            audio   No           audio/opus      3
-# user_abc123         session_xyz789       track_002            video   No           video/VP8       2  
-# user_def456         session_xyz789       track_003            video   Yes          video/VP8       1
-```
+**Input options**: Only one of `--input-file`, `--input-dir`, or `--input-s3` can be specified.
 
-### 2. Shell Completion Setup
+## S3 Support
+
+Download recordings directly from S3:
 
 ```bash
-# Install completion for your shell
-source <(raw-tools completion bash)   # Bash
-source <(raw-tools completion zsh)    # Zsh  
-raw-tools completion fish | source    # Fish
-```
+# Using S3 URL (requires AWS credentials)
+stream-cli video raw-recording list-tracks --input-s3 s3://mybucket/recordings/call.tar.gz
 
-### 3. Dynamic Completion in Action
+# Using presigned HTTPS URL
+stream-cli video raw-recording list-tracks --input-s3 "https://mybucket.s3.amazonaws.com/recordings/call.tar.gz?..."
 
-With completion enabled, the CLI will:
-- **Auto-complete commands** and flags
-- **Dynamically suggest user IDs** from the actual recording
-- **Validate inputs** against available data
-- **Provide helpful error messages** with discovery hints
-
-```bash
-# Tab completion will suggest actual user IDs from your recording
-raw-tools --inputFile recording.zip --output ./out extract-audio --userId <TAB>
-# Shows: user_abc123  user_def456
-
-# Invalid inputs show helpful errors
-raw-tools --inputFile recording.zip --output ./out extract-audio --userId invalid_user
-# Error: userID 'invalid_user' not found in recording. Available users: user_abc123, user_def456
-# Tip: Use 'raw-tools --inputFile recording.zip --output ./out list-tracks --format users' to see available user IDs
-```
-
-### 4. Programmatic Integration
-
-```bash
-# Get user IDs for scripts
-USERS=$(raw-tools --inputFile recording.zip list-tracks --format users)
-
-# Process each user
-for user in $USERS; do
-    raw-tools --inputFile recording.zip --output ./output extract-audio --userId "$user" --fill_gaps
-done
-
-# Get JSON metadata for complex processing
-raw-tools --inputFile recording.zip list-tracks --format json > metadata.json
+# S3 downloads are cached locally to avoid re-downloading
+stream-cli video raw-recording process-all --input-s3 s3://mybucket/call.tar.gz --output ./out
 ```
 
 ## Workflow Examples
 
-### Example 1: Extract Audio for Each Participant
+### Extract Audio for Each Participant
 
 ```bash
 # 1. Discover participants
-raw-tools --inputFile call.zip list-tracks --format users
+stream-cli video raw-recording list-tracks --input-file call.tar.gz --format users
 
 # 2. Extract each participant's audio
-for user in $(raw-tools --inputFile call.zip list-tracks --format users); do
+for user in $(stream-cli video raw-recording list-tracks --input-file call.tar.gz --format users); do
     echo "Extracting audio for user: $user"
-    raw-tools --inputFile call.zip --output ./extracted extract-audio --userId "$user" --fill_gaps
+    stream-cli video raw-recording extract-audio --input-file call.tar.gz --output ./extracted --user-id "$user"
 done
 ```
 
-### Example 2: Quality Check Before Processing
+### Conference Call Audio Mixing
 
 ```bash
-# 1. Get full metadata overview
-raw-tools --inputFile recording.zip list-tracks --format json > recording_info.json
+# Mix all participants into single audio file
+stream-cli video raw-recording mix-audio --input-file conference.tar.gz --output ./mixed
 
-# 2. Check track counts
-audio_tracks=$(raw-tools --inputFile recording.zip list-tracks --trackType audio --format json | jq '.tracks | length')
-video_tracks=$(raw-tools --inputFile recording.zip list-tracks --trackType video --format json | jq '.tracks | length')
-
-echo "Found $audio_tracks audio tracks and $video_tracks video tracks"
-
-# 3. Process only if we have both audio and video
-if [ "$audio_tracks" -gt 0 ] && [ "$video_tracks" -gt 0 ]; then
-    raw-tools --inputFile recording.zip --output ./output mux-av
-fi
-```
-
-### Example 3: Conference Call Audio Mixing
-
-```bash
-# 1. Mix all participants into single audio file
-raw-tools --inputFile conference.zip --output ./mixed mix-audio
-
-# 2. Mix specific users for focused conversation (individual commands)
-raw-tools --inputFile conference.zip --output ./mixed mix-audio --userId user1
-raw-tools --inputFile conference.zip --output ./mixed mix-audio --userId user2
-
-# 3. Create session-by-session mixed audio
-for session in $(raw-tools --inputFile conference.zip list-tracks --format sessions); do
-    raw-tools --inputFile conference.zip --output "./mixed/$session" mix-audio --sessionId "$session"
+# Create session-by-session mixed audio
+for session in $(stream-cli video raw-recording list-tracks --input-file conference.tar.gz --format sessions); do
+    stream-cli video raw-recording mix-audio --input-file conference.tar.gz --output "./mixed/$session"
 done
 ```
 
-### Example 4: Complete Processing Pipeline
+### Complete Processing Pipeline
 
 ```bash
-# All-in-one processing for the entire recording
-raw-tools --inputFile recording.zip --output ./complete process-all
+# All-in-one processing
+stream-cli video raw-recording process-all --input-file recording.tar.gz --output ./complete
 
-# Results in:
-# - ./complete/audio_*.webm (individual audio tracks)
-# - ./complete/video_*.webm (individual video tracks)  
-# - ./complete/muxed_*.webm (combined A/V tracks)
-```
-
-### Example 5: Session-Based Processing
-
-```bash
-# 1. Process each session separately
-for session in $(raw-tools --inputFile recording.zip list-tracks --format sessions); do
-    echo "Processing session: $session"
-    
-    # Extract all audio from this session
-    raw-tools --inputFile recording.zip --output "./output/$session" extract-audio --sessionId "$session" --fill_gaps
-    
-    # Extract all video from this session  
-    raw-tools --inputFile recording.zip --output "./output/$session" extract-video --sessionId "$session" --fill_gaps
-    
-    # Mux audio/video for this session
-    raw-tools --inputFile recording.zip --output "./output/$session" mux-av --sessionId "$session"
-done
-```
-
-## Architecture & Performance
-
-### Hybrid Processing Architecture
-
-The tool uses an intelligent hybrid approach optimized for different use cases:
-
-**Fast Metadata Reading (`list-tracks`):**
-- Direct tar.gz parsing for metadata-only operations
-- Skips extraction of large media files (.rtpdump/.sdp)
-- 10-50x faster than full extraction for discovery workflows
-
-**Full Processing (extraction commands):**
-- Complete archive extraction to temporary directories
-- Access to all media files for conversion and processing
-- Unified processing pipeline for reliability
-
-### Command Categories
-
-1. **Discovery Commands** (`list-tracks`)
-   - Optimized for speed and shell completion
-   - Minimal resource usage
-   - Instant metadata access
-
-2. **Processing Commands** (`extract-*`, `mix-*`, `mux-*`, `process-all`)
-   - Full archive extraction and processing
-   - Complete media file access
-   - Advanced audio/video operations
-
-3. **Utility Commands** (`completion`, `help`)
-   - Shell integration and documentation
-
-## Benefits of the Architecture
-
-1. **Discoverability**: No need to guess user IDs, session IDs, or track IDs
-2. **Performance**: Optimized operations for different use cases  
-3. **Validation**: Immediate feedback if specified IDs don't exist
-4. **Efficiency**: Tab completion speeds up command construction
-5. **Reliability**: Prevents typos and invalid commands
-6. **Scriptability**: Programmatic access to metadata for automated workflows
-7. **User Experience**: Helpful error messages with actionable suggestions
-8. **Advanced Processing**: Conference call reconstruction and analysis capabilities
-
-## File Structure
-
-```
-cmd/raw-tools/
-├── main.go              # Main CLI entry point and routing
-├── metadata.go          # Shared metadata parsing and filtering (hybrid architecture)
-├── completion.go        # Shell completion scripts generation  
-├── list_tracks.go       # Discovery and completion command (optimized)
-├── extract_audio.go     # Audio extraction with validation
-├── extract_video.go     # Video extraction with validation
-├── extract_track.go     # Generic extraction logic (shared)
-├── mix_audio.go         # Multi-user audio mixing
-├── mux_av.go           # Audio/video synchronization and muxing
-├── process_all.go      # All-in-one processing workflow
-└── README.md           # This documentation
+# Results:
+# - ./complete/individual_*_audio_only_*.mkv (individual audio tracks)
+# - ./complete/individual_*_video_only_*.mkv (individual video tracks)
+# - ./complete/individual_*_audio_video_*.mkv (combined A/V tracks)
+# - ./complete/composite_*_audio_*.mkv (mixed audio)
 ```
 
 ## Dependencies
 
-- **FFmpeg**: Required for media processing and conversion
-- **Go 1.19+**: For building the CLI tool
+### FFmpeg
+
+Required for media processing and conversion. Must be compiled with the following libraries:
+
+- `libopus` - Opus audio codec
+- `libvpx` - VP8/VP9 video codecs
+- `libx264` - H.264 video codec
+- `libaom` - AV1 video codec (libaom-av1)
+- `libmp3lame` - MP3 audio codec (optional, for MP3 output)
+
+**macOS:**
+```bash
+brew install ffmpeg
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install ffmpeg
+```
+
+### GStreamer
+
+Required for RTP dump to container conversion. Install GStreamer 1.0 with the following plugin packages:
+
+**macOS:**
+```bash
+brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly
+```
+
+**Required GStreamer plugins:**
+- `gst-plugins-base` - Core elements (tcpserversrc, filesink)
+- `gst-plugins-good` - RTP plugins (rtpjitterbuffer, rtpvp8depay, rtpvp9depay, rtpopusdepay)
+- `gst-plugins-bad` - Additional codecs (rtpav1depay, av1parse, matroskamux)
+- `gst-plugins-ugly` - H.264 support (rtph264depay, h264parse)
+
+### AWS Credentials (Optional)
+
+Required for S3 URL support (`s3://...`). Not needed for presigned HTTPS URLs.
+
+Configure via:
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+- AWS credentials file: `~/.aws/credentials`
+- IAM role (when running on AWS infrastructure)
+
+### Go
+
+Go 1.19+ required for building the CLI tool from source.
