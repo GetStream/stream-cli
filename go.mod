@@ -6,7 +6,6 @@ toolchain go1.24.4
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
-	github.com/GetStream/getstream-go/v3 v3.7.0
 	github.com/GetStream/stream-chat-go/v5 v5.8.1
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
@@ -15,7 +14,6 @@ require (
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/gizak/termui/v3 v3.1.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/pion/rtcp v1.2.16
 	github.com/pion/rtp v1.10.0
 	github.com/pion/webrtc/v4 v4.2.3
 	github.com/spf13/cobra v1.4.0
@@ -41,7 +39,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.13 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.41.6 // indirect
 	github.com/aws/smithy-go v1.24.0 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/pion/datachannel v1.6.0 // indirect
 	github.com/pion/dtls/v3 v3.0.10 // indirect
@@ -50,6 +47,7 @@ require (
 	github.com/pion/logging v0.2.4 // indirect
 	github.com/pion/mdns/v2 v2.1.0 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
+	github.com/pion/rtcp v1.2.16 // indirect
 	github.com/pion/sctp v1.9.2 // indirect
 	github.com/pion/sdp/v3 v3.0.17 // indirect
 	github.com/pion/srtp/v3 v3.0.10 // indirect

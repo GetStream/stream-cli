@@ -3,14 +3,11 @@ package rawrecording
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/GetStream/stream-cli/pkg/cmd/raw-recording/processing"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
-
-	"github.com/GetStream/getstream-go/v3"
 )
 
 // GlobalArgs holds the global arguments shared across all subcommands
@@ -231,13 +228,13 @@ func validateInputArgs(globalArgs *GlobalArgs, userID, sessionID, trackID string
 
 // setupLogger creates a logger with the specified verbosity
 func setupLogger(verbose bool) *processing.ProcessingLogger {
-	var level getstream.LogLevel
+	var level processing.LogLevel
 	if verbose {
-		level = getstream.LogLevelDebug
+		level = processing.LogLevelDebug
 	} else {
-		level = getstream.LogLevelInfo
+		level = processing.LogLevelInfo
 	}
-	return processing.NewRawToolLogger(getstream.NewDefaultLogger(os.Stderr, "", log.LstdFlags, level))
+	return processing.NewProcessingLogger(os.Stderr, level)
 }
 
 // prepareWorkDir extracts the recording to a temp directory and returns the working directory
