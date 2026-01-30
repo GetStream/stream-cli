@@ -70,7 +70,7 @@ func runMixAudio(cmd *cobra.Command, args []string) error {
 
 	// Mix all audio tracks
 	mixer := processing.NewAudioMixer(logger)
-	mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
+	_, _ = mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
 		WorkDir:         globalArgs.WorkDir,
 		OutputDir:       globalArgs.Output,
 		WithScreenshare: true,

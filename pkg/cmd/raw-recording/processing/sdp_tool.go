@@ -16,23 +16,6 @@ func readSDP(sdpFilePath string) (string, error) {
 	return string(content), nil
 }
 
-func replaceSDP(sdpContent string, port int) string {
-	lines := strings.Split(sdpContent, "\n")
-	for i, line := range lines {
-		if strings.HasPrefix(line, "m=") {
-			// Parse the m= line: m=<media_type> <port> RTP/AVP <payload_type>
-			parts := strings.Fields(line)
-			if len(parts) >= 4 {
-				// Replace the port (second field)
-				parts[1] = fmt.Sprintf("%d", port)
-				lines[i] = strings.Join(parts, " ")
-				break
-			}
-		}
-	}
-	return strings.Join(lines, "\n")
-}
-
 func mimeType(sdp string) (string, error) {
 	upper := strings.ToUpper(sdp)
 	if strings.Contains(upper, "VP9") {

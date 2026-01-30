@@ -27,7 +27,6 @@ type RTPDump2WebMConverter struct {
 	recorder      WebmRecorder
 	sampleBuilder *samplebuilder.SampleBuilder
 
-	firstPkt        *rtp.Packet
 	lastPkt         *rtp.Packet
 	lastPktDuration uint32
 	dtxInserted     uint64
@@ -339,10 +338,6 @@ func opusFrameCount(c byte, payload []byte) int {
 		}
 	}
 	return 0
-}
-
-func (c *RTPDump2WebMConverter) offset(pts, fts uint32) int64 {
-	return int64(c.timestampDiff(pts, fts) / 90)
 }
 
 func (c *RTPDump2WebMConverter) timestampDiff(pts, fts uint32) uint32 {

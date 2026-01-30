@@ -248,14 +248,14 @@ func (r *GstreamerConverter) Close() error {
 
 		select {
 		case <-time.After(5 * time.Second):
-			r.logger.Warnf("GStreamer process pid<%d> termination timeout in %s...", r.gstreamerCmd.Process.Pid, time.Now().Sub(r.startAt).Round(time.Millisecond))
+			r.logger.Warnf("GStreamer process pid<%d> termination timeout in %s...", r.gstreamerCmd.Process.Pid, time.Since(r.startAt).Round(time.Millisecond))
 
 			// Timeout, force kill
 			if e := r.gstreamerCmd.Process.Kill(); e != nil {
 				r.logger.Errorf("GStreamer process pid<%d> errored while killing: %v", r.gstreamerCmd.Process.Pid, e)
 			}
 		case <-done:
-			r.logger.Infof("GStreamer process pid<%d> exited succesfully in %s...", r.gstreamerCmd.Process.Pid, time.Now().Sub(r.startAt).Round(time.Millisecond))
+			r.logger.Infof("GStreamer process pid<%d> exited succesfully in %s...", r.gstreamerCmd.Process.Pid, time.Since(r.startAt).Round(time.Millisecond))
 		}
 	}
 

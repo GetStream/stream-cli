@@ -198,9 +198,9 @@ func runFFmpegCommand(args []string, logger *ProcessingLogger) error {
 
 	if err != nil {
 		logger.Errorf("FFmpeg process pid<%d> failed: %v", cmd.Process.Pid, err)
-		return fmt.Errorf("FFmpeg process pid<%d> failed in %s: %w", cmd.Process.Pid, time.Now().Sub(startAt).Round(time.Millisecond), err)
+		return fmt.Errorf("FFmpeg process pid<%d> failed in %s: %w", cmd.Process.Pid, time.Since(startAt).Round(time.Millisecond), err)
 	}
 
-	logger.Infof("FFmpeg process pid<%d> ended successfully in %s", cmd.Process.Pid, time.Now().Sub(startAt).Round(time.Millisecond))
+	logger.Infof("FFmpeg process pid<%d> ended successfully in %s", cmd.Process.Pid, time.Since(startAt).Round(time.Millisecond))
 	return nil
 }
