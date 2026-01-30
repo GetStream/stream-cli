@@ -2,10 +2,12 @@ run:
   go: '1.23'
   deadline: 210s
   timeout: 10m
-  skip-dirs:
+
+issues:
+  exclude-dirs:
     - mocks
     - '.*_mock'
-  skip-files:
+  exclude-files:
     - '.*_mock.go'
     - ".*\\.pb\\.go$"
 
