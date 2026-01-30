@@ -1,6 +1,7 @@
+version: "2"
+
 run:
-  go: '1.23'
-  deadline: 210s
+  go: '1.24'
   timeout: 10m
 
 issues:

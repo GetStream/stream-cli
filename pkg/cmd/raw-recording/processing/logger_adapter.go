@@ -32,7 +32,7 @@ func (l *ProcessingLogger) log(level LogLevel, prefix, format string, args ...in
 		return
 	}
 	msg := fmt.Sprintf(format, args...)
-	fmt.Fprintf(l.writer, "%s %s\n", prefix, msg)
+	_, _ = fmt.Fprintf(l.writer, "%s %s\n", prefix, msg)
 }
 
 func (l *ProcessingLogger) Debug(format string, args ...interface{}) {

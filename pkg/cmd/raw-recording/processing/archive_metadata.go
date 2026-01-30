@@ -141,13 +141,17 @@ func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*Recordin
 	if err != nil {
 		return nil, fmt.Errorf("failed to open tar.gz file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	gzReader, err := gzip.NewReader(file)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
-	defer gzReader.Close()
+	defer func() {
+		_ = gzReader.Close()
+	}()
 
 	tarReader := tar.NewReader(gzReader)
 

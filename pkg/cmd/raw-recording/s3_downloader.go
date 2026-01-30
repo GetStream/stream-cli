@@ -258,7 +258,9 @@ func (d *S3Downloader) getPresignedURLETag(ctx context.Context, inputURL string)
 	if err != nil {
 		return "", fmt.Errorf("failed to execute HEAD request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("HEAD request failed with status: %d", resp.StatusCode)
@@ -286,18 +288,22 @@ func (d *S3Downloader) downloadFromS3(ctx context.Context, inputURL, destPath st
 	if err != nil {
 		return "", fmt.Errorf("failed to download from S3: %w", err)
 	}
-	defer result.Body.Close()
+	defer func() {
+		_ = result.Body.Close()
+	}()
 
 	// Create destination file
 	file, err := os.Create(destPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to create destination file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// Copy content
 	if _, err := io.Copy(file, result.Body); err != nil {
-		os.Remove(destPath) // Clean up partial file
+		_ = os.Remove(destPath) // Clean up partial file
 		return "", fmt.Errorf("failed to write file: %w", err)
 	}
 
@@ -320,7 +326,9 @@ func (d *S3Downloader) downloadFromPresignedURL(ctx context.Context, inputURL, d
 	if err != nil {
 		return "", fmt.Errorf("failed to execute GET request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("download failed with status: %d", resp.StatusCode)
@@ -331,11 +339,13 @@ func (d *S3Downloader) downloadFromPresignedURL(ctx context.Context, inputURL, d
 	if err != nil {
 		return "", fmt.Errorf("failed to create destination file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// Copy content
 	if _, err := io.Copy(file, resp.Body); err != nil {
-		os.Remove(destPath) // Clean up partial file
+		_ = os.Remove(destPath) // Clean up partial file
 		return "", fmt.Errorf("failed to write file: %w", err)
 	}
 

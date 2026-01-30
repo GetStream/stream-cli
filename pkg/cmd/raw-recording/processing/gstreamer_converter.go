@@ -183,7 +183,7 @@ func parseRtpCapsFromSDP(sdp string) (media string, encodingName string, payload
 	}
 
 	if !mLineFound || !rtpmapLineFound {
-		err = fmt.Errorf("Invalid SDP m= or a=rtpmap lines not found: \n%s", sdp)
+		err = fmt.Errorf("invalid SDP m= or a=rtpmap lines not found: \n%s", sdp)
 	}
 	return
 }

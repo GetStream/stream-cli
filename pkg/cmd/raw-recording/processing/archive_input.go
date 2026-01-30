@@ -29,7 +29,7 @@ func ExtractToTempDir(inputPath string, logger *ProcessingLogger) (string, func(
 		}
 
 		cleanup := func() {
-			os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir)
 		}
 
 		err = extractTarGzToDir(inputPath, tempDir, logger)
@@ -51,13 +51,17 @@ func extractTarGzToDir(tarGzPath, destDir string, logger *ProcessingLogger) erro
 	if err != nil {
 		return fmt.Errorf("failed to open tar.gz file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	gzReader, err := gzip.NewReader(file)
 	if err != nil {
 		return fmt.Errorf("failed to create gzip reader: %w", err)
 	}
-	defer gzReader.Close()
+	defer func() {
+		_ = gzReader.Close()
+	}()
 
 	tarReader := tar.NewReader(gzReader)
 
@@ -90,7 +94,7 @@ func extractTarGzToDir(tarGzPath, destDir string, logger *ProcessingLogger) erro
 		}
 
 		_, err = io.Copy(outFile, tarReader)
-		outFile.Close()
+		_ = outFile.Close()
 		if err != nil {
 			return fmt.Errorf("failed to extract file %s: %w", destPath, err)
 		}

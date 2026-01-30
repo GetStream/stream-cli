@@ -69,9 +69,9 @@ func (p *TrackExtractor) extractSingleTrackWithOptions(config *TrackExtractorCon
 				abs, _ := filepath.Abs(path)
 
 				s.RtpDumpPath = abs
-				s.SdpPath = strings.Replace(abs, suffixRtpDump, suffixSdp, -1)
+				s.SdpPath = strings.ReplaceAll(abs, suffixRtpDump, suffixSdp)
 				s.ContainerExt = extension
-				s.ContainerPath = strings.Replace(abs, suffixRtpDump, suffix, -1)
+				s.ContainerPath = strings.ReplaceAll(abs, suffixRtpDump, suffix)
 				return s, true
 			}
 		}
@@ -116,10 +116,12 @@ func (p *TrackExtractor) processSegmentsWithGapFilling(config *TrackExtractorCon
 			}
 		}(&cleanupFiles)
 	}
-	defer concatFile.Close()
+	defer func() {
+		_ = concatFile.Close()
+	}()
 
 	for i, segment := range track.Segments {
-		if _, e := concatFile.WriteString(fmt.Sprintf("file '%s'\n", segment.ContainerPath)); e != nil {
+		if _, e := fmt.Fprintf(concatFile, "file '%s'\n", segment.ContainerPath); e != nil {
 			return nil, e
 		}
 		cleanupFiles = append(cleanupFiles, segment.ContainerPath)
@@ -158,7 +160,7 @@ func (p *TrackExtractor) processSegmentsWithGapFilling(config *TrackExtractorCon
 					return nil, err
 				}
 
-				if _, e := concatFile.WriteString(fmt.Sprintf("file '%s'\n", absPath)); e != nil {
+				if _, e := fmt.Fprintf(concatFile, "file '%s'\n", absPath); e != nil {
 					return nil, e
 				}
 			}

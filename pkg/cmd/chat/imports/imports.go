@@ -30,7 +30,9 @@ func validateFile(cmd *cobra.Command, c *stream.Client, filename string) (*valid
 	if err != nil {
 		return nil, err
 	}
-	defer reader.Close()
+	defer func() {
+		_ = reader.Close()
+	}()
 
 	rolesResp, err := c.Permissions().ListRoles(cmd.Context())
 	if err != nil {
@@ -85,7 +87,9 @@ func uploadToS3(ctx context.Context, filename, url string) error {
 	if err != nil {
 		return err
 	}
-	defer data.Close()
+	defer func() {
+		_ = data.Close()
+	}()
 
 	stat, err := data.Stat()
 	if err != nil {
@@ -103,7 +107,9 @@ func uploadToS3(ctx context.Context, filename, url string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	return nil
 }

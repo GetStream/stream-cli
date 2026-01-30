@@ -88,7 +88,9 @@ func (c *RTPDump2WebMConverter) ConvertFile(inputFile string, fixDtx bool) error
 	if err != nil {
 		return fmt.Errorf("failed to open rtpdump file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// Create standardized reader
 	reader, _, _ := rtpdump.NewReader(file)
@@ -125,7 +127,9 @@ func (c *RTPDump2WebMConverter) ConvertFile(inputFile string, fixDtx bool) error
 	if err != nil {
 		return fmt.Errorf("failed to create WebM recorder: %w", err)
 	}
-	defer c.recorder.Close()
+	defer func() {
+		_ = c.recorder.Close()
+	}()
 
 	// Convert and feed RTP packets
 	return c.feedPackets(mType, reader)

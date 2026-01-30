@@ -196,7 +196,7 @@ func GetInitConfig(cmd *cobra.Command, cfgPath *string) func() {
 				os.Exit(1)
 			}
 
-			f.Close()
+			_ = f.Close()
 		}
 		if err != nil {
 			cmd.PrintErr(err)
