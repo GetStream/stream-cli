@@ -1,11 +1,14 @@
+version: "2"
+
 run:
-  go: '1.19'
-  deadline: 210s
+  go: '1.24'
   timeout: 10m
-  skip-dirs:
+
+issues:
+  exclude-dirs:
     - mocks
     - '.*_mock'
-  skip-files:
+  exclude-files:
     - '.*_mock.go'
     - ".*\\.pb\\.go$"
 

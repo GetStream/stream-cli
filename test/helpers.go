@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"os"
 	"testing"
-	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
 	"github.com/spf13/cobra"
@@ -91,7 +90,6 @@ func DeleteMessage(id string) {
 }
 
 func RandomString(n int) string {
-	rand.Seed(time.Now().UnixNano())
 	bytes := make([]byte, n)
 	for i := 0; i < n; i++ {
 		bytes[i] = byte(65 + rand.Intn(25)) // A=65 and Z = 65+25
