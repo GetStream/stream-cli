@@ -11,7 +11,7 @@ import (
 
 	"github.com/pion/rtp"
 	"github.com/pion/rtp/codecs"
-	"github.com/pion/webrtc/v4"
+	webrtc "github.com/pion/webrtc/v4"
 	"github.com/pion/webrtc/v4/pkg/media/rtpdump"
 	"github.com/pion/webrtc/v4/pkg/media/samplebuilder"
 )

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pion/webrtc/v4"
+	webrtc "github.com/pion/webrtc/v4"
 )
 
 func readSDP(sdpFilePath string) (string, error) {
