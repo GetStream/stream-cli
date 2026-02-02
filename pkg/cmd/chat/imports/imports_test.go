@@ -11,23 +11,16 @@ import (
 	"github.com/GetStream/stream-cli/test"
 )
 
-func TestValidateImport(t *testing.T) {
-	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
-	cmd.SetArgs([]string{"validate-import", "./validator/testdata/valid-data.json"})
-	_, err := cmd.ExecuteC()
-	require.NoError(t, err)
-}
-
 func TestUploadImport(t *testing.T) {
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
-	cmd.SetArgs([]string{"upload-import", "./validator/testdata/valid-data.json"})
+	cmd.SetArgs([]string{"upload-import", "./testdata/data.json"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 }
 
 func TestGetImport(t *testing.T) {
 	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
-	cmd.SetArgs([]string{"upload-import", "./validator/testdata/valid-data.json"})
+	cmd.SetArgs([]string{"upload-import", "./testdata/data.json"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
 

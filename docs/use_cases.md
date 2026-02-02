@@ -93,12 +93,6 @@ $ stream-cli chat list-channels -t messaging
 
 ## Imports
 
-Validate an import file:
-```shell
-$ stream-cli chat validate-import data.json
-```
-- [**validate-import** docs](./stream-cli_chat_validate-import.md)
-
 Upload a new import:
 ```shell
 $ stream-cli chat upload-import data.json --mode insert
