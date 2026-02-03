@@ -11,73 +11,16 @@ import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 
-	"github.com/GetStream/stream-cli/pkg/cmd/chat/imports/validator"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/utils"
 )
 
 func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
-		validateCmd(),
 		uploadCmd(),
 		getCmd(),
 		listCmd(),
 	}
-}
-
-func validateFile(cmd *cobra.Command, c *stream.Client, filename string) (*validator.Results, error) {
-	reader, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer reader.Close()
-
-	rolesResp, err := c.Permissions().ListRoles(cmd.Context())
-	if err != nil {
-		return nil, err
-	}
-
-	channelTypesResp, err := c.ListChannelTypes(cmd.Context())
-	if err != nil {
-		return nil, err
-	}
-
-	var options []validator.Options
-	if light, _ := cmd.Flags().GetBool("lighter-validation-id"); light {
-		options = append(options, validator.LighterValidationChannelID())
-	}
-	return validator.New(reader, rolesResp.Roles, channelTypesResp.ChannelTypes, options...).Validate(), nil
-}
-
-func validateCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "validate-import [filename]",
-		Short: "Validate import file",
-		Example: heredoc.Doc(`
-			# Validates a JSON import file
-			$ stream-cli chat validate-import data.json
-		`),
-		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := config.GetConfig(cmd).GetClient(cmd)
-			if err != nil {
-				return err
-			}
-
-			results, err := validateFile(cmd, c, args[0])
-			if err != nil {
-				return err
-			}
-
-			return utils.PrintObject(cmd, results)
-		},
-	}
-
-	fl := cmd.Flags()
-	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
-	fl.Bool("lighter-validation-id", false, "[optional] allows to pass ! in channel ID")
-
-	return cmd
 }
 
 func uploadToS3(ctx context.Context, filename, url string) error {
@@ -127,14 +70,6 @@ func uploadCmd() *cobra.Command {
 			}
 
 			filename := args[0]
-
-			results, err := validateFile(cmd, c, filename)
-			if err != nil {
-				return err
-			}
-			if results.HasErrors() {
-				return utils.PrintObject(cmd, results)
-			}
 
 			mode := stream.UpsertMode
 			if m, _ := cmd.Flags().GetString("mode"); stream.ImportMode(m) == stream.InsertMode {
