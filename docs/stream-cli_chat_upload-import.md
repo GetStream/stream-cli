@@ -20,9 +20,10 @@ $ stream-cli chat upload-import data.json --mode insert --output-format tree
 ### Options
 
 ```
-  -h, --help                   help for upload-import
-  -m, --mode string            [optional] Import mode. Canbe upsert or insert (default "upsert")
-  -o, --output-format string   [optional] Output format. Can be json or tree (default "json")
+  -h, --help                    help for upload-import
+      --lighter-validation-id   [optional] allows to pass ! in channel ID
+  -m, --mode string             [optional] Import mode. Canbe upsert or insert (default "upsert")
+  -o, --output-format string    [optional] Output format. Can be json or tree (default "json")
 ```
 
 ### Options inherited from parent commands
