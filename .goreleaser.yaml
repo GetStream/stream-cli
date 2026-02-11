@@ -41,3 +41,7 @@ homebrew_casks:
     repository:
       owner: GetStream
       name: stream-cli
+    hooks:
+      post:
+        install: |
+          system "xattr", "-dr", "com.apple.quarantine", "#{staged_path}"
