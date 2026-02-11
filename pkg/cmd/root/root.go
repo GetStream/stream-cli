@@ -8,6 +8,7 @@ import (
 
 	"github.com/GetStream/stream-cli/pkg/cmd/chat"
 	cfgCmd "github.com/GetStream/stream-cli/pkg/cmd/config"
+	"github.com/GetStream/stream-cli/pkg/cmd/feeds"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/version"
 )
@@ -39,6 +40,7 @@ func NewCmd() *cobra.Command {
 	root.AddCommand(
 		cfgCmd.NewRootCmd(),
 		chat.NewRootCmd(),
+		feeds.NewRootCmd(),
 	)
 
 	cobra.OnInitialize(config.GetInitConfig(root, cfgPath))

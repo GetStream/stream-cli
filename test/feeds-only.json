@@ -1,0 +1,45 @@
+{
+  "feeds": [
+    {
+      "group_id": "group_123",
+      "id": "feed_456",
+      "fid": "fid_789",
+      "name": "Tech Enthusiasts",
+      "description": "A group for technology lovers to share insights and news.",
+      "custom": {
+        "category": "Technology",
+        "region": "Global",
+        "is_featured": true
+      },
+      "filter_tags": [
+        "tech",
+        "gadgets",
+        "news"
+      ],
+      "visibility": "public",
+      "created_at": 1752741108550693000,
+      "updated_at": 1752741108550693000,
+      "deleted_at": null
+    },
+    {
+      "group_id": "group_456",
+      "id": "feed_789",
+      "fid": "fid_012",
+      "name": "Design Community",
+      "description": "A community for designers to share their work.",
+      "custom": {
+        "category": "Design",
+        "region": "Global"
+      },
+      "filter_tags": [
+        "design",
+        "art",
+        "creativity"
+      ],
+      "visibility": "private",
+      "created_at": 1752741108550693000,
+      "updated_at": 1752741108550693000,
+      "deleted_at": null
+    }
+  ]
+} 

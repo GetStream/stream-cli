@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": "",
+      "role": "user",
+      "custom": {}
+    }
+  ],
+  "feeds": [
+    {
+      "group_id": "",
+      "id": "feed_123",
+      "fid": "",
+      "name": "user:123",
+      "custom": {}
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity:1",
+      "type": "post",
+      "feeds": [],
+      "custom": {}
+    }
+  ]
+} 

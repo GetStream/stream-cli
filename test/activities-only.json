@@ -1,0 +1,40 @@
+{
+  "activities": [
+    {
+      "id": "19a8aa2b-1e71-447c-9338-556ced2cd7a1",
+      "type": "post",
+      "feeds": [
+        "user:user-w6p05o"
+      ],
+      "visibility": "public",
+      "created_at": 1752741103506159000,
+      "updated_at": 1752741108550693000,
+      "attachments": [],
+      "mentioned_users": [],
+      "custom": {
+        "foo": "bar"
+      },
+      "text": "Hello world!",
+      "search_data": {},
+      "filter_tags": [],
+      "interest_tags": []
+    },
+    {
+      "id": "29b9bb3c-2f82-558d-0449-667dfe3de8b2",
+      "type": "comment",
+      "feeds": [
+        "user:user-w6p05o"
+      ],
+      "visibility": "public",
+      "created_at": 1752741103506159000,
+      "updated_at": 1752741108550693000,
+      "attachments": [],
+      "mentioned_users": [],
+      "custom": {},
+      "text": "Great post!",
+      "search_data": {},
+      "filter_tags": [],
+      "interest_tags": []
+    }
+  ]
+} 

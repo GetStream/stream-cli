@@ -1,0 +1,17 @@
+{
+  "reactions": [
+    {
+      "activity_id": "activity:1",
+      "comment_id": "comment:1",
+      "type": "like",
+      "user_id": "user:456",
+      "custom": {}
+    },
+    {
+      "activity_id": "activity:2",
+      "type": "love",
+      "user_id": "user:123",
+      "custom": {}
+    }
+  ]
+} 
