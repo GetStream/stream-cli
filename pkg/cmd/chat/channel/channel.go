@@ -3,6 +3,8 @@ package channel
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -28,6 +30,7 @@ func NewCmds() []*cobra.Command {
 		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
+		listMembersCmd(),
 	}
 }
 
@@ -607,6 +610,108 @@ func showCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func listMembersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list-members --type [channel-type] --id [channel-id]",
+		Short: "List members of a channel",
+		Long: heredoc.Doc(`
+			List and paginate members of a channel using the Stream Chat API.
+
+			This command supports optional filters, offset/limit for pagination,
+			and sort fields (e.g. "user_id", "created_at").
+		`),
+		Example: heredoc.Doc(`
+			# List first 10 members of 'red-team'
+			$ stream-cli chat list-members --type messaging --id red-team
+
+			# Filter members whose name includes 'tom'
+			$ stream-cli chat list-members --type messaging --id red-team --filter '{"name":{"$q":"tom"}}'
+
+			# Get next page of members (10 offset)
+			$ stream-cli chat list-members --type messaging --id red-team --offset 10 --limit 10
+
+			# Sort members by user_id ascending
+			$ stream-cli chat list-members --type messaging --id red-team --sort user_id:1
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// client
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			// required flags
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+
+			// optional flags
+			rawFilter, _ := cmd.Flags().GetString("filter")
+			offset, _ := cmd.Flags().GetInt("offset")
+			limit, _ := cmd.Flags().GetInt("limit")
+			rawSort, _ := cmd.Flags().GetString("sort")
+
+			// parse filter JSON
+			filter := map[string]interface{}{}
+			if rawFilter != "" {
+				err = json.Unmarshal([]byte(rawFilter), &filter)
+				if err != nil {
+					return fmt.Errorf("invalid filter JSON: %w", err)
+				}
+			}
+
+			// parse sort
+			var sortOption *stream.SortOption
+			if rawSort != "" {
+				parts := strings.Split(rawSort, ":")
+				if len(parts) != 2 {
+					return errors.New("sort format must be field:direction (e.g., user_id:1)")
+				}
+				direction := 1
+				if parts[1] == "-1" {
+					direction = -1
+				}
+				sortOption = &stream.SortOption{
+					Field:     parts[0],
+					Direction: direction,
+				}
+			}
+
+			// build query
+			q := &stream.QueryOption{
+				Filter: filter,
+				Offset: offset,
+				Limit:  limit,
+			}
+
+			if sortOption == nil {
+				sortOption = &stream.SortOption{Field: "user_id", Direction: 1}
+			}
+
+			ch := c.Channel(chanType, chanID)
+			membersResp, err := ch.QueryMembers(cmd.Context(), q, sortOption)
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, membersResp.Members)
+		},
+	}
+
+	// flags
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel ID")
+	fl.String("filter", "", "[optional] JSON string to filter members")
+	fl.String("sort", "", "[optional] Sorting field and direction (e.g., user_id:1 or created_at:-1)")
+	fl.Int("offset", 0, "[optional] Pagination offset (default 0)")
+	fl.Int("limit", 10, "[optional] Pagination limit (default 10)")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
