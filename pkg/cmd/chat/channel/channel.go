@@ -3,6 +3,7 @@ package channel
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -28,6 +29,7 @@ func NewCmds() []*cobra.Command {
 		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
+		muteChannelCmd(),
 	}
 }
 
@@ -604,6 +606,68 @@ func showCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user-id", "u", "", "[required] User id to show the channel to")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func muteChannelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mute-channel --type [channel-type] --id [channel-id] --user-id [user-id] [--expiration duration]",
+		Short: "Mute a channel for a user",
+		Long: heredoc.Doc(`
+			Mutes a channel for a specific user. Muted channels do not trigger notifications, 
+			affect unread counts, or unhide themselves when new messages are added.
+
+			You can optionally set an expiration time for the mute using the --expiration flag, 
+			such as '1h', '24h', etc.
+		`),
+		Example: heredoc.Doc(`
+			# Mute a channel indefinitely for user 'john'
+			$ stream-cli chat mute-channel --type messaging --id redteam --user-id john
+
+			# Mute a channel for 6 hours
+			$ stream-cli chat mute-channel --type messaging --id redteam --user-id john --expiration 6h
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			typ, _ := cmd.Flags().GetString("type")
+			id, _ := cmd.Flags().GetString("id")
+			user, _ := cmd.Flags().GetString("user-id")
+			expStr, _ := cmd.Flags().GetString("expiration")
+
+			var exp *time.Duration
+			if expStr != "" {
+				d, err := time.ParseDuration(expStr)
+				if err != nil {
+					return fmt.Errorf("invalid expiration duration: %w", err)
+				}
+				exp = &d
+			}
+
+			ch := client.Channel(typ, id)
+			_, err = ch.Mute(cmd.Context(), user, exp)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully muted channel [%s] for user [%s]\n", id, user)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging'")
+	fl.StringP("id", "i", "", "[required] Channel ID")
+	fl.StringP("user-id", "u", "", "[required] User ID")
+	fl.String("expiration", "", "[optional] Expiration duration (e.g., '1h', '6h')")
+
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user-id")
