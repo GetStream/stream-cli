@@ -21,6 +21,7 @@ func NewCmds() []*cobra.Command {
 		deleteCmd(),
 		flagCmd(),
 		translateCmd(),
+		updateMessageCmd(),
 	}
 }
 
@@ -330,6 +331,56 @@ func translateCmd() *cobra.Command {
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	_ = cmd.MarkFlagRequired("message-id")
 	_ = cmd.MarkFlagRequired("language")
+
+	return cmd
+}
+
+func updateMessageCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-message --message-id [id] --user [user-id] --text [text]",
+		Short: "Update an existing message",
+		Long: heredoc.Doc(`
+			Update a message by providing the message ID, user ID, and new message text.
+			This fully overwrites the message content while preserving metadata.
+		`),
+		Example: heredoc.Doc(`
+			# Update a message by ID
+			$ stream-cli chat update-message --message-id msgid-123 --user user123 --text "Updated message text"
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			msgID, _ := cmd.Flags().GetString("message-id")
+			userID, _ := cmd.Flags().GetString("user")
+			text, _ := cmd.Flags().GetString("text")
+
+			updatedMsg := &stream.Message{
+				ID:   msgID,
+				Text: text,
+				User: &stream.User{ID: userID},
+			}
+
+			_, err = c.UpdateMessage(cmd.Context(), updatedMsg, msgID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully updated message.")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.String("message-id", "", "[required] ID of the message to update")
+	fl.String("user", "", "[required] User ID performing the update")
+	fl.String("text", "", "[required] New message text")
+
+	_ = cmd.MarkFlagRequired("message-id")
+	_ = cmd.MarkFlagRequired("user")
+	_ = cmd.MarkFlagRequired("text")
 
 	return cmd
 }
