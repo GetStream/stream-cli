@@ -73,8 +73,7 @@ func sendCmd() *cobra.Command {
 			userID, _ := cmd.Flags().GetString("user-id")
 
 			r := &stream_chat.Reaction{Type: reactionType}
-
-			_, err = c.Channel("", "").SendReaction(cmd.Context(), r, msgID, userID)
+			_, err = c.SendReaction(cmd.Context(), r, msgID, userID)
 			if err != nil {
 				return err
 			}
@@ -113,7 +112,7 @@ func deleteCmd() *cobra.Command {
 			userID, _ := cmd.Flags().GetString("user-id")
 			msgID, _ := cmd.Flags().GetString("message-id")
 
-			_, err = c.Channel("", "").DeleteReaction(cmd.Context(), msgID, reactionType, userID)
+			_, err = c.DeleteReaction(cmd.Context(), msgID, reactionType, userID)
 			if err != nil {
 				return err
 			}
