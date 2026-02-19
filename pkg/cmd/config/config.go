@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"text/tabwriter"
 
-	"github.com/AlecAivazis/survey/v2"
+	survey "github.com/AlecAivazis/survey/v2"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/cheynewallace/tabby"
 	"github.com/spf13/cobra"

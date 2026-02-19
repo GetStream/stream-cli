@@ -551,7 +551,7 @@ func hideCmd() *cobra.Command {
 				return err
 			}
 
-			cmd.Printf("Successfully hid channel for " + userID + "\n")
+			cmd.Printf("Successfully hid channel for %s\n", userID)
 			return nil
 		},
 	}
