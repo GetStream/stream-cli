@@ -48,7 +48,7 @@ For MacOS users, it's also available via Homebrew:
 
 ```shell
 $ brew tap GetStream/stream-cli https://github.com/GetStream/stream-cli
-$ brew install stream-cli
+$ brew install --cask stream-cli
 ```
 
 ## Compile yourself

@@ -35,7 +35,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.19'
+          go-version: '1.22'
 
       - run: |
           git tag "${{ env.VERSION }}"
@@ -46,7 +46,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --rm-dist --release-notes latest_changes.txt
+          args: release --clean --release-notes latest_changes.txt
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           GORELEASER_CURRENT_TAG: ${{ env.VERSION }}

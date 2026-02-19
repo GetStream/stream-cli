@@ -77,6 +77,5 @@ Allows you to interact with your Chat applications
 * [stream-cli chat upload-import](stream-cli_chat_upload-import.md)	 - Upload an import
 * [stream-cli chat upsert-pushprovider](stream-cli_chat_upsert-pushprovider.md)	 - Create or updates a push provider
 * [stream-cli chat upsert-user](stream-cli_chat_upsert-user.md)	 - Upsert a user
-* [stream-cli chat validate-import](stream-cli_chat_validate-import.md)	 - Validate import file
 * [stream-cli chat watch](stream-cli_chat_watch.md)	 - Wait for an async task to complete
 
