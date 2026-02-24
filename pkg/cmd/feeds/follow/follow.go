@@ -48,19 +48,6 @@ func doJSON(cmd *cobra.Command, method, path string, body interface{}) error {
 	return utils.PrintObject(cmd, result)
 }
 
-func doAction(cmd *cobra.Command, method, path string, body interface{}, msg string) error {
-	h, err := getHTTPClient(cmd)
-	if err != nil {
-		return err
-	}
-	_, err = h.DoRequest(cmd.Context(), method, path, body)
-	if err != nil {
-		return err
-	}
-	cmd.Println(msg)
-	return nil
-}
-
 func followCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "follow --properties [json]",
