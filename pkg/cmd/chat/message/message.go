@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"strings"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -21,6 +22,7 @@ func NewCmds() []*cobra.Command {
 		deleteCmd(),
 		flagCmd(),
 		translateCmd(),
+		getRepliesCmd(),
 	}
 }
 
@@ -330,6 +332,53 @@ func translateCmd() *cobra.Command {
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	_ = cmd.MarkFlagRequired("message-id")
 	_ = cmd.MarkFlagRequired("language")
+
+	return cmd
+}
+
+func getRepliesCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-replies [parent-message-id] --channel-type [type] --channel-id [id]",
+		Short: "Get replies (thread) of a message",
+		Example: heredoc.Doc(`
+			# Get replies for a message
+			$ stream-cli chat get-replies parent-msg-id-1 --channel-type messaging --channel-id redteam
+
+			# Get replies with limit
+			$ stream-cli chat get-replies parent-msg-id-1 --channel-type messaging --channel-id redteam --limit 5
+		`),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chType, _ := cmd.Flags().GetString("channel-type")
+			chID, _ := cmd.Flags().GetString("channel-id")
+			limit, _ := cmd.Flags().GetInt("limit")
+
+			options := map[string][]string{}
+			if limit > 0 {
+				options["limit"] = []string{fmt.Sprintf("%d", limit)}
+			}
+
+			resp, err := c.Channel(chType, chID).GetReplies(cmd.Context(), args[0], options)
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, resp)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("channel-type", "t", "", "[required] Channel type")
+	fl.StringP("channel-id", "i", "", "[required] Channel id")
+	fl.IntP("limit", "l", 0, "[optional] Number of replies to return")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("channel-type")
+	_ = cmd.MarkFlagRequired("channel-id")
 
 	return cmd
 }
