@@ -80,6 +80,10 @@ func (c *Config) GetClient(cmd *cobra.Command) (*stream.Client, error) {
 	return client, nil
 }
 
+func (c *Config) GetAppConfig(cmd *cobra.Command) (*App, error) {
+	return c.GetDefaultAppOrExplicit(cmd)
+}
+
 func (c *Config) Add(newApp App) error {
 	if len(c.Apps) == 0 {
 		c.Default = newApp.Name

@@ -7,6 +7,7 @@ node_modules/
 .vscode
 .envrc
 stream-cli
+stream-cli-test
 stream
 latest_changes.txt
 # Test coverage output

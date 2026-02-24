@@ -17,6 +17,10 @@ func NewCmds() []*cobra.Command {
 		deleteCmd(),
 		listCmd(),
 		testCmd(),
+		checkSNSCmd(),
+		checkSQSCmd(),
+		getPushTemplatesCmd(),
+		upsertPushTemplateCmd(),
 	}
 }
 
@@ -211,6 +215,183 @@ func testCmd() *cobra.Command {
 	fl.String("push-provider-type", "", "[optional] Push provider type to use")
 	fl.String("user-id", "", "[optional] User id to initiate the test")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+
+	return cmd
+}
+
+func checkSNSCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "check-sns --sns-topic-arn [arn] --sns-key [key] --sns-secret [secret]",
+		Short: "Validate Amazon SNS configuration",
+		Example: heredoc.Doc(`
+			# Check SNS configuration
+			$ stream-cli chat check-sns --sns-topic-arn arn:aws:sns:us-east-1:123:topic --sns-key key --sns-secret secret
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			arn, _ := cmd.Flags().GetString("sns-topic-arn")
+			key, _ := cmd.Flags().GetString("sns-key")
+			secret, _ := cmd.Flags().GetString("sns-secret")
+
+			body := map[string]interface{}{
+				"sns_topic_arn": arn,
+				"sns_key":       key,
+				"sns_secret":    secret,
+			}
+
+			resp, err := h.DoRequest(cmd.Context(), "POST", "check_sns", body)
+			if err != nil {
+				return err
+			}
+
+			var result interface{}
+			_ = json.Unmarshal(resp, &result)
+			return utils.PrintObject(cmd, result)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.String("sns-topic-arn", "", "[optional] SNS topic ARN")
+	fl.String("sns-key", "", "[optional] AWS SNS access key")
+	fl.String("sns-secret", "", "[optional] AWS SNS secret key")
+	fl.StringP("output-format", "o", "json", "[optional] Output format")
+
+	return cmd
+}
+
+func checkSQSCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "check-sqs --sqs-url [url] --sqs-key [key] --sqs-secret [secret]",
+		Short: "Validate Amazon SQS configuration",
+		Example: heredoc.Doc(`
+			# Check SQS configuration
+			$ stream-cli chat check-sqs --sqs-url https://sqs.us-east-1.amazonaws.com/123/queue --sqs-key key --sqs-secret secret
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			sqsURL, _ := cmd.Flags().GetString("sqs-url")
+			key, _ := cmd.Flags().GetString("sqs-key")
+			secret, _ := cmd.Flags().GetString("sqs-secret")
+
+			body := map[string]interface{}{
+				"sqs_url":    sqsURL,
+				"sqs_key":    key,
+				"sqs_secret": secret,
+			}
+
+			resp, err := h.DoRequest(cmd.Context(), "POST", "check_sqs", body)
+			if err != nil {
+				return err
+			}
+
+			var result interface{}
+			_ = json.Unmarshal(resp, &result)
+			return utils.PrintObject(cmd, result)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.String("sqs-url", "", "[optional] SQS endpoint URL")
+	fl.String("sqs-key", "", "[optional] AWS SQS access key")
+	fl.String("sqs-secret", "", "[optional] AWS SQS secret key")
+	fl.StringP("output-format", "o", "json", "[optional] Output format")
+
+	return cmd
+}
+
+func getHTTPClient(cmd *cobra.Command) (*utils.HTTPClient, error) {
+	appCfg, err := config.GetConfig(cmd).GetAppConfig(cmd)
+	if err != nil {
+		return nil, err
+	}
+	return utils.NewHTTPClient(appCfg.AccessKey, appCfg.AccessSecretKey, appCfg.ChatURL), nil
+}
+
+func getPushTemplatesCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-push-templates --push-provider-type [type]",
+		Short: "Get push notification templates",
+		Example: heredoc.Doc(`
+			# Get push templates for Firebase
+			$ stream-cli chat get-push-templates --push-provider-type firebase
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			providerType, _ := cmd.Flags().GetString("push-provider-type")
+			providerName, _ := cmd.Flags().GetString("push-provider-name")
+
+			path := "push_templates?push_provider_type=" + providerType
+			if providerName != "" {
+				path += "&push_provider_name=" + providerName
+			}
+
+			resp, err := h.DoRequest(cmd.Context(), "GET", path, nil)
+			if err != nil {
+				return err
+			}
+
+			var result interface{}
+			_ = json.Unmarshal(resp, &result)
+			return utils.PrintObject(cmd, result)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.String("push-provider-type", "", "[required] Push provider type (firebase, apn, huawei, xiaomi)")
+	fl.String("push-provider-name", "", "[optional] Push provider name")
+	fl.StringP("output-format", "o", "json", "[optional] Output format")
+	_ = cmd.MarkFlagRequired("push-provider-type")
+
+	return cmd
+}
+
+func upsertPushTemplateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "upsert-push-template --properties [raw-json]",
+		Short: "Create or update a push notification template",
+		Example: heredoc.Doc(`
+			# Upsert a push template
+			$ stream-cli chat upsert-push-template --properties '{"event_type":"message.new","push_provider_type":"firebase","template":"{...}"}'
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			props, _ := cmd.Flags().GetString("properties")
+			var body interface{}
+			if err := json.Unmarshal([]byte(props), &body); err != nil {
+				return err
+			}
+
+			resp, err := h.DoRequest(cmd.Context(), "POST", "push_templates", body)
+			if err != nil {
+				return err
+			}
+
+			var result interface{}
+			_ = json.Unmarshal(resp, &result)
+			return utils.PrintObject(cmd, result)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("properties", "p", "", "[required] Template properties as JSON")
+	fl.StringP("output-format", "o", "json", "[optional] Output format")
+	_ = cmd.MarkFlagRequired("properties")
 
 	return cmd
 }

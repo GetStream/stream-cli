@@ -28,6 +28,14 @@ func NewCmds() []*cobra.Command {
 		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
+		truncateCmd(),
+		sendEventCmd(),
+		markReadCmd(),
+		markAllReadCmd(),
+		markUnreadCmd(),
+		muteChannelCmd(),
+		unmuteChannelCmd(),
+		queryMembersCmd(),
 	}
 }
 
@@ -607,6 +615,349 @@ func showCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func truncateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "truncate-channel --type [channel-type] --id [channel-id]",
+		Short: "Truncate a channel",
+		Long: heredoc.Doc(`
+			Removes all messages from the channel. You can optionally
+			provide a message that will be shown as a system message.
+		`),
+		Example: heredoc.Doc(`
+			# Truncate channel 'redteam'
+			$ stream-cli chat truncate-channel --type messaging --id redteam
+
+			# Hard truncate channel 'redteam'
+			$ stream-cli chat truncate-channel --type messaging --id redteam --hard
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			hard, _ := cmd.Flags().GetBool("hard")
+
+			opts := []stream.TruncateOption{}
+			if hard {
+				opts = append(opts, stream.TruncateWithHardDelete())
+			}
+
+			_, err = c.Channel(chanType, chanID).Truncate(cmd.Context(), opts...)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully truncated channel [%s:%s]\n", chanType, chanID)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.Bool("hard", false, "[optional] Hard delete channel data (messages, reactions, etc.)")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func sendEventCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "send-event --type [channel-type] --id [channel-id] --event-type [event-type] --user-id [user-id]",
+		Short: "Send a custom event to a channel",
+		Example: heredoc.Doc(`
+			# Send a typing event
+			$ stream-cli chat send-event --type messaging --id redteam --event-type typing.start --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			eventType, _ := cmd.Flags().GetString("event-type")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			event := &stream.Event{Type: stream.EventType(eventType)}
+
+			_, err = c.Channel(chanType, chanID).SendEvent(cmd.Context(), event, userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully sent event [%s]\n", eventType)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.String("event-type", "", "[required] Event type to send")
+	fl.StringP("user-id", "u", "", "[required] User id who sends the event")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("event-type")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func markReadCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mark-read --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Mark a channel as read",
+		Example: heredoc.Doc(`
+			# Mark channel as read for user 'joe'
+			$ stream-cli chat mark-read --type messaging --id redteam --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.Channel(chanType, chanID).MarkRead(cmd.Context(), userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully marked channel as read")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func markAllReadCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mark-all-read --user-id [user-id]",
+		Short: "Mark all channels as read for a user",
+		Example: heredoc.Doc(`
+			# Mark all channels as read for user 'joe'
+			$ stream-cli chat mark-all-read --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.MarkAllRead(cmd.Context(), userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully marked all channels as read")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] User id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func markUnreadCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mark-unread --type [channel-type] --id [channel-id] --user-id [user-id] --message-id [message-id]",
+		Short: "Mark a channel as unread from a specific message",
+		Example: heredoc.Doc(`
+			# Mark channel as unread from message 'msg-123' for user 'joe'
+			$ stream-cli chat mark-unread --type messaging --id redteam --user-id joe --message-id msg-123
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			appCfg, err := config.GetConfig(cmd).GetAppConfig(cmd)
+			if err != nil {
+				return err
+			}
+			h := utils.NewHTTPClient(appCfg.AccessKey, appCfg.AccessSecretKey, appCfg.ChatURL)
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+			msgID, _ := cmd.Flags().GetString("message-id")
+
+			body := map[string]interface{}{
+				"user_id":    userID,
+				"message_id": msgID,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "channels/"+chanType+"/"+chanID+"/unread", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully marked channel as unread")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id")
+	fl.StringP("message-id", "m", "", "[required] Message id to mark unread from")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("message-id")
+
+	return cmd
+}
+
+func muteChannelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mute-channel --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Mute a channel for a user",
+		Example: heredoc.Doc(`
+			# Mute the 'redteam' channel for user 'joe'
+			$ stream-cli chat mute-channel --type messaging --id redteam --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.Channel(chanType, chanID).Mute(cmd.Context(), userID, nil)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully muted channel")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func unmuteChannelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unmute-channel --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Unmute a channel for a user",
+		Example: heredoc.Doc(`
+			# Unmute the 'redteam' channel for user 'joe'
+			$ stream-cli chat unmute-channel --type messaging --id redteam --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			_, err = c.Channel(chanType, chanID).Unmute(cmd.Context(), userID)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully unmuted channel")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("user-id", "u", "", "[required] User id")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func queryMembersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "query-members --type [channel-type] --id [channel-id] --filter [raw-json]",
+		Short: "Query channel members with filter",
+		Example: heredoc.Doc(`
+			# Query all members of a channel
+			$ stream-cli chat query-members --type messaging --id redteam --filter '{}'
+
+			# Query banned members
+			$ stream-cli chat query-members --type messaging --id redteam --filter '{"banned":true}'
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			chanType, _ := cmd.Flags().GetString("type")
+			chanID, _ := cmd.Flags().GetString("id")
+			filterStr, _ := cmd.Flags().GetString("filter")
+			limit, _ := cmd.Flags().GetInt("limit")
+
+			var filter map[string]interface{}
+			if err := json.Unmarshal([]byte(filterStr), &filter); err != nil {
+				return err
+			}
+
+			resp, err := c.Channel(chanType, chanID).QueryMembers(cmd.Context(), &stream.QueryOption{
+				Filter: filter,
+				Limit:  limit,
+			})
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, resp)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type")
+	fl.StringP("id", "i", "", "[required] Channel id")
+	fl.StringP("filter", "f", "{}", "[optional] Filter conditions as JSON")
+	fl.IntP("limit", "l", 100, "[optional] Number of members to return")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }

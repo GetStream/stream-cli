@@ -29,6 +29,14 @@ func NewCmds() []*cobra.Command {
 		muteCmd(),
 		unmuteCmd(),
 		flagCmd(),
+		createGuestCmd(),
+		blockUserCmd(),
+		unblockUserCmd(),
+		getBlockedUsersCmd(),
+		restoreUsersCmd(),
+		deactivateUsersCmd(),
+		reactivateUsersCmd(),
+		sendUserEventCmd(),
 	}
 }
 
@@ -726,6 +734,312 @@ func flagCmd() *cobra.Command {
 	fl.StringP("flagged-by-id", "b", "", "[required] ID of the user who flagged the user")
 	_ = cmd.MarkFlagRequired("user-id")
 	_ = cmd.MarkFlagRequired("flagged-by-id")
+
+	return cmd
+}
+
+func createGuestCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-guest --user-id [user-id] --name [name]",
+		Short: "Create a guest user",
+		Long: heredoc.Doc(`
+			Creates a guest user. Guest users have a limited set of permissions
+			and can only be used in channels that have been configured to allow them.
+		`),
+		Example: heredoc.Doc(`
+			# Create a guest user
+			$ stream-cli chat create-guest --user-id guest-1 --name "Guest User"
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+			name, _ := cmd.Flags().GetString("name")
+
+			user := &stream.User{ID: userID, Name: name}
+			resp, err := c.CreateGuestUser(cmd.Context(), user)
+			if err != nil {
+				return err
+			}
+
+			return utils.PrintObject(cmd, resp)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] Guest user ID")
+	fl.StringP("name", "n", "", "[optional] Guest user name")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func getHTTPClient(cmd *cobra.Command) (*utils.HTTPClient, error) {
+	appCfg, err := config.GetConfig(cmd).GetAppConfig(cmd)
+	if err != nil {
+		return nil, err
+	}
+	return utils.NewHTTPClient(appCfg.AccessKey, appCfg.AccessSecretKey, appCfg.ChatURL), nil
+}
+
+func blockUserCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "block-user --user-id [blocker-id] --blocked-user-id [blocked-id]",
+		Short: "Block a user",
+		Example: heredoc.Doc(`
+			# Block user 'spammer' as user 'joe'
+			$ stream-cli chat block-user --user-id joe --blocked-user-id spammer
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+			blockedID, _ := cmd.Flags().GetString("blocked-user-id")
+
+			body := map[string]interface{}{
+				"blocked_user_id": blockedID,
+				"user_id":         userID,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "users/block", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully blocked user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] ID of the user who is blocking")
+	fl.StringP("blocked-user-id", "b", "", "[required] ID of the user to block")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("blocked-user-id")
+
+	return cmd
+}
+
+func unblockUserCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unblock-user --user-id [unblocker-id] --blocked-user-id [blocked-id]",
+		Short: "Unblock a user",
+		Example: heredoc.Doc(`
+			# Unblock user 'spammer' as user 'joe'
+			$ stream-cli chat unblock-user --user-id joe --blocked-user-id spammer
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+			blockedID, _ := cmd.Flags().GetString("blocked-user-id")
+
+			body := map[string]interface{}{
+				"blocked_user_id": blockedID,
+				"user_id":         userID,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "users/unblock", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully unblocked user")
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] ID of the user who is unblocking")
+	fl.StringP("blocked-user-id", "b", "", "[required] ID of the user to unblock")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("blocked-user-id")
+
+	return cmd
+}
+
+func getBlockedUsersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-blocked-users --user-id [user-id] --output-format [json|tree]",
+		Short: "Get list of blocked users",
+		Example: heredoc.Doc(`
+			# Get blocked users for 'joe'
+			$ stream-cli chat get-blocked-users --user-id joe
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+
+			resp, err := h.DoRequest(cmd.Context(), "GET", "users/block?user_id="+userID, nil)
+			if err != nil {
+				return err
+			}
+
+			var result interface{}
+			_ = json.Unmarshal(resp, &result)
+			return utils.PrintObject(cmd, result)
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] User ID to get blocked users for")
+	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func restoreUsersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "restore-users [user-id-1] [user-id-2] ...",
+		Short: "Restore soft deleted users",
+		Example: heredoc.Doc(`
+			# Restore users
+			$ stream-cli chat restore-users user-1 user-2
+		`),
+		Args: cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			body := map[string]interface{}{
+				"user_ids": args,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "users/restore", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully restored users")
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+func deactivateUsersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "deactivate-users [user-id-1] [user-id-2] ...",
+		Short: "Deactivate multiple users",
+		Long: heredoc.Doc(`
+			Deactivate multiple users in batch. Deactivated users cannot connect
+			to Stream Chat or send/receive messages.
+		`),
+		Example: heredoc.Doc(`
+			# Deactivate users in batch
+			$ stream-cli chat deactivate-users user-1 user-2 user-3
+		`),
+		Args: cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			body := map[string]interface{}{
+				"user_ids": args,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "users/deactivate", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully initiated batch user deactivation")
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+func reactivateUsersCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "reactivate-users [user-id-1] [user-id-2] ...",
+		Short: "Reactivate multiple users",
+		Long: heredoc.Doc(`
+			Reactivate multiple users in batch that were previously deactivated.
+		`),
+		Example: heredoc.Doc(`
+			# Reactivate users in batch
+			$ stream-cli chat reactivate-users user-1 user-2 user-3
+		`),
+		Args: cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			h, err := getHTTPClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			body := map[string]interface{}{
+				"user_ids": args,
+			}
+
+			_, err = h.DoRequest(cmd.Context(), "POST", "users/reactivate", body)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Successfully initiated batch user reactivation")
+			return nil
+		},
+	}
+
+	return cmd
+}
+
+func sendUserEventCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "send-user-event --user-id [user-id] --event-type [event-type]",
+		Short: "Send a custom event to a user",
+		Example: heredoc.Doc(`
+			# Send a custom event to user 'joe'
+			$ stream-cli chat send-user-event --user-id joe --event-type custom.welcome
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			c, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			userID, _ := cmd.Flags().GetString("user-id")
+			eventType, _ := cmd.Flags().GetString("event-type")
+
+			event := &stream.UserCustomEvent{Type: eventType}
+
+			_, err = c.SendUserCustomEvent(cmd.Context(), userID, event)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully sent event [%s] to user [%s]\n", eventType, userID)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("user-id", "u", "", "[required] User ID to send event to")
+	fl.StringP("event-type", "e", "", "[required] Event type")
+	_ = cmd.MarkFlagRequired("user-id")
+	_ = cmd.MarkFlagRequired("event-type")
 
 	return cmd
 }

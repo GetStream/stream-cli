@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	stream "github.com/GetStream/stream-chat-go/v5"
@@ -14,6 +15,8 @@ import (
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/utils"
 )
+
+const s3ImportPrefix = "s3://stream-import/"
 
 func NewCmds() []*cobra.Command {
 	return []*cobra.Command{
