@@ -76,6 +76,12 @@ func uploadCmd() *cobra.Command {
 				mode = stream.InsertMode
 			}
 
+			var opts []stream.CreateImportOption
+			if cmd.Flags().Changed("merge-custom") {
+				mergeCustom, _ := cmd.Flags().GetBool("merge-custom")
+				opts = append(opts, stream.WithMergeCustom(mergeCustom))
+			}
+
 			createImportURLResp, err := c.CreateImportURL(cmd.Context(), filepath.Base(filename))
 			if err != nil {
 				return err
@@ -84,7 +90,7 @@ func uploadCmd() *cobra.Command {
 			if err := uploadToS3(cmd.Context(), filename, createImportURLResp.UploadURL); err != nil {
 				return err
 			}
-			createImportResp, err := c.CreateImport(cmd.Context(), createImportURLResp.Path, mode)
+			createImportResp, err := c.CreateImport(cmd.Context(), createImportURLResp.Path, mode, opts...)
 			if err != nil {
 				return err
 			}
@@ -94,7 +100,8 @@ func uploadCmd() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("mode", "m", "upsert", "[optional] Import mode. Canbe upsert or insert")
+	fl.StringP("mode", "m", "upsert", "[optional] Import mode. Can be upsert or insert")
+	fl.Bool("merge-custom", false, "[optional] Merge custom data during import")
 	fl.StringP("output-format", "o", "json", "[optional] Output format. Can be json or tree")
 	fl.Bool("lighter-validation-id", false, "[optional] allows to pass ! in channel ID")
 
