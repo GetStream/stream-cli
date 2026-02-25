@@ -3,7 +3,7 @@ cask "stream-cli" do
   name "stream-cli"
   desc "Manage your Stream applications easily."
   homepage "https://github.com/GetStream/stream-cli"
-  version "1.8.4"
+  version "1.9.0"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,22 +14,22 @@ cask "stream-cli" do
   on_macos do
     on_intel do
       url "https://github.com/GetStream/stream-cli/releases/download/v#{version}/stream-cli_Darwin_x86_64.tar.gz"
-      sha256 "4e5ff85232820df19cc029332dc7dd1a8e2f5b73917ab8656993b544d08e2100"
+      sha256 "028d702b7741dfd82347143e76a998fe57fadd0e7036892bb52a09d6138bbcf8"
     end
     on_arm do
       url "https://github.com/GetStream/stream-cli/releases/download/v#{version}/stream-cli_Darwin_arm64.tar.gz"
-      sha256 "14f8f6fe42a92df3088ed5a083c8662f554f2a342bc5073c043ae2f3e523ab9d"
+      sha256 "fb666e56e36449e6edf6708188113bcccf1bd7e0a20941439ebe0e76143dc48d"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/GetStream/stream-cli/releases/download/v#{version}/stream-cli_Linux_x86_64.tar.gz"
-      sha256 "7dbf7292c94042ea39a77ce2bc52f6c8234996f3d2e875962543d8a498470b0e"
+      sha256 "0aad5d2555ebc44d7f9827ca127ed7119bdda9ab070e27b79d189e1f744fc028"
     end
     on_arm do
       url "https://github.com/GetStream/stream-cli/releases/download/v#{version}/stream-cli_Linux_arm64.tar.gz"
-      sha256 "b013e01adb8af745b1cce3e65461b8e95c6535fea00ef7190c9b5fc2810bf5bc"
+      sha256 "33d3cb2a235c8cbf59fb222c4821281b7d11814db3c3e6e5cb460fe411d25e5c"
     end
   end
 
