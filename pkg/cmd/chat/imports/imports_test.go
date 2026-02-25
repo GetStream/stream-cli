@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	stream_chat "github.com/GetStream/stream-chat-go/v5"
+	stream_chat "github.com/GetStream/stream-chat-go/v8"
 	"github.com/stretchr/testify/require"
 
 	"github.com/GetStream/stream-cli/test"

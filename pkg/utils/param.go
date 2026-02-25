@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	stream "github.com/GetStream/stream-chat-go/v5"
+	stream "github.com/GetStream/stream-chat-go/v8"
 	"github.com/spf13/pflag"
 )
 

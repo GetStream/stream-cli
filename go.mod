@@ -1,10 +1,10 @@
 module github.com/GetStream/stream-cli
 
-go 1.22
+go 1.23
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
-	github.com/GetStream/stream-chat-go/v5 v5.8.1
+	github.com/GetStream/stream-chat-go/v8 v8.3.0
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/gizak/termui/v3 v3.1.0
@@ -18,7 +18,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

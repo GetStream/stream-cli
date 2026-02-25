@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	stream "github.com/GetStream/stream-chat-go/v5"
+	stream "github.com/GetStream/stream-chat-go/v8"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
