@@ -204,3 +204,39 @@ func TestHideAndShowChannel(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully shown channel")
 }
+
+func TestTruncateChannel(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+		test.DeleteUser(u)
+	})
+
+	// Add user to channel and send a message
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, _ = cmd.ExecuteC()
+
+	client := test.InitClient()
+	ctx := context.Background()
+	_, err := client.Channel("messaging", ch).SendMessage(ctx, &stream.Message{
+		Text: "Pre-truncate message",
+		User: &stream.User{ID: u},
+	}, u)
+	require.NoError(t, err)
+
+	// Truncate the channel
+	cmd.SetArgs([]string{"truncate-channel", "-t", "messaging", "-i", ch, "--hard", "--message", "Channel reset", "--message-user-id", u})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+
+	out := cmd.OutOrStdout().(*bytes.Buffer).String()
+	require.Contains(t, out, "Successfully truncated channel")
+
+	// Verify that message history is empty
+	resp, err := client.Channel("messaging", ch).Query(ctx, &stream.QueryRequest{})
+	require.NoError(t, err)
+	require.Empty(t, resp.Messages)
+}

@@ -28,6 +28,7 @@ func NewCmds() []*cobra.Command {
 		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
+		truncateChannelCmd(),
 	}
 }
 
@@ -607,6 +608,85 @@ func showCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func truncateChannelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "truncate-channel --type [channel-type] --id [channel-id] [flags]",
+		Short: "Truncate a channel",
+		Long: heredoc.Doc(`
+			Truncates a channel by removing all messages but keeping the channel metadata and members.
+
+			Optional flags allow you to perform a hard delete, add a system message, skip push notifications, 
+			and define the truncating user ID (for server-side calls).
+		`),
+		Example: heredoc.Doc(`
+			# Truncate messages in 'general' channel of type messaging
+			$ stream-cli chat truncate-channel --type messaging --id general
+
+			# Truncate with hard delete and system message
+			$ stream-cli chat truncate-channel --type messaging --id general --hard --message "Channel reset" --user-id system-user
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			typ, _ := cmd.Flags().GetString("type")
+			id, _ := cmd.Flags().GetString("id")
+			hard, _ := cmd.Flags().GetBool("hard")
+			userID, _ := cmd.Flags().GetString("user-id")
+			messageUserID, _ := cmd.Flags().GetString("message-user-id")
+			msgText, _ := cmd.Flags().GetString("message")
+			skipPush, _ := cmd.Flags().GetBool("skip-push")
+
+			// If a message is provided, a message user id must also be provided
+			if msgText != "" && messageUserID == "" {
+				return errors.New("when using --message, you must also supply --message-user-id")
+			}
+
+			var opts []stream.TruncateOption
+
+			if hard {
+				opts = append(opts, stream.TruncateWithHardDelete())
+			}
+			if skipPush {
+				opts = append(opts, stream.TruncateWithSkipPush())
+			}
+			if userID != "" {
+				opts = append(opts, stream.TruncateWithUserID(userID))
+			}
+			if msgText != "" {
+				opts = append(opts, stream.TruncateWithMessage(&stream.Message{
+					Text: msgText,
+					User: &stream.User{ID: messageUserID},
+				}))
+			}
+
+			ch := client.Channel(typ, id)
+			_, err = ch.Truncate(cmd.Context(), opts...)
+			if err != nil {
+				return err
+			}
+			cmd.Printf("Successfully truncated channel [%s]\n", id)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging'")
+	fl.StringP("id", "i", "", "[required] Channel ID")
+	fl.String("user-id", "", "[optional] User ID who performs the truncation")
+	fl.String("message", "", "[optional] System message to include in truncation (requires --message-user-id)")
+	fl.String("message-user-id", "", "[optional] User id for the message to include in truncation (required if --message is set)")
+	fl.Bool("hard", false, "[optional] Permanently delete messages instead of hiding them")
+	fl.Bool("skip-push", false, "[optional] Skip push notifications")
+
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
 
 	return cmd
 }
