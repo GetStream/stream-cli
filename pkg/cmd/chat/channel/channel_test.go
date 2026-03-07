@@ -204,3 +204,27 @@ func TestHideAndShowChannel(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully shown channel")
 }
+
+func TestListMembers(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+		test.DeleteUser(u)
+	})
+
+	// Add member so they show up in the member list
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+
+	// Now list members
+	cmd.SetArgs([]string{"list-members", "-t", "messaging", "-i", ch})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+
+	// Assert the user ID is in the output
+	out := cmd.OutOrStdout().(*bytes.Buffer).String()
+	require.Contains(t, out, u)
+}
