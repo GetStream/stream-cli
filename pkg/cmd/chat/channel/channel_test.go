@@ -204,3 +204,38 @@ func TestHideAndShowChannel(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "Successfully shown channel")
 }
+
+func TestUnmuteChannel(t *testing.T) {
+	cmd := test.GetRootCmdWithSubCommands(NewCmds()...)
+	ch := test.InitChannel(t)
+	u := test.CreateUser()
+
+	t.Cleanup(func() {
+		test.DeleteChannel(ch)
+		test.DeleteUser(u)
+	})
+
+	// Add user to channel
+	cmd.SetArgs([]string{"add-members", "-t", "messaging", "-i", ch, u})
+	_, err := cmd.ExecuteC()
+	require.NoError(t, err)
+
+	// Unmute the channel for the user
+	cmd.SetArgs([]string{"unmute-channel", "-t", "messaging", "-i", ch, "-u", u})
+	_, err = cmd.ExecuteC()
+	require.NoError(t, err)
+
+	// Check that output contains success message
+	out := cmd.OutOrStdout().(*bytes.Buffer).String()
+	require.Contains(t, out, "Successfully unmuted channel")
+
+	// Verify the mute was removed
+	client := test.InitClient()
+	ctx := context.Background()
+	userResp, err := client.QueryUsers(ctx, &stream.QueryOption{
+		Filter: map[string]interface{}{"id": u},
+	})
+	require.NoError(t, err)
+	require.Len(t, userResp.Users, 1)
+	require.Empty(t, userResp.Users[0].ChannelMutes)
+}

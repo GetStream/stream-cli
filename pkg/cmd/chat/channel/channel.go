@@ -28,6 +28,7 @@ func NewCmds() []*cobra.Command {
 		assignRoleCmd(),
 		hideCmd(),
 		showCmd(),
+		unmuteChannelCmd(),
 	}
 }
 
@@ -604,6 +605,50 @@ func showCmd() *cobra.Command {
 	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging' or 'livestream'")
 	fl.StringP("id", "i", "", "[required] Channel id")
 	fl.StringP("user-id", "u", "", "[required] User id to show the channel to")
+	_ = cmd.MarkFlagRequired("type")
+	_ = cmd.MarkFlagRequired("id")
+	_ = cmd.MarkFlagRequired("user-id")
+
+	return cmd
+}
+
+func unmuteChannelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unmute-channel --type [channel-type] --id [channel-id] --user-id [user-id]",
+		Short: "Unmute a channel for a user",
+		Long: heredoc.Doc(`
+			Unmutes a previously muted channel for a specific user.
+		`),
+		Example: heredoc.Doc(`
+			# Unmute the 'redteam' channel for user 'john'
+			$ stream-cli chat unmute-channel --type messaging --id redteam --user-id john
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := config.GetConfig(cmd).GetClient(cmd)
+			if err != nil {
+				return err
+			}
+
+			typ, _ := cmd.Flags().GetString("type")
+			id, _ := cmd.Flags().GetString("id")
+			user, _ := cmd.Flags().GetString("user-id")
+
+			ch := client.Channel(typ, id)
+			_, err = ch.Unmute(cmd.Context(), user)
+			if err != nil {
+				return err
+			}
+
+			cmd.Printf("Successfully unmuted channel [%s] for user [%s]\n", id, user)
+			return nil
+		},
+	}
+
+	fl := cmd.Flags()
+	fl.StringP("type", "t", "", "[required] Channel type such as 'messaging'")
+	fl.StringP("id", "i", "", "[required] Channel ID")
+	fl.StringP("user-id", "u", "", "[required] User ID")
+
 	_ = cmd.MarkFlagRequired("type")
 	_ = cmd.MarkFlagRequired("id")
 	_ = cmd.MarkFlagRequired("user-id")
