@@ -375,20 +375,26 @@ func FilterTracks(tracks []*TrackInfo, userID, sessionID, trackID, trackKind, me
 
 func firstPacketNtpTimestamp(segment *SegmentMetadata) int64 {
 	if segment.FirstRtcpNtpTimestamp != 0 && segment.FirstRtcpRtpTimestamp != 0 {
-		rtpNtpTs := (segment.FirstRtcpRtpTimestamp - segment.FirstRtpRtpTimestamp) / sampleRate(segment)
-		return segment.FirstRtcpNtpTimestamp - int64(rtpNtpTs)
-	} else {
-		return segment.FirstRtpUnixTimestamp
+		if segment.FirstRtcpRtpTimestamp > segment.FirstRtpRtpTimestamp {
+			rtpNtpTs := (segment.FirstRtcpRtpTimestamp - segment.FirstRtpRtpTimestamp) / sampleRate(segment)
+			return segment.FirstRtcpNtpTimestamp - int64(rtpNtpTs)
+		}
+		rtpNtpTs := (segment.FirstRtpRtpTimestamp - segment.FirstRtcpRtpTimestamp) / sampleRate(segment)
+		return segment.FirstRtcpNtpTimestamp + int64(rtpNtpTs)
 	}
+	return segment.FirstRtpUnixTimestamp
 }
 
 func lastPacketNtpTimestamp(segment *SegmentMetadata) int64 {
 	if segment.LastRtcpNtpTimestamp != 0 && segment.LastRtcpRtpTimestamp != 0 {
-		rtpNtpTs := (segment.LastRtpRtpTimestamp - segment.LastRtcpRtpTimestamp) / sampleRate(segment)
-		return segment.LastRtcpNtpTimestamp + int64(rtpNtpTs)
-	} else {
-		return segment.LastRtpUnixTimestamp
+		if segment.LastRtpRtpTimestamp > segment.LastRtcpRtpTimestamp {
+			rtpNtpTs := (segment.LastRtpRtpTimestamp - segment.LastRtcpRtpTimestamp) / sampleRate(segment)
+			return segment.LastRtcpNtpTimestamp + int64(rtpNtpTs)
+		}
+		rtpNtpTs := (segment.LastRtcpRtpTimestamp - segment.LastRtpRtpTimestamp) / sampleRate(segment)
+		return segment.LastRtcpNtpTimestamp - int64(rtpNtpTs)
 	}
+	return segment.LastRtpUnixTimestamp
 }
 
 func sampleRate(segment *SegmentMetadata) uint32 {
