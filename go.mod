@@ -15,13 +15,13 @@ require (
 	github.com/spf13/viper v1.11.0
 )
 
-require github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+require github.com/golang-jwt/jwt/v5 v5.2.1
 
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
