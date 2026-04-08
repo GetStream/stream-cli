@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
+	github.com/GetStream/getstream-go/v4 v4.0.4
 	github.com/GetStream/stream-chat-go/v8 v8.3.0
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/cheynewallace/tabby v1.1.1
@@ -13,6 +14,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.11.0
 )
+
+require github.com/golang-jwt/jwt/v5 v5.2.1
 
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
@@ -38,12 +41,12 @@ require (
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.9.0
 	github.com/subosito/gotenv v1.2.0 // indirect
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171 // indirect
 	golang.org/x/text v0.3.8 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

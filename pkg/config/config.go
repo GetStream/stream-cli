@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	getstream "github.com/GetStream/getstream-go/v4"
 	stream "github.com/GetStream/stream-chat-go/v8"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -78,6 +79,20 @@ func (c *Config) GetClient(cmd *cobra.Command) (*stream.Client, error) {
 		client.BaseURL = a.ChatURL
 	}
 	return client, nil
+}
+
+func (c *Config) GetFeedsClient(cmd *cobra.Command) (*getstream.Stream, error) {
+	a, err := c.GetDefaultAppOrExplicit(cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	var opts []getstream.ClientOption
+	if a.ChatURL != "" && a.ChatURL != DefaultChatEdgeURL {
+		opts = append(opts, getstream.WithBaseUrl(a.ChatURL))
+	}
+
+	return getstream.NewClient(a.AccessKey, a.AccessSecretKey, opts...)
 }
 
 func (c *Config) Add(newApp App) error {
