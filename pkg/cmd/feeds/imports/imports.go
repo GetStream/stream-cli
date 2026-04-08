@@ -14,7 +14,7 @@ import (
 
 	getstream "github.com/GetStream/getstream-go/v4"
 	"github.com/MakeNowJust/heredoc"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/cobra"
 
 	"github.com/GetStream/stream-cli/pkg/config"
