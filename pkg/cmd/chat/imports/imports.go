@@ -1,9 +1,6 @@
 package imports
 
 import (
-	"context"
-	"net/http"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -23,44 +20,16 @@ func NewCmds() []*cobra.Command {
 	}
 }
 
-func uploadToS3(ctx context.Context, filename, url string) error {
-	data, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer data.Close()
-
-	stat, err := data.Stat()
-	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, data)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.ContentLength = stat.Size()
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	return nil
-}
-
 func uploadCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upload-import [filename] --mode [upsert|insert] --output-format [json|tree]",
 		Short: "Upload an import",
 		Example: heredoc.Doc(`
 			# Uploads an import and prints it as JSON
-			$ stream-cli chat upload-import data.json --mode insert
+			$ stream-cli import chat upload-import data.json --mode insert
 
 			# Uploads an import and prints it as a browsable tree
-			$ stream-cli chat upload-import data.json --mode insert --output-format tree
+			$ stream-cli import chat upload-import data.json --mode insert --output-format tree
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -87,7 +56,7 @@ func uploadCmd() *cobra.Command {
 				return err
 			}
 
-			if err := uploadToS3(cmd.Context(), filename, createImportURLResp.UploadURL); err != nil {
+			if err := utils.UploadToS3(cmd.Context(), filename, createImportURLResp.UploadURL); err != nil {
 				return err
 			}
 			createImportResp, err := c.CreateImport(cmd.Context(), createImportURLResp.Path, mode, opts...)
@@ -114,10 +83,10 @@ func getCmd() *cobra.Command {
 		Short: "Get import",
 		Example: heredoc.Doc(`
 			# Returns an import and prints it as JSON
-			$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
+			$ stream-cli import chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
 
 			# Returns an import and prints it as JSON, and wait for it to complete
-			$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
+			$ stream-cli import chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -164,10 +133,10 @@ func listCmd() *cobra.Command {
 		Short: "List imports",
 		Example: heredoc.Doc(`
 			# List all imports as json (default)
-			$ stream-cli chat list-imports
+			$ stream-cli import chat list-imports
 
 			# List all imports as browsable tree
-			$ stream-cli chat list-imports --output-format tree
+			$ stream-cli import chat list-imports --output-format tree
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := config.GetConfig(cmd).GetClient(cmd)
