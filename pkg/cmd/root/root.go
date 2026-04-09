@@ -8,7 +8,7 @@ import (
 
 	"github.com/GetStream/stream-cli/pkg/cmd/chat"
 	cfgCmd "github.com/GetStream/stream-cli/pkg/cmd/config"
-	feedsCmd "github.com/GetStream/stream-cli/pkg/cmd/feeds"
+	"github.com/GetStream/stream-cli/pkg/cmd/importcmd"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/version"
 )
@@ -29,6 +29,12 @@ func NewCmd() *cobra.Command {
 
 			# Create a new Chat user
 			$ stream-cli chat upsert-user --properties "{\"id\":\"my-user-1\"}"
+
+			# Upload a chat import
+			$ stream-cli import chat upload-import data.json --mode insert
+
+			# Upload a feeds import
+			$ stream-cli import feeds upload-import data.json
 		`),
 		Version: version.FmtVersion(),
 	}
@@ -40,7 +46,7 @@ func NewCmd() *cobra.Command {
 	root.AddCommand(
 		cfgCmd.NewRootCmd(),
 		chat.NewRootCmd(),
-		feedsCmd.NewRootCmd(),
+		importcmd.NewRootCmd(),
 	)
 
 	cobra.OnInitialize(config.GetInitConfig(root, cfgPath))

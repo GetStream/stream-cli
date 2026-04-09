@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -76,44 +75,16 @@ func getImportV2Task(ctx context.Context, app *config.App, id string) (map[strin
 	return result, nil
 }
 
-func uploadToS3(ctx context.Context, filename, url string) error {
-	data, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer data.Close()
-
-	stat, err := data.Stat()
-	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, data)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.ContentLength = stat.Size()
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	return nil
-}
-
 func uploadCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upload-import [filename] --output-format [json|tree]",
 		Short: "Upload an import for Feeds",
 		Example: heredoc.Doc(`
 			# Uploads a feeds import and prints it as JSON
-			$ stream-cli feeds upload-import data.json
+			$ stream-cli import feeds upload-import data.json
 
 			# Uploads a feeds import and prints it as a browsable tree
-			$ stream-cli feeds upload-import data.json --output-format tree
+			$ stream-cli import feeds upload-import data.json --output-format tree
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -130,7 +101,7 @@ func uploadCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if err := uploadToS3(cmd.Context(), filename, createURLResp.Data.UploadUrl); err != nil {
+			if err := utils.UploadToS3(cmd.Context(), filename, createURLResp.Data.UploadUrl); err != nil {
 				return err
 			}
 
@@ -177,10 +148,10 @@ func getCmd() *cobra.Command {
 		Short: "Get a feeds import task",
 		Example: heredoc.Doc(`
 			# Returns a feeds import and prints it as JSON
-			$ stream-cli feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
+			$ stream-cli import feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
 
 			# Returns a feeds import and watches for completion
-			$ stream-cli feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
+			$ stream-cli import feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -228,13 +199,13 @@ func listCmd() *cobra.Command {
 		Short: "List feeds import tasks",
 		Example: heredoc.Doc(`
 			# List all feeds imports as json (default)
-			$ stream-cli feeds list-imports
+			$ stream-cli import feeds list-imports
 
 			# List feeds imports filtered by state
-			$ stream-cli feeds list-imports --state 2
+			$ stream-cli import feeds list-imports --state 2
 
 			# List all feeds imports as browsable tree
-			$ stream-cli feeds list-imports --output-format tree
+			$ stream-cli import feeds list-imports --output-format tree
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := config.GetConfig(cmd).GetFeedsClient(cmd)
