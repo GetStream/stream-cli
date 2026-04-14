@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/GetStream/stream-cli/compare/v1.9.0...v1.10.0) (2026-04-09)
+
+
+### Features
+
+* **feeds:** add feeds import cli support ([#192](https://github.com/GetStream/stream-cli/issues/192)) ([c01957f](https://github.com/GetStream/stream-cli/commit/c01957fa5c36469cbab8a5df1b817923b7feaa7c))
+
 ## [1.9.0](https://github.com/GetStream/stream-cli/compare/v1.8.4...v1.9.0) (2026-02-25)
 
 ### [1.8.4](https://github.com/GetStream/stream-cli/compare/v1.8.3...v1.8.4) (2026-02-11)
