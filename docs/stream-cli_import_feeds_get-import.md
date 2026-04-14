@@ -1,19 +1,19 @@
-## stream-cli chat get-import
+## stream-cli import feeds get-import
 
-Get import
+Get a feeds import task
 
 ```
-stream-cli chat get-import [import-id] --output-format [json|tree] --watch [flags]
+stream-cli import feeds get-import [task-id] --output-format [json|tree] --watch [flags]
 ```
 
 ### Examples
 
 ```
-# Returns an import and prints it as JSON
-$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
+# Returns a feeds import and prints it as JSON
+$ stream-cli import feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272
 
-# Returns an import and prints it as JSON, and wait for it to complete
-$ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
+# Returns a feeds import and watches for completion
+$ stream-cli import feeds get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 
 ```
 
@@ -34,5 +34,5 @@ $ stream-cli chat get-import dcb6e366-93ec-4e52-af6f-b0c030ad5272 --watch
 
 ### SEE ALSO
 
-* [stream-cli chat](stream-cli_chat.md)	 - Allows you to interact with your Chat applications
+* [stream-cli import feeds](stream-cli_import_feeds.md)	 - Import data into Feeds
 
