@@ -54,6 +54,11 @@ func UploadToS3(ctx context.Context, filename, url string) error {
 	if pr != nil {
 		pr.finish()
 	}
+
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
+		return fmt.Errorf("upload failed: %s: %s", resp.Status, string(body))
+	}
 	return nil
 }
 
@@ -112,8 +117,9 @@ func (p *progressReader) render() {
 	var bar string
 	var eta string
 	if p.total > 0 {
-		pct = float64(read) / float64(p.total) * 100
-		filled := min(int(float64(p.barWidth)*float64(read)/float64(p.total)), p.barWidth)
+		shown := min(read, p.total)
+		pct = float64(shown) / float64(p.total) * 100
+		filled := min(int(float64(p.barWidth)*float64(shown)/float64(p.total)), p.barWidth)
 		b := make([]byte, p.barWidth)
 		for i := 0; i < p.barWidth; i++ {
 			if i < filled {
@@ -123,14 +129,14 @@ func (p *progressReader) render() {
 			}
 		}
 		bar = string(b)
-		if rate > 0 && read < p.total {
-			remaining := time.Duration(float64(p.total-read)/rate) * time.Second
+		if rate > 0 && shown < p.total {
+			remaining := time.Duration(float64(p.total-shown)/rate) * time.Second
 			eta = " ETA " + formatDuration(remaining)
 		}
-		fmt.Fprintf(p.out, "\rUploading %s [%s] %5.1f%% %s/%s %s/s%s",
-			p.name, bar, pct, humanBytes(read), humanBytes(p.total), humanBytes(int64(rate)), eta)
+		fmt.Fprintf(p.out, "\rUploading %s [%s] %5.1f%% %s/%s %s/s%s\033[K",
+			p.name, bar, pct, humanBytes(shown), humanBytes(p.total), humanBytes(int64(rate)), eta)
 	} else {
-		fmt.Fprintf(p.out, "\rUploading %s %s %s/s", p.name, humanBytes(read), humanBytes(int64(rate)))
+		fmt.Fprintf(p.out, "\rUploading %s %s %s/s\033[K", p.name, humanBytes(read), humanBytes(int64(rate)))
 	}
 }
 
