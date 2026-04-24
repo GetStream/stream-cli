@@ -41,7 +41,6 @@ Allows you to interact with your Chat applications
 * [stream-cli chat get-app](stream-cli_chat_get-app.md)	 - Get application settings
 * [stream-cli chat get-channel](stream-cli_chat_get-channel.md)	 - Return a channel
 * [stream-cli chat get-channel-type](stream-cli_chat_get-channel-type.md)	 - Get channel type
-* [stream-cli chat get-import](stream-cli_chat_get-import.md)	 - Get import
 * [stream-cli chat get-message](stream-cli_chat_get-message.md)	 - Return a single message
 * [stream-cli chat get-messages](stream-cli_chat_get-messages.md)	 - Return multiple messages
 * [stream-cli chat get-reactions](stream-cli_chat_get-reactions.md)	 - Get reactions for a message
@@ -49,7 +48,6 @@ Allows you to interact with your Chat applications
 * [stream-cli chat list-channel-types](stream-cli_chat_list-channel-types.md)	 - List channel types
 * [stream-cli chat list-channels](stream-cli_chat_list-channels.md)	 - List channels
 * [stream-cli chat list-devices](stream-cli_chat_list-devices.md)	 - List devices
-* [stream-cli chat list-imports](stream-cli_chat_list-imports.md)	 - List imports
 * [stream-cli chat list-pushproviders](stream-cli_chat_list-pushproviders.md)	 - List all push providers
 * [stream-cli chat listen-events](stream-cli_chat_listen-events.md)	 - Listen to events
 * [stream-cli chat mute-user](stream-cli_chat_mute-user.md)	 - Mute a user
@@ -74,7 +72,6 @@ Allows you to interact with your Chat applications
 * [stream-cli chat update-user-partial](stream-cli_chat_update-user-partial.md)	 - Partially update a user
 * [stream-cli chat upload-file](stream-cli_chat_upload-file.md)	 - Upload a file
 * [stream-cli chat upload-image](stream-cli_chat_upload-image.md)	 - Upload an image
-* [stream-cli chat upload-import](stream-cli_chat_upload-import.md)	 - Upload an import
 * [stream-cli chat upsert-pushprovider](stream-cli_chat_upsert-pushprovider.md)	 - Create or updates a push provider
 * [stream-cli chat upsert-user](stream-cli_chat_upsert-user.md)	 - Upsert a user
 * [stream-cli chat watch](stream-cli_chat_watch.md)	 - Wait for an async task to complete
