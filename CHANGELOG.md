@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.10.1](https://github.com/GetStream/stream-cli/compare/v1.10.0...v1.10.1) (2026-04-24)
+
+
+### Features
+
+* **feeds:** upload progress bar ([#197](https://github.com/GetStream/stream-cli/issues/197)) ([98a63c5](https://github.com/GetStream/stream-cli/commit/98a63c5373ef1316015607039ce56ad159b16318))
+
 ## [1.10.0](https://github.com/GetStream/stream-cli/compare/v1.9.0...v1.10.0) (2026-04-09)
 
 
