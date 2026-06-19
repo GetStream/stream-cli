@@ -1,19 +1,19 @@
-## stream-cli chat upload-import
+## stream-cli import chat upload-import
 
 Upload an import
 
 ```
-stream-cli chat upload-import [filename] --mode [upsert|insert] --output-format [json|tree] [flags]
+stream-cli import chat upload-import [filename] --mode [upsert|insert] --output-format [json|tree] [flags]
 ```
 
 ### Examples
 
 ```
 # Uploads an import and prints it as JSON
-$ stream-cli chat upload-import data.json --mode insert
+$ stream-cli import chat upload-import data.json --mode insert
 
 # Uploads an import and prints it as a browsable tree
-$ stream-cli chat upload-import data.json --mode insert --output-format tree
+$ stream-cli import chat upload-import data.json --mode insert --output-format tree
 
 ```
 
@@ -22,7 +22,8 @@ $ stream-cli chat upload-import data.json --mode insert --output-format tree
 ```
   -h, --help                    help for upload-import
       --lighter-validation-id   [optional] allows to pass ! in channel ID
-  -m, --mode string             [optional] Import mode. Canbe upsert or insert (default "upsert")
+      --merge-custom            [optional] Merge custom data during import
+  -m, --mode string             [optional] Import mode. Can be upsert or insert (default "upsert")
   -o, --output-format string    [optional] Output format. Can be json or tree (default "json")
 ```
 
@@ -35,5 +36,5 @@ $ stream-cli chat upload-import data.json --mode insert --output-format tree
 
 ### SEE ALSO
 
-* [stream-cli chat](stream-cli_chat.md)	 - Allows you to interact with your Chat applications
+* [stream-cli import chat](stream-cli_import_chat.md)	 - Import data into Chat
 

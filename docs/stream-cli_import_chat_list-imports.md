@@ -1,19 +1,19 @@
-## stream-cli chat list-imports
+## stream-cli import chat list-imports
 
 List imports
 
 ```
-stream-cli chat list-imports --offset [int] --limit [int] --output-format [json|tree] [flags]
+stream-cli import chat list-imports --offset [int] --limit [int] --output-format [json|tree] [flags]
 ```
 
 ### Examples
 
 ```
 # List all imports as json (default)
-$ stream-cli chat list-imports
+$ stream-cli import chat list-imports
 
 # List all imports as browsable tree
-$ stream-cli chat list-imports --output-format tree
+$ stream-cli import chat list-imports --output-format tree
 
 ```
 
@@ -35,5 +35,5 @@ $ stream-cli chat list-imports --output-format tree
 
 ### SEE ALSO
 
-* [stream-cli chat](stream-cli_chat.md)	 - Allows you to interact with your Chat applications
+* [stream-cli import chat](stream-cli_import_chat.md)	 - Import data into Chat
 
