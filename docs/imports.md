@@ -167,7 +167,7 @@ Once the import file is valid, the file can be uploaded to be scheduled for impo
 <summary>`upload-import` example</summary>
 
 ```shell
-$ stream-cli chat upload-import my-data.json                                                                                                                                                                                                                            10:14:36
+$ stream-cli import chat upload-import my-data.json                                                                                                                                                                                                                            10:14:36
 {
   "created_at": "2022-05-16T09:02:37.991181Z",
   "path": "s3://stream-import/1171432/7e7fbaf4-e266-4877-96da-fbacf650d0a1/my-data.json",
@@ -192,7 +192,7 @@ pre-existing items.
 <summary>import modes example</summary>
 
 ```shell
-$ stream-cli chat upload-import valid-data.json --mode insert                                                                                                                                                                                                              11:02:44
+$ stream-cli import chat upload-import valid-data.json --mode insert                                                                                                                                                                                                              11:02:44
 {
   "created_at": "2022-05-16T09:06:26.356475Z",
   "path": "s3://stream-import/1171432/f9460261-ce3c-4594-a236-33bbedfa85a7/valid-data.json",
@@ -221,7 +221,7 @@ Once an import has been created, you can monitor its status using the `get-impor
 <summary>`get-import` example</summary>
 
 ```shell
-$ stream-cli chat get-import f0077dab-84f3-48f1-9292-2bf1b48fd6f0  --watch                                                                                                                                                                                                 13:50:09
+$ stream-cli import chat get-import f0077dab-84f3-48f1-9292-2bf1b48fd6f0  --watch                                                                                                                                                                                                 13:50:09
 {
   "import_task": {
     "created_at": "2022-05-16T09:06:26.356475Z",
@@ -249,7 +249,7 @@ $ stream-cli chat get-import f0077dab-84f3-48f1-9292-2bf1b48fd6f0  --watch      
 <summary>`list-imports` example</summary>
 
 ```shell
-$ stream-cli chat list-imports                                                                                                                                                                                                                                       130 ↵ 13:51:07
+$ stream-cli import chat list-imports                                                                                                                                                                                                                                       130 ↵ 13:51:07
 [
   {
     "created_at": "2022-05-16T09:06:26.356475Z",
