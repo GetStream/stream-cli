@@ -9,98 +9,21 @@ for processing.
 
 ### Validation
 
-To import data into your Stream app, you'll need to provide a valid import file. The file needs to be structured as a
-list of JSON objects, representing each item to be imported.
+To import data into your Stream app, you'll need to provide a valid import file. The file needs to be structured as
+newline-delimited JSON (JSONL): one JSON object per line, each wrapping a single item to be imported under a `data` key.
 
 <details markdown="1">
 <summary>Here's an example of a valid import file</summary>
 
-```json
-[
-  {
-    "type": "user",
-    "item": {
-      "id": "hannibal",
-      "role": "user",
-      "teams": [
-        "A-team"
-      ],
-      "channel_mutes": [
-        "messaging:HQ"
-      ]
-    }
-  },
-  {
-    "type": "user",
-    "item": {
-      "id": "murdock",
-      "role": "user",
-      "teams": [
-        "A-team"
-      ],
-      "push_notifications": {
-        "disabled": true,
-        "disabled_reason": "doesn't want to be disturbed"
-      },
-      "user_mutes": [
-        "hannibal"
-      ]
-    }
-  },
-  {
-    "type": "channel",
-    "item": {
-      "id": "HQ",
-      "type": "messaging",
-      "team": "A-team",
-      "created_by": "hannibal"
-    }
-  },
-  {
-    "type": "member",
-    "item": {
-      "channel_id": "HQ",
-      "channel_type": "messaging",
-      "user_id": "hannibal"
-    }
-  },
-  {
-    "type": "member",
-    "item": {
-      "channel_id": "HQ",
-      "channel_type": "messaging",
-      "user_id": "murdock"
-    }
-  },
-  {
-    "type": "message",
-    "item": {
-      "id": "message1",
-      "channel_id": "HQ",
-      "channel_type": "messaging",
-      "user": "hannibal",
-      "text": "I love it when a plan comes together"
-    }
-  },
-  {
-    "type": "reaction",
-    "item": {
-      "message_id": "message1",
-      "type": "like",
-      "user_id": "murdock",
-      "created_at": "2022-01-01T01:01:01Z"
-    }
-  },
-  {
-    "type": "device",
-    "item": {
-      "id": "deviceID",
-      "user_id": "hannibal",
-      "created_at": "2022-01-01T01:01:01Z",
-      "push_provider_type": "firebase"
-    }
-  }
-]
+```jsonl
+{"type": "user", "data": {"id": "hannibal", "role": "user", "teams": ["A-team"], "channel_mutes": ["messaging:HQ"]}}
+{"type": "user", "data": {"id": "murdock", "role": "user", "teams": ["A-team"], "push_preferences": {"chat_level": "none"}, "user_mutes": ["hannibal"]}}
+{"type": "channel", "data": {"id": "HQ", "type": "messaging", "team": "A-team", "created_by": "hannibal"}}
+{"type": "member", "data": {"channel_id": "HQ", "channel_type": "messaging", "user_id": "hannibal"}}
+{"type": "member", "data": {"channel_id": "HQ", "channel_type": "messaging", "user_id": "murdock"}}
+{"type": "message", "data": {"id": "message1", "channel_id": "HQ", "channel_type": "messaging", "user": "hannibal", "text": "I love it when a plan comes together"}}
+{"type": "reaction", "data": {"message_id": "message1", "type": "like", "user_id": "murdock", "created_at": "2022-01-01T01:01:01Z"}}
+{"type": "device", "data": {"id": "deviceID", "user_id": "hannibal", "created_at": "2022-01-01T01:01:01Z", "push_provider_type": "firebase"}}
 ```
 </details>
 
