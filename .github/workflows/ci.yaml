@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   test-build:
     name: 👷 Test & Build
