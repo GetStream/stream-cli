@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	stream "github.com/GetStream/stream-chat-go/v5"
+	stream "github.com/GetStream/stream-chat-go/v8"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 

@@ -95,9 +95,9 @@ $ stream-cli chat list-channels -t messaging
 
 Upload a new import:
 ```shell
-$ stream-cli chat upload-import data.json --mode insert
+$ stream-cli import chat upload-import data.json --mode insert
 ```
-- [**upload-import** docs](./stream-cli_chat_upload-import.md)
+- [**upload-import** docs](./stream-cli_import_chat_upload-import.md)
 
 - [Imports how-to](./imports.md)
 

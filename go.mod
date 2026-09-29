@@ -4,7 +4,8 @@ go 1.24
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
-	github.com/GetStream/stream-chat-go/v5 v5.8.1
+	github.com/GetStream/getstream-go/v4 v4.0.4
+	github.com/GetStream/stream-chat-go/v8 v8.3.0
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.21.0
@@ -18,6 +19,8 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.11.0
 )
+
+require github.com/golang-jwt/jwt/v5 v5.2.1
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.1 // indirect
@@ -62,7 +65,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

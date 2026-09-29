@@ -3,7 +3,7 @@ package push
 import (
 	"encoding/json"
 
-	stream_chat "github.com/GetStream/stream-chat-go/v5"
+	stream_chat "github.com/GetStream/stream-chat-go/v8"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 

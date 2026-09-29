@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	stream "github.com/GetStream/stream-chat-go/v5"
+	stream "github.com/GetStream/stream-chat-go/v8"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 
@@ -46,7 +46,7 @@ func getCmd() *cobra.Command {
 				return err
 			}
 
-			r, err := c.GetAppConfig(cmd.Context())
+			r, err := c.GetAppSettings(cmd.Context())
 			if err != nil {
 				return err
 			}

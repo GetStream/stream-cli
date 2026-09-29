@@ -10,7 +10,7 @@
 > - The command invocation is `stream-cli chat [verb-noun] [args] [options]` instead of `stream [verb:noun] [args] [options]`. The most obvious change is using dash instead of colon. We also added the `chat` keyword to preserve domain for our other product [Feeds](https://getstream.io/activity-feeds/).
 > - The 1.0.0 Go version's feature set is matching the old one. But if you miss anything, feel free to open an issue.
 
-Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. Currently, only Chat is supported; however, the ability to manage Feeds will be coming soon.
+Stream's Command Line Interface (CLI) makes it easy to create and manage your [Stream](https://getstream.io) apps directly from the terminal. It supports both Chat and Feeds, including a unified `import` command for data imports.
 
 # 📚 Documentation
 The full documentation is deployed to [GitHub Pages](https://getstream.github.io/stream-cli/).
@@ -85,13 +85,19 @@ stream-cli version 1.0.0
 Basic commands use the following syntax:
 
 ```shell
-$ stream-cli [chat|feeds] [command] [args] [options]
+$ stream-cli [chat|import] [command] [args] [options]
 ```
 
-Example:
+Examples:
 
 ```shell
 $ stream-cli chat get-channel -t messaging -i redteam
+
+# Import data into Chat
+$ stream-cli import chat upload-import data.json --mode insert
+
+# Import data into Feeds
+$ stream-cli import feeds upload-import data.json
 ```
 
 The `--help` keyword is available every step of the way. Examples:
@@ -100,6 +106,9 @@ The `--help` keyword is available every step of the way. Examples:
 $ stream-cli --help
 $ stream-cli chat --help
 $ stream-cli chat get-channel --help
+$ stream-cli import --help
+$ stream-cli import chat --help
+$ stream-cli import feeds --help
 ```
 
 # 💬 Auto completion
