@@ -8,6 +8,7 @@ import (
 
 	"github.com/GetStream/stream-cli/pkg/cmd/chat"
 	cfgCmd "github.com/GetStream/stream-cli/pkg/cmd/config"
+	"github.com/GetStream/stream-cli/pkg/cmd/video"
 	"github.com/GetStream/stream-cli/pkg/cmd/importcmd"
 	"github.com/GetStream/stream-cli/pkg/config"
 	"github.com/GetStream/stream-cli/pkg/version"
@@ -46,6 +47,7 @@ func NewCmd() *cobra.Command {
 	root.AddCommand(
 		cfgCmd.NewRootCmd(),
 		chat.NewRootCmd(),
+		video.NewRootCmd(),
 		importcmd.NewRootCmd(),
 	)
 

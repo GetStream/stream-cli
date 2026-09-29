@@ -28,7 +28,9 @@ func uploadFile(c *stream.Client, cmd *cobra.Command, uploadtype uploadType, chT
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	req := stream.SendFileRequest{
 		User:     &stream.User{ID: userID},
