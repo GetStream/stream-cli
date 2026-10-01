@@ -26,7 +26,7 @@ func processAllCmd() *cobra.Command {
 			  individual_{callType}_{callId}_{userId}_{sessionId}_audio_only_{timestamp}.mkv
 			  individual_{callType}_{callId}_{userId}_{sessionId}_video_only_{timestamp}.mkv
 			  individual_{callType}_{callId}_{userId}_{sessionId}_audio_video_{timestamp}.mkv
-			  composite_{callType}_{callId}_audio_{timestamp}.mkv
+			  rec_{callType}_{callId}_audio_{timestamp}.mkv
 		`),
 		Example: heredoc.Doc(`
 			# Process all tracks
@@ -110,59 +110,43 @@ func runProcessAll(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	// Extract audio tracks
+	// Mix all audio tracks. This must run before the extraction below: the mixer
+	// only converts segments that have not been resolved to a container file yet.
+	mixer := processing.NewAudioMixerV2(logger)
+	if _, err := mixer.MixAllAudioTracks(newAudioMixerConfig(globalArgs, metadata, false), metadata); err != nil {
+		return fmt.Errorf("failed to mix audio tracks: %w", err)
+	}
+
+	// Extract audio and video tracks, aggregated per session so they can be muxed
 	extractor := processing.NewTrackExtractor(logger)
-	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
-		WorkDir:   globalArgs.WorkDir,
-		OutputDir: globalArgs.Output,
-		UserID:    "",
-		SessionID: "",
-		TrackID:   "",
-		TrackKind: TrackTypeAudio,
-		MediaType: "both",
-		FillGap:   true,
-		FillDtx:   true,
-	}, metadata); err != nil {
-		return fmt.Errorf("failed to extract audio tracks: %w", err)
-	}
-
-	// Extract video tracks
-	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
-		WorkDir:   globalArgs.WorkDir,
-		OutputDir: globalArgs.Output,
-		UserID:    "",
-		SessionID: "",
-		TrackID:   "",
-		TrackKind: TrackTypeVideo,
-		MediaType: "both",
-		FillGap:   true,
-		FillDtx:   true,
-	}, metadata); err != nil {
-		return fmt.Errorf("failed to extract video tracks: %w", err)
-	}
-
-	// Mix all audio tracks
-	mixer := processing.NewAudioMixer(logger)
-	_, _ = mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
-		WorkDir:         globalArgs.WorkDir,
-		OutputDir:       globalArgs.Output,
-		WithScreenshare: false,
-		WithExtract:     false,
-		WithCleanup:     false,
+	extracted, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
+		WorkDir:        globalArgs.WorkDir,
+		OutputDir:      globalArgs.Output,
+		UserID:         userID,
+		SessionID:      sessionID,
+		TrackID:        trackID,
+		TrackKind:      "",
+		MediaType:      processing.MediaTypeBoth,
+		AggregatorType: processing.AggregatorTypeSession,
+		FillGap:        true,
+		FillDtx:        true,
 	}, metadata)
+	if err != nil {
+		return fmt.Errorf("failed to extract tracks: %w", err)
+	}
 
 	// Mux audio/video tracks
 	muxer := processing.NewAudioVideoMuxer(logger)
 	if _, err := muxer.MuxAudioVideoTracks(&processing.AudioVideoMuxerConfig{
 		WorkDir:     globalArgs.WorkDir,
 		OutputDir:   globalArgs.Output,
-		UserID:      "",
-		SessionID:   "",
-		TrackID:     "",
-		MediaType:   "",
+		UserID:      userID,
+		SessionID:   sessionID,
+		TrackID:     trackID,
+		MediaType:   processing.MediaTypeBoth,
 		WithExtract: false,
 		WithCleanup: false,
-	}, metadata); err != nil {
+	}, metadata, extracted); err != nil {
 		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
 

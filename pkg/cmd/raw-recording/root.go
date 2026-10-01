@@ -330,3 +330,21 @@ func completeTrackIDs(cmd *cobra.Command, args []string, toComplete string) ([]s
 
 	return trackIDs, cobra.ShellCompDirectiveNoFileComp
 }
+
+// newAudioMixerConfig builds the mixer configuration, anchoring the mix to the
+// recording window when the archive carries call metadata.
+func newAudioMixerConfig(globalArgs *GlobalArgs, metadata *processing.RecordingMetadata, withScreenshare bool) *processing.AudioMixerConfig {
+	cfg := &processing.AudioMixerConfig{
+		WorkDir:         globalArgs.WorkDir,
+		OutputDir:       globalArgs.Output,
+		Format:          processing.DefaultFormat,
+		WithScreenshare: withScreenshare,
+		WithExtract:     true,
+		WithCleanup:     false,
+	}
+	if metadata.CallMetadata != nil {
+		cfg.RecordingStart = metadata.CallMetadata.RecordingStartTime
+		cfg.RecordingEnd = metadata.CallMetadata.RecordingEndTime
+	}
+	return cfg
+}

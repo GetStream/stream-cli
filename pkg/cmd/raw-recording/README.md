@@ -145,7 +145,7 @@ stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output 
 stream-cli video raw-recording mix-audio --input-file recording.tar.gz --output ./out --verbose
 ```
 
-Creates `composite_{callType}_{callId}_audio_{timestamp}.mkv` with all tracks properly synchronized based on original timing.
+Creates `rec_{callType}_{callId}_audio_{timestamp}.mkv` with all tracks properly synchronized based on original timing.
 
 ### `process-all` - Complete Workflow
 
@@ -171,7 +171,7 @@ stream-cli video raw-recording process-all --input-file recording.tar.gz --outpu
 - `individual_{callType}_{callId}_{userId}_{sessionId}_audio_only_{timestamp}.mkv` - Audio-only files
 - `individual_{callType}_{callId}_{userId}_{sessionId}_video_only_{timestamp}.mkv` - Video-only files
 - `individual_{callType}_{callId}_{userId}_{sessionId}_audio_video_{timestamp}.mkv` - Combined audio+video files
-- `composite_{callType}_{callId}_audio_{timestamp}.mkv` - Mixed audio from all participants
+- `rec_{callType}_{callId}_audio_{timestamp}.mkv` - Mixed audio from all participants
 
 ## Global Options
 
@@ -238,7 +238,7 @@ stream-cli video raw-recording process-all --input-file recording.tar.gz --outpu
 # - ./complete/individual_*_audio_only_*.mkv (individual audio tracks)
 # - ./complete/individual_*_video_only_*.mkv (individual video tracks)
 # - ./complete/individual_*_audio_video_*.mkv (combined A/V tracks)
-# - ./complete/composite_*_audio_*.mkv (mixed audio)
+# - ./complete/rec_*_audio_*.mkv (mixed audio)
 ```
 
 ## Dependencies

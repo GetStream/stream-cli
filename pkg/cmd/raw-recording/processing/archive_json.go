@@ -34,6 +34,9 @@ type SegmentMetadata struct {
 	LastRtcpRtpTimestamp  uint32 `json:"last_rtcp_rtp_timestamp,omitempty"`
 	LastRtcpNtpTimestamp  int64  `json:"last_rtcp_ntp_timestamp,omitempty"`
 
+	// Segment duration information
+	RtpDurationMs int64 `json:"rtp_duration_ms,omitempty"`
+
 	FirstKeyFrameOffsetMs *int64                 `json:"first_key_frame_offset_ms,omitempty"`
 	MaxFrameDimension     *SegmentFrameDimension `json:"max_frame_dimension,omitempty"`
 }

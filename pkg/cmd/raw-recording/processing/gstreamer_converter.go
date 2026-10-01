@@ -1,12 +1,12 @@
 package processing
 
 import (
+	"bytes"
 	"context"
 	"encoding/binary"
 	"fmt"
 	"math/rand"
 	"net"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -86,12 +86,16 @@ func (r *GstreamerConverter) startGStreamer(sdpContent, outputFilePath string) e
 	}
 
 	r.gstreamerCmd = exec.Command("gst-launch-1.0", args...)
-	// Redirect output for debugging
-	r.gstreamerCmd.Stdout = os.Stdout
-	r.gstreamerCmd.Stderr = os.Stderr
+	// Stream gstreamer output through our logger so it shows up alongside
+	// the rest of the egress logs (with pid + stream tag) instead of going
+	// to raw stdout/stderr. os/exec spawns the read goroutine when Stdout/
+	// Stderr is a non-*os.File, and cmd.Wait() drains it before returning.
+	r.gstreamerCmd.Stdout = &lineLogWriter{logf: r.logger.Infof, pidFn: r.pid, stream: "stdout"}
+	r.gstreamerCmd.Stderr = &lineLogWriter{logf: r.logger.Warnf, pidFn: r.pid, stream: "stderr"}
 
 	// Start GStreamer process
 	if err := r.gstreamerCmd.Start(); err != nil {
+		r.logger.Errorf("GStreamer process pid<%d> failed: %v", r.pid(), err)
 		return err
 	}
 
@@ -156,7 +160,7 @@ func parseRtpCapsFromSDP(sdp string) (media string, encodingName string, payload
 				media = strings.TrimPrefix(fields[0], "m=")
 			} else {
 				err = fmt.Errorf("invalid m= line: %s", lower)
-				return
+				return media, encodingName, payload, clockRate, err
 			}
 		} else if strings.HasPrefix(lower, "a=rtpmap:") {
 			rtpmapLineFound = true
@@ -173,11 +177,11 @@ func parseRtpCapsFromSDP(sdp string) (media string, encodingName string, payload
 					clockRate = parts[1]
 				} else {
 					err = fmt.Errorf("invalid a=rtpmap: %s", lower)
-					return
+					return media, encodingName, payload, clockRate, err
 				}
 			} else {
 				err = fmt.Errorf("invalid a=rtpmap: %s", lower)
-				return
+				return media, encodingName, payload, clockRate, err
 			}
 		}
 	}
@@ -185,7 +189,7 @@ func parseRtpCapsFromSDP(sdp string) (media string, encodingName string, payload
 	if !mLineFound || !rtpmapLineFound {
 		err = fmt.Errorf("invalid SDP m= or a=rtpmap lines not found: \n%s", sdp)
 	}
-	return
+	return media, encodingName, payload, clockRate, err
 }
 
 func (r *GstreamerConverter) OnRTP(packet *rtp.Packet) error {
@@ -248,16 +252,52 @@ func (r *GstreamerConverter) Close() error {
 
 		select {
 		case <-time.After(5 * time.Second):
-			r.logger.Warnf("GStreamer process pid<%d> termination timeout in %s...", r.gstreamerCmd.Process.Pid, time.Since(r.startAt).Round(time.Millisecond))
+			r.logger.Warnf("GStreamer process pid<%d> termination timeout in %s...", r.pid(), time.Since(r.startAt).Round(time.Millisecond))
 
 			// Timeout, force kill
 			if e := r.gstreamerCmd.Process.Kill(); e != nil {
-				r.logger.Errorf("GStreamer process pid<%d> errored while killing: %v", r.gstreamerCmd.Process.Pid, e)
+				r.logger.Errorf("GStreamer process pid<%d> errored while killing: %v", r.pid(), e)
 			}
 		case <-done:
-			r.logger.Infof("GStreamer process pid<%d> exited succesfully in %s...", r.gstreamerCmd.Process.Pid, time.Since(r.startAt).Round(time.Millisecond))
+			r.logger.Infof("GStreamer process pid<%d> exited succesfully in %s...", r.pid(), time.Since(r.startAt).Round(time.Millisecond))
 		}
 	}
 
 	return nil
+}
+
+func (r *GstreamerConverter) pid() int {
+	if r.gstreamerCmd == nil || r.gstreamerCmd.Process == nil {
+		return 0
+	}
+
+	return r.gstreamerCmd.Process.Pid
+}
+
+// lineLogWriter is an io.Writer that buffers chunks coming from a child
+// process and forwards each complete line to logf. Trailing partial data
+// without a newline is held until the next Write; on process exit os/exec
+// closes its end of the pipe and any leftover partial line is dropped,
+// which is fine for line-oriented gstreamer output.
+type lineLogWriter struct {
+	logf   func(format string, args ...any)
+	pidFn  func() int
+	stream string
+	buf    []byte
+}
+
+func (w *lineLogWriter) Write(p []byte) (int, error) {
+	w.buf = append(w.buf, p...)
+	for {
+		i := bytes.IndexByte(w.buf, '\n')
+		if i < 0 {
+			break
+		}
+		line := strings.TrimRight(string(w.buf[:i]), "\r")
+		w.buf = w.buf[i+1:]
+		if line != "" {
+			w.logf("GStreamer process pid<%d> %s: %s", w.pidFn(), w.stream, line)
+		}
+	}
+	return len(p), nil
 }

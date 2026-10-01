@@ -128,7 +128,7 @@ func runMuxAV(cmd *cobra.Command, args []string) error {
 		MediaType:   media,
 		WithExtract: true,
 		WithCleanup: false,
-	}, metadata); err != nil {
+	}, metadata, nil); err != nil {
 		return fmt.Errorf("failed to mux audio/video tracks: %w", err)
 	}
 

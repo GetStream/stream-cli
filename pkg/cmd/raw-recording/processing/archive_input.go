@@ -64,6 +64,8 @@ func extractTarGzToDir(tarGzPath, destDir string, logger *ProcessingLogger) erro
 	}()
 
 	tarReader := tar.NewReader(gzReader)
+	cleanDestDir := filepath.Clean(destDir)
+	destDirPrefix := cleanDestDir + string(os.PathSeparator)
 
 	for {
 		header, err := tarReader.Next()
@@ -79,8 +81,11 @@ func extractTarGzToDir(tarGzPath, destDir string, logger *ProcessingLogger) erro
 			continue
 		}
 
-		// Create destination file
-		destPath := filepath.Join(destDir, header.Name)
+		// Create destination file and validate it stays within destination directory
+		destPath := filepath.Clean(filepath.Join(cleanDestDir, header.Name))
+		if destPath != cleanDestDir && !strings.HasPrefix(destPath, destDirPrefix) {
+			return fmt.Errorf("invalid archive entry path: %s", header.Name)
+		}
 
 		// Create directory structure if needed
 		if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {

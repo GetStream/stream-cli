@@ -95,15 +95,16 @@ func runExtractVideo(cmd *cobra.Command, args []string) error {
 	// Extract video tracks
 	extractor := processing.NewTrackExtractor(logger)
 	if _, err := extractor.ExtractTracks(&processing.TrackExtractorConfig{
-		WorkDir:   globalArgs.WorkDir,
-		OutputDir: globalArgs.Output,
-		UserID:    userID,
-		SessionID: sessionID,
-		TrackID:   trackID,
-		TrackKind: TrackTypeVideo,
-		MediaType: "both",
-		FillGap:   fillGaps,
-		FillDtx:   false,
+		WorkDir:        globalArgs.WorkDir,
+		OutputDir:      globalArgs.Output,
+		UserID:         userID,
+		SessionID:      sessionID,
+		TrackID:        trackID,
+		TrackKind:      TrackTypeVideo,
+		MediaType:      processing.MediaTypeBoth,
+		AggregatorType: processing.AggregatorTypeTrack,
+		FillGap:        fillGaps,
+		FillDtx:        false,
 	}, metadata); err != nil {
 		return fmt.Errorf("failed to extract video tracks: %w", err)
 	}

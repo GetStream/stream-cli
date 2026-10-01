@@ -30,8 +30,6 @@ type TrackInfo struct {
 	TrackStartTime time.Time      `json:"trackStartTime"` // first_rtp_unix_timestamp from segment
 	TrackEndTime   time.Time      `json:"trackEndTime"`   // last_rtp_unix_timestamp from segment
 	Segments       []*SegmentInfo `json:"segments"`       // list of filenames (for JSON output only)
-
-	ConcatenatedTrackFileInfo *TrackFileInfo
 }
 
 type SegmentInfo struct {
@@ -48,15 +46,32 @@ type TrackFileInfo struct {
 	StartAt           time.Time
 	EndAt             time.Time
 	MaxFrameDimension SegmentFrameDimension
-	AudioTrack        *TrackInfo
-	VideoTrack        *TrackInfo
+	AudioTrack        []*TrackInfo
+	VideoTrack        []*TrackInfo
+}
+
+// CallMetadataFilename is the canonical filename for call-level metadata,
+// written once per recording at the root of the archive.
+const CallMetadataFilename = "call_metadata.json"
+
+// CallMetadata holds call-level information about a recording: identity and
+// the recording window (start/end). It is written once per call at the root
+// of the recording directory and is independent of per-participant timing
+// files. Absent in archives produced before this file was introduced.
+type CallMetadata struct {
+	CallType           string    `json:"call_type"`
+	CallID             string    `json:"call_id"`
+	CallSessionID      string    `json:"call_session_id"`
+	RecordingStartTime time.Time `json:"recording_start_time"`
+	RecordingEndTime   time.Time `json:"recording_end_time,omitempty"`
 }
 
 // RecordingMetadata contains all tracks and session information
 type RecordingMetadata struct {
-	Tracks   []*TrackInfo `json:"tracks"`
-	UserIDs  []string     `json:"userIds"`
-	Sessions []string     `json:"sessions"`
+	CallMetadata *CallMetadata `json:"callMetadata,omitempty"`
+	Tracks       []*TrackInfo  `json:"tracks"`
+	UserIDs      []string      `json:"userIds"`
+	Sessions     []string      `json:"sessions"`
 }
 
 // MetadataParser handles parsing of raw recording files
@@ -101,7 +116,26 @@ func (p *MetadataParser) parseDirectory(dirPath string) (*RecordingMetadata, err
 			return err
 		}
 
-		if !info.IsDir() && strings.HasSuffix(strings.ToLower(info.Name()), "_timing_metadata.json") {
+		if info.IsDir() {
+			return nil
+		}
+
+		name := strings.ToLower(info.Name())
+		switch {
+		case name == CallMetadataFilename:
+			p.logger.Debugf("Processing call metadata file: %s", path)
+			data, err := os.ReadFile(path)
+			if err != nil {
+				p.logger.Warnf("Failed to read call metadata file %s: %v", path, err)
+				return nil
+			}
+			cm, err := p.parseCallMetadataFile(data)
+			if err != nil {
+				p.logger.Warnf("Failed to parse call metadata file %s: %v", path, err)
+				return nil
+			}
+			metadata.CallMetadata = cm
+		case strings.HasSuffix(name, "_timing_metadata.json"):
 			p.logger.Debugf("Processing metadata file: %s", path)
 
 			data, err := os.ReadFile(path)
@@ -172,8 +206,24 @@ func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*Recordin
 			continue
 		}
 
-		// Only process timing metadata JSON files (skip all .rtpdump/.sdp files)
-		if strings.HasSuffix(strings.ToLower(header.Name), "_timing_metadata.json") {
+		// Only process metadata JSON files (skip all .rtpdump/.sdp files)
+		name := strings.ToLower(filepath.Base(header.Name))
+		switch {
+		case name == CallMetadataFilename:
+			p.logger.Debugf("Processing call metadata file: %s", header.Name)
+			data, err := io.ReadAll(tarReader)
+			if err != nil {
+				p.logger.Warnf("Failed to read call metadata file %s: %v", header.Name, err)
+				continue
+			}
+			cm, err := p.parseCallMetadataFile(data)
+			if err != nil {
+				p.logger.Warnf("Failed to parse call metadata file %s: %v", header.Name, err)
+				continue
+			}
+			metadata.CallMetadata = cm
+			filesRead++
+		case strings.HasSuffix(name, "_timing_metadata.json"):
 			p.logger.Debugf("Processing metadata file: %s", header.Name)
 
 			data, err := io.ReadAll(tarReader)
@@ -203,6 +253,15 @@ func (p *MetadataParser) parseMetadataOnlyFromTarGz(tarGzPath string) (*Recordin
 	return metadata, nil
 }
 
+// parseCallMetadataFile parses the call-level metadata JSON file
+func (p *MetadataParser) parseCallMetadataFile(data []byte) (*CallMetadata, error) {
+	var cm CallMetadata
+	if err := json.Unmarshal(data, &cm); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal call metadata: %w", err)
+	}
+	return &cm, nil
+}
+
 // parseTimingMetadataFile parses a timing metadata JSON file and extracts tracks
 func (p *MetadataParser) parseTimingMetadataFile(data []byte) ([]*TrackInfo, error) {
 	var sessionMetadata SessionTimingMetadata
@@ -214,12 +273,12 @@ func (p *MetadataParser) parseTimingMetadataFile(data []byte) ([]*TrackInfo, err
 	// Use a map to deduplicate tracks by unique key
 	trackMap := make(map[string]*TrackInfo)
 
-	processSegment := func(segment *SegmentMetadata, trackKind string) {
+	processSegment := func(segment *SegmentMetadata) {
 		key := fmt.Sprintf("%s|%s|%s|%s",
 			sessionMetadata.ParticipantID,
 			sessionMetadata.UserSessionID,
 			segment.TrackID,
-			trackKind)
+			strings.ReplaceAll(strings.ToLower(segment.Codec), "/", "|"))
 
 		if existingTrack, exists := trackMap[key]; exists {
 			existingTrack.Segments = append(existingTrack.Segments, &SegmentInfo{metadata: segment})
@@ -257,12 +316,12 @@ func (p *MetadataParser) parseTimingMetadataFile(data []byte) ([]*TrackInfo, err
 
 	// Process audio segments
 	for _, segment := range sessionMetadata.Segments.Audio {
-		processSegment(segment, p.cleanTrackType(segment.TrackType))
+		processSegment(segment)
 	}
 
 	// Process video segments
 	for _, segment := range sessionMetadata.Segments.Video {
-		processSegment(segment, p.cleanTrackType(segment.TrackType))
+		processSegment(segment)
 	}
 
 	// Convert map to slice
@@ -339,11 +398,11 @@ func FilterTracks(tracks []*TrackInfo, userID, sessionID, trackID, trackKind, me
 		}
 
 		// Apply media type filtering if specified
-		if mediaType != "" && mediaType != mediaTypeBoth {
-			if mediaType == mediaTypeUser && track.IsScreenshare {
+		if mediaType != "" && mediaType != MediaTypeBoth {
+			if mediaType == MediaTypeUser && track.IsScreenshare {
 				continue // Skip display tracks when only user requested
 			}
-			if mediaType == mediaTypeDisplay && !track.IsScreenshare {
+			if mediaType == MediaTypeDisplay && !track.IsScreenshare {
 				continue // Skip user tracks when only display requested
 			}
 		}
@@ -373,28 +432,64 @@ func FilterTracks(tracks []*TrackInfo, userID, sessionID, trackID, trackKind, me
 	return filtered
 }
 
+func firstPacketTimestamp(segmentMetadata *SegmentMetadata) int64 {
+	firstOffset := int64(0)
+	if segmentMetadata.FirstKeyFrameOffsetMs != nil {
+		firstOffset = *segmentMetadata.FirstKeyFrameOffsetMs
+	}
+
+	firstTs := firstOffset + firstPacketNtpTimestamp(segmentMetadata)
+	return firstTs
+}
+
 func firstPacketNtpTimestamp(segment *SegmentMetadata) int64 {
 	if segment.FirstRtcpNtpTimestamp != 0 && segment.FirstRtcpRtpTimestamp != 0 {
-		if segment.FirstRtcpRtpTimestamp > segment.FirstRtpRtpTimestamp {
-			rtpNtpTs := (segment.FirstRtcpRtpTimestamp - segment.FirstRtpRtpTimestamp) / sampleRate(segment)
-			return segment.FirstRtcpNtpTimestamp - int64(rtpNtpTs)
-		}
-		rtpNtpTs := (segment.FirstRtpRtpTimestamp - segment.FirstRtcpRtpTimestamp) / sampleRate(segment)
-		return segment.FirstRtcpNtpTimestamp + int64(rtpNtpTs)
+		return segment.FirstRtcpNtpTimestamp + rtpTimestampDeltaMs(segment.FirstRtpRtpTimestamp, segment.FirstRtcpRtpTimestamp, segment)
 	}
 	return segment.FirstRtpUnixTimestamp
 }
 
 func lastPacketNtpTimestamp(segment *SegmentMetadata) int64 {
 	if segment.LastRtcpNtpTimestamp != 0 && segment.LastRtcpRtpTimestamp != 0 {
-		if segment.LastRtpRtpTimestamp > segment.LastRtcpRtpTimestamp {
-			rtpNtpTs := (segment.LastRtpRtpTimestamp - segment.LastRtcpRtpTimestamp) / sampleRate(segment)
-			return segment.LastRtcpNtpTimestamp + int64(rtpNtpTs)
-		}
-		rtpNtpTs := (segment.LastRtcpRtpTimestamp - segment.LastRtpRtpTimestamp) / sampleRate(segment)
-		return segment.LastRtcpNtpTimestamp - int64(rtpNtpTs)
+		return segment.LastRtcpNtpTimestamp + rtpTimestampDeltaMs(segment.LastRtpRtpTimestamp, segment.LastRtcpRtpTimestamp, segment)
 	}
 	return segment.LastRtpUnixTimestamp
+}
+
+// segmentEndNtpTimestamp returns the wall time of a segment's last packet, anchored on
+// the first RTCP SR and spanned by the segment's own RTP clock.
+func segmentEndNtpTimestamp(segment *SegmentMetadata) int64 {
+	return firstPacketNtpTimestamp(segment) + segmentRtpDurationMs(segment)
+}
+
+// segmentRtpDurationMs returns the segment's span on the sender's RTP clock, preferring
+// the recorder's own RtpDurationMs so the two sides cannot disagree. Archives written
+// before that field existed omit it, so fall back to deriving the span from the segment's
+// RTP timestamps.
+func segmentRtpDurationMs(segment *SegmentMetadata) int64 {
+	if segment.RtpDurationMs > 0 {
+		return segment.RtpDurationMs
+	}
+	if segment.LastRtpRtpTimestamp == 0 {
+		return 0
+	}
+	// Mirrors the recorder: a negative delta means no forward progress, not a wrap.
+	if d := rtpTimestampDeltaMs(segment.LastRtpRtpTimestamp, segment.FirstRtpRtpTimestamp, segment); d > 0 {
+		return d
+	}
+	return 0
+}
+
+// rtpTimestampDeltaMs returns the signed millisecond delta (rtp - ref) between two
+// 32-bit RTP timestamps, added to an RTCP NTP reference to recover a packet's wall time.
+//
+// RTP timestamps are uint32 and wrap at 2^32. A naive numeric comparison mis-signs the
+// delta whenever the two values straddle the wrap boundary — e.g. an RTCP SR reporting
+// rtp_timestamp=123582 that is actually *later* than an RTP packet at 4294614425. Casting
+// the modular difference to int32 yields the signed shortest distance, which is correct as
+// long as the true gap stays under 2^31 samples (~12.4h at 48kHz, ~6.6h at 90kHz).
+func rtpTimestampDeltaMs(rtp, ref uint32, segment *SegmentMetadata) int64 {
+	return int64(int32(rtp-ref)) / int64(sampleRate(segment))
 }
 
 func sampleRate(segment *SegmentMetadata) uint32 {

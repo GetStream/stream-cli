@@ -4,13 +4,19 @@ const (
 	trackKindAudio = "audio"
 	trackKindVideo = "video"
 
-	mediaTypeUser    = "user"
-	mediaTypeDisplay = "display"
-	mediaTypeBoth    = "both"
+	MediaTypeUser    = "user"
+	MediaTypeDisplay = "display"
+	MediaTypeBoth    = "both"
 
 	suffixRtpDump = ".rtpdump"
 	suffixSdp     = ".sdp"
 
 	mkvExtension = "mkv"
 	mkvSuffix    = "." + mkvExtension
+
+	oggExtension = "ogg"
+	oggSuffix    = "." + oggExtension
+
+	AggregatorTypeTrack   = "track"
+	AggregatorTypeSession = "session"
 )

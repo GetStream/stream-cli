@@ -19,8 +19,10 @@ func mixAudioCmd() *cobra.Command {
 
 			Creates a composite audio file (MKV format by default) containing all mixed
 			tracks with proper timing synchronization based on the original recording timeline.
+			When the recording contains call metadata, the output spans the full recording
+			window (leading and trailing silence included).
 
-			Output: composite_{callType}_{callId}_audio_{timestamp}.mkv
+			Output: rec_{callType}_{callId}_audio_{timestamp}.mkv
 		`),
 		Example: heredoc.Doc(`
 			# Mix all audio tracks from all users and sessions
@@ -69,14 +71,10 @@ func runMixAudio(cmd *cobra.Command, args []string) error {
 	}
 
 	// Mix all audio tracks
-	mixer := processing.NewAudioMixer(logger)
-	_, _ = mixer.MixAllAudioTracks(&processing.AudioMixerConfig{
-		WorkDir:         globalArgs.WorkDir,
-		OutputDir:       globalArgs.Output,
-		WithScreenshare: true,
-		WithExtract:     true,
-		WithCleanup:     false,
-	}, metadata)
+	mixer := processing.NewAudioMixerV2(logger)
+	if _, err := mixer.MixAllAudioTracks(newAudioMixerConfig(globalArgs, metadata, true), metadata); err != nil {
+		return fmt.Errorf("failed to mix audio tracks: %w", err)
+	}
 
 	logger.Info("Mix-audio command completed successfully")
 	return nil

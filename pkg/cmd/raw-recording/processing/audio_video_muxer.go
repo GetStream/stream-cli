@@ -1,6 +1,7 @@
 package processing
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,18 +28,19 @@ func NewAudioVideoMuxer(logger *ProcessingLogger) *AudioVideoMuxer {
 	return &AudioVideoMuxer{logger: logger}
 }
 
-func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, metadata *RecordingMetadata) ([]*TrackFileInfo, error) {
-	if config.WithExtract {
+func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, metadata *RecordingMetadata, extracted []*TrackFileInfo) ([]*TrackFileInfo, error) {
+	if config.WithExtract || extracted == nil {
 		cfg := &TrackExtractorConfig{
-			WorkDir:   config.WorkDir,
-			OutputDir: config.OutputDir,
-			UserID:    config.UserID,
-			SessionID: config.SessionID,
-			TrackID:   config.TrackID,
-			TrackKind: "",
-			MediaType: config.MediaType,
-			FillGap:   true,
-			FillDtx:   true,
+			WorkDir:        config.WorkDir,
+			OutputDir:      config.OutputDir,
+			UserID:         config.UserID,
+			SessionID:      config.SessionID,
+			TrackID:        config.TrackID,
+			TrackKind:      "",
+			MediaType:      config.MediaType,
+			AggregatorType: AggregatorTypeSession,
+			FillGap:        true,
+			FillDtx:        true,
 
 			Cleanup: config.WithCleanup,
 		}
@@ -47,20 +49,21 @@ func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, met
 
 		// Extract tracks with gap filling enabled
 		p.logger.Infof("Extracting tracks with gap filling...")
-		_, err := extractor.ExtractTracks(cfg, metadata)
+		tracks, err := extractor.ExtractTracks(cfg, metadata)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract audio tracks: %w", err)
 		}
+		extracted = tracks
 	}
 
 	var infos []*TrackFileInfo // Group files by media type for proper pairing
-	pairedTracks := p.groupFilesByMediaType(config, metadata)
+	pairedTracks := p.groupFilesByMediaType(config, extracted)
 
 	for audioTrack, videoTrack := range pairedTracks {
-		// logger.Infof("Muxing %d user audio/video pairs", len(userAudio))
 		info, err := p.muxTrackPairs(audioTrack, videoTrack, config)
 		if err != nil {
 			p.logger.Errorf("Failed to mux user tracks: %v", err)
+			continue
 		}
 		infos = append(infos, info)
 	}
@@ -69,38 +72,56 @@ func (p *AudioVideoMuxer) MuxAudioVideoTracks(config *AudioVideoMuxerConfig, met
 }
 
 // calculateSyncOffsetFromFiles calculates sync offset between audio and video files using metadata
-func calculateSyncOffsetFromFiles(audioTrack, videoTrack *TrackInfo) (int64, error) {
+func calculateSyncOffsetFromFiles(firstFile, secondFile *TrackFileInfo) (int64, error) {
 	// Calculate offset: positive means video starts before audio
-	audioOffset, videoOffset := int64(0), int64(0)
-	if audioTrack.Segments[0].metadata.FirstKeyFrameOffsetMs != nil {
-		audioOffset = *audioTrack.Segments[0].metadata.FirstKeyFrameOffsetMs
-	}
-	if videoTrack.Segments[0].metadata.FirstKeyFrameOffsetMs != nil {
-		videoOffset = *videoTrack.Segments[0].metadata.FirstKeyFrameOffsetMs
+	var firstTrack, secondTrack *TrackInfo
+	if len(firstFile.AudioTrack) > 0 {
+		firstTrack = firstFile.AudioTrack[0]
+	} else if len(firstFile.VideoTrack) > 0 {
+		firstTrack = firstFile.VideoTrack[0]
+	} else {
+		return 0, errors.New("no track found in first file")
 	}
 
-	audioTs := audioOffset + firstPacketNtpTimestamp(audioTrack.Segments[0].metadata)
-	videoTs := videoOffset + firstPacketNtpTimestamp(videoTrack.Segments[0].metadata)
-	offset := audioTs - videoTs
+	if len(secondFile.AudioTrack) > 0 {
+		secondTrack = secondFile.AudioTrack[0]
+	} else if len(secondFile.VideoTrack) > 0 {
+		secondTrack = secondFile.VideoTrack[0]
+	} else {
+		return 0, errors.New("no track found in second file")
+	}
+
+	if len(firstTrack.Segments) == 0 {
+		return 0, errors.New("no segment found in first track")
+	}
+
+	if len(secondTrack.Segments) == 0 {
+		return 0, errors.New("no segment found in second track")
+	}
+
+	firstTs := firstPacketTimestamp(firstTrack.Segments[0].metadata)
+	secondTs := firstPacketTimestamp(secondTrack.Segments[0].metadata)
+	offset := firstTs - secondTs
 
 	return offset, nil
 }
 
 // groupFilesByMediaType groups audio and video files by media type (user vs display)
-func (p *AudioVideoMuxer) groupFilesByMediaType(config *AudioVideoMuxerConfig, metadata *RecordingMetadata) map[*TrackInfo]*TrackInfo {
-	pairedTracks := make(map[*TrackInfo]*TrackInfo)
+func (p *AudioVideoMuxer) groupFilesByMediaType(config *AudioVideoMuxerConfig, extracted []*TrackFileInfo) map[*TrackFileInfo]*TrackFileInfo {
+	pairedTracks := make(map[*TrackFileInfo]*TrackFileInfo)
 
-	matches := func(audio *TrackInfo, video *TrackInfo) bool {
-		return audio.UserID == video.UserID &&
-			audio.SessionID == video.SessionID &&
-			audio.IsScreenshare == video.IsScreenshare
+	matches := func(audio *TrackFileInfo, video *TrackFileInfo) bool {
+		return audio.AudioTrack[0].UserID == video.VideoTrack[0].UserID &&
+			audio.AudioTrack[0].SessionID == video.VideoTrack[0].SessionID &&
+			audio.AudioTrack[0].IsScreenshare == video.VideoTrack[0].IsScreenshare
 	}
 
-	filteredTracks := FilterTracks(metadata.Tracks, config.UserID, config.SessionID, config.TrackID, "", config.MediaType)
-	for _, at := range filteredTracks {
-		if at.TrackKind == trackKindAudio {
-			for _, vt := range filteredTracks {
-				if vt.TrackKind == trackKindVideo && matches(at, vt) {
+	for _, at := range extracted {
+		audioSize := len(at.AudioTrack)
+		if audioSize > 0 && audioSize == len(FilterTracks(at.AudioTrack, config.UserID, config.SessionID, config.TrackID, "", config.MediaType)) {
+			for _, vt := range extracted {
+				videoSize := len(vt.VideoTrack)
+				if videoSize > 0 && videoSize == len(FilterTracks(vt.VideoTrack, config.UserID, config.SessionID, config.TrackID, "", config.MediaType)) && matches(at, vt) {
 					pairedTracks[at] = vt
 					break
 				}
@@ -112,7 +133,7 @@ func (p *AudioVideoMuxer) groupFilesByMediaType(config *AudioVideoMuxerConfig, m
 }
 
 // muxTrackPairs muxes audio/video pairs of the same media type
-func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVideoMuxerConfig) (*TrackFileInfo, error) {
+func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackFileInfo, config *AudioVideoMuxerConfig) (*TrackFileInfo, error) {
 	// Calculate sync offset using segment timing information
 	offset, err := calculateSyncOffsetFromFiles(audio, video)
 	if err != nil {
@@ -123,8 +144,8 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 	// Generate output filename with media type indicator
 	outputFile := p.buildFilename(config.OutputDir, video)
 
-	audioFile := audio.ConcatenatedTrackFileInfo.Name
-	videoFile := video.ConcatenatedTrackFileInfo.Name
+	audioFile := audio.Name
+	videoFile := video.Name
 
 	// Mux the audio and video files
 	p.logger.Debugf("Muxing %s + %s → %s (offset: %dms)",
@@ -152,11 +173,11 @@ func (p *AudioVideoMuxer) muxTrackPairs(audio, video *TrackInfo, config *AudioVi
 
 	return &TrackFileInfo{
 		Name:              outputFile,
-		StartAt:           p.getTime(audio.ConcatenatedTrackFileInfo.StartAt, video.ConcatenatedTrackFileInfo.StartAt, true),
-		EndAt:             p.getTime(audio.ConcatenatedTrackFileInfo.EndAt, video.ConcatenatedTrackFileInfo.EndAt, false),
-		MaxFrameDimension: video.ConcatenatedTrackFileInfo.MaxFrameDimension,
-		AudioTrack:        audio,
-		VideoTrack:        video,
+		StartAt:           p.getTime(audio.StartAt, video.StartAt, true),
+		EndAt:             p.getTime(audio.EndAt, video.EndAt, false),
+		MaxFrameDimension: video.MaxFrameDimension,
+		AudioTrack:        audio.AudioTrack,
+		VideoTrack:        video.VideoTrack,
 	}, nil
 }
 
@@ -177,11 +198,26 @@ func (p *AudioVideoMuxer) getTime(d1, d2 time.Time, first bool) time.Time {
 }
 
 // buildFilename creates output filename that indicates media type
-func (p *AudioVideoMuxer) buildFilename(outputDir string, track *TrackInfo) string {
+func (p *AudioVideoMuxer) buildFilename(outputDir string, file *TrackFileInfo) string {
+	callType := "callType"
+	callID := "callID"
+	userID := "userId"
+	sessionID := "sessionId"
+	startTime := int64(0)
+	ext := mkvExtension
 	media := "audio_video"
-	if track.IsScreenshare {
-		media = "shared_" + media
+
+	if len(file.VideoTrack) > 0 {
+		track := file.VideoTrack[0]
+		callType = track.CallType
+		callID = track.CallID
+		userID = track.UserID
+		sessionID = track.SessionID
+		if track.IsScreenshare {
+			media = "shared_" + media
+		}
+		startTime = track.CallStartTime.UnixMilli()
 	}
 
-	return filepath.Join(outputDir, fmt.Sprintf("individual_%s_%s_%s_%s_%s_%d.%s", track.CallType, track.CallID, track.UserID, track.SessionID, media, track.CallStartTime.UnixMilli(), track.Segments[0].ContainerExt))
+	return filepath.Join(outputDir, fmt.Sprintf("individual_%s_%s_%s_%s_%s_%d.%s", callType, callID, userID, sessionID, media, startTime, ext))
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	webrtc "github.com/pion/webrtc/v4"
+	"github.com/pion/webrtc/v4"
 )
 
 func readSDP(sdpFilePath string) (string, error) {
@@ -14,6 +14,23 @@ func readSDP(sdpFilePath string) (string, error) {
 		return "", fmt.Errorf("failed to read SDP file %s: %w", sdpFilePath, err)
 	}
 	return string(content), nil
+}
+
+func replaceSDP(sdpContent string, port int) string {
+	lines := strings.Split(sdpContent, "\n")
+	for i, line := range lines {
+		if strings.HasPrefix(line, "m=") {
+			// Parse the m= line: m=<media_type> <port> RTP/AVP <payload_type>
+			parts := strings.Fields(line)
+			if len(parts) >= 4 {
+				// Replace the port (second field)
+				parts[1] = fmt.Sprintf("%d", port)
+				lines[i] = strings.Join(parts, " ")
+				break
+			}
+		}
+	}
+	return strings.Join(lines, "\n")
 }
 
 func mimeType(sdp string) (string, error) {
