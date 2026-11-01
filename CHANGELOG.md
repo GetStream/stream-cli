@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.10.2](https://github.com/GetStream/stream-cli/compare/v1.10.1...v1.10.2) (2026-11-01)
 
+
+### Security
+
+* release binaries are now built with Go 1.26.10, which distrusts the compromised eMudhra intermediate CAs ([CVE-2026-111943](https://pkg.go.dev/vuln/GO-2026-6809)) ([#206](https://github.com/GetStream/stream-cli/pull/206))
+
 ### [1.10.1](https://github.com/GetStream/stream-cli/compare/v1.10.0...v1.10.1) (2026-04-24)
 
 
