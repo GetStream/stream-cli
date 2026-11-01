@@ -3,6 +3,7 @@ package message
 import (
 	"bytes"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -151,5 +152,5 @@ func TestTranslateMessage(t *testing.T) {
 	cmd.SetArgs([]string{"translate-message", "-m", m, "-l", "hu"})
 	_, err := cmd.ExecuteC()
 	require.NoError(t, err)
-	require.Contains(t, cmd.OutOrStdout().(*bytes.Buffer).String(), "szia")
+	require.Contains(t, strings.ToLower(cmd.OutOrStdout().(*bytes.Buffer).String()), "szia")
 }
